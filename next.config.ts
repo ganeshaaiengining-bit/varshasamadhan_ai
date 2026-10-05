@@ -11,6 +11,17 @@ const config: NextConfig = {
    */
   outputFileTracingRoot: process.cwd(),
 
+  /**
+   * Prisma's query engine is a native binary, not JavaScript.
+   *
+   * Next bundles server code by copying what it can statically trace, and it
+   * does not follow a `.node` file. Left out of this list, a production build
+   * succeeds and then every database call fails at runtime with
+   * "Cannot find module .prisma/client" — on the deployed site only, never
+   * locally, because `npm run dev` does not bundle at all.
+   */
+  serverExternalPackages: ['@prisma/client', '.prisma/client'],
+
   poweredByHeader: false,
 
   async headers() {

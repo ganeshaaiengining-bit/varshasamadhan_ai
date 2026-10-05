@@ -1,10 +1,31 @@
 // ---------------------------------------------------------------------------
 // वर्षा समाधान AI — database
 //
-// SQLite, deliberately. This service is meant to run free on one machine or one
-// small host, and a Postgres server is the first thing that makes a beginner's
-// "free" project need a credit card. A file on disk needs no daemon, no user,
-// and no password.
+// Postgres, on Supabase's free tier. Deliberately free, and deliberately not
+// self-hosted: this has to keep working for a stranger who opens the link a
+// year from now, on a machine nobody maintains.
+//
+// ── Why it changed from SQLite ─────────────────────────────────────────────
+// SQLite was right while the site ran on one machine, and it is what the seed
+// scripts were written against. It cannot survive deployment: Vercel, Netlify
+// and Cloudflare Pages all run as serverless functions with a read-only, reset
+// on every deploy filesystem. A SQLite *file* there means every visitor sees an
+// empty site and every deploy silently discards the reviews.
+//
+// Supabase's free tier is 500 MB with no credit card, which is roughly fifty
+// times what this site will ever use — the entire dataset is under 100 KB.
+//
+// ── Why there is no `directUrl` ────────────────────────────────────────────
+// `DATABASE_URL` points at Supabase's pooler (port 5432), which is the only
+// thing that works from serverless. A migration needs a direct connection, and
+// Prisma takes that from `DIRECT_URL`. Both are the same database; only the
+// port and the pooler differ.
+//
+// ── Staying on SQLite ──────────────────────────────────────────────────────
+// Nothing above forbids it. Set `provider = "sqlite"`, point `DATABASE_URL` at
+// `file:./dev.db`, and the whole app runs locally with no server at all. The
+// only code that cares about the difference is the import script in
+// `prisma/import-postgres.ts`.
 //
 // Design rules:
 //  1. Every piece of guidance text lives in `articles` so the owner can add or
@@ -20,8 +41,17 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+
+  // The pooler. `connection_limit=1` is not a typo — a serverless function is
+  // scaled horizontally, so every concurrent request is a separate client, and
+  // Supabase's free tier allows only a small number of direct connections.
+  // One each, shared through the pooler, is what keeps the database from
+  // refusing connections under a traffic spike.
+  url = env("DATABASE_URL")
+
+  // A direct connection, used only by `prisma migrate`. Never at runtime.
+  directUrl = env("DIRECT_URL")
 }
 
 model Category {
