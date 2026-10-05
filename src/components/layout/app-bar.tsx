@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Icon, type IconName } from '@/components/ui/icon';
 import { Sunrise } from '@/components/visual/sunrise';
 import { BrandTitle } from '@/components/visual/brand-title';
-import { LanguageSelect, useLanguage } from '@/components/language/language';
+import { useLanguage } from '@/components/language/language';
 import { VARSHA } from '@/content/tribute';
 
 /**
@@ -208,13 +208,6 @@ export function AppBar({ siteName }: { siteName: string }) {
               >
                 <Icon name="close" size={22} />
               </button>
-            </div>
-
-            {/* language, first — it is the one thing a visitor may want before
-                anything else in the list */}
-            <div className="border-b border-line p-4">
-              <p className="label">{t('language.choose')}</p>
-              <LanguageSelect variant="full" />
             </div>
 
             {/* navigation */}

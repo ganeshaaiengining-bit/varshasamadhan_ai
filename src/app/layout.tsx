@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { ToastProvider } from '@/components/ui/toast';
+import { getT } from '@/server/i18n';
 import { LanguageProvider } from '@/components/language/language';
 import { AppBar } from '@/components/layout/app-bar';
 import { WelcomeDhun } from '@/components/audio/welcome-dhun';
@@ -9,9 +10,17 @@ import { WelcomeDhun } from '@/components/audio/welcome-dhun';
 /**
  * Root layout.
  *
- * `lang="hi"` is set on `<html>`, not only on the body copy. A screen reader
- * uses it to choose a pronunciation; without it Hindi text is read with an
- * English voice, which is unintelligible to the person listening.
+ * `lang` and `dir` come from the cookie the language picker writes, not from a
+ * literal. Both matter and neither is cosmetic:
+ *
+ *   - A screen reader picks its pronunciation from `lang`. Hardcoded `hi` meant
+ *     a Tamil visitor was read Hindi text with a Hindi voice.
+ *   - `dir` has to be `rtl` for Urdu and Arabic. Hardcoded `ltr` put every label
+ *     on the wrong side of its own control for those two languages.
+ *
+ * This reads the cookie during the server render, so the very first HTML is
+ * already correct — a page that visibly swaps language after hydration is worse
+ * for this audience than one that is briefly slower.
  */
 
 export const viewport: Viewport = {
@@ -72,9 +81,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { lang, dir, t } = await getT();
+
   return (
-    <html lang="hi" dir="ltr" suppressHydrationWarning>
+    <html lang={lang} dir={dir} suppressHydrationWarning>
       <head>
         {/*
           Applied before first paint so a visitor who chose dark mode never sees
@@ -93,7 +104,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         */}
         <a href="#main" className="sr-only focus:not-sr-only">
           <span className="fixed left-4 top-4 z-50 rounded-md bg-saffron px-5 py-3 font-bold text-white">
-            सीधे सामग्री पर जाएँ
+            {t('nav.skip')}
           </span>
         </a>
         <LanguageProvider>

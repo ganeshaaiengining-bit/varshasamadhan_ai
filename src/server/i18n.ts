@@ -60,6 +60,12 @@ export async function getLanguage(): Promise<Language> {
 /** A translator bound to the visitor's language, for use in a server component. */
 export async function getT(): Promise<{
   lang: string;
+  /**
+   * Included here because `<html dir>` needs it and reading the cookie a second
+   * time in the layout just to get one string is wasteful — this is already the
+   * resolved language object.
+   */
+  dir: 'ltr' | 'rtl';
   t: (key: string) => string;
   tf: (key: string, values: Record<string, string | number>) => string;
 }> {
@@ -67,6 +73,7 @@ export async function getT(): Promise<{
   const t = stringsFor(language.code);
   return {
     lang: language.code,
+    dir: language.direction,
     t,
     tf: (key, values) => fill(t(key), values),
   };

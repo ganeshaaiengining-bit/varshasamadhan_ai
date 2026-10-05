@@ -18,6 +18,8 @@
                     "db:seed:reviews":  "tsx prisma/seed-reviews.ts",
                     "db:migrate":  "prisma migrate deploy",
                     "db:migrate:dev":  "prisma migrate dev",
+                    "db:use:sqlite":  "node scripts/use-db.mjs sqlite",
+                    "db:use:postgres":  "node scripts/use-db.mjs postgresql",
                     "db:export":  "python scripts/export-sqlite.py prisma/dev.db .import",
                     "db:import":  "tsx prisma/import-postgres.ts .import",
                     "art":  "node scripts/render-art.mjs \u0026\u0026 node scripts/render-sun.mjs \u0026\u0026 node scripts/render-title.mjs",

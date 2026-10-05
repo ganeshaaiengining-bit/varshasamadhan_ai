@@ -41,7 +41,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 
   // The pooler. `connection_limit=1` is not a typo — a serverless function is
   // scaled horizontally, so every concurrent request is a separate client, and
