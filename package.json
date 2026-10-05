@@ -1,0 +1,51 @@
+{
+    "name":  "varsha-samadhan",
+    "version":  "1.0.0",
+    "private":  true,
+    "description":  "à¤µà¤°à¥à¤·à¤¾ à¤¸à¤®à¤¾à¤§à¤¾à¤¨ AI â€” à¤¶à¥à¤°à¥€à¤®à¤¤à¥€ à¤µà¤°à¥à¤·à¤¾ à¤œà¥€ à¤•à¥€ à¤¸à¥à¤®à¥ƒà¤¤à¤¿ à¤®à¥‡à¤‚, à¤¨à¤¿à¤ƒà¤¶à¥à¤²à¥à¤• à¤¸à¤®à¤¾à¤§à¤¾à¤¨ à¤¸à¥‡à¤µà¤¾",
+    "scripts":  {
+                    "dev":  "next dev -p 3001",
+                    "serve":  "node scripts/serve.mjs",
+                    "serve:app":  "node scripts/serve.mjs 3002",
+                    "build":  "next build",
+                    "start":  "next start -p 3001",
+                    "lint":  "next lint",
+                    "typecheck":  "tsc --noEmit",
+                    "db:push":  "prisma db push",
+                    "db:studio":  "prisma studio",
+                    "db:seed":  "tsx prisma/seed.ts",
+                    "db:seed:content":  "tsx prisma/seed-content.ts",
+                    "db:seed:reviews":  "tsx prisma/seed-reviews.ts",
+                    "art":  "node scripts/render-art.mjs \u0026\u0026 node scripts/render-sun.mjs \u0026\u0026 node scripts/render-title.mjs",
+                    "art:sky":  "node scripts/render-art.mjs",
+                    "art:sun":  "node scripts/render-sun.mjs",
+                    "art:title":  "node scripts/render-title.mjs",
+                    "art:preview":  "node scripts/render-art.mjs --preview \u0026\u0026 node scripts/render-sun.mjs --preview \u0026\u0026 node scripts/render-title.mjs --preview",
+                    "verify":  "node scripts/responsive-check.mjs",
+                    "verify:responsive":  "node scripts/responsive-check.mjs",
+                    "verify:title":  "node scripts/verify-title.mjs",
+                    "verify:all":  "npm run typecheck \u0026\u0026 npm run verify:responsive \u0026\u0026 npm run verify:title",
+                    "setup":  "npm run db:push \u0026\u0026 npm run db:seed \u0026\u0026 npm run db:seed:content \u0026\u0026 npm run db:seed:reviews \u0026\u0026 npm run art"
+                },
+    "prisma":  {
+                   "seed":  "tsx prisma/seed.ts"
+               },
+    "dependencies":  {
+                         "next":  "15.5.27",
+                         "react":  "19.1.1",
+                         "react-dom":  "19.1.1",
+                         "@prisma/client":  "6.16.2",
+                         "zod":  "3.24.1"
+                     },
+    "devDependencies":  {
+                            "@types/node":  "22.10.5",
+                            "@types/react":  "19.0.7",
+                            "@types/react-dom":  "19.0.3",
+                            "prisma":  "6.16.2",
+                            "tailwindcss":  "3.4.17",
+                            "postcss":  "8.4.49",
+                            "autoprefixer":  "10.4.20",
+                            "tsx":  "4.19.2",
+                            "typescript":  "5.9.2"
+                        }
+}

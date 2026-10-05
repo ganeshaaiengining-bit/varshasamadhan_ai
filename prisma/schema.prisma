@@ -1,0 +1,123 @@
+// ---------------------------------------------------------------------------
+// वर्षा समाधान AI — database
+//
+// SQLite, deliberately. This service is meant to run free on one machine or one
+// small host, and a Postgres server is the first thing that makes a beginner's
+// "free" project need a credit card. A file on disk needs no daemon, no user,
+// and no password.
+//
+// Design rules:
+//  1. Every piece of guidance text lives in `articles` so the owner can add or
+//     correct it from the admin panel. Nothing is hard-coded in a component.
+//  2. Safety-critical content (emergency numbers, medical advice) is flagged, so
+//     the UI can insist on showing the helpline alongside it.
+//  3. `asked_questions` is written by the visitor and read only by the owner. It
+//     stores the question text, never an identity.
+// ---------------------------------------------------------------------------
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  title       String
+  subtitle    String   @default("")
+  icon        String   @default("help") // key into the shared icon set
+  accent      String   @default("saffron") // saffron | teal | indigo | rose | leaf
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  articles Article[]
+
+  @@index([isActive, sortOrder])
+  @@map("categories")
+}
+
+model Article {
+  id          String   @id @default(uuid())
+  categoryId  String   @map("category_id")
+  slug        String   @unique
+  title       String
+  summary     String   @default("")
+  // Plain paragraphs separated by a blank line. Stored as text rather than HTML
+  // so the owner cannot inject a script tag through the admin panel.
+  body        String
+  // A short line the voice can read before the full answer. Long text is
+  // exhausting to listen to, especially on a small phone speaker.
+  voiceSummary String  @default("") @map("voice_summary")
+  isEmergency Boolean  @default(false)
+  isMedical    Boolean  @default(false)
+  // Shown in a red box the visitor cannot miss.
+  helpline    String   @default("")
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId, isPublished, sortOrder])
+  @@map("articles")
+}
+
+// ---------------------------------------------------------------------------
+// REVIEWS
+//
+// A visitor leaves a star rating and a written comment. No account, no name
+// required — the service asks for no personal information at all, and a login
+// wall in front of a free help service would defeat its purpose.
+//
+// `isApproved` exists because the site is open to anyone. Unmoderated comments
+// on a page about bereavement attract abuse; the owner reviews a queue rather
+// than publishing immediately.
+//
+// `reply` is the owner's written response. Nothing here can be written by a
+// visitor, so it cannot be spoofed.
+// ---------------------------------------------------------------------------
+
+model Review {
+  id         String   @id @default(uuid())
+  // Which page or category the review is about. '*' means the whole service.
+  target     String   @default("*")
+  rating     Int
+  // Optional name. Blank is normal and allowed — plenty of elderly users will
+  // not type one, and requiring it would cost real reviews.
+  authorName String?  @map("author_name")
+  // Where the visitor came from, shown only to the owner as a hint.
+  city       String?
+  comment    String
+  isApproved Boolean  @default(false) @map("is_approved")
+  reply      String?
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@index([target, isApproved, createdAt])
+  @@index([isApproved])
+  @@map("reviews")
+}
+
+model AskedQuestion {
+  id         String   @id @default(uuid())
+  question   String
+  // Which category the visitor was on, if any. Useful for "what do people keep
+  // asking about" without storing who asked.
+  category   String   @default("")
+  // True when the AI answered, false when the visitor was shown a stored answer.
+  wasAnswered Boolean  @default(false) @map("was_answered")
+  // Set only when the AI is unavailable, so the owner can see demand for a
+  // capability that is missing rather than a site that is simply idle.
+  wasFailed  Boolean   @default(false) @map("was_failed")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@map("asked_questions")
+}

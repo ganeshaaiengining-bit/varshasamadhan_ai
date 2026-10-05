@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>वर्षा समाधान AI (Varsha Samadhan AI)</title>
+    <style>
+        /* साफ़-सुथरा और डार्क मोड डिज़ाइन ताकि आँखों पर ज़ोर न पड़े */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+        .header {
+            padding: 20px;
+            background: linear-gradient(to bottom, #ff8c00, #121212);
+        }
+        .sun-icon {
+            font-size: 80px;
+            animation: rise 3s ease-out;
+        }
+        @keyframes rise {
+            0% { transform: translateY(50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        h1 { margin: 5px 0; font-size: 28px; }
+        .dedication { font-style: italic; color: #ffcc00; margin-bottom: 20px; }
+
+        /* दिव्य धुन के बटन्स */
+        .audio-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .btn-divine {
+            background-color: #1e1e1e;
+            color: #ffcc00;
+            border: 2px solid #ffcc00;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn-divine:hover { background-color: #ffcc00; color: #121212; }
+
+        /* मुख्य सर्च और माइक बॉक्स */
+        .search-container {
+            margin: 30px auto;
+            max-width: 500px;
+            padding: 0 20px;
+        }
+        .search-box {
+            width: 80%;
+            padding: 15px;
+            border-radius: 30px;
+            border: none;
+            font-size: 16px;
+            outline: none;
+        }
+        .mic-btn {
+            background-color: #ff8c00;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 22px;
+            color: white;
+            cursor: pointer;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        /* कैटेगरी ग्रिड */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #333;
+            cursor: pointer;
+        }
+        .card:hover { border-color: #ff8c00; }
+
+        /* समाधान बॉक्स */
+        .output-box {
+            background-color: #1e1e1e;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 600px;
+            border-radius: 15px;
+            display: none;
+            text-align: left;
+            border-left: 5px solid #ff8c00;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- उगता सूरज और हेडर -->
+    <div class="header">
+        <div class="sun-icon">🌅</div>
+        <h1>वर्षा समाधान AI</h1>
+        <div class="dedication">श्रीमती वर्षा जी की पावन स्मृति में — एक निःशुल्क सेवा</div>
+    </div>
+
+    <!-- दिव्य धुन सेक्शन -->
+    <div class="audio-buttons">
+        <button class="btn-divine" onclick="playDhun('shankh')">🐚 शंख ध्वनि</button>
+        <button class="btn-divine" onclick="playDhun('bansuri')">🪈 बांसुरी</button>
+        <button class="btn-divine" onclick="playDhun('nagada')">🥁 नगाड़ा</button>
+    </div>
+
+    <!-- सर्च और वॉइस इनपुट -->
+    <div class="search-container">
+        <input type="text" id="userInput" class="search-box" placeholder="अपनी समस्या यहाँ लिखें या बोलें...">
+        <button class="mic-btn" onclick="startVoiceRecognition()">🎙️</button>
+    </div>
+
+    <!-- मुख्य समाधान परिणाम बॉक्स -->
+    <div id="outputBox" class="output-box">
+        <button onclick="speakOutput()" style="float:right; background:none; border:none; font-size:24px; cursor:pointer;">🔊</button>
+        <h3 style="color:#ff8c00; margin-top:0;">समाधान:</h3>
+        <p id="responseText">आपका समाधान यहाँ दिखाई देगा...</p>
+    </div>
+
+    <!-- 10 मुख्य श्रेणियां (Categories) -->
+    <div class="grid-container">
+        <div class="card" onclick="setCategory('ध्यान और योग')">🧘‍♂️<br>ध्यान और योग</div>
+        <div class="card" onclick="setCategory('घरेलू मरम्मत')">🛠️<br>घरेलू मरम्मत</div>
+        <div class="card" onclick="setCategory('बच्चों की पढ़ाई')">📚<br>बच्चों की पढ़ाई</div>
+        <div class="card" onclick="setCategory('ओल्ड एज केयर')">👵<br>बुजुर्ग देखभाल</div>
+        <div class="card" onclick="setCategory('शिशु देखभाल')">👶<br>शिशु देखभाल</div>
+        <div class="card" onclick="setCategory('धार्मिक समाधान')">🕉️<br>धार्मिक उपाय</div>
+        <div class="card" onclick="setCategory('पावन ग्रंथ')">📜<br>ग्रंथ व आरती</div>
+        <div class="card" onclick="setCategory('आपातकालीन गाइड')">🚨<br>परमाणु सुरक्षा</div>
+        <div class="card" onclick="setCategory('महामारी सुरक्षा')">🦠<br>महामारी सुरक्षा</div>
+    </div>
+
+    <script>
+        // 1. नेत्रहीनों के लिए बोलकर पूछने की तकनीक (Voice to Text)
+        function startVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window) {
+                var recognition = new webkitSpeechRecognition();
+                recognition.lang = "hi-IN"; // हिंदी और अन्य भाषाएँ सपोर्टेड
+                recognition.start();
+                recognition.onresult = function(event) {
+                    document.getElementById('userInput').value = event.results[0][0].transcript;
+                    askAI(event.results[0][0].transcript);
+                };
+            } else {
+                alert("आपका ब्राउज़र वॉइस इनपुट सपोर्ट नहीं करता। कृपया टाइप करें।");
+            }
+        }
+
+        // 2. कैटेगरी चुनने पर सर्च बॉक्स में नाम आना
+        function setCategory(catName) {
+            document.getElementById('userInput').value = catName + ": ";
+            document.getElementById('userInput').focus();
+        }
+
+        // 3. दिव्य धुन बजाने का फंक्शन (यहाँ आप अपने MP3 लिंक डाल सकते हैं)
+        function playDhun(type) {
+            alert(type + " की सकारात्मक धुन बज रही है... (यहाँ ऑडियो ट्रैक कनेक्ट होगा)");
+        }
+
+        // 4. AI को कनेक्ट करने और जवाब दिखाने का फंक्शन
+        function askAI(query) {
+            document.getElementById('outputBox').style.display = "block";
+            document.getElementById('responseText').innerText = "श्रीमती वर्षा जी की स्मृति में AI आपके सवाल का समाधान ढूंढ रहा है...";
+            
+            // यहाँ हम बिना किसी खर्च के Google Gemini AI API को सीधे लिंक करेंगे जो हमेशा फ्री काम करेगा।
+        }
+
+        // 5. समाधान को बोलकर सुनाने की तकनीक (Text-to-Speech)
+        function speakOutput() {
+            var text = document.getElementById('responseText').innerText;
+            var utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'hi-IN';
+            window.speechSynthesis.speak(utterance);
+        }
+    </script>
+</body>
+</html>

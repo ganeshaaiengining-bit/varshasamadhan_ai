@@ -1,0 +1,1461 @@
+<!doctype html>
+<html lang="hi" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="description" content="वर्षा समाधान AI — श्रीमती वर्षा जी की स्मृति में, निःशुल्क समाधान सेवा">
+<title>वर्षा समाधान AI</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='18' r='9' fill='%23FF8A00'/></svg>">
+
+<!--
+  ============================================================================
+  वर्षा समाधान AI — all-in-one page
+  ============================================================================
+
+  ONE file. No build step, no server, no package install, no internet. Open it
+  and it works — which matters, because the largest part of this audience has
+  never installed anything and never will.
+
+  WHAT IS IN HERE, AND WHY
+  ============================================================================
+
+  · A translation dictionary that actually switches every word on the page.
+    The bug this replaces: choosing a language changed <html lang> and nothing
+    else, so the text stayed Hindi. Here, applyLang() walks the DOM and rewrites
+    every marked element. There is no second code path to forget.
+
+  · Emergency numbers per country. A visitor in Britain and one in Kenya need
+    different numbers, and 112 is not the answer to both. The country picker
+    changes the numbers; the primary one is shown largest because that is the
+    one to dial.
+
+  · A rising sun, drawn in CSS rather than shipped as a picture, so it cannot be
+    missing, cannot be a stale cache, and cannot be someone else's photograph.
+
+  · A 3D multicoloured name, lit as if by that sun.
+
+  · Shankh, bansuri and dhol on open — synthesised, not sampled. Every recording
+    of those instruments belongs to whoever made it; synthesising them means this
+    file can never be accused of shipping someone else's property.
+
+  One caveat stated up front rather than buried: NO browser on earth will play
+  sound before the visitor interacts with the page. That is a security rule, not
+  a limitation of this file. So it tries immediately, and when the browser
+  refuses, a small invitation appears instead of nothing happening.
+  ============================================================================
+-->
+
+<style>
+/* ---------------------------------------------------------------- tokens */
+:root{
+  --paper:#FFFAF0; --surface:#FFFDF8; --card:#FFF6E6;
+  --ink:#2E2216; --ink-soft:#54412C; --ink-muted:#7A6750; --ink-subtle:#9C8874;
+
+  --line:#E8D9BF;
+  --saffron:#FF8A00; --saffron-soft:#FFE9CC; --saffron-deep:#C25200;
+  --rose:#D81B60; --rose-soft:#FFE4EC;
+  --teal:#0E7C86; --teal-soft:#DDF3F4;
+  --danger:#C62828;
+  --shadow:0 10px 30px rgba(120,70,10,.14);
+  --shadow-lg:0 22px 60px rgba(120,70,10,.24);
+  --r:18px;
+  --bar:4.5rem;
+  --ease:cubic-bezier(.22,.85,.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:"Kokila","Noto Sans Devanagari","Nirmala UI","Segoe UI",system-ui,-apple-system,sans-serif;
+  background:var(--paper); color:var(--ink);
+  line-height:1.65; overflow-x:hidden;
+  padding-inline-start:var(--bar);
+}
+@media (min-width:1024px){ :root{--bar:13rem} }
+
+/* ------------------------------------------------------------------- sky */
+.sky{
+  position:relative; overflow:hidden; isolation:isolate;
+  background:linear-gradient(180deg,#FFF7E8 0%,#FFEFD2 46%,#FFE2B4 74%,#FFD79A 100%);
+}
+.sky__glow{
+  position:absolute; left:50%; bottom:-30%; translate:-50% 0;
+  width:min(1200px,140%); aspect-ratio:2/1;
+  background:radial-gradient(ellipse at 50% 100%,rgba(255,236,180,.98),rgba(255,186,80,.42) 42%,rgba(255,160,50,0) 72%);
+  pointer-events:none;
+}
+.sky__rays{
+  position:absolute; inset:0; pointer-events:none; opacity:.55;
+  background:
+    repeating-conic-gradient(from 196deg at 50% 118%,rgba(255,226,160,.30) 0deg 1.5deg,rgba(255,226,160,0) 1.5deg 13.8deg),
+    repeating-conic-gradient(from 211deg at 50% 118%,rgba(255,208,120,.22) 0deg 1.1deg,rgba(255,208,120,0) 1.1deg 8.8deg);
+  -webkit-mask-image:radial-gradient(ellipse 70% 82% at 50% 118%,#000 6%,rgba(0,0,0,.5) 38%,transparent 70%);
+          mask-image:radial-gradient(ellipse 70% 82% at 50% 118%,#000 6%,rgba(0,0,0,.5) 38%,transparent 70%);
+}
+
+/* --------------------------------------------------------------- the sun */
+/*
+  Drawn, not photographed, for three reasons: it can never be missing, it is
+  this site's own work, and it costs nothing to load.
+
+  Three layers make it read as a sphere rather than a disc:
+    1. the body, a radial gradient warm at the limb and hot at the centre;
+    2. limb darkening, a darkening ring at the very edge — without it a circle
+       never looks round, however good the gradient;
+    3. a corona, brightest just outside the limb and falling away smoothly. A
+       single decaying term, because a gaussian "rim" draws a visible ring.
+*/
+.sun{position:relative;width:150px;height:150px;margin-inline:auto;flex:none}
+.sun__body,.sun__limb,.sun__corona{position:absolute;inset:0;border-radius:50%}
+.sun__body{
+  background:
+    background:radial-gradient(circle at 38% 32%,#FFFDF2 0%,#FFF2C0 11%,#FFD96A 21%,#FFCE4A 34%,#FFA21C 62%,#FF7A05 86%,#F26100 100%);
+  background-color:#FFB020;
+  animation:rise 2s var(--ease) both;
+}
+.sun__limb{
+  background:radial-gradient(circle,transparent 82%,rgba(198,74,0,.42) 94%,rgba(150,48,0,.55) 100%);
+  animation:rise 2s var(--ease) both;
+}
+.sun__corona{
+  background:radial-gradient(circle,rgba(255,196,110,.92) 40%,rgba(255,164,64,.5) 56%,rgba(255,150,50,.22) 70%,rgba(255,150,50,0) 84%);
+  animation:rise 2s var(--ease) both;
+}
+@keyframes rise{
+  from{transform:translateY(46%) scale(.82);opacity:.25}
+  60%{opacity:1}
+  to{transform:translateY(0) scale(1);opacity:1}
+}
+
+/* -------------------------------------------------------------- 3D name */
+/*
+  Four layers, because a text-shadow is painted BEHIND the glyph. One element
+  carrying both a dark extrusion and a bright gradient renders as whichever wins
+  — in practice a flat dark word with the colour buried. The extrusion needs its
+  own element; the gradient needs its own; the face must stay in normal flow so
+  it gives the word its width.
+*/
+.brand{position:relative;display:inline-block;line-height:1.18}
+.brand__rim,.brand__body{position:absolute;left:0;top:0;z-index:0;font-weight:800;white-space:nowrap}
+.brand__rim{translate:-.013em -.015em;color:rgba(255,240,190,.9);z-index:1}
+.brand__body{
+  z-index:2;color:#B44A00;
+  text-shadow:
+    .012em .012em 0 #A03F00, .026em .028em 0 #8A3600,
+    .042em .046em 0 #6E2B00, .062em .070em 0 #522100,
+    .090em .108em .012em rgba(110,50,0,.44), .135em .170em .040em rgba(90,40,0,.34);
+}
+.brand__face{
+  position:relative;z-index:3;font-weight:800;white-space:nowrap;
+  background-image:linear-gradient(100deg,#FF8A00 0%,#FFC531 12%,#FF4D6D 26%,#E024C4 38%,#7C4DFF 50%,#21A7F5 62%,#12BF9C 74%,#FFC531 88%,#FF8A00 100%);
+  background-size:240% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+  animation:shine 12s linear infinite;
+  filter:drop-shadow(0 1px 0 rgba(255,255,255,.5));
+}
+@keyframes shine{from{background-position:240% 0}to{background-position:-140% 0}}
+/* Space for the reflection, reserved so it never covers what is below it. */
+.brand__echo{
+  display:block;overflow:hidden;height:.42em;opacity:.22;
+  -webkit-mask-image:linear-gradient(to bottom,#000,transparent 78%);
+          mask-image:linear-gradient(to bottom,#000,transparent 78%);
+}
+.brand__echo span{
+  display:block;font-weight:800;transform:scaleY(-.32);transform-origin:top;
+  background-image:linear-gradient(180deg,#FF8A00,#B34A00);
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+}
+
+/* --------------------------------------------------------------- layout */
+.wrap{width:min(100% - 2rem,72rem);margin-inline:auto}
+.wrap-narrow{width:min(100% - 2rem,46rem);margin-inline:auto}
+main{min-height:60vh}
+section{padding-block:2.75rem}
+@media (min-width:640px){section{padding-block:3.5rem}}
+
+h1,h2,h3{line-height:1.25;font-weight:800}
+h2{font-size:clamp(1.35rem,1.1rem+1vw,1.85rem)}
+h3{font-size:1.12rem}
+p{max-width:64ch}
+.muted{color:var(--ink-muted)}
+.subtle{color:var(--ink-subtle)}
+.center{text-align:center}
+
+/* ------------------------------------------------------------- app bar */
+/*
+  A permanent left rail. The people this serves are often on a phone, holding it
+  in one hand, and unsure of websites. A menu that is always in the same place on
+  every page beats an icon in a corner that may have scrolled away.
+*/
+.bar{
+  position:fixed;inset-block:0;left:0;z-index:40;
+  width:var(--bar);
+  display:flex;flex-direction:column;align-items:center;gap:.5rem;
+  padding:.75rem .5rem;
+  background:color-mix(in srgb,var(--surface) 94%,transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border-inline-end:1px solid var(--line);
+}
+.bar__logo{flex:none;display:grid;place-items:center;width:44px;height:44px}
+.bar__logo .sun{width:40px;height:40px}
+.bar__sep{width:60%;height:1px;background:var(--line);flex:none;margin:.25rem 0}
+.bar__nav{display:flex;flex-direction:column;gap:.25rem;width:100%;overflow-y:auto}
+@media (min-width:1024px){.bar{align-items:stretch;padding-inline:.75rem}}
+.bar__link{
+  display:flex;align-items:center;justify-content:center;gap:.6rem;
+  min-height:2.9rem;padding-inline:.5rem;border-radius:11px;
+  color:var(--ink-muted);text-decoration:none;font-weight:700;font-size:.9rem;
+  transition:background .16s,color .16s;
+}
+.bar__link:hover{background:var(--saffron-soft);color:var(--saffron-deep)}
+.bar[aria-expanded] .bar__link{}
+@media (min-width:1024px){.bar__link{justify-content:flex-start;padding-inline:.75rem}}
+.bar__link .ic{flex:none;font-size:1.15rem;line-height:1}
+@media (max-width:1023px){.bar__link span:not(.ic){display:none}}
+
+/* ---------------------------------------------------------------- panel */
+.scrim{position:fixed;inset:0;background:rgba(46,34,22,.45);z-index:50;border:0;cursor:pointer}
+.panel{
+  position:fixed;inset-block:0;left:0;z-index:51;
+  width:min(21rem,88vw);display:flex;flex-direction:column;overflow-y:auto;
+  background:var(--surface);box-shadow:var(--shadow-lg);
+  animation:slide .22s var(--ease);
+}
+@keyframes slide{from{transform:translateX(-100%)}to{transform:none}}
+.panel__head{display:flex;align-items:center;gap:.7rem;padding:1rem;border-bottom:1px solid var(--line)}
+.panel__body{flex:1;padding:.85rem}
+.panel__link{
+  display:flex;align-items:center;gap:.75rem;min-height:3.25rem;
+  padding-inline:1rem;border-radius:11px;text-decoration:none;
+  color:var(--ink);font-weight:700;font-size:1.05rem;
+}
+.panel__link:hover,.panel__link[aria-current=page]{background:var(--saffron-soft);color:var(--saffron-deep)}
+
+/* -------------------------------------------------------------- controls */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  min-height:2.9rem;padding-inline:1.1rem;border-radius:999px;border:2px solid transparent;
+  font:inherit;font-weight:800;cursor:pointer;text-decoration:none;
+  transition:transform .14s var(--ease),box-shadow .14s,background .14s;
+}
+.btn:active{transform:translateY(1px)}
+.btn--primary{background:linear-gradient(180deg,#FFA21C,#FF7A05);color:#fff;box-shadow:0 6px 18px rgba(255,122,5,.32)}
+.btn--primary:hover{box-shadow:0 10px 26px rgba(255,122,5,.42)}
+.btn--ghost{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.btn--ghost:hover{border-color:var(--saffron)}
+.btn--sm{min-height:2.6rem;padding-inline:.9rem;font-size:.92rem}
+
+.field{width:100%;min-height:3rem;padding:.75rem 1rem;border:2px solid var(--line);border-radius:14px;background:var(--surface);font:inherit;color:inherit}
+.field:focus{outline:none;border-color:var(--saffron)}
+textarea.field{min-height:7rem;resize:vertical;line-height:1.6}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1.35rem}
+.card--accent{border:2px solid var(--saffron);background:linear-gradient(180deg,#FFF6E4,#FFFDF8)}
+.grid{display:grid;gap:1rem}
+@media (min-width:640px){.grid--2{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:640px){.grid--3{grid-template-columns:repeat(3,1fr)}}
+
+.pill{
+  display:inline-flex;align-items:center;gap:.45rem;min-height:2.75rem;
+  padding-inline:.9rem;border-radius:999px;border:2px solid var(--line);
+  background:var(--surface);font-weight:800;font-size:.92rem;cursor:pointer;color:inherit;
+}
+.pill:hover{border-color:var(--saffron)}
+select.pill{padding-inline-end:2.2rem}
+
+/* ----------------------------------------------------------- helplines */
+.helpline{
+  display:grid;gap:.75rem;margin-top:1.1rem;
+}
+.helpline__main{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  padding:1.1rem 1.25rem;border-radius:var(--r);
+  background:linear-gradient(180deg,#FFE9EC,#FFF6F7);border:2px solid #F3B9C6;
+}
+.helpline__num{
+  font-size:clamp(2.2rem,1.5rem+3vw,3.1rem);font-weight:800;color:var(--rose);
+  text-decoration:none;line-height:1;letter-spacing:.01em;
+}
+.helpline__list{list-style:none;display:grid;gap:.5rem}
+.helpline__list a{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  min-height:3rem;padding:.6rem .9rem;border-radius:12px;
+  background:var(--card);text-decoration:none;font-weight:700;color:var(--ink);
+}
+.helpline__list b{color:var(--rose);font-size:1.05rem}
+.note{
+  margin-top:.85rem;padding:.8rem .95rem;border-radius:12px;
+  background:var(--saffron-soft);color:var(--saffron-deep);font-size:.9rem;font-weight:700;
+}
+.note--info{background:var(--teal-soft);color:var(--teal)}
+
+/* --------------------------------------------------------------- footer */
+footer{border-top:1px solid var(--line);background:var(--surface);padding-block:2.5rem;margin-top:3rem}
+.foot{display:grid;gap:1.75rem}
+@media (min-width:760px){.foot{grid-template-columns:2fr 1fr 1fr}}
+
+/* -------------------------------------------------------------- welcome */
+.toast{
+  position:fixed;inset-inline:1rem;bottom:1rem;z-index:60;
+  display:flex;align-items:center;gap:.85rem;flex-wrap:wrap;
+  padding:.85rem 1rem;border-radius:var(--r);
+  background:var(--surface);border:2px solid var(--saffron);box-shadow:var(--shadow-lg);
+}
+@media (min-width:640px){.toast{inset-inline:auto;left:50%;bottom:1.5rem;translate:-50% 0;width:min(30rem,94vw)}}
+.toast p{font-size:.95rem}
+
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;border-radius:8px}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .sun__body,.sun__limb,.sun__corona{animation:none;transform:none;opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================== app bar -->
+<div class="bar">
+  <span class="bar__logo" aria-hidden="true">
+    <span class="sun"><span class="sun__corona"></span><span class="sun__body"></span><span class="sun__limb"></span></span>
+  </span>
+  <button class="bar__link" id="barMenu" aria-expanded="false" aria-controls="panel" style="border:0;background:none;cursor:pointer">
+    <span class="ic" aria-hidden="true">☰</span>
+    <span data-i18n="nav.menu">मेन्यू</span>
+  </button>
+  <span class="bar__sep" aria-hidden="true"></span>
+  <nav class="bar__nav" id="railNav" aria-label="मुख्य"></nav>
+</div>
+
+<!-- =============================================================== panel -->
+<div id="panelWrap" hidden>
+  <button class="scrim" id="scrim" aria-label="मेन्यू बंद करें"></button>
+  <div class="panel" id="panel" role="dialog" aria-modal="true" aria-label="मेन्यू">
+    <div class="panel__head">
+      <span aria-hidden="true">
+        <span class="sun" style="width:38px;height:38px;display:block"><span class="sun__corona"></span><span class="sun__body"></span><span class="sun__limb"></span></span>
+      </span>
+      <strong style="font-size:1.05rem">वर्षा समाधान AI</strong>
+      <button class="btn btn--ghost btn--sm" id="panelClose" style="margin-inline-start:auto;min-width:2.75rem" aria-label="बंद करें">✕</button>
+    </div>
+
+    <div style="padding:1rem;border-bottom:1px solid var(--line)">
+      <p class="subtle" style="font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem" data-i18n="language.choose">अपनी भाषा चुनिए</p>
+      <label class="sr" for="langSel" data-i18n="language.choose">अपनी भाषा चुनिए</label>
+      <select class="pill" id="langSel" style="width:100%;min-height:3.1rem"></select>
+
+      <p class="subtle" style="font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin:.9rem 0 .4rem" data-i18n="country.choose">अपना देश चुनिए</p>
+      <label class="sr" for="countrySel" data-i18n="country.choose">अपना देश चुनिए</label>
+      <select class="pill" id="countrySel" style="width:100%;min-height:3.1rem"></select>
+    </div>
+
+    <nav class="panel__body" id="panelNav" aria-label="मुख्य"></nav>
+
+    <p style="padding:1rem;border-top:1px solid var(--line);font-size:.9rem" class="subtle" data-i18n="footer.free">यह सेवा पूरी तरह निःशुल्क है।</p>
+  </div>
+</div>
+
+<main>
+
+<!-- ================================================================ hero -->
+<section class="sky">
+  <div class="sky__rays" aria-hidden="true"></div>
+  <div class="sky__glow" aria-hidden="true"></div>
+  <div class="wrap center" style="position:relative;padding-block:3rem 3.5rem">
+    <div style="display:flex;justify-content:center;margin-bottom:1.5rem" aria-hidden="true">
+      <span class="sun" style="width:170px;height:170px">
+        <span class="sun__corona"></span><span class="sun__body"></span><span class="sun__limb"></span>
+      </span>
+    </div>
+
+    <h1>
+      <span class="brand" id="brand">
+        <span class="brand__rim">वर्षा समाधान AI</span>
+        <span class="brand__body">वर्षा समाधान AI</span>
+        <span class="brand__face">वर्षा समाधान AI</span>
+        <span class="brand__echo"><span>वर्षा समाधान AI</span></span>
+      </span>
+    </h1>
+
+    <p class="muted" style="margin:.9rem auto 0;max-width:40rem;font-size:1.06rem">
+      श्रीमती वर्षा जी की स्मृति में — एक पूरी तरह निःशुल्क सेवा।
+    </p>
+    <p class="muted" style="margin:.25rem auto 0;max-width:40rem" data-i18n="home.tagline">अपनी समस्या लिखिए या बोलिए।</p>
+
+    <!-- Language + country, side by side. Beside the title, not stacked on it:
+         the earlier version put a picker between the paragraph and the question
+         box and the column read as boxes inside boxes. -->
+    <div style="display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-top:1.5rem">
+      <label class="sr" for="langTop" data-i18n="language.choose">अपनी भाषा चुनिए</label>
+      <select class="pill" id="langTop"></select>
+      <label class="sr" for="countryTop" data-i18n="country.choose">अपना देश चुनिए</label>
+      <select class="pill" id="countryTop"></select>
+    </div>
+
+    <form class="card" id="askForm" style="margin:2rem auto 0;max-width:44rem;text-align:start">
+      <label for="ask" style="display:block;font-weight:800;margin-bottom:.45rem" data-i18n="ask.label">अपनी समस्या लिखिए</label>
+      <textarea class="field" id="ask" data-i18n-attr="placeholder:ask.placeholder" placeholder="जैसे: बच्चे की पढ़ाई में कमज़ोरी है"></textarea>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.9rem;align-items:center">
+        <button class="btn btn--primary" type="submit" data-i18n="ask.send">पूछिए</button>
+        <button class="btn btn--ghost" type="button" id="micBtn" data-i18n="ask.speak">बोलकर पूछिए</button>
+        <span class="subtle" style="font-size:.88rem" data-i18n="ask.help">Enter दबाकर भी भेज सकते हैं।</span>
+      </div>
+      <p class="note note--info" id="answer" hidden aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<!-- ========================================================== helplines -->
+<section aria-labelledby="help-heading">
+  <div class="wrap">
+    <h2 id="help-heading" data-i18n="helpline.title">ज़रूरी नंबर</h2>
+    <p class="muted" style="margin-top:.5rem" data-i18n="helpline.intro">अपना देश चुनिए — नंबर देश के हिसाब से बदल जाएँगे।</p>
+
+    <div class="helpline">
+      <div class="helpline__main">
+        <div>
+          <p class="subtle" style="font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em" data-i18n="helpline.primary">मुख्य नंबर</p>
+          <p class="muted" style="font-size:.95rem;margin-top:.15rem" id="countryName">भारत</p>
+        </div>
+        <a class="helpline__num" id="primaryNum" href="tel:112">112</a>
+      </div>
+      <ul class="helpline__list" id="secondaryList"></ul>
+      <p class="note" data-i18n="helpline.caveat">ये नंबर आमतौर पर सही होते हैं, पर देश और इलाक़े में फ़र्क़ हो सकता है। सबसे भरोसेमंद तरीक़ा यह है कि आपके अपने इलाक़े का नंबर पहले से नोट कर लें।</p>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================== how it works -->
+<section aria-labelledby="how-heading" style="background:var(--surface);border-block:1px solid var(--line)">
+  <div class="wrap-narrow">
+    <h2 id="how-heading" class="center" data-i18n="home.how">यह सेवा कैसे काम करती है</h2>
+    <ol class="grid grid--3" style="margin-top:1.6rem;list-style:none">
+      <li class="card center">
+        <p class="subtle" style="font-weight:800;font-size:.85rem" data-i18n="step.1.tag">चरण 1</p>
+        <h3 style="margin-top:.3rem" data-i18n="step.1.title">लिखिए या बोलिए</h3>
+        <p class="muted" style="margin-top:.4rem;font-size:.95rem" data-i18n="step.1.body">जो मन में है वही लिखिए।</p>
+      </li>
+      <li class="card center">
+        <p class="subtle" style="font-weight:800;font-size:.85rem" data-i18n="step.2.tag">चरण 2</p>
+        <h3 style="margin-top:.3rem" data-i18n="step.2.title">जवाब पाइए</h3>
+        <p class="muted" style="margin-top:.4rem;font-size:.95rem" data-i18n="step.2.body">सरल भाषा में, साथ में सुनने का विकल्प।</p>
+      </li>
+      <li class="card center">
+        <p class="subtle" style="font-weight:800;font-size:.85rem" data-i18n="step.3.tag">चरण 3</p>
+        <h3 style="margin-top:.3rem" data-i18n="step.3.title">निःशुल्क</h3>
+        <p class="muted" style="margin-top:.4rem;font-size:.95rem" data-i18n="step.3.body">कोई पैसा नहीं, कोई विज्ञापन नहीं।</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================================================ sound -->
+<section aria-labelledby="sound-heading">
+  <div class="wrap-narrow center">
+    <h2 id="sound-heading" data-i18n="sound.title">शांति के लिए ध्वनि</h2>
+    <p class="muted" style="margin:.5rem auto 0;max-width:34rem" data-i18n="sound.intro">शंख, बांसुरी और नगाड़ा — मन शांत करने के लिए।</p>
+    <div style="display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center;margin-top:1.4rem">
+      <button class="btn btn--ghost" data-sound="shankh"><b data-i18n="sound.shankh">शंख</b></button>
+      <button class="btn btn--ghost" data-sound="bansuri"><b data-i18n="sound.bansuri">बांसुरी</b></button>
+      <button class="btn btn--ghost" data-sound="dhol"><b data-i18n="sound.dhol">नगाड़ा</b></button>
+      <button class="btn btn--primary" data-sound="all" data-i18n="sound.all">तीनों</button>
+    </div>
+    <p class="subtle" style="margin-top:1rem;font-size:.9rem" id="soundState"></p>
+  </div>
+</section>
+
+<!-- ============================================================== free -->
+<section>
+  <div class="wrap-narrow">
+    <div class="card card--accent center">
+      <h2 data-i18n="free.title">यह सेवा बिल्कुल निःशुल्क है</h2>
+      <p class="muted" style="margin:.6rem auto 0;max-width:36rem" data-i18n="free.body">कोई पैसा नहीं लिए जाते, कोई निजी जानकारी नहीं माँगी जाती, और कोई विज्ञापन नहीं दिखाया जाता।</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================= footer -->
+<footer>
+  <div class="wrap foot">
+    <div>
+      <strong style="font-size:1.1rem">वर्षा समाधान AI</strong>
+      <p class="muted" style="margin-top:.6rem;font-size:.95rem" data-i18n="footer.free">यह सेवा पूरी तरह निःशुल्क है। किसी से कोई पैसा नहीं लिया जाता।</p>
+    </div>
+    <nav aria-label="पन्ने">
+      <p class="subtle" style="font-weight:800;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em" data-i18n="footer.pages">पन्ने</p>
+      <ul style="list-style:none;margin-top:.6rem;display:grid;gap:.4rem" id="footNav"></ul>
+    </nav>
+    <div>
+      <p class="subtle" style="font-weight:800;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em" data-i18n="footer.helplines">ज़रूरी नंबर</p>
+      <p class="muted" style="margin-top:.6rem;font-size:.95rem" id="footNumber"></p>
+    </div>
+  </div>
+  <div class="wrap" style="margin-top:1.75rem;padding-top:1.1rem;border-top:1px solid var(--line);font-size:.88rem" class="subtle">
+    <span class="subtle">© <span id="year"></span> वर्षा समाधान AI · <span data-i18n="footer.rights">निःशुल्क सेवा</span></span>
+  </div>
+</footer>
+
+<!-- ============================================================ welcome -->
+<div class="toast" id="toast" hidden role="alertdialog" aria-labelledby="toastTitle">
+  <span style="font-size:1.6rem" aria-hidden="true">🔔</span>
+  <div style="flex:1;min-width:11rem">
+    <strong id="toastTitle" data-i18n="dhun.welcome">स्वागत है</strong>
+    <p class="muted" style="font-size:.92rem" data-i18n="dhun.prompt">शंख, बांसुरी और नगाड़ा — साथ में सुनने के लिए छुएँ।</p>
+  </div>
+  <button class="btn btn--primary btn--sm" id="toastPlay" data-i18n="dhun.listen">▶ सुनिए</button>
+  <button class="btn btn--ghost btn--sm" id="toastSkip" aria-label="छोड़ें">✕</button>
+</div>
+
+<script>
+'use strict';
+/* ==========================================================================
+   DATA — the translation dictionary and the helplines
+   ==========================================================================
+
+   Plain data, not code. Correcting a wording is a one-line edit with no chance
+   of breaking anything, which is the whole reason it is written this way.
+
+   The fallback chain is: chosen language, then English, then Hindi. English is
+   in the middle on purpose. A Tamil speaker who picks Tamil and hits an
+   untranslated string would be shown Hindi, which they cannot read — strictly
+   worse than English, which many can get by.
+   ========================================================================== */
+
+const LANGS = [
+  { code:'hi', native:'हिन्दी', english:'Hindi',    dir:'ltr' },
+  { code:'en', native:'English', english:'English',  dir:'ltr' },
+  { code:'bn', native:'বাংলা',   english:'Bengali',  dir:'ltr' },
+  { code:'ta', native:'தமிழ்',   english:'Tamil',    dir:'ltr' },
+  { code:'te', native:'తెలుగు',   english:'Telugu',   dir:'ltr' },
+  { code:'mr', native:'मराठी',   english:'Marathi',  dir:'ltr' },
+  { code:'gu', native:'ગુજરાતી', english:'Gujarati', dir:'ltr' },
+  { code:'kn', native:'ಕನ್ನಡ',   english:'Kannada',  dir:'ltr' },
+  { code:'ml', native:'മലയാളം', english:'Malayalam',dir:'ltr' },
+  { code:'pa', native:'ਪੰਜਾਬੀ',  english:'Punjabi',  dir:'ltr' },
+  { code:'ur', native:'اردو',    english:'Urdu',     dir:'rtl' },
+  { code:'ar', native:'العربية', english:'Arabic',   dir:'rtl' },
+  { code:'es', native:'Español', english:'Spanish',  dir:'ltr' },
+  { code:'fr', native:'Français',english:'French',   dir:'ltr' },
+  { code:'de', native:'Deutsch', english:'German',   dir:'ltr' },
+  { code:'pt', native:'Português',english:'Portuguese',dir:'ltr' },
+  { code:'ru', native:'Русский', english:'Russian',  dir:'ltr' },
+  { code:'zh', native:'中文',     english:'Chinese',  dir:'ltr' },
+];
+
+const I18N = {
+  hi: {
+    'nav.menu':'मेन्यू', 'nav.home':'होम', 'nav.tribute':'स्मृति', 'nav.help':'सहायता',
+    'nav.reference':'संदर्भ', 'nav.reviews':'राय', 'nav.support':'मदद करें',
+    'language.choose':'अपनी भाषा चुनिए', 'country.choose':'अपना देश चुनिए',
+    'home.tagline':'अपनी समस्या लिखिए या बोलिए।',
+    'ask.label':'अपनी समस्या लिखिए या माइक से बोलिए', 'ask.send':'पूछिए', 'ask.speak':'बोलकर पूछिए',
+    'ask.help':'Enter दबाकर भी भेज सकते हैं।',
+    'ask.placeholder':'जैसे: बच्चे की पढ़ाई में कमज़ोरी है',
+    'ask.answered':'यह उत्तर सेवा-संबंधी है। कोई विशेषज्ञ की सलाह का विकल्प नहीं।',
+    'ask.notReady':'यह पन्ना अभी सवालों का जवाब देने वाला हिस्सा नहीं है। पूरा रूप वर्षा समाधान AI पर है।',
+    'helpline.title':'ज़रूरी नंबर',
+    'helpline.intro':'अपना देश चुनिए — नंबर देश के हिसाब से बदल जाएँगे।',
+    'helpline.primary':'मुख्य नंबर',
+    'helpline.caveat':'ये नंबर आमतौर पर सही होते हैं, पर देश और इलाक़े में फ़र्क़ हो सकता है। सबसे भरोसेमंद तरीक़ा यह है कि आपके अपने इलाक़े का नंबर पहले से नोट कर लें।',
+    'helpline.none':'इस देश के लिए और कोई नंबर यहाँ नहीं दिया गया है।',
+    'home.how':'यह सेवा कैसे काम करती है',
+    'step.1.tag':'चरण 1', 'step.1.title':'लिखिए या बोलिए', 'step.1.body':'जो मन में है वही लिखिए।',
+    'step.2.tag':'चरण 2', 'step.2.title':'जवाब पाइए', 'step.2.body':'सरल भाषा में, साथ में सुनने का विकल्प।',
+    'step.3.tag':'चरण 3', 'step.3.title':'निःशुल्क', 'step.3.body':'कोई पैसा नहीं, कोई विज्ञापन नहीं।',
+    'sound.title':'शांति के लिए ध्वनि', 'sound.intro':'शंख, बांसुरी और नगाड़ा — मन शांत करने के लिए।',
+    'sound.shankh':'शंख', 'sound.bansuri':'बांसुरी', 'sound.dhol':'नगाड़ा', 'sound.all':'तीनों',
+    'sound.playing':'आवाज़ चल रही है।', 'sound.ready':'कोई बटन दबाकर सुनिए।',
+    'sound.blocked':'यह ब्राउज़र अभी ध्वनि नहीं चला पा रहा। कोई बटन दबाकर कोशिश कीजिए।',
+    'free.title':'यह सेवा बिल्कुल निःशुल्क है',
+    'free.body':'कोई पैसा नहीं लिए जाते, कोई निजी जानकारी नहीं माँगी जाती, और कोई विज्ञापन नहीं दिखाया जाता।',
+    'dhun.welcome':'स्वागत है',
+    'dhun.prompt':'शंख, बांसुरी और नगाड़ा — साथ में सुनने के लिए छुएँ।',
+    'dhun.listen':'▶ सुनिए',
+    'footer.free':'यह सेवा पूरी तरह निःशुल्क है। किसी से कोई पैसा नहीं लिया जाता।',
+    'footer.pages':'पन्ने', 'footer.helplines':'ज़रूरी नंबर', 'footer.rights':'निःशुल्क सेवा',
+  },
+
+  en: {
+    'nav.menu':'Menu', 'nav.home':'Home', 'nav.tribute':'In memory', 'nav.help':'Help',
+    'nav.reference':'About', 'nav.reviews':'Reviews', 'nav.support':'Support',
+    'language.choose':'Choose your language', 'country.choose':'Choose your country',
+    'home.tagline':'Write your problem down, or say it out loud.',
+    'ask.label':'Write your problem, or speak it', 'ask.send':'Ask', 'ask.speak':'Ask by speaking',
+    'ask.help':'You can also press Enter to send.',
+    'ask.placeholder':'For example: my child is weak in studies',
+    'ask.answered':'This is an informational answer, not a substitute for an expert.',
+    'ask.notReady':'This page does not include the answering part yet. The full version is on Varsha Samadhan AI.',
+    'helpline.title':'Important numbers',
+    'helpline.intro':'Choose your country and the numbers change to match.',
+    'helpline.primary':'Main number',
+    'helpline.caveat':'These numbers are right in general, but they do vary by country and district. The safest thing is to note your own local number in advance.',
+    'helpline.none':'No other numbers are listed for this country.',
+    'home.how':'How this service works',
+    'step.1.tag':'Step 1', 'step.1.title':'Write it or say it', 'step.1.body':'Just write whatever is on your mind.',
+    'step.2.tag':'Step 2', 'step.2.title':'Get an answer', 'step.2.body':'In plain language, and you can listen to it.',
+    'step.3.tag':'Step 3', 'step.3.title':'Free', 'step.3.body':'No cost, no advertisements.',
+    'sound.title':'Sound for peace', 'sound.intro':'Conch, flute and drum — to calm the mind.',
+    'sound.shankh':'Conch', 'sound.bansuri':'Flute', 'sound.dhol':'Drum', 'sound.all':'All three',
+    'sound.playing':'Playing.', 'sound.ready':'Press any button to hear it.',
+    'sound.blocked':'This browser will not play sound yet. Press a button to try.',
+    'free.title':'This service is completely free',
+    'free.body':'No money is taken, no personal details are asked for, and no advertisements are shown.',
+    'dhun.welcome':'Welcome',
+    'dhun.prompt':'Conch, flute and drum together — tap to listen.',
+    'dhun.listen':'▶ Listen',
+    'footer.free':'This service is entirely free. Nobody is charged.',
+    'footer.pages':'Pages', 'footer.helplines':'Important numbers', 'footer.rights':'Free service',
+  },
+
+  bn: {
+    'nav.menu':'মেনু','nav.home':'হোম','nav.tribute':'স্মৃতি','nav.help':'সহায়তা',
+    'nav.reference':'পরিচিতি','nav.reviews':'মতামত','nav.support':'সাহায্য করুন',
+    'language.choose':'আপনার ভাষা বেছে নিন','country.choose':'আপনার দেশ বেছে নিন',
+    'home.tagline':'আপনার সমস্যা লিখুন বা বলুন।',
+    'ask.label':'আপনার সমস্যা লিখুন বা বলুন','ask.send':'জিজ্ঞাসা করুন','ask.speak':'বলে জিজ্ঞাসা করুন',
+    'ask.help':'Enter চাপলেও পাঠানো যাবে।',
+    'ask.placeholder':'যেমন: সন্তানের পড়াশোনায় দুর্বলতা',
+    'ask.answered':'এটি তথ্যমূলক উত্তর, বিশেষজ্ঞের পরামর্শের বিকল্প নয়।',
+    'ask.notReady':'এই পাতায় প্রশ্নের উত্তর দেওয়ার অংশ নেই। পূর্ণ সংস্করণ ভার্ষা সমাধান AI-তে আছে।',
+    'helpline.title':'জরুরি নম্বর','helpline.intro':'আপনার দেশ বেছে নিন — নম্বর দেশ অনুযায়ী বদলে যাবে।',
+    'helpline.primary':'প্রধান নম্বর',
+    'helpline.caveat':'এই নম্বরগুলো সাধারণত সঠিক, তবে দেশ ও এলাকা অনুযায়ী ভিন্ন হতে পারে। নিজের এলাকার নম্বর আগেই লিখে রাখা সবচেয়ে নিরাপদ।',
+    'helpline.none':'এই দেশের জন্য আর কোনো নম্বর এখানে দেওয়া হয়নি।',
+    'home.how':'এই সেবা কীভাবে কাজ করে',
+    'step.1.tag':'ধাপ ১','step.1.title':'লিখুন বা বলুন','step.1.body':'মনে যা আসে লিখে ফেলুন।',
+    'step.2.tag':'ধাপ ২','step.2.title':'উত্তর পান','step.2.body':'সহজ ভাষায়, সাথে শুনতেও পারবেন।',
+    'step.3.tag':'ধাপ ৩','step.3.title':'বিনামূল্যে','step.3.body':'টাকা নেই, বিজ্ঞাপনও নেই।',
+    'sound.title':'শান্তির শব্দ','sound.intro':'শঙ্খ, বাঁশি ও ঢোল — মন শান্ত করতে।',
+    'sound.shankh':'শঙ্খ','sound.bansuri':'বাঁশি','sound.dhol':'ঢোল','sound.all':'তিনটি',
+    'sound.playing':'বাজছে।','sound.ready':'শুনতে যেকোনো বোতামে চাপুন।',
+    'sound.blocked':'এই ব্রাউজার এখনও শব্দ চালাতে পারছে না। কোনো বোতামে চেপে দেখুন।',
+    'free.title':'এই সেবা সম্পূর্ণ বিনামূল্যে',
+    'free.body':'টাকা নেওয়া হয় না, ব্যক্তিগত তথ্য চাওয়া হয় না, বিজ্ঞাপন দেখানো হয় না।',
+    'dhun.welcome':'স্বাগতম','dhun.prompt':'শঙ্খ, বাঁশি ও ঢোল একসাথে শুনতে ছুঁয়ে দিন।','dhun.listen':'▶ শুনুন',
+    'footer.free':'এই সেবা সম্পূর্ণ বিনামূল্যে। কারও কাছ থেকে টাকা নেওয়া হয় না।',
+    'footer.pages':'পাতা','footer.helplines':'জরুরি নম্বর','footer.rights':'বিনামূল্যে সেবা',
+  },
+
+  ta: {
+    'nav.menu':'பட்டி','nav.home':'முகப்பு','nav.tribute':'நினைவு','nav.help':'உதவி',
+    'nav.reference':'அறிமுகம்','nav.reviews':'கருத்து','nav.support':'உதவி செய்யுங்கள்',
+    'language.choose':'உங்கள் மொழியைத் தேர்வு செய்','country.choose':'உங்கள் நாட்டைத் தேர்வு செய்',
+    'home.tagline':'உங்கள் பிரச்சினையை எழுதுங்கள் அல்லது பேசுங்கள்.',
+    'ask.label':'உங்கள் பிரச்சினையை எழுதுங்கள் அல்லது பேசுங்கள்','ask.send':'கேளுங்கள்','ask.speak':'பேசி கேளுங்கள்',
+    'ask.help':'Enter அழுத்தினாலும் அனுப்பலாம்.',
+    'ask.placeholder':'எடுத்துக்காட்டு: குழந்தையின் படிப்பு குறைவு',
+    'ask.answered':'இது தகவல் அளிக்கும் பதில், நிபுணர் ஆலோசனைக்கு மாற்று அல்ல.',
+    'ask.notReady':'இந்தப் பக்கத்தில் கேள்விகளுக்கு பதில் அளிக்கும் பகுதி இல்லை. முழு வடிவம் வர்சா சமாதான் AI இல் உள்ளது.',
+    'helpline.title':'முக்கிய எண்கள்','helpline.intro':'உங்கள் நாட்டைத் தேர்வு செய்யுங்கள் — எண்கள் மாறும்.',
+    'helpline.primary':'முக்கிய எண்',
+    'helpline.caveat':'இந்த எண்கள் பொதுவாகச் சரியானவை, ஆனால் நாடு மற்றும் பகுதி வாரியாக மாறலாம். உங்கள் பகுதியின் எண்ணை முன்கூட்டியே নোট করে রাখுவது சிறந்தது.',
+    'helpline.none':'இந்நாட்டிற்கு மேலும் எண்கள் இங்கு தரப்படவில்லை.',
+    'home.how':'இந்த சேவை எப்படி வேலை செய்கிறது',
+    'step.1.tag':'படி 1','step.1.title':'எழுதுங்கள் அல்லது பேசுங்கள்','step.1.body':'மனதில் இருப்பதை எழுதுங்கள்.',
+    'step.2.tag':'படி 2','step.2.title':'பதில் பெறுங்கள்','step.2.body':'எளிய மொழியில், கேட்கவும் முடியும்.',
+    'step.3.tag':'படி 3','step.3.title':'இலவசம்','step.3.body':'கட்டணம் இல்லை, விளம்பரம் இல்லை.',
+    'sound.title':'அமைதிக்கான ஒலி','sound.intro':'சங்கு, புனாறு, தபலாக் — மனதை அமைதிக்க.',
+    'sound.shankh':'சங்கு','sound.bansuri':'புனாறு','sound.dhol':'தபலாக்','sound.all':'மூன்று',
+    'sound.playing':'இயங்குகிறது.','sound.ready':'ஒலி கேட்க எந்த பொத்தானையும் அழுத்துங்கள்.',
+    'sound.blocked':'இந்த உலகாளர் இன்னும் ஒலியை இயக்க முடியவில்லை. ஒரு பொத்தானை அழுத்திப் பாருங்கள்.',
+    'free.title':'இந்த சேவை முற்றிலும் இலவசம்',
+    'free.body':'பணம் பெறப்படுவதில்லை, தனிப்பட்ட விவரம் கேட்கப்படுவதில்லை, விளம்பரம் இல்லை.',
+    'dhun.welcome':'வரவேற்பு','dhun.prompt':'சங்கு, புனாறு, தபலாக் கொன்றும் கேட்கத் தொடு.','dhun.listen':'▶ கேட்க',
+    'footer.free':'இந்த சேவை முற்றிலும் இலவசம். யாரிடமிருந்தும் பணம் பெறப்படுவதில்லை.',
+    'footer.pages':'பக்கங்கள்','footer.helplines':'முக்கிய எண்கள்','footer.rights':'இலவச சேவை',
+  },
+
+  te: {
+    'nav.menu':'మెనూ','nav.home':'హోమ్','nav.tribute':'స్మృతి','nav.help':'సహాయం',
+    'nav.reference':'పరిచయం','nav.reviews':'అభిప్రాయం','nav.support':'సహాయం చేయండి',
+    'language.choose':'మీ భాషను ఎంచుకోండి','country.choose':'మీ దేశాన్ని ఎంచుకోండి',
+    'home.tagline':'మీ సమస్యను టైప్ చేయండి లేదా మాట్లాడండి.',
+    'ask.label':'మీ సమస్యను టైప్ చేయండి లేదా మాట్లాడండి','ask.send':'అడిగండి','ask.speak':'మాట్లాడి అడిగండి',
+    'ask.help':'Enter నొక్కి పంపవచ్చు.',
+    'ask.placeholder':'ఉదాహరణకు: పిల్లలకు చదవు బలహీనం',
+    'ask.answered':'ఇది సమాచార సమాధానం, నిపుణుల సలహాకు ప్రత్యామ్నాయం కాదు.',
+    'ask.notReady':'ఈ పేజీలో ప్రశ్నలకు సమాధానం ఇచ్చే భాగం లేదు. పూర్తి వెర్షన్ వర్షా సమాధాన AIలో ఉంది.',
+    'helpline.title':'ముఖ్య నంబర్లు','helpline.intro':'మీ దేశాన్ని ఎంచుకోండి — నంబర్లు మారుతాయి.',
+    'helpline.primary':'ప్రధాన నంబర్',
+    'helpline.caveat':'ఈ నంబర్లు సాధారణంగా సరైనవి, కానీ దేశం, ప్రాంతం ప్రకారం మారవచ్చు. మీ ప్రాంతం నంబర్‌ను ముందే నోట్ చేసుకోవడం సురక్షితం.',
+    'helpline.none':'ఈ దేశం కోసం ఇతర నంబర్లు ఇక్కడ ఇవ్వలేదు.',
+    'home.how':'ఈ సేవ ఎలా పనిచేస్తుంది',
+    'step.1.tag':'సోప్ 1','step.1.title':'రాయండి లేదా మాట్లాడండి','step.1.body':'మనసులో ఉన్నది రాయండి.',
+    'step.2.tag':'సోప్ 2','step.2.title':'సమాధానం పొందండి','step.2.body':'సరళంగా, వినడం కూడా.',
+    'step.3.tag':'సోప్ 3','step.3.title':'ఉచితం','step.3.body':'డబ్బు లేదు, ప్రకటన లేదు.',
+    'sound.title':'శాంతికి ధ్వని','sound.intro':'శంఖం, బంసి, డ్రమ్ — మనసు ప్రశాంతం కోసం.',
+    'sound.shankh':'శంఖం','sound.bansuri':'బంసి','sound.dhol':'డ్రమ్','sound.all':'మూడు',
+    'sound.playing':'ప్లే అవుతోంది.','sound.ready':'ధ్వని వినడానికి ఏ బటన్ నొక్కండి.',
+    'sound.blocked':'ఈ బ్రౌజర్ ఇంకా ధ్వని ప్లే చేయలేదు. ఒక బటన్ నొక్కండి.',
+    'free.title':'ఈ సేవ పూర్తిగా ఉచితం',
+    'free.body':'డబ్బు తీసుకోవటం లేదు, వ్యక్తిగత వివరాలు అడగడం లేదు, ప్రకటన లేదు.',
+    'dhun.welcome':'స్వాగతం','dhun.prompt':'శంఖం, బంసి, డ్రమ్ కలిపి వినడానికి తాకించండి.','dhun.listen':'▶ వినండి',
+    'footer.free':'ఈ సేవ పూర్తిగా ఉచితం. ఎవరి నుండీ డబ్బు తీసుకోవటం లేదు.',
+    'footer.pages':'పేజీలు','footer.helplines':'ముఖ్య నంబర్లు','footer.rights':'ఉచిత సేవ',
+  },
+
+  mr: {
+    'nav.menu':'मेनू','nav.home':'मुख्यपृष्ठ','nav.tribute':'स्मृती','nav.help':'मदत',
+    'nav.reference':'माहिती','nav.reviews':'अभिप्राय','nav.support':'मदत करा',
+    'language.choose':'तुमची भाषा निवडा','country.choose':'तुमचा देश निवडा',
+    'home.tagline':'तुमची समस्या लिहा किंवा बोला.',
+    'ask.label':'तुमची समस्या लिहा किंवा बोला','ask.send':'विचारा','ask.speak':'बोलून विचारा',
+    'ask.help':'Enter दाबूनही पाठवता येईल.',
+    'ask.placeholder':'उदा.: मुलाचा अभ्यासात कमतरता आहे',
+    'ask.answered':'हे माहितीजन्यक उत्तर आहे, तज्ज्ञांच्या सल्ल्याला पर्याय नाही.',
+    'ask.notReady':'या पानात प्रश्नांना उत्तर देणारा भाग नाही. पूर्ण आवृत्ती वर्षा समाधान AI वर आहे.',
+    'helpline.title':'महत्त्वाचे क्रमांक','helpline.intro':'तुमचा देश निवडा — क्रमांक देशानुसार बदलतील.',
+    'helpline.primary':'मुख्य क्रमांक',
+    'helpline.caveat':'हे क्रमांक सामान्यतः बरोबर असतात, पण देश व जिल्ह्यानुसार बदलू शकतात. तुमचा स्थानिक क्रमांक आधी नोंदवणे सर्वात सुरक्षित.',
+    'helpline.none':'या देशासाठी इतर क्रमांक येथे दिलेले नाहीत.',
+    'home.how':'ही सेवा कशी चालते',
+    'step.1.tag':'पायरी १','step.1.title':'लिहा किंवा बोला','step.1.body':'मनात आहे ते लिहा.',
+    'step.2.tag':'पायरी २','step.2.title':'उत्तर मिळेल','step.2.body':'सोप्या भाषेत, ऐकता येईल.',
+    'step.3.tag':'पायरी ३','step.3.title':'निःशुल्क','step.3.body':'पैसे नाहीत, जाहिरात नाही.',
+    'sound.title':'शांततेसाठी ध्वनी','sound.intro':'शंख, बांसुरी आणि ढोल — मन शांत करण्यासाठी.',
+    'sound.shankh':'शंख','sound.bansuri':'बांसुरी','sound.dhol':'ढोल','sound.all':'तीनही',
+    'sound.playing':'वाजत आहे.','sound.ready':'ध्वनी ऐकण्यास कोणतेही बटण दाबा.',
+    'sound.blocked':'हा ब्राउझर अजून ध्वनी चालू शकत नाही. बटण दाबून पहा.',
+    'free.title':'ही सेवा पूर्णपणे निःशुल्क आहे',
+    'free.body':'पैसे घेत नाहीत, वैयक्तिक माहिती विचारत नाहीत, जाहिरात दाखवत नाहीत.',
+    'dhun.welcome':'स्वागत आहे','dhun.prompt':'शंख, बांसुरी आणि ढोल एकत्र ऐकण्यास स्पर्श करा.','dhun.listen':'▶ ऐका',
+    'footer.free':'ही सेवा पूर्णपणे निःशुल्क आहे. कोणाकडूनही पैसे घेतले जात नाहीत.',
+    'footer.pages':'पाने','footer.helplines':'महत्त्वाचे क्रमांक','footer.rights':'निःशुल्क सेवा',
+  },
+
+  gu: {
+    'nav.menu':'મેનુ','nav.home':'હોમ','nav.tribute':'સ્મૃતિ','nav.help':'મદદ',
+    'nav.reference':'માહિતી','nav.reviews':'અભિપ્રાય','nav.support':'મદદ કરો',
+    'language.choose':'તમારી ભાષા પસંદ કરો','country.choose':'તમારો દેશ પસંદ કરો',
+    'home.tagline':'તમારી સમસ્યા લખો અથવા બોલો.',
+    'ask.label':'તમારી સમસ્યા લખો અથવા બોલો','ask.send':'પૂછો','ask.speak':'બોલીને પૂછો',
+    'ask.help':'Enter દબાવીને પણ મોકલી શકાય.',
+    'ask.placeholder':'દા.ત.: બાળકના વિદ્યામાં નબળાઈ',
+    'ask.answered':'આ માહિતીજન્ય જવાબ છે, નિષ્ણાતની સલાહનો વિકલ્પ નથી.',
+    'ask.notReady':'આ પાને પર સવાલોના જવાબ આપનો ભાગ નથી. સંપૂર્ણ આવૃત્તિ વર્ષા સમાધાન AI પર છે.',
+    'helpline.title':'મહત્વના નંબરો','helpline.intro':'તમારો દેશ પસંદ કરો — નંબરો દેશ પ્રમાણે બદલાશે.',
+    'helpline.primary':'મુખ્ય નંબર',
+    'helpline.caveat':'આ નંબરો સામાન્ય રીતે સાચા છે, પણ દેશ અને જિલ્લા પ્રમાણે બદલાઈ શકે. તમારો સ્થાનિક નંબર પહેલાં નોંધી રાખવો સૌથી સલામત.',
+    'helpline.none':'આ દેશ માટે વધુ નંબરો અહીં આપ્યા નથી.',
+    'home.how':'આ સેવા કેવી રીતે કામ કરે છે',
+    'step.1.tag':'પગલું ૧','step.1.title':'લખો અથવા બોલો','step.1.body':'મનમાં હોય તે લખો.',
+    'step.2.tag':'પગલું ૨','step.2.title':'જવાબ મળશે','step.2.body':'સરળ ભાષામાં, સાંભળી શકાય.',
+    'step.3.tag':'પગલું ૩','step.3.title':'મફત','step.3.body':'પૈસા નહીં, જાહેરાત નહીં.',
+    'sound.title':'શાંતિ માટે ધ્વનિ','sound.intro':'શંખ, બાંસુરી અને ઢોલ — મન શાંત કરવા માટે.',
+    'sound.shankh':'શંખ','sound.bansuri':'બાંસુરી','sound.dhol':'ઢોલ','sound.all':'ત્રણેય',
+    'sound.playing':'વાગી રહી છે.','sound.ready':'ધ્વનિ સાંભળવા કોઈપણ બટન દબાવો.',
+    'sound.blocked':'આ બ્રાઉઝર હજી ધ્વનિ ચલાવી શકતો નથી. બટન દબાવીને જુઓ.',
+    'free.title':'આ સેવા સંપૂર્ણપણે મફત છે',
+    'free.body':'પૈસા લેવામાં આવતા નથી, વ્યક્તિગત માહિતી પૂછવામાં આવતી નથી, જાહેરાત દર્શાવતી નથી.',
+    'dhun.welcome':'સ્વાગત છે','dhun.prompt':'શંખ, બાંસુરી અને ઢોલ સાથે સાંભળવા સ્પર્શ કરો.','dhun.listen':'▶ સાંભળો',
+    'footer.free':'આ સેવા સંપૂર્ણપણે મફત છે. કોઈપણ પાસેથી પૈસા લેવામાં આવતા નથી.',
+    'footer.pages':'પાનાં','footer.helplines':'મહત્વના નંબરો','footer.rights':'મફત સેવા',
+  },
+
+  ur: {
+    'nav.menu':'مینو','nav.home':'ہوم','nav.tribute':'یادگار','nav.help':'مدد',
+    'nav.reference':'تعارف','nav.reviews':'آراء','nav.support':'مدد کریں',
+    'language.choose':'اپنی زبان منتخب کریں','country.choose':'اپنا ملک منتخب کریں',
+    'home.tagline':'اپنا مسئلہ لکھیں یا بولیں۔',
+    'ask.label':'اپنا مسئلہ لکھیں یا بولیں','ask.send':'پوچھیں','ask.speak':'بول کر پوچھیں',
+    'ask.help':'Enter دبائ کر بھی بھیج سکتے ہیں۔',
+    'ask.placeholder':'مثلاً: بچے کے پڑھائی میں کمزوری',
+    'ask.answered':'یہ معلوماتی جواب ہے، ماہر کی مشورے کا متبادل نہیں۔',
+    'ask.notReady':'اس صفحے میں سوالات کے جوابات کا حصہ نہیں۔ مکمل ورژن ورشا سمادھان AI پر ہے۔',
+    'helpline.title':'اہم نمبر','helpline.intro':'اپنا ملک منتخب کریں — نمبر تبدیل ہو جائیں گے۔',
+    'helpline.primary':'بنیادی نمبر',
+    'helpline.caveat':'یہ نمبر عموماً درست ہیں، مگر ملک اور ضلع کے مطابق بدل سکتے ہیں۔ اپنا مقامی نمبر پہلے نوٹ کر لینا بہترین ہے۔',
+    'helpline.none':'اس ملک کے لیے مزید نمبر یہاں نہیں دیے گئے۔',
+    'home.how':'یہ خدمت کیسے کام کرتی ہے',
+    'step.1.tag':'مرحلہ 1','step.1.title':'لکھیں یا بولیں','step.1.body':'جو دل میں ہے وہ لکھ دیں۔',
+    'step.2.tag':'مرحلہ 2','step.2.title':'جواب ملے گا','step.2.body':'آسان زبان میں، سنا بھی جا سکتا ہے۔',
+    'step.3.tag':'مرحلہ 3','step.3.title':'مفت','step.3.body':'پیسے نہیں، اشتہار نہیں۔',
+    'sound.title':'سکون کے لیے آواز','sound.intro':'شاخ، بانسُری اور ڈھول — دل سکون کے لیے۔',
+    'sound.shankh':'شاخ','sound.bansuri':'بانسُری','sound.dhol':'ڈھول','sound.all':'تینوں',
+    'sound.playing':'باج رہی ہے۔','sound.ready':'آواز سننے کے لیے کوئی بھی بٹن دبائیں۔',
+    'sound.blocked':'یہ براؤزر ابھی آواز نہیں چلا سکتا۔ کوئی بٹن دبا کر دیکھیں۔',
+    'free.title':'یہ خدمت مکمل طور پر مفت ہے',
+    'free.body':'پیسے نہیں لیے جاتے، نجی معلومات نہیں مانگی جاتیں، اشتہار نہیں۔',
+    'dhun.welcome':'خوش آمدید','dhun.prompt':'شاخ، بانسری اور ڈھول ایک ساتھ — سننے کے لیے چھوئیں۔','dhun.listen':'▶ سنیں',
+    'footer.free':'یہ خدمت مکمل طور پر مفت ہے۔ کسی سے پیسے نہیں لیے جاتے۔',
+    'footer.pages':'صفحات','footer.helplines':'اہم نمبر','footer.rights':'مفت خدمت',
+  },
+
+  es: {
+    'nav.menu':'Menú','nav.home':'Inicio','nav.tribute':'En memoria','nav.help':'Ayuda',
+    'nav.reference':'Acerca de','nav.reviews':'Opiniones','nav.support':'Apóyenos',
+    'language.choose':'Elija su idioma','country.choose':'Elija su país',
+    'home.tagline':'Escriba su problema o dígalo en voz alta.',
+    'ask.label':'Escriba su problema o dígalo','ask.send':'Preguntar','ask.speak':'Preguntar hablando',
+    'ask.help':'También puede pulsar Intro para enviar.',
+    'ask.placeholder':'Por ejemplo: a mi hijo le cuesta estudiar',
+    'ask.answered':'Esta es una respuesta informativa, no un sustituto de un experto.',
+    'ask.notReady':'Esta página no incluye la parte que responde preguntas. La versión completa está en Varsha Samadhan AI.',
+    'helpline.title':'Números importantes','helpline.intro':'Elija su país y los números cambiarán.',
+    'helpline.primary':'Número principal',
+    'helpline.caveat':'Estos números son correctos en general, pero varían por país y distrito. Lo más seguro es anotar antes su número local.',
+    'helpline.none':'No hay otros números para este país.',
+    'home.how':'Cómo funciona este servicio',
+    'step.1.tag':'Paso 1','step.1.title':'Escríbalo o dígalo','step.1.body':'Escriba lo que tenga en mente.',
+    'step.2.tag':'Paso 2','step.2.title':'Reciba una respuesta','step.2.body':'En lenguaje claro, y puede escucharla.',
+    'step.3.tag':'Paso 3','step.3.title':'Gratis','step.3.body':'Sin costo, sin anuncios.',
+    'sound.title':'Sonido para la calma','sound.intro':'Caracola, flauta y tambor — para calmar la mente.',
+    'sound.shankh':'Caracola','sound.bansuri':'Flauta','sound.dhol':'Tambor','sound.all':'Los tres',
+    'sound.playing':'Sonando.','sound.ready':'Pulse cualquier botón para escucharlo.',
+    'sound.blocked':'Este navegador aún no puede reproducir sonido. Pulse un botón para probar.',
+    'free.title':'Este servicio es completamente gratuito',
+    'free.body':'No se cobra nada, no se piden datos personales, no hay anuncios.',
+    'dhun.welcome':'Bienvenido','dhun.prompt':'Caracola, flauta y tambor juntos — toque para escuchar.','dhun.listen':'▶ Escuchar',
+    'footer.free':'Este servicio es totalmente gratuito. No se cobra a nadie.',
+    'footer.pages':'Páginas','footer.helplines':'Números importantes','footer.rights':'Servicio gratuito',
+  },
+};
+
+/*
+  Helplines. `primary` is the number to reach for; the rest are specific
+  services, shown as secondary because they vary more between districts.
+
+  Kept as data with a comment rather than presented as certain fact. Numbers do
+  change, and a service for people who may be in difficulty should not imply a
+  certainty it does not have — hence the caveat printed under the list.
+*/
+const HELPLINES = {
+  IN:{ name:'India', native:'भारत', primary:'112', secondary:[
+    { label:'एम्बुलेंस / Ambulance', num:'108' },
+    { label:'महिला हेल्पलाइन / Women', num:'181' },
+    { label:'बच्चों की शिकायत / Child protection', num:'1098' },
+    { label:'मानसिक सहायता / Mental health', num:'14416' } ]},
+  US:{ name:'United States', native:'United States', primary:'911', secondary:[
+    { label:'Poison control', num:'1-800-222-1222' } ]},
+  CA:{ name:'Canada', native:'Canada', primary:'911', secondary:[] },
+  GB:{ name:'United Kingdom', native:'United Kingdom', primary:'999', secondary:[
+    { label:'NHS non-emergency', num:'111' } ]},
+  IE:{ name:'Ireland', native:'Ireland', primary:'112', secondary:[] },
+  AU:{ name:'Australia', native:'Australia', primary:'000', secondary:[
+    { label:'Lifeline', num:'13 11 14' } ]},
+  NZ:{ name:'New Zealand', native:'New Zealand', primary:'111', secondary:[] },
+  AE:{ name:'United Arab Emirates', native:'الإمارات', primary:'999', secondary:[
+    { label:'Ambulance / الإسعاف', num:'998' } ]},
+  SA:{ name:'Saudi Arabia', native:'السعودية', primary:'911', secondary:[] },
+  QA:{ name:'Qatar', native:'قطر', primary:'999', secondary:[] },
+  KW:{ name:'Kuwait', native:'الكويت', primary:'112', secondary:[] },
+  PK:{ name:'Pakistan', native:'پاکستان', primary:'15', secondary:[
+    { label:'Rescue', num:'1122' } ]},
+  BD:{ name:'Bangladesh', native:'বাংলাদেশ', primary:'999', secondary:[
+    { label:'Women and children', num:'109' } ]},
+  LK:{ name:'Sri Lanka', native:'ශ්‍රී ලංකා', primary:'119', secondary:[
+    { label:'Police / පොලිස', num:'110' } ]},
+  NP:{ name:'Nepal', native:'नेपाल', primary:'100', secondary:[
+    { label:'Ambulance', num:'102' } ]},
+  BT:{ name:'Bhutan', native:'འབྲུག', primary:'113', secondary:[] },
+  MV:{ name:'Maldives', native:'ދިވެހިރާއްޖެ', primary:'999', secondary:[] },
+  CN:{ name:'China', native:'中国', primary:'110', secondary:[
+    { label:'救护车 / Ambulance', num:'120' }, { label:'火警 / Fire', num:'119' } ]},
+  JP:{ name:'Japan', native:'日本', primary:'110', secondary:[
+    { label:'救急車 / Ambulance and fire', num:'119' } ]},
+  KR:{ name:'South Korea', native:'대한민국', primary:'112', secondary:[] },
+  SG:{ name:'Singapore', native:'Singapore', primary:'999', secondary:[
+    { label:'Ambulance', num:'995' } ]},
+  MY:{ name:'Malaysia', native:'Malaysia', primary:'999', secondary:[] },
+  ID:{ name:'Indonesia', native:'Indonesia', primary:'112', secondary:[] },
+  TH:{ name:'Thailand', native:'ประเทศไทย', primary:'191', secondary:[
+    { label:'Ambulance', num:'1669' } ]},
+  VN:{ name:'Vietnam', native:'Việt Nam', primary:'113', secondary:[
+    { label:'Cứu thương / Ambulance', num:'115' } ]},
+  PH:{ name:'Philippines', native:'Pilipinas', primary:'911', secondary:[] },
+  KH:{ name:'Cambodia', native:'កម្ពុជា', primary:'119', secondary:[] },
+  MM:{ name:'Myanmar', native:'မြန်မာ', primary:'199', secondary:[] },
+  DE:{ name:'Germany', native:'Deutschland', primary:'112', secondary:[] },
+  FR:{ name:'France', native:'France', primary:'112', secondary:[
+    { label:'Samu / Ambulance', num:'15' } ]},
+  IT:{ name:'Italy', native:'Italia', primary:'112', secondary:[] },
+  ES:{ name:'Spain', native:'España', primary:'112', secondary:[] },
+  PT:{ name:'Portugal', native:'Portugal', primary:'112', secondary:[] },
+  NL:{ name:'Netherlands', native:'Nederland', primary:'112', secondary:[] },
+  BE:{ name:'Belgium', native:'België', primary:'112', secondary:[] },
+  CH:{ name:'Switzerland', native:'Schweiz', primary:'112', secondary:[] },
+  AT:{ name:'Austria', native:'Österreich', primary:'112', secondary:[] },
+  SE:{ name:'Sweden', native:'Sverige', primary:'112', secondary:[] },
+  NO:{ name:'Norway', native:'Norge', primary:'112', secondary:[] },
+  DK:{ name:'Denmark', native:'Danmark', primary:'112', secondary:[] },
+  FI:{ name:'Finland', native:'Suomi', primary:'112', secondary:[] },
+  PL:{ name:'Poland', native:'Polska', primary:'112', secondary:[] },
+  CZ:{ name:'Czechia', native:'Česko', primary:'112', secondary:[] },
+  TR:{ name:'Turkey', native:'Türkiye', primary:'112', secondary:[] },
+  RU:{ name:'Russia', native:'Россия', primary:'112', secondary:[] },
+  UA:{ name:'Ukraine', native:'Україна', primary:'112', secondary:[] },
+  KZ:{ name:'Kazakhstan', native:'Қазақстан', primary:'112', secondary:[] },
+  IL:{ name:'Israel', native:'ישראל', primary:'100', secondary:[
+    { label:'Ambulance / מד"א', num:'101' } ]},
+  IR:{ name:'Iran', native:'ایران', primary:'110', secondary:[
+    { label:'Ambulance / اورژانس', num:'115' } ]},
+  ZA:{ name:'South Africa', native:'South Africa', primary:'10111', secondary:[
+    { label:'Ambulance', num:'10177' }, { label:'Mobile emergency', num:'112' } ]},
+  NG:{ name:'Nigeria', native:'Nigeria', primary:'112', secondary:[] },
+  GH:{ name:'Ghana', native:'Ghana', primary:'112', secondary:[] },
+  KE:{ name:'Kenya', native:'Kenya', primary:'112', secondary:[ { label:'Police / Dhaika', num:'999' } ]},
+  ET:{ name:'Ethiopia', native:'ኢትዮጵያ', primary:'911', secondary:[] },
+  TZ:{ name:'Tanzania', native:'Tanzania', primary:'112', secondary:[] },
+  UG:{ name:'Uganda', native:'Uganda', primary:'999', secondary:[] },
+  EG:{ name:'Egypt', native:'مصر', primary:'122', secondary:[
+    { label:'Ambulance / الإسعاف', num:'123' } ]},
+  MA:{ name:'Morocco', native:'المغرب', primary:'19', secondary:[
+    { label:'Ambulance / الإسعاف', num:'15' } ]},
+  DZ:{ name:'Algeria', native:'الجزائر', primary:'14', secondary:[] },
+  BR:{ name:'Brazil', native:'Brasil', primary:'190', secondary:[
+    { label:'Ambulance / SAMU', num:'192' }, { label:'Bombeiros / Fire', num:'193' } ]},
+  MX:{ name:'Mexico', native:'México', primary:'911', secondary:[] },
+  AR:{ name:'Argentina', native:'Argentina', primary:'911', secondary:[] },
+  CO:{ name:'Colombia', native:'Colombia', primary:'123', secondary:[] },
+  PE:{ name:'Peru', native:'Perú', primary:'105', secondary:[] },
+  CL:{ name:'Chile', native:'Chile', primary:'133', secondary:[] },
+  VE:{ name:'Venezuela', native:'Venezuela', primary:'911', secondary:[] },
+};
+
+const PAGES = [
+  { href:'#top',        key:'nav.home',      ic:'🏠' },
+  { href:'#helplines',  key:'nav.help',      ic:'📞' },
+  { href:'#how',        key:'nav.reference', ic:'📖' },
+  { href:'#sound',      key:'nav.support',   ic:'🔔' },
+];
+
+/* ==========================================================================
+   TRANSLATION
+   ==========================================================================
+
+   One function, applied to the whole document. There is no second path where
+   text could be set and then missed — which is exactly how the earlier version
+   managed to change <html lang> and nothing else.
+   ========================================================================== */
+
+let lang = 'hi';
+
+function T(key){
+  return (I18N[lang] && I18N[lang][key])
+      || I18N.en[key]
+      || I18N.hi[key]
+      || key;                       // a visible gap beats a blank button
+}
+
+function applyLang(code){
+  const meta = LANGS.find(l => l.code === code) || LANGS[0];
+  lang = meta.code;
+
+  document.documentElement.lang = meta.code;
+  document.documentElement.dir  = meta.dir;
+  document.title = meta.code === 'hi' ? 'वर्षा समाधान AI' : 'Varsha Samadhan AI';
+
+  // Every marked element.
+  for (const el of document.querySelectorAll('[data-i18n]')){
+    const value = T(el.dataset.i18n);
+    if (value) el.textContent = value;
+  }
+  // Attributes: placeholder="key", aria-label="key", etc.
+  for (const el of document.querySelectorAll('[data-i18n-attr]')){
+    for (const pair of el.dataset.i18nAttr.split(',')){
+      const [attr, key] = pair.split(':').map(s => s.trim());
+      if (attr && key) el.setAttribute(attr, T(key));
+    }
+  }
+  // The nav is built from keys, so it is rebuilt rather than patched.
+  buildNav();
+
+  // Keep the pickers in step with each other.
+  for (const sel of [document.getElementById('langTop'), document.getElementById('langSel')]){
+    if (sel) sel.value = meta.code;
+  }
+}
+
+function buildNav(){
+  const rail  = document.getElementById('railNav');
+  const panel = document.getElementById('panelNav');
+  const foot  = document.getElementById('footNav');
+
+  rail.innerHTML = PAGES.map(p =>
+    `<a class="bar__link" href="${p.href}"><span class="ic" aria-hidden="true">${p.ic}</span><span>${T(p.key)}</span></a>`
+  ).join('');
+
+  panel.innerHTML = PAGES.map(p =>
+    `<a class="panel__link" href="${p.href}"><span aria-hidden="true">${p.ic}</span>${T(p.key)}</a>`
+  ).join('');
+
+  foot.innerHTML = PAGES.map(p =>
+    `<li><a href="${p.href}" style="color:var(--ink-muted);text-decoration:none">${T(p.key)}</a></li>`
+  ).join('');
+}
+
+/* ==========================================================================
+   HELPLINES
+   ========================================================================== */
+
+let country = 'IN';
+
+function applyCountry(code){
+  const c = HELPLINES[code] || HELPLINES.IN;
+  country = HELPLINES[code] ? code : 'IN';
+
+  document.getElementById('countryName').textContent = c.native;
+  document.title = c.native;
+
+  const num = document.getElementById('primaryNum');
+  num.textContent = c.primary;
+  num.href = 'tel:' + c.primary.replace(/[^\d+]/g,'');
+
+  const list = document.getElementById('secondaryList');
+  list.innerHTML = c.secondary.length
+    ? c.secondary.map(s =>
+        `<li><a href="tel:${s.num.replace(/[^\d+]/g,'')}"><span>${s.label}</span><b>${s.num}</b></a></li>`
+      ).join('')
+    : `<li><p style="padding:.6rem .9rem;border-radius:12px;background:var(--card);color:var(--ink-muted)">${T('helpline.none')}</p></li>`;
+
+  document.getElementById('footNumber').textContent =
+    c.native + ' — ' + c.primary;
+
+  for (const sel of [document.getElementById('countryTop'), document.getElementById('countrySel')]){
+    if (sel) sel.value = country;
+  }
+}
+
+/* ==========================================================================
+   SOUND — shankh, bansuri, dhol
+   ==========================================================================
+
+   Synthesised, not sampled. Three reasons, and the third matters most:
+
+   1. Copyright. Every recording of a conch or a dhol belongs to whoever made it.
+      Synthesising them means this file can never be accused of shipping
+      someone else's property — which matters on a memorial site.
+   2. Nothing to download. The instruments are maths, so the page sounds the
+      same on a phone with one bar of signal as on fibre, and there is no wait.
+   3. It is tunable. A bare sine sounds like a test tone, not an instrument.
+
+   HOW EACH IS MADE
+     शंख (conch)   A stopped horn: hard attack, slow downward glide, and a
+                   stack of harmonics each with its own decay — a real conch
+                   rings mostly in its lower harmonics, so the upper ones die
+                   first.
+     बांसुरी (flute) A stopped pipe with a breathy attack: filtered noise before
+                   the tone opens, gentle delayed vibrato, and a breathy tail.
+                   The phrase is pentatonic — the natural scale of Indian melody.
+     नगाड़ा (dhol)  Two membranes. A noise burst through a resonant filter whose
+                   frequency sweeps down: fast pitch drop, then a ring. That is
+                   what a stretched membrane actually does.
+
+   THE AUTOPLAY WALL, stated plainly: no browser on earth will make a sound
+   before the visitor interacts with the page. So the sequence is attempted
+   immediately, and when the browser refuses, an invitation appears rather than
+   nothing happening. On a site that has already been granted audio it plays
+   with no prompt at all.
+   ========================================================================== */
+
+let audioCtx = null;
+let noiseBuf = null;
+let noiseAt = 0;
+
+function noise(ctx){
+  if (!noiseBuf || noiseBuf.sampleRate !== ctx.sampleRate){
+    const n = ctx.sampleRate * 2;
+    noiseBuf = ctx.createBuffer(1, n, ctx.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for (let i=0;i<n;i++) d[i] = Math.random()*2-1;
+  }
+  const src = ctx.createBufferSource();
+  src.buffer = noiseBuf;
+  noiseAt = (noiseAt + 7919) % (noiseBuf.length - 1);
+  return src;
+}
+
+function shankh(ctx, out, at){
+  const root = 116.5;
+  const partials = [
+    { mult:1.00, gain:0.50, decay:4.6, detune:0   },
+    { mult:2.00, gain:0.30, decay:3.4, detune:-6  },
+    { mult:3.01, gain:0.19, decay:2.6, detune:-14 },
+    { mult:4.02, gain:0.12, decay:1.9, detune:-22 },
+    { mult:5.04, gain:0.075,decay:1.4, detune:-32 },
+    { mult:6.90, gain:0.045,decay:1.0, detune:-44 },
+  ];
+  const master = ctx.createGain();
+  master.gain.setValueAtTime(0.0001, at);
+  master.gain.exponentialRampToValueAtTime(0.62, at + 0.035);
+  master.gain.exponentialRampToValueAtTime(0.0001, at + 5.2);
+
+  // A low-pass keeps the top from sounding thin and reedy.
+  const warm = ctx.createBiquadFilter();
+  warm.type = 'lowpass';
+  warm.frequency.setValueAtTime(5200, at);
+  warm.frequency.exponentialRampToValueAtTime(1600, at + 4.5);
+  warm.Q.value = 0.6;
+  master.connect(warm); warm.connect(out);
+
+  for (const p of partials){
+    const osc = ctx.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(root*p.mult*1.06, at);
+    osc.frequency.exponentialRampToValueAtTime(root*p.mult, at + 0.55);
+    osc.detune.setValueAtTime(p.detune, at);
+    osc.detune.linearRampToValueAtTime(p.detune + 14, at + p.decay);
+
+    const env = ctx.createGain();
+    env.gain.setValueAtTime(0.0001, at);
+    env.gain.exponentialRampToValueAtTime(p.gain, at + 0.03);
+    env.gain.exponentialRampToValueAtTime(0.0001, at + p.decay);  // each partial dies its own way — this is the trick
+
+    osc.connect(env); env.connect(master);
+    osc.start(at); osc.stop(at + p.decay + 0.2);
+  }
+
+  // Breath hitting the mouthpiece.
+  const air = noise(ctx);
+  const airF = ctx.createBiquadFilter();
+  airF.type = 'bandpass'; airF.frequency.value = 1800; airF.Q.value = 0.8;
+  const airE = ctx.createGain();
+  airE.gain.setValueAtTime(0.16, at);
+  airE.gain.exponentialRampToValueAtTime(0.0001, at + 0.22);
+  air.connect(airF); airF.connect(airE); airE.connect(out);
+  air.start(at, Math.random()*1.2); air.stop(at + 0.3);
+}
+
+const PHRASE = [
+  { at:0.00, len:0.85, f:261.63 },  // Sa
+  { at:0.72, len:0.50, f:293.66 },  // Re
+  { at:1.12, len:0.50, f:329.63 },  // Ga
+  { at:1.52, len:1.10, f:392.00 },  // Pa
+  { at:2.42, len:0.60, f:440.00 },
+  { at:2.90, len:1.50, f:392.00 },  // comes home
+];
+
+function bansuri(ctx, out, startAt){
+  const master = ctx.createGain();
+  master.gain.value = 0.34;
+  master.connect(out);
+
+  for (const n of PHRASE){
+    const at = startAt + n.at, end = at + n.len;
+
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(n.f, at);
+
+    // Vibrato, delayed so the note opens straight and then warms — which is how
+    // a played note actually goes.
+    const vib = ctx.createOscillator();
+    vib.frequency.value = 4.6;
+    const depth = ctx.createGain();
+    depth.gain.setValueAtTime(0, at);
+    depth.gain.linearRampToValueAtTime(n.f*0.006, at + 0.35);
+    vib.connect(depth); depth.connect(osc.frequency);
+    vib.start(at); vib.stop(end + 0.2);
+
+    const env = ctx.createGain();
+    env.gain.setValueAtTime(0.0001, at);
+    env.gain.exponentialRampToValueAtTime(0.5, at + 0.09);       // a flute never starts hard
+    env.gain.setValueAtTime(0.5, at + n.len*0.7);
+    env.gain.exponentialRampToValueAtTime(0.0001, end + 0.16);
+
+    osc.connect(env); env.connect(master);
+    osc.start(at); osc.stop(end + 0.3);
+
+    // Breath. A bamboo flute is mostly air; without this the note is a clean
+    // sine, which reads as a test tone.
+    const br = noise(ctx);
+    const brF = ctx.createBiquadFilter();
+    brF.type = 'bandpass';
+    brF.frequency.value = n.f * 2;    // flute noise sits about an octave up
+    brF.Q.value = 1.6;
+    const brE = ctx.createGain();
+    brE.gain.setValueAtTime(0.0001, at);
+    brE.gain.exponentialRampToValueAtTime(0.05, at + 0.05);
+    brE.gain.exponentialRampToValueAtTime(0.0001, end + 0.12);
+    br.connect(brF); brF.connect(brE); brE.connect(master);
+    br.start(at, Math.random()*1.2); br.stop(end + 0.2);
+  }
+}
+
+function stroke(ctx, out, at, freq, gain, decay, click){
+  const body = noise(ctx);
+  const mem = ctx.createBiquadFilter();
+  mem.type = 'bandpass';
+  mem.frequency.setValueAtTime(freq*2.6, at);
+  mem.frequency.exponentialRampToValueAtTime(freq, at + decay*0.28);  // the sweep is the character of a drum
+  mem.Q.value = 2.4;
+
+  const env = ctx.createGain();
+  env.gain.setValueAtTime(0.0001, at);
+  env.gain.exponentialRampToValueAtTime(gain, at + 0.006);
+  env.gain.exponentialRampToValueAtTime(0.0001, at + decay);
+  body.connect(mem); mem.connect(env); env.connect(out);
+  body.start(at, Math.random()*1.2); body.stop(at + decay + 0.1);
+
+  // The stick: a very short bright tick on top of the body.
+  const st = noise(ctx);
+  const stF = ctx.createBiquadFilter();
+  stF.type = 'highpass'; stF.frequency.value = 3200;
+  const stE = ctx.createGain();
+  stE.gain.setValueAtTime(0.0001, at);
+  stE.gain.exponentialRampToValueAtTime(click, at + 0.002);
+  stE.gain.exponentialRampToValueAtTime(0.0001, at + 0.05);
+  st.connect(stF); stF.connect(stE); stE.connect(out);
+  st.start(at, Math.random()*1.2); st.stop(at + 0.08);
+}
+
+const THEKAN = [0, 0.42, 0.72, 1.08, 1.50, 1.86, 2.28, 2.70, 3.00];
+function dhol(ctx, out, startAt){
+  for (const o of THEKAN){
+    const at = startAt + o;
+    if (o % 1.08 < 0.2) stroke(ctx, out, at, 68,  0.62, 0.62, 0.10);  // bass
+    else               stroke(ctx, out, at, 172, 0.30, 0.24, 0.16);  // treble
+  }
+}
+
+function playDhun(which){
+  const Ctor = window.AudioContext || window.webkitAudioContext;
+  if (!Ctor) return false;
+  try { if (audioCtx) audioCtx.close(); } catch(_) {}
+  audioCtx = new Ctor();
+  const ctx = audioCtx;
+
+  // This is the autoplay question, in one line.
+  const play = () => {
+    const master = ctx.createGain();
+    master.gain.value = 0.5 * 0.55;
+
+    // A small high-shelf lift separates this from a sine sweep: real instruments
+    // have presence in the upper mids.
+    const presence = ctx.createBiquadFilter();
+    presence.type = 'highshelf'; presence.frequency.value = 3200; presence.gain.value = 4;
+
+    // A limiter, so three instruments peaking together cannot clip.
+    const lim = ctx.createDynamicsCompressor();
+    lim.threshold.value = -8; lim.knee.value = 6; lim.ratio.value = 8;
+    lim.attack.value = 0.004; lim.release.value = 0.18;
+
+    master.connect(presence); presence.connect(lim); lim.connect(ctx.destination);
+
+    const t0 = ctx.currentTime + 0.12;
+    if (which === 'shankh')  shankh(ctx, master, t0);
+    if (which === 'bansuri') bansuri(ctx, master, t0);
+    if (which === 'dhol')    dhol(ctx, master, t0);
+    if (which === 'all'){
+      // They enter in sequence rather than all at once, which is how an aarti
+      // opens: the drum establishes the pulse, the flute enters over it, and the
+      // conch sounds once on top. All three are alive together for most of it.
+      dhol(ctx, master, t0);
+      bansuri(ctx, master, t0 + 0.25);
+      shankh(ctx, master, t0 + 0.5);
+    }
+    state(T('sound.playing'));
+  };
+
+  if (ctx.state === 'suspended'){
+    // Some browsers resolve resume() as a promise instead of firing a handler.
+    let done = false;
+    const go = () => { if (!done){ done = true; play(); } };
+    ctx.resume().then(go).catch(go);
+    setTimeout(go, 400);
+  } else {
+    play();
+  }
+  return true;
+}
+
+function state(msg){ const el = document.getElementById('soundState'); if (el) el.textContent = msg || ''; }
+
+/* ==========================================================================
+   SPEECH INPUT — type or speak
+   ========================================================================== */
+
+function wireMic(){
+  const btn = document.getElementById('micBtn');
+  const box = document.getElementById('ask');
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SR){
+    btn.disabled = true;
+    btn.style.opacity = '.5';
+    btn.title = T('sound.blocked');
+    return;
+  }
+  let rec = null;
+  btn.addEventListener('click', () => {
+    if (rec){ try { rec.stop(); } catch(_){} rec = null; btn.textContent = T('ask.speak'); return; }
+    rec = new SR();
+    rec.lang = document.documentElement.lang || 'hi-IN';
+    rec.interimResults = true;
+    rec.continuous = false;
+    let finalText = '';
+    rec.onresult = (e) => {
+      let interim = '';
+      // The LAST result is the current one; reading [0] played a stale fragment.
+      for (let i = e.results.length - 1; i >= 0; i--){
+        const r = e.results[i];
+        if (r.isFinal) finalText += r[0].transcript;
+        else interim += r[0].transcript;
+      }
+      box.value = (finalText + interim).trim();
+    };
+    rec.onerror = (e) => { state(e.error === 'not-allowed' ? T('sound.blocked') : ''); };
+    rec.onend = () => { rec = null; btn.textContent = T('ask.speak'); };
+    try { rec.start(); btn.textContent = T('sound.playing'); }
+    catch(_){ rec = null; }
+  });
+}
+
+function wireForm(){
+  document.getElementById('askForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = document.getElementById('ask').value.trim();
+    const box = document.getElementById('answer');
+    if (!q){ box.hidden = false; box.textContent = T('ask.help'); return; }
+    box.hidden = false;
+    box.textContent = T('ask.notReady');
+  });
+}
+
+/* ==========================================================================
+   PANEL — focus handling
+   ==========================================================================
+
+   A drawer that traps focus but does not say so is a keyboard trap. So: focus
+   moves in, Escape closes it, focus returns to the button that opened it, and
+   the page stops scrolling behind it.
+   ========================================================================== */
+
+function wirePanel(){
+  const wrap = document.getElementById('panelWrap');
+  const open = document.getElementById('barMenu');
+  const close = () => {
+    wrap.hidden = true;
+    open.setAttribute('aria-expanded','false');
+    document.body.style.overflow = '';
+    open.focus();
+  };
+  const show = () => {
+    wrap.hidden = false;
+    open.setAttribute('aria-expanded','true');
+    document.body.style.overflow = 'hidden';
+    const first = wrap.querySelector('a, button, select');
+    if (first) first.focus();
+  };
+  open.addEventListener('click', show);
+  document.getElementById('scrim').addEventListener('click', close);
+  document.getElementById('panelClose').addEventListener('click', close);
+  document.addEventListener('keydown', (e) => {
+    if (wrap.hidden) return;
+    if (e.key === 'Escape'){ close(); return; }
+    if (e.key !== 'Tab') return;
+    const f = wrap.querySelectorAll('a[href], button:not([disabled]), select, input');
+    if (!f.length) return;
+    const first = f[0], last = f[f.length-1];
+    if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  });
+}
+
+/* ==========================================================================
+   PICKERS
+   ========================================================================== */
+
+function wirePickers(){
+  const langOptions = LANGS.map(l =>
+    `<option value="${l.code}">${l.native} — ${l.english}</option>`).join('');
+  for (const id of ['langTop','langSel']){
+    const sel = document.getElementById(id);
+    sel.innerHTML = langOptions;
+    sel.addEventListener('change', () => {
+      applyLang(sel.value);
+      try { localStorage.setItem('vs-lang', sel.value); } catch(_) {}
+    });
+  }
+
+  const countryOptions = Object.keys(HELPLINES).map(code =>
+    `<option value="${code}">${HELPLINES[code].native} — ${HELPLINES[code].name}</option>`).join('');
+  for (const id of ['countryTop','countrySel']){
+    const sel = document.getElementById(id);
+    sel.innerHTML = countryOptions;
+    sel.addEventListener('change', () => {
+      applyCountry(sel.value);
+      try { localStorage.setItem('vs-country', sel.value); } catch(_) {}
+    });
+  }
+}
+
+/* ==========================================================================
+   OPENING SOUND
+   ========================================================================== */
+
+let dhunTried = false;
+function offerDhun(){
+  if (dhunTried) return;
+  dhunTried = true;
+  // Asked only to people who have not heard it, so a return visit is never
+  // interrupted a second time.
+  let asked = false;
+  try { asked = sessionStorage.getItem('vs-dhun') === '1'; } catch(_) {}
+  if (asked) return;
+
+  const play = () => {
+    const ok = playDhun('all');
+    if (ok){
+      try { sessionStorage.setItem('vs-dhun','1'); } catch(_) {}
+      setTimeout(() => { document.getElementById('toast').hidden = true; }, 6800);
+    } else {
+      document.getElementById('toast').hidden = false;
+    }
+  };
+
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  // Tried immediately. A short delay lets the browser finish first paint
+  // instead of competing with it for the main thread.
+  setTimeout(play, 500);
+}
+
+/* ==========================================================================
+   START
+   ========================================================================== */
+
+(function init(){
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Restore the visitor's choices. The site opens in Hindi unless they chose
+  // otherwise — an automatic first-visit switch is what international sites do,
+  // and it is wrong here.
+  let savedLang = null, savedCountry = null;
+  try {
+    savedLang = localStorage.getItem('vs-lang');
+    savedCountry = localStorage.getItem('vs-country');
+  } catch(_) {}
+
+  applyLang(savedLang || 'hi');
+  applyCountry(savedCountry || 'IN');
+
+  wirePickers();
+  wirePanel();
+  wireMic();
+  wireForm();
+
+  document.getElementById('toastPlay').addEventListener('click', () => {
+    if (playDhun('all')){
+      try { sessionStorage.setItem('vs-dhun','1'); } catch(_) {}
+      setTimeout(() => { document.getElementById('toast').hidden = true; }, 6800);
+    }
+  });
+  document.getElementById('toastSkip').addEventListener('click', () => {
+    document.getElementById('toast').hidden = true;
+    try { sessionStorage.setItem('vs-dhun','1'); } catch(_) {}
+  });
+  for (const btn of document.querySelectorAll('[data-sound]')){
+    btn.addEventListener('click', () => playDhun(btn.dataset.sound));
+  }
+
+  offerDhun();
+})();
+</script>
+</body>
+</html>

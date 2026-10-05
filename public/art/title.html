@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="hi"><head><meta charset="utf-8"><title>title</title>
+<style>
+  /* ---- reset ------------------------------------------------------- */
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{
+    width:7680px;height:4320px;overflow:hidden;
+    /* Opaque, so Chrome hands back a fully opaque screenshot. A transparent
+       page would force the downsampler to composite against an assumed
+       colour, and any mismatch shows as a tinted edge on the lettering. */
+    background:rgb(26,11,51);
+  }
+
+  .stage{position:relative;width:7680px;height:4320px;isolation:isolate;overflow:hidden}
+
+  /* ---- the sky ----------------------------------------------------- */
+  /*
+   * Warm and deep, not black. The brief asked for strong contrast against the
+   * lettering and no dark theme; a deep plum-to-gold sunrise gives contrast
+   * because the middle of the gradient is genuinely dark, while every colour in
+   * it is warm and in the site's family.
+   */
+  .sky{
+    position:absolute;inset:0;
+    background:linear-gradient(180deg,
+      #1B0B33 0%,
+      #3A1150 20%,
+      #6B1455 40%,
+      #A81C4E 58%,
+      #DE4A22 73%,
+      #F5861B 85%,
+      #FFC048 100%);
+  }
+
+  /*
+   * The sun's glow, sitting on the horizon below the lettering.
+   *
+   * This is the light source the whole image is lit by: the extrusion on each
+   * letter falls down-right, away from it, and the rim highlight falls up-left,
+   * toward it. Without a visible source the letters would have shading with no
+   * explanation, which reads as decoration rather than as light.
+   */
+  .glow{
+    position:absolute;left:50%;bottom:-16%;translate:-50% 0;
+    width:4761.6px;height:3110.4px;
+    background:radial-gradient(ellipse at 50% 100%,
+      rgba(255,242,196,0.98) 0%,
+      rgba(255,196,92,0.62) 26%,
+      rgba(255,142,42,0.24) 52%,
+      rgba(255,120,40,0) 76%);
+  }
+
+  /*
+   * Crepuscular rays, from the horizon upward.
+   *
+   * Two repeating-conic-gradients at different angular periods (26 and 41
+   * wedges) are overlaid. A single one is a perfect even starburst, which reads
+   * as clipart; two incommensurate periods interfere, so some rays reinforce and
+   * others partly cancel — which is exactly the irregular spacing real light
+   * has after refraction through moving air.
+   *
+   * The radial mask is what turns hard wedges into rays: it fades them out with
+   * distance, so they have no visible end.
+   */
+  .rays{
+    position:absolute;inset:0;
+    background:
+      repeating-conic-gradient(from 200deg at 50% 100%,
+        rgba(255,232,170,0.16) 0deg 1.6deg, rgba(255,232,170,0) 1.6deg 13.8deg),
+      repeating-conic-gradient(from 214deg at 50% 100%,
+        rgba(255,214,130,0.12) 0deg 1.1deg, rgba(255,214,130,0) 1.1deg 8.8deg);
+    mask-image:radial-gradient(ellipse 62% 78% at 50% 100%, #000 8%, rgba(0,0,0,0.55) 40%, transparent 72%);
+    -webkit-mask-image:radial-gradient(ellipse 62% 78% at 50% 100%, #000 8%, rgba(0,0,0,0.55) 40%, transparent 72%);
+  }
+
+  /*
+   * Haze bands on the horizon.
+   *
+   * A real sky at sunrise is banded — layers of aerosol at different heights
+   * catch the light separately. Without them the gradient is a smooth ramp,
+   * which is the giveaway that a background is CSS rather than air.
+   */
+  .haze{position:absolute;left:0;right:0;pointer-events:none}
+  .haze.a{height:691.2px;bottom:259.2px;
+    background:linear-gradient(180deg,rgba(255,206,120,0) 0%,rgba(255,214,132,0.34) 46%,rgba(255,236,182,0.5) 100%);
+    filter:blur(86.4px)}
+  .haze.b{height:432px;bottom:691.2px;
+    background:linear-gradient(180deg,rgba(255,180,90,0) 0%,rgba(255,196,110,0.24) 100%);
+    filter:blur(69.12px)}
+
+  /*
+   * Corner vignette.
+   *
+   * Pulls the eye to the centre and stops the brightest part of the sky —
+   * directly behind the lettering — from competing with it.
+   */
+  .vignette{
+    position:absolute;inset:0;
+    background:radial-gradient(ellipse 78% 68% at 50% 46%,
+      rgba(0,0,0,0) 42%, rgba(24,6,40,0.42) 100%);
+  }
+
+  /* ---- the lettering ----------------------------------------------- */
+  .stack{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    /* Sits above centre: the sun glow occupies the lower third, and a title
+       centred on the image would collide with it. */
+    padding-top:604.8000000000001px;
+  }
+
+  .title{
+    font-size:400px;             /* replaced by the fit pass before capture */
+    line-height:1.02;
+    font-weight:700;
+    white-space:nowrap;
+    display:flex;align-items:baseline;gap:0.24em;
+    /* Lifts the whole title clear of the brightest part of the sky. */
+    position:relative;z-index:3;
+  }
+
+  .word{position:relative;display:inline-block;font-family:var(--family)}
+
+  /*
+   * Three layers per word, in the order a solid object stacks them.
+   *
+   * They are separate elements rather than stacked properties on one, because
+   * A text-shadow is painted *behind* the glyph. One element carrying both a
+   * dark extrusion shadow and a bright gradient fill renders as whichever wins —
+   * in practice a flat dark word with the colour buried. Separate layers is the
+   * only way to get both.
+   */
+
+  /* 1. Rim: the sunlit edge, offset toward the light. Thin, unblurred — a blur
+        here would be the single softest thing in the image, and this is meant
+        to be sharp. */
+  .rim{
+    position:absolute;left:0;top:0;
+    translate:-0.014em -0.016em;
+    color:rgba(255,236,178,0.85);
+    z-index:0;
+  }
+
+  /* 2. Body: the extrusion. Stepped down-right, each step darker, which reads
+        as a bevelled edge rather than a blurred drop shadow. */
+  .under{
+    position:absolute;left:0;top:0;
+    color:#5C1038;
+    z-index:1;
+    text-shadow:
+      0.012em 0.012em 0 #4A0C2C,
+      0.026em 0.028em 0 #3A0820,
+      0.042em 0.046em 0 #2B0517,
+      0.060em 0.068em 0 #1D0310,
+      0.085em 0.100em 0.012em rgba(20,2,12,0.62),
+      0.130em 0.165em 0.038em rgba(14,1,8,0.50);
+  }
+
+  /* 3. Face: the glass front, filled with a vertical gradient.
+
+        THIS LAYER STAYS IN NORMAL FLOW, and that is load-bearing rather than
+        incidental. It is the only in-flow child of the word box, so it is what gives
+        the word its width. The first render positioned all three layers
+        absolutely; the .word box then had no in-flow content at all, collapsed to
+        width, and all three words began at the same x — the output was
+        "वर्षा समाधान AI" piled on top of itself in the left third of the frame.
+        The underlay and rim are positioned against the word box and must be out of
+        flow; the face must not be. */
+  .face{
+    position:relative;
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;-webkit-text-fill-color:transparent;
+    z-index:2;
+  }
+
+  /*
+   * Each word its own colour, and each gradient lit from the top.
+   *
+   * The shared shape of the three gradients is deliberate — light at the top,
+   * saturated mid, deep at the base — so they read as three materials under one
+   * light source rather than three unrelated colours.
+   */
+  .gold{
+    background-image:linear-gradient(180deg,
+      #FFF4BC 0%, #FFDD62 24%, #FFB020 56%, #FF7A05 84%, #E85A00 100%);
+  }
+  .pearl{
+    background-image:linear-gradient(180deg,
+      #FFFFFF 0%, #FFF8F4 26%, #FFE6F3 58%, #FFB9DF 86%, #F87FC0 100%);
+  }
+  .cyan{
+    background-image:linear-gradient(180deg,
+      #E6FFFF 0%, #8FF6FF 24%, #35D2F2 56%, #12A5DC 84%, #0A7CC0 100%);
+  }
+
+  /*
+   * Specular sweep.
+   *
+   * One broad diagonal band of light across the whole image, as if a pane of
+   * glass were catching a sunrise.
+   *
+   * This was first placed inside the title element, which produced a hard-edged
+   * pale rectangle sitting across the first word: the band was clipped to the
+   * title's bounding box, so its top and bottom cuts were straight lines with a
+   * visible corner where they met the band. It is now a stage-level layer,
+   * taller than the lettering and masked so it dissolves at both ends — a light
+   * sweep rather than a box.
+   *
+   * soft-light rather than overlay: overlay pushes anything it touches
+   * toward the extremes of its own range, which on a mid-tone sky visibly
+   * posterises. soft-light brightens gently and keeps the gradient smooth.
+   */
+  .spec{
+    position:absolute;inset:0;z-index:2;pointer-events:none;
+    mix-blend-mode:soft-light;
+  }
+  .spec i{
+    position:absolute;
+    left:-30%;right:-30%;
+    /* Spans past the frame and is masked, so its own ends are never the ones
+       that show. */
+    top:16%;bottom:16%;
+    background:linear-gradient(101deg,
+      rgba(255,255,255,0) 34%,
+      rgba(255,246,226,0.52) 47%,
+      rgba(255,255,255,0.78) 50%,
+      rgba(255,246,226,0.52) 53%,
+      rgba(255,255,255,0) 66%);
+    -webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%);
+    mask-image:linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%);
+  }
+
+  /* 4. Reflection: a solid object on a polished floor reflects, and its absence
+        is what makes a headline look pasted on. Flipped, faded, and masked.
+
+        Kept faint on purpose. At full strength it competes with the lettering
+        for attention and pulls the eye down into the empty half of the frame;
+        at 14% it reads as a polished surface, which is the only job it has. */
+  .echo{
+    position:relative;z-index:2;
+    margin-top:-0.02em;
+    font-size:400px;line-height:1.02;font-weight:700;white-space:nowrap;
+    display:flex;align-items:baseline;gap:0.24em;justify-content:center;
+    opacity:0.14;
+    -webkit-mask-image:linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.3) 26%, transparent 58%);
+    mask-image:linear-gradient(to bottom, #000 0%, rgba(0,0,0,0.3) 26%, transparent 58%);
+  }
+  .echo .word{color:transparent}
+  .echo .under{display:none}
+  .echo .rim{display:none}
+  .echo .face{
+    position:static;
+    background-image:linear-gradient(180deg,#FFFFFF 0%,#FFD9A0 44%,#FF9E4A 100%);
+    transform:scaleY(-0.36);transform-origin:top;
+  }
+</style></head>
+<body>
+  <div class="stack">
+    <div>
+      <h1 class="title" id="title">
+      <span class="word" style="--family:'Kokila'">
+        <span class="rim" aria-hidden="true">वर्षा</span>
+        <span class="under" aria-hidden="true">वर्षा</span>
+        <span class="face gold">वर्षा</span>
+      </span>
+      <span class="word" style="--family:'Kokila'">
+        <span class="rim" aria-hidden="true">समाधान</span>
+        <span class="under" aria-hidden="true">समाधान</span>
+        <span class="face pearl">समाधान</span>
+      </span>
+      <span class="word" style="--family:'Segoe UI Black', 'Segoe UI'">
+        <span class="rim" aria-hidden="true">AI</span>
+        <span class="under" aria-hidden="true">AI</span>
+        <span class="face cyan">AI</span>
+      </span></h1>
+      <div class="echo" aria-hidden="true">
+      <span class="word" style="--family:'Kokila'">
+        <span class="rim" aria-hidden="true">वर्षा</span>
+        <span class="under" aria-hidden="true">वर्षा</span>
+        <span class="face gold">वर्षा</span>
+      </span>
+      <span class="word" style="--family:'Kokila'">
+        <span class="rim" aria-hidden="true">समाधान</span>
+        <span class="under" aria-hidden="true">समाधान</span>
+        <span class="face pearl">समाधान</span>
+      </span>
+      <span class="word" style="--family:'Segoe UI Black', 'Segoe UI'">
+        <span class="rim" aria-hidden="true">AI</span>
+        <span class="under" aria-hidden="true">AI</span>
+        <span class="face cyan">AI</span>
+      </span></div>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="sky"></div>
+    <div class="rays"></div>
+    <div class="glow"></div>
+    <div class="haze a"></div>
+    <div class="haze b"></div>
+    <div class="spec"><i></i></div>
+    <div class="vignette"></div>
+  </div>
+
+  <script>
+    // The lettering sits above the sky. Set here rather than in the stylesheet so
+    // the markup above reads top to bottom as the list of background layers.
+    document.querySelector('.stack').style.zIndex = '3';
+    document.querySelector('.stage').style.zIndex = '1';
+
+    /*
+     * Fit the title to the frame.
+     *
+     * Guessing a font size is fragile: the rendered width of Devanagari depends
+     * on the shaping of matras and conjuncts, which varies with the font, so
+     * the same nominal size gives a different width for different words. This
+     * measures the real width and converges on the largest size that still fits
+     * inside the target, rather than trusting arithmetic.
+     */
+    (function fit() {
+      const title = document.getElementById('title');
+      const echo = document.querySelector('.echo');
+      const target = 6566;
+
+      let lo = 120, hi = 1600, best = lo;
+      for (let i = 0; i < 26; i++) {
+        const mid = (lo + hi) / 2;
+        title.style.fontSize = mid + 'px';
+        echo.style.fontSize = mid + 'px';
+        const w = title.getBoundingClientRect().width;
+        if (w <= target) { best = mid; lo = mid; } else { hi = mid; }
+      }
+      // A hair under the limit, so a rounding difference cannot push it over.
+      const size = best * 0.995;
+      title.style.fontSize = size + 'px';
+      echo.style.fontSize = size + 'px';
+
+      document.title = 'ready:' + Math.round(size);
+    })();
+  </script>
+</body></html>
