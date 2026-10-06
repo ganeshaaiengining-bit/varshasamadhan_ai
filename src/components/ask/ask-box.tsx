@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import { Icon } from '@/components/ui/icon';
 import { useVoiceInput, speak, speechTag } from '@/components/voice/use-voice';
 import { useLanguage } from '@/components/language/language';
@@ -47,6 +48,9 @@ export function AskBox({
   const [question, setQuestion] = React.useState('');
   const [asking, setAsking] = React.useState(false);
   const [answer, setAnswer] = React.useState<{ text: string; fromAi: boolean } | null>(null);
+  const [stored, setStored] = React.useState<{ title: string; summary: string; href: string } | null>(
+    null,
+  );
   const [notice, setNotice] = React.useState<string | null>(null);
   const [speakError, setSpeakError] = React.useState<string | null>(null);
 
@@ -93,6 +97,7 @@ export function AskBox({
     setAsking(true);
     setNotice(null);
     setSpeakError(null);
+    setStored(null);
 
     try {
       const response = await fetch('/api/ask', {
@@ -109,10 +114,25 @@ export function AskBox({
         reasonKey?: string;
         reason?: string;
         fallback: boolean;
+        stored?: { title: string; summary: string; href: string } | null;
       };
 
       if (data.ok && data.answer) {
         setAnswer({ text: data.answer, fromAi: true });
+        onAnswered?.();
+        return;
+      }
+
+      /*
+       * No AI answer, but the site had something relevant of its own. Show it,
+       * with the reason as a small line above it — the visitor needs to know
+       * whether they are reading an answer or an article, because one was written
+       * carefully and the other was matched by word overlap.
+       */
+      if (data.stored) {
+        setAnswer({ text: data.stored.summary || data.stored.title, fromAi: false });
+        setStored(data.stored);
+        setNotice(null);
         onAnswered?.();
         return;
       }
@@ -246,6 +266,7 @@ export function AskBox({
           text={answer.text}
           fromAi={answer.fromAi}
           language={language.code}
+          stored={stored}
           onSpeakError={setSpeakError}
         />
       ) : null}
@@ -303,11 +324,13 @@ function AnswerCard({
   text,
   fromAi,
   language,
+  stored,
   onSpeakError,
 }: {
   text: string;
   fromAi: boolean;
   language: string;
+  stored: { title: string; summary: string; href: string } | null;
   onSpeakError: (message: string) => void;
 }) {
   const { t } = useLanguage();
@@ -339,6 +362,14 @@ function AnswerCard({
           <Icon name="sparkle" size={22} />
           {t('ask.answerTitle')}
         </h2>
+
+        {/* The full article, when what is shown came from the database. */}
+        {stored ? (
+          <Link href={stored.href} className="btn-outline !min-h-[2.75rem] !px-4 text-sm">
+            {t('home.readMore')}
+            <Icon name="arrow" size={16} />
+          </Link>
+        ) : null}
 
         <button
           type="button"

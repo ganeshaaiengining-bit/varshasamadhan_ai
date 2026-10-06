@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/server/db';
+import { safeRead } from '@/server/db-guard';
 import { askGemini, isConfigured } from '@/server/ai/gemini';
 import { getLanguage } from '@/server/i18n';
+import { findStoredAnswer } from '@/server/ai/stored-answer';
 
 /**
  * POST /api/ask
@@ -85,6 +87,28 @@ export async function POST(request: Request) {
   const result = await askGemini({ question, category, lang: languageCode });
 
   /*
+   * If the AI could not answer, look for one of the site's own articles.
+   *
+   * The site already contains sixteen pieces of real guidance. Returning "no
+   * answer, try later" while the answer sits in the database two pages away is
+   * the failure that was reported: ask a question, get nothing. So the stored
+   * article is attached to the response and the box renders it with a link.
+   *
+   * `question` is passed in rather than remembered in a module-level variable,
+   * because two visitors asking at the same moment would otherwise read each
+   * other's question — and one of them would be shown an article about the other
+   * person's problem.
+   */
+  const match = result.ok ? null : await findStoredAnswer(question);
+  const stored = match
+    ? {
+        title: match.title,
+        summary: match.summary,
+        href: `/p/${match.categorySlug}/${match.slug}`,
+      }
+    : null;
+
+  /*
    * The ledger is best-effort and deliberately never blocks the answer.
    *
    * `asked_questions` is both the owner's "what are people asking" list and the
@@ -107,7 +131,10 @@ export async function POST(request: Request) {
     console.error('[ask] could not record the question:', error);
   }
 
-  return NextResponse.json(result);
+  return NextResponse.json({
+    ...result,
+    ...(stored ? { stored } : {}),
+  });
 }
 
 /**
