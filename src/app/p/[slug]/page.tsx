@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/server/db';
+import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { getT } from '@/server/i18n';
 import { Icon, type IconName } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
@@ -17,11 +18,21 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const category = await prisma.category.findUnique({
-    where: { slug },
-    select: { title: true, subtitle: true },
-  });
-  if (!category) return { title: 'Not found' };
+
+  // Guarded: metadata is generated before the page body, so an unguarded read
+  // here would throw before the page's own guard could answer.
+  const category = await safeRead(
+    `category-meta:${slug}`,
+    () =>
+      prisma.category.findUnique({
+        where: { slug },
+        select: { title: true, subtitle: true },
+      }),
+    undefined,
+  );
+
+  if (category === undefined) return { title: 'सेवा उपलब्ध नहीं है' };
+  if (!category) return { title: 'नहीं मिला' };
 
   return {
     title: category.title,
@@ -33,33 +44,64 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const { t, tf, lang } = await getT();
 
-  const category = await prisma.category.findFirst({
-    where: { slug, isActive: true },
-    select: { id: true, slug: true, title: true, subtitle: true, icon: true },
-  });
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'वर्षा समाधान AI';
+
+  const category = await safeRead(
+    `category:${slug}`,
+    () =>
+      prisma.category.findFirst({
+        where: { slug, isActive: true },
+        select: { id: true, slug: true, title: true, subtitle: true, icon: true },
+      }),
+    undefined,
+  );
+
+  /*
+   * `undefined` means "the database could not answer", and a category that is
+   * genuinely missing returns `null`. They are not the same and must not look the
+   * same: telling a visitor the page does not exist when the database is merely
+   * down sends them away from a page that is perfectly fine.
+   */
+  if (category === undefined) {
+    return (
+      <SiteChrome siteName={siteName}>
+        <div className="wrap-narrow py-12">
+          <DatabaseUnavailable language={lang} />
+        </div>
+      </SiteChrome>
+    );
+  }
   if (!category) notFound();
 
-  const articles = await prisma.article.findMany({
-    where: { categoryId: category.id, isPublished: true },
-    orderBy: { sortOrder: 'asc' },
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      summary: true,
-      isEmergency: true,
-      helpline: true,
-    },
-  });
+  const articles = await safeRead(
+    `category:${slug}:articles`,
+    () =>
+      prisma.article.findMany({
+        where: { categoryId: category.id, isPublished: true },
+        orderBy: { sortOrder: 'asc' },
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          summary: true,
+          isEmergency: true,
+          helpline: true,
+        },
+      }),
+    [],
+  );
 
-  const others = await prisma.category.findMany({
-    where: { isActive: true, id: { not: category.id } },
-    orderBy: { sortOrder: 'asc' },
-    select: { slug: true, title: true },
-    take: 8,
-  });
-
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'वर्षा समाधान AI';
+  const others = await safeRead(
+    `category:${slug}:others`,
+    () =>
+      prisma.category.findMany({
+        where: { isActive: true, id: { not: category.id } },
+        orderBy: { sortOrder: 'asc' },
+        select: { slug: true, title: true },
+        take: 8,
+      }),
+    [],
+  );
 
   return (
     <SiteChrome siteName={siteName}>

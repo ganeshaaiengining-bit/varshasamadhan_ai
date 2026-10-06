@@ -84,15 +84,28 @@ export async function POST(request: Request) {
 
   const result = await askGemini({ question, category, lang: languageCode });
 
-  await prisma.askedQuestion.create({
-    data: {
-      question,
-      category,
-      wasAnswered: result.ok,
-      wasFailed: !result.ok,
-    },
-    select: { id: true },
-  });
+  /*
+   * The ledger is best-effort and deliberately never blocks the answer.
+   *
+   * `asked_questions` is both the owner's "what are people asking" list and the
+   * daily cap on AI spend. Losing a write means the cap under-counts, so it is
+   * worth logging loudly — but a visitor who has just been told how to deal with a
+   * fire should not be handed an error page because their question could not be
+   * filed. The answer has already been generated and paid for.
+   */
+  try {
+    await prisma.askedQuestion.create({
+      data: {
+        question,
+        category,
+        wasAnswered: result.ok,
+        wasFailed: !result.ok,
+      },
+      select: { id: true },
+    });
+  } catch (error) {
+    console.error('[ask] could not record the question:', error);
+  }
 
   return NextResponse.json(result);
 }

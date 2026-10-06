@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { prisma } from '@/server/db';
+import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { isOwnerConfigured, isOwnerSession } from '@/server/owner';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { AdminLogin } from '@/components/admin/admin-login';
@@ -52,40 +53,73 @@ export default async function AdminPage() {
   }
 
   const [pending, published, asked, failures] = await Promise.all([
-    prisma.review.findMany({
-      where: { isApproved: false },
-      orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        rating: true,
-        authorName: true,
-        city: true,
-        comment: true,
-        reply: true,
-        createdAt: true,
-      },
-    }),
-    prisma.review.findMany({
-      where: { isApproved: true },
-      orderBy: { createdAt: 'desc' },
-      take: 50,
-      select: {
-        id: true,
-        rating: true,
-        authorName: true,
-        city: true,
-        comment: true,
-        reply: true,
-        createdAt: true,
-      },
-    }),
-    prisma.askedQuestion.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: 30,
-      select: { id: true, question: true, category: true, wasAnswered: true, wasFailed: true, createdAt: true },
-    }),
-    prisma.askedQuestion.count({ where: { wasFailed: true } }),
+    safeRead(
+      'admin:pending',
+      () =>
+        prisma.review.findMany({
+          where: { isApproved: false },
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            rating: true,
+            authorName: true,
+            city: true,
+            comment: true,
+            reply: true,
+            createdAt: true,
+          },
+        }),
+      null,
+    ),
+    safeRead(
+      'admin:published',
+      () =>
+        prisma.review.findMany({
+          where: { isApproved: true },
+          orderBy: { createdAt: 'desc' },
+          take: 50,
+          select: {
+            id: true,
+            rating: true,
+            authorName: true,
+            city: true,
+            comment: true,
+            reply: true,
+            createdAt: true,
+          },
+        }),
+      null,
+    ),
+    safeRead(
+      'admin:asked',
+      () =>
+        prisma.askedQuestion.findMany({
+          orderBy: { createdAt: 'desc' },
+          take: 30,
+          select: { id: true, question: true, category: true, wasAnswered: true, wasFailed: true, createdAt: true },
+        }),
+      null,
+    ),
+    safeRead('admin:failures', () => prisma.askedQuestion.count({ where: { wasFailed: true } }), null),
   ]);
+
+  /*
+   * The owner panel has no fallback. An empty moderation queue is actionable —
+   * it looks like "nothing to do" — and here it would mean "the reviews you have
+   * not read yet are still waiting and you cannot see them". Say so instead.
+   */
+  if (pending === null || published === null || asked === null || failures === null) {
+    return (
+      <SiteChrome siteName={siteName}>
+        <div className="wrap-narrow py-12">
+          <DatabaseUnavailable language="hi" />
+          <p className="mt-4 text-center text-sm text-ink-subtle">
+            व्यवस्थापक पैनल को डेटाबेस तक पहुँच नहीं मिल पाई।
+          </p>
+        </div>
+      </SiteChrome>
+    );
+  }
 
   return (
     <SiteChrome siteName={siteName}>

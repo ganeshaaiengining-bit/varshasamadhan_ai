@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { prisma } from '@/server/db';
+import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { getT } from '@/server/i18n';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { AskBox } from '@/components/ask/ask-box';
@@ -18,13 +19,33 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function SahayataPage() {
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'वर्षा समाधान AI';
-  const { t } = await getT();
+  const { t, lang } = await getT();
 
-  const categories = await prisma.category.findMany({
-    where: { isActive: true },
-    orderBy: { sortOrder: 'asc' },
-    select: { title: true, slug: true },
-  });
+  /*
+   * The topic chips below the question box are the only part of this page that
+   * comes from the database, so losing it costs almost nothing — the box itself
+   * still works, because the AI answer does not touch the database.
+   */
+  const categories = await safeRead(
+    'sahayata:categories',
+    () =>
+      prisma.category.findMany({
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
+        select: { title: true, slug: true },
+      }),
+    [],
+  );
+
+  if (categories.length === 0) {
+    return (
+      <SiteChrome siteName={siteName}>
+        <div className="wrap-narrow py-12">
+          <DatabaseUnavailable language={lang} />
+        </div>
+      </SiteChrome>
+    );
+  }
 
   return (
     <SiteChrome siteName={siteName}>

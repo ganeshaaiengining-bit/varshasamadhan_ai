@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { prisma } from '@/server/db';
+import { safeRead } from '@/server/db-guard';
 import { getT } from '@/server/i18n';
 import { Icon } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
@@ -23,17 +24,29 @@ export default async function SamarohPage() {
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'वर्षा समाधान AI';
   const { t, tf } = await getT();
 
-  const categories = await prisma.category.findMany({
-    where: { isActive: true },
-    orderBy: { sortOrder: 'asc' },
-    select: {
-      title: true,
-      subtitle: true,
-      _count: { select: { articles: { where: { isPublished: true } } } },
-    },
-  });
+  /*
+   * This page is mostly prose — what the service does and does not do — and only
+   * its statistics come from the database. The refusals on it are the most
+   * important text on the site ("this is not a doctor", "we never invent a
+   * helpline number"), so the page is worth keeping even with no counts at all.
+   * The counts simply go to zero rather than taking the page down with them.
+   */
+  const categories = await safeRead(
+    'samaroh:categories',
+    () =>
+      prisma.category.findMany({
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
+        select: {
+          title: true,
+          subtitle: true,
+          _count: { select: { articles: { where: { isPublished: true } } } },
+        },
+      }),
+    [],
+  );
 
-  const questions = await prisma.askedQuestion.count();
+  const questions = await safeRead('samaroh:questionCount', () => prisma.askedQuestion.count(), 0);
 
   return (
     <SiteChrome siteName={siteName}>

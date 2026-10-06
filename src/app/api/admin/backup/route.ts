@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/server/db';
+import { isDatabaseFailure } from '@/server/db-guard';
 import { isOwnerSession } from '@/server/owner';
 
 /**
@@ -36,40 +37,71 @@ export async function GET() {
     return NextResponse.json({ ok: false, message: 'केवल प्रबंधक के लिए।' }, { status: 401 });
   }
 
-  const [categories, articles] = await Promise.all([
-    prisma.category.findMany({
-      orderBy: { sortOrder: 'asc' },
-      select: {
-        id: true,
-        slug: true,
-        title: true,
-        subtitle: true,
-        icon: true,
-        accent: true,
-        sortOrder: true,
-        isActive: true,
-      },
-    }),
-    prisma.article.findMany({
-      orderBy: [{ categoryId: 'asc' }, { sortOrder: 'asc' }],
-      select: {
-        id: true,
-        categoryId: true,
-        slug: true,
-        title: true,
-        summary: true,
-        body: true,
-        voiceSummary: true,
-        isEmergency: true,
-        isMedical: true,
-        helpline: true,
-        sortOrder: true,
-        isPublished: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    }),
-  ]);
+  /*
+   * Typed explicitly rather than inferred from `findMany`'s default return, which
+   * includes `createdAt`/`updatedAt` that this route's `select` does not ask for.
+   * Inferring it and then narrowing would need a cast; this is the honest shape.
+   */
+  const selectCategory = {
+    id: true,
+    slug: true,
+    title: true,
+    subtitle: true,
+    icon: true,
+    accent: true,
+    sortOrder: true,
+    isActive: true,
+  } as const;
+
+  const selectArticle = {
+    id: true,
+    categoryId: true,
+    slug: true,
+    title: true,
+    summary: true,
+    body: true,
+    voiceSummary: true,
+    isEmergency: true,
+    isMedical: true,
+    helpline: true,
+    sortOrder: true,
+    isPublished: true,
+    createdAt: true,
+    updatedAt: true,
+  } as const;
+
+  let categories: { slug: string }[] & Record<string, unknown>[] = [];
+  let articles: { slug: string }[] & Record<string, unknown>[] = [];
+
+  try {
+    [categories, articles] = await Promise.all([
+      prisma.category.findMany({
+        orderBy: { sortOrder: 'asc' },
+        select: selectCategory,
+      }),
+      prisma.article.findMany({
+        orderBy: [{ categoryId: 'asc' }, { sortOrder: 'asc' }],
+        select: selectArticle,
+      }),
+    ]) as [typeof categories, typeof articles];
+  } catch (error) {
+    /*
+     * A backup that silently returns zero rows is worse than no backup at all:
+     * the owner would store an empty file, believe their work was saved, and only
+     * discover otherwise when they needed it. So a database failure here is a 503
+     * with an explanation, never an empty download.
+     *
+     * The reason is filtered through `isDatabaseFailure` for the same reason as
+     * every other page — the Prisma message contains the connection string, and
+     * this route returns JSON a browser will show.
+     */
+    if (!isDatabaseFailure(error)) throw error;
+    console.error('[backup] could not read the articles:', error);
+    return NextResponse.json(
+      { ok: false, message: 'डेटाबेस तक पहुँच नहीं बन पाई। बैकअप अधूरा है, इसे भरोज़र न करें।' },
+      { status: 503, headers: { 'cache-control': 'no-store' } },
+    );
+  }
 
   const stamp = new Date().toISOString().slice(0, 10);
   const payload = {

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { prisma } from '@/server/db';
+import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { Icon, type IconName } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { AskBox } from '@/components/ask/ask-box';
@@ -24,31 +25,85 @@ const ACCENT: Record<string, { bg: string; text: string; border: string }> = {
   leaf: { bg: 'bg-leaf-soft', text: 'text-leaf', border: 'border-leaf/40' },
 };
 
+/**
+ * The category row as it comes back from the database, counts included.
+ *
+ * The empty array is the fallback when the database is unreachable, so the type
+ * only has to describe the real shape — but it must include `_count`, because
+ * the grid below reads it to show "12 lekh" under each category. Leaving it off
+ * made that a type error, which is how a missing field gets noticed at build time
+ * rather than as an `undefined` on the page.
+ */
+type CategoryRow = {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  accent: string;
+  _count: { articles: number };
+};
+
 export default async function HomePage() {
   // The visitor's language, read from the cookie the picker writes. Without this
   // the whole page renders in Hindi no matter what the interface says.
-  const { t, tf } = await getT();
+  const { t, tf, lang } = await getT();
 
-  const categories = await prisma.category.findMany({
-    where: { isActive: true },
-    orderBy: { sortOrder: 'asc' },
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      subtitle: true,
-      icon: true,
-      accent: true,
-      _count: { select: { articles: { where: { isPublished: true } } } },
-    },
-  });
+  /*
+   * Both reads go through `safeRead`.
+   *
+   * The home page is the one page that must not fail: it is the link people
+   * share and the first thing an arriving stranger sees. An unguarded
+   * `findMany` here means an unconfigured database turns the site's front door
+   * into a stack trace — and the exception text carries the connection string,
+   * which carries the database password.
+   */
+  const categories = await safeRead<CategoryRow[]>(
+    'home:categories',
+    () =>
+      prisma.category.findMany({
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          subtitle: true,
+          icon: true,
+          accent: true,
+          _count: { select: { articles: { where: { isPublished: true } } } },
+        },
+      }) as unknown as Promise<CategoryRow[]>,
+    [] as CategoryRow[],
+  );
 
-  const emergency = await prisma.article.findMany({
-    where: { isEmergency: true, isPublished: true },
-    orderBy: { sortOrder: 'asc' },
-    select: { slug: true, title: true, helpline: true, category: { select: { slug: true } } },
-    take: 3,
-  });
+  const emergency = await safeRead(
+    'home:emergency',
+    () =>
+      prisma.article.findMany({
+        where: { isEmergency: true, isPublished: true },
+        orderBy: { sortOrder: 'asc' },
+        select: { slug: true, title: true, helpline: true, category: { select: { slug: true } } },
+        take: 3,
+      }),
+    [],
+  );
+
+  /*
+   * No categories means there is no list to show, and rendering nine empty
+   * placeholders reads as a broken site rather than an honest one. The question
+   * box does not come from the database, so saying so and inviting the question
+   * is better than showing an empty grid.
+   */
+  if (categories.length === 0) {
+    return (
+      <SiteChrome siteName={process.env.NEXT_PUBLIC_SITE_NAME || 'वर्षा समाधान AI'}>
+        <div className="wrap-narrow py-12">
+          <DatabaseUnavailable language={lang} />
+        </div>
+      </SiteChrome>
+    );
+  }
 
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'वर्षा समाधान AI';
 

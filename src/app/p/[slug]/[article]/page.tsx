@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/server/db';
+import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { getT } from '@/server/i18n';
 import { Icon } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
@@ -16,7 +17,23 @@ export async function generateMetadata({
   params: Promise<{ slug: string; article: string }>;
 }): Promise<Metadata> {
   const { article } = await params;
-  const row = await prisma.article.findUnique({ where: { slug: article }, select: { title: true, summary: true } });
+
+  /*
+   * Guarded for the same reason as the page body: `generateMetadata` runs before
+   * the page renders, so an unguarded read here throws first and the page's own
+   * guard is never reached — the visitor gets an error screen instead.
+   */
+  const row = await safeRead(
+    `article-meta:${article}`,
+    () =>
+      prisma.article.findUnique({
+        where: { slug: article },
+        select: { title: true, summary: true },
+      }),
+    undefined,
+  );
+
+  if (row === undefined) return { title: 'सेवा उपलब्ध नहीं है' };
   if (!row) return { title: 'नहीं मिला' };
   return { title: row.title, description: row.summary };
 }
@@ -29,23 +46,43 @@ export default async function ArticlePage({
   const { slug, article } = await params;
   const { t, lang } = await getT();
 
-  const row = await prisma.article.findFirst({
-    where: { slug: article, isPublished: true },
-    select: {
-      id: true,
-      title: true,
-      summary: true,
-      body: true,
-      voiceSummary: true,
-      isEmergency: true,
-      isMedical: true,
-      helpline: true,
-      category: { select: { slug: true, title: true } },
-    },
-  });
-  if (!row) notFound();
-
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'वर्षा समाधान AI';
+
+  const row = await safeRead(
+    `article:${article}`,
+    () =>
+      prisma.article.findFirst({
+        where: { slug: article, isPublished: true },
+        select: {
+          id: true,
+          title: true,
+          summary: true,
+          body: true,
+          voiceSummary: true,
+          isEmergency: true,
+          isMedical: true,
+          helpline: true,
+          category: { select: { slug: true, title: true } },
+        },
+      }),
+    undefined,
+  );
+
+  /*
+   * `undefined` is a database failure, `null` is a missing article. An article
+   * page that answered 404 during an outage would look like a dead link — and
+   * this is the page people are most likely to have bookmarked or been sent.
+   */
+  if (row === undefined) {
+    return (
+      <SiteChrome siteName={siteName}>
+        <div className="wrap-narrow py-12">
+          <DatabaseUnavailable language={lang} />
+        </div>
+      </SiteChrome>
+    );
+  }
+  if (!row) notFound();
 
   /*
    * The body is plain text with blank-line paragraphs, written in Markdown by
