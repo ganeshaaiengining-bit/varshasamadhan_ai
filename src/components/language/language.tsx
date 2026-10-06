@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 import { LANGUAGES, fill, stringsFor, type Language } from '@/content/i18n';
 import { Icon } from '@/components/ui/icon';
 
@@ -115,6 +116,7 @@ export function LanguageProvider({
    */
   initialLanguage?: string;
 }) {
+  const router = useRouter();
   const [language, setLanguageState] = React.useState<Language>(() => {
     const found = initialLanguage
       ? LANGUAGES.find((l) => l.code === initialLanguage)
@@ -139,12 +141,27 @@ export function LanguageProvider({
     } catch {
       stored = '';
     }
-    if (stored && LANGUAGES.some((l) => l.code === stored)) {
-      setLanguageState(LANGUAGES.find((l) => l.code === stored)!);
-    }
-  }, []);
+    if (!stored || !LANGUAGES.some((l) => l.code === stored)) return;
+    if (stored === language.code) return; // already what the server sent us
 
-  // Apply to the document, and persist for the server to read on the next load.
+    const remembered = LANGUAGES.find((l) => l.code === stored);
+    if (remembered) setLanguageState(remembered);
+    // Deliberately no `router.refresh()` here. This effect runs on the first
+    // mount, and the server has already rendered from the same cookie, so the
+    // two already agree in the normal case; refreshing here would fire a second
+    // render request on every single page load. Where they genuinely disagree the
+    // next change of language refreshes anyway.
+  }, [language.code]);
+
+  /*
+   * Apply to the document, and remember the choice in this browser.
+   *
+   * The cookie is *not* written here. `setLanguage` writes it synchronously
+   * before asking the server to re-render, because a refresh issued before the
+   * cookie exists comes back in the previous language. This effect keeps the
+   * `localStorage` copy in step so the choice survives, and so the read-back on
+   * mount has something to compare against.
+   */
   React.useEffect(() => {
     document.documentElement.lang = language.code;
     document.documentElement.dir = language.direction;
@@ -152,20 +169,7 @@ export function LanguageProvider({
     try {
       localStorage.setItem(KEY, language.code);
     } catch {
-      /* private browsing; the cookie below is the one that matters */
-    }
-
-    /*
-     * The cookie is what actually makes the page translate — it is the only part
-     * of the choice the server can see. `maxAge` and `sameSite` are set
-     * deliberately: without `maxAge` this is a session cookie and a reload would
-     * fall back to Hindi, which reads as the switch not having worked.
-     */
-    try {
-      document.cookie =
-        `${COOKIE}=${encodeURIComponent(language.code)}; path=/; max-age=${MAX_AGE}; samesite=lax`;
-    } catch {
-      /* cookies disabled; the page still translates for this session */
+      /* private browsing; the cookie is the one that matters */
     }
   }, [language]);
 
@@ -182,7 +186,58 @@ export function LanguageProvider({
     [language],
   );
 
-  const setLanguage = React.useCallback((next: Language) => setLanguageState(next), []);
+  /*
+   * ── Why changing the language refreshes the page ───────────────────────────
+   *
+   * Half the text on this site is rendered by the server. Every page reads the
+   * language cookie before producing HTML, because the pages are server
+   * components that query the database before they render. Updating the context
+   * on the client re-renders the client components — the app bar, the footer,
+   * the buttons — and leaves every server-rendered heading, paragraph and list
+   * exactly where it was.
+   *
+   * That produced the worst possible symptom for this audience: the navigation
+   * would switch to Tamil and the article it was sitting above would stay in
+   * Hindi, and a person who cannot read the second language has no way to tell
+   * that the missing half is a mechanism rather than a broken page.
+   *
+   * `router.refresh()` re-fetches the server components for the current URL. The
+   * URL does not change, so there is no navigation, no scroll jump and nothing
+   * for the visitor to notice beyond the page updating — which is what changing a
+   * language is supposed to look like.
+   *
+   * It is deliberately not `router.push`, because that would add a history entry
+   * and the back button would walk through eighteen languages.
+   *
+   * ── The cookie is written here, synchronously, before the refresh ─────────
+   *
+   * This is the whole fix, and getting the order wrong makes it look like
+   * `refresh()` does not work at all. The refresh asks the server to re-render,
+   * and the server can only know the new language from the cookie. If the cookie
+   * were written in an effect it would be written *after* this render committed —
+   * so the refresh would fetch with the previous language and the page would come
+   * back unchanged. The client half would be Tamil and the server half Hindi, and
+   * the only evidence would be that `document.documentElement.lang` says `ta`
+   * while the text is not Tamil.
+   *
+   * So: write the cookie, then refresh. `localStorage` and `document.documentElement`
+   * still happen in the effect, because those only affect this browser's own
+   * state and nothing the server needs to know.
+   */
+  const setLanguage = React.useCallback(
+    (next: Language) => {
+      try {
+        document.cookie =
+          `${COOKIE}=${encodeURIComponent(next.code)}; path=/; max-age=${MAX_AGE}; samesite=lax`;
+      } catch {
+        /* cookies disabled; the page still translates for this session */
+      }
+
+      setLanguageState(next);
+      router.refresh();
+    },
+    [router],
+  );
 
   return (
     <SetLanguageContext.Provider value={setLanguage}>

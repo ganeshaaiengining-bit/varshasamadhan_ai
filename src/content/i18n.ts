@@ -874,6 +874,16 @@ const BENGALI: Record<string, string> = {
   'toast.dismiss': 'বন্ধ করুন',
 
   'footer.free': 'এই পরিষেবা সম্পূর্ণ বিনামূল্যে। কারও কাছ থেকে পয়সা নেওয়া হয় না।',
+
+  'cat.empty': 'এই বিষয়ে এখন কোনো লেখা নেই।',
+
+  'dhun.label': 'শব্দ চালানোর অনুমতি',
+
+  'language.articlesInHint': 'প্রতিটি ভাষায় আলাদা অনুবাদ দরকার। এই অনুবাদ এখনো হয়নি — যা লেখা আছে তা হিন্দিতেই সবচেয়ে ঠিক ও সম্পূর্ণ।',
+
+  'theme.toDark': 'অন্ধকার রঙে যান',
+
+  'theme.toLight': 'উজ্জ্বল রঙে যান',
 };
 
 const TAMIL: Record<string, string> = {
@@ -972,6 +982,16 @@ const TAMIL: Record<string, string> = {
   'toast.dismiss': 'மூடு',
 
   'footer.free': 'இந்த சேவை முற்றிலும் இலவசம். யாரிடமிருந்தும் பணம் வசிக்கப்படுவதில்லை.',
+
+  'cat.empty': 'இந்தத் தலைப்பில் இன்னும் கட்டுரைகள் இல்லை.',
+
+  'dhun.label': 'ஒலி இயக்க அனுமதி',
+
+  'language.articlesInHint': 'ஒவ்வொரு மொழிக்கும் தனி மொழிபெயர்ப்பு தேவை. இந்த மொழிபெயர்ப்பு இன்னும் செய்யப்படவில்லை — எழுதியுள்ளது தமிழில் மட்டுமே சரியானதும் முழுமையானதும் ஆகும்.',
+
+  'theme.toDark': 'இருள் வடிவத்திற்குச் செல்லவும்',
+
+  'theme.toLight': 'வெளிர் வடிவத்திற்குச் செல்லவும்',
 };
 
 const TELUGU: Record<string, string> = {
@@ -1070,6 +1090,16 @@ const TELUGU: Record<string, string> = {
   'toast.dismiss': 'మూసివేయి',
 
   'footer.free': 'ఈ సేవ పూర్తిగా ఉచితం. ఎవరి నుండీ డబ్బు తీసుకోబడ్డు.',
+
+  'cat.empty': 'ఈ అంశంలో ఇంకా వ్యాసాలు లేవు.',
+
+  'dhun.label': 'శబ్దం ప్లే చేయడానికి అనుమతి',
+
+  'language.articlesInHint': 'ప్రతి భాషకు వేర్వేరు అనువాదం అవసరం. ఈ అనువాదం ఇంకా జరగలేదు — ఉన్నది తెలుగులోనే సరైనది పూర్తిదనా.',
+
+  'theme.toDark': 'చీకటి రంగుకు వెళ్ళండి',
+
+  'theme.toLight': 'ప్రకాశవంతమైన రంగుకు వెళ్ళండి',
 };
 
 const MARATHI: Record<string, string> = {
@@ -1168,6 +1198,16 @@ const MARATHI: Record<string, string> = {
   'toast.dismiss': 'बंद करा',
 
   'footer.free': 'ही सेवा पूर्णपणे निःशुल्क आहे. कोणाच्याही जागून पैसे घेतले जात नाहीत.',
+
+  'cat.empty': 'या विषयात अजून कोणतेही लेख नाहीत.',
+
+  'dhun.label': 'ध्वनी चालवण्याची परवानगी',
+
+  'language.articlesInHint': 'प्रत्येक भाषेला वेगळे अनुवाद लागतो. हा अनुवाद अद्यापर्यंत झालेला नाही — जे लिहिले आहे ते हिन्दीतच सर्वोत्तम आणि पूर्ण आहे.',
+
+  'theme.toDark': 'अंधारदार रंगाकडे जा',
+
+  'theme.toLight': 'उजळ रंगाकडे जा',
 };
 
 const GUJARATI: Record<string, string> = {
@@ -1266,6 +1306,16 @@ const GUJARATI: Record<string, string> = {
   'toast.dismiss': 'બંધ કરો',
 
   'footer.free': 'આ સેવા સંપૂર્ણ રીતે મફત છે. કોઈના પૈસા લેવામાં આવતા નથી.',
+
+  'cat.empty': 'આ વિષયમાં હજી કોઈ લેખ નથી.',
+
+  'dhun.label': 'ધ્વનિ વગાડવાની પરવાનગી',
+
+  'language.articlesInHint': 'દરેક ભાષાનું અલગ અનુવાદ જરૂરી છે. આ અનુવાદ હજી થયો નથી — જે લખ્યું છે તે હિન્દીમાં જ સૌથી યોગ્ય અને પૂર્ણ છે.',
+
+  'theme.toDark': 'અંધારા રંગ પર જાઓ',
+
+  'theme.toLight': 'ઉજળ રંગ પર જાઓ',
 };
 
 const KANNADA: Record<string, string> = {
@@ -1360,6 +1410,20 @@ const KANNADA: Record<string, string> = {
   'toast.dismiss': 'ಮುಚ್ಚಿ',
 
   'footer.free': 'ಈ ಸೇವೆ ಸಂಪೂರ್ಣವಾಗಿ ಉಚಿತ. ಯಾರಿಂದೂ ಹಣ ಪಡೆಯುವುದಿಲ್ಲ.',
+
+  'cat.empty': 'ಈ ವಿಷಯದಲ್ಲಿ ಇನ್ನೂ ಲೇಖನಗಳಿಲ್ಲ.',
+
+  'dhun.label': 'ಧ್ವನಿ ಪ್ಲೇ ಮಾಡಲು ಅನುಮತಿ',
+
+  'language.articlesInHint': 'ಪ್ರತಿ ಭಾಷೆಗೆ ಪ್ರತ್ಯೇಕ ಅನುವಾದ ಬೇಕು. ಈ ಅನುವಾದ ಇನ್ನೂ ಆಗಿಲ್ಲ — ಬರೆದಿರುವುದು ಕನ್ನಡದಲ್ಲೇ ಸರಿಯಾದದ್ದು ಮತ್ತು ಪೂರ್ಣವಾಗಿದೆ.',
+
+  'nav.collapse': 'ಟ್ಯಾಬ್ ಮುಚ್ಚಿ',
+
+  'nav.expand': 'ಟ್ಯಾಬ್ ತೆರೆ',
+
+  'theme.toDark': 'ಕಡು ಬಣ್ಣಕ್ಕೆ ಹೋಗಿ',
+
+  'theme.toLight': 'ಉಜ್ಜಲ ಬಣ್ಣಕ್ಕೆ ಹೋಗಿ',
 };
 
 const MALAYALAM: Record<string, string> = {
@@ -1454,6 +1518,22 @@ const MALAYALAM: Record<string, string> = {
   'toast.dismiss': 'അടയ്ക്കുക',
 
   'footer.free': 'ഈ സേവനം പൂർണ്ണമായും സൗജന്യം. ആരോടും പണം ആവശ്യമാക്കില്ല.',
+
+  'cat.empty': 'ഈ വിഷയത്തിൽ ഇതുവരെ ലേഖനങ്ങളില്ല.',
+
+  'dhun.label': 'ശബ്ദം കളിക്കാനുള്ള അനുമതി',
+
+  'language.articlesInHint': 'ഓരോ ഭാഷയ്കും വ്യത്യസ്ത പരിഭാഷാപരിഭാഷ വേണം. ഈ പരിഭാഷ ഇതുവരെ നടന്നിട്ടില്ല — എഴുതിയിട്ടുള്ളത് ഹിന്ദിയിൽ തന്നെ ശരിയായതും പൂർണ്ണവും ആണ്.',
+
+  'nav.collapse': 'ടാബ് അടയ്ക്കുക',
+
+  'nav.expand': 'ടാബ് തുറക്കുക',
+
+  'nav.skip': 'നേരിട്ട് ഉള്ളടക്കത്തിലേക്ക് പോകുക',
+
+  'theme.toDark': 'ഇരുണ്ട രൂപത്തിലേക്ക് പോകുക',
+
+  'theme.toLight': 'ഇളംപ്പം വർണ്ണത്തിലേക്ക് പോകുക',
 };
 
 const PUNJABI: Record<string, string> = {
@@ -1547,6 +1627,22 @@ const PUNJABI: Record<string, string> = {
   'toast.dismiss': 'ਬੰਦ ਕਰੋ',
 
   'footer.free': 'ਇਹ ਸੇਵਾ ਪੂਰੀ ਤਰ੍ਹਾਂ ਮੁਫ਼ਤ ਹੈ। ਕਿਸੇ ਤੋਂ ਪੈਸੇ ਨਹੀਂ ਲਏ ਜਾਂਦੇ।',
+
+  'cat.empty': 'ਇਸ ਵਿਸ਼ੇ ਵਿੱਚ ਹਾਲੇ ਕੋਈ ਲੇਖ ਨਹੀਂ ਹੈ।',
+
+  'dhun.label': 'ਧੁਨ ਚਲਾਉਣ ਦੀ ਇਜਾਜ਼ਤ',
+
+  'language.articlesInHint': 'ਹਰ ਭਾਸ਼ਾ ਲਈ ਵੱਖਰੀ ਅਨੁਵਾਦ ਚਾਹੀਦਾ ਹੈ। ਇਹ ਅਨੁਵਾਦ ਹਾਲੇ ਨਹੀਂ ਹੋਇਆ — ਜੋ ਲਿਖਿਆ ਹੈ ਉਹੀ ਹਿੰਦੀ ਵਿੱਚ ਹੀ ਸਭ ਤੋਂ ਸਹੀ ਅਤੇ ਪੂਰਾ ਹੈ।',
+
+  'nav.collapse': 'ਟੈਬ ਬੰਦ ਕਰੋ',
+
+  'nav.expand': 'ਟੈਬ ਖੋਲ੍ਹੋ',
+
+  'nav.skip': 'ਸਿੱਧਾ ਸਮੱਗਰੀ ਤੇ ਜਾਓ',
+
+  'theme.toDark': 'ਹਨੇਰੇ ਰੰਗ ਤੇ ਜਾਓ',
+
+  'theme.toLight': 'ਉਜਲੇ ਰੰਗ ਤੇ ਜਾਓ',
 };
 
 const URDU: Record<string, string> = {
@@ -1641,6 +1737,22 @@ const URDU: Record<string, string> = {
   'toast.dismiss': 'بند کریں',
 
   'footer.free': 'یہ خدمت مکمل طور پر مفت ہے۔ کسی سے پیسے نہیں لیے جاتے۔',
+
+  'cat.empty': 'اس موضوع میں ابھی کوئی مضمون نہیں ہے۔',
+
+  'dhun.label': 'آواز چلانے کی اجازت',
+
+  'language.articlesInHint': 'ہر زبان کا اپنا الگ ترجمہ درکار ہے۔ یہ ترجمہ ابھی نہیں ہوا — جو لکھا گیا ہے وہ ہندی ہی میں سب سے درست اور مکمل ہے۔',
+
+  'nav.collapse': 'ٹیب بند کریں',
+
+  'nav.expand': 'ٹیب کھولیں',
+
+  'nav.skip': 'براہ راست مواد پر جائیں',
+
+  'theme.toDark': 'تاریک رنگ پر جائیں',
+
+  'theme.toLight': 'روشن رنگ پر جائیں',
 };
 
 const ARABIC: Record<string, string> = {
@@ -1739,6 +1851,22 @@ const ARABIC: Record<string, string> = {
   'footer.pages': 'الصفحات',
 
   'footer.helplines': 'أرقام مهمة',
+
+  'cat.empty': 'لا توجد مقالات في هذا الموضوع بعد.',
+
+  'dhun.label': 'الإذن بتشغيل الصوت',
+
+  'language.articlesInHint': 'كل لغة تحتاج ترجمة خاصة. هذه الترجمة لم تُنجَز بعد — والنص المكتوب هو الأدق والأكمل بالهندية.',
+
+  'nav.collapse': 'أغلق الشريط',
+
+  'nav.expand': 'وسّع الشريط',
+
+  'nav.skip': 'تخطَّ إلى المحتوى مباشرة',
+
+  'theme.toDark': 'انتقل إلى المظهر الداكن',
+
+  'theme.toLight': 'انتقل إلى المظهر الفاتح',
 };
 
 const SPANISH: Record<string, string> = {
@@ -1833,6 +1961,22 @@ const SPANISH: Record<string, string> = {
   'toast.dismiss': 'Cerrar',
 
   'footer.free': 'Este servicio es totalmente gratuito. No se cobra a nadie.',
+
+  'cat.empty': 'Todavía no hay artículos sobre este tema.',
+
+  'dhun.label': 'Permiso para reproducir el sonido',
+
+  'language.articlesInHint': 'Cada idioma necesita su propia traducción. Esta traducción aún no existe: lo escrito es lo más correcto y completo en hindi.',
+
+  'nav.collapse': 'Contraer la barra',
+
+  'nav.expand': 'Expandir la barra',
+
+  'nav.skip': 'Ir al contenido principal',
+
+  'theme.toDark': 'Ir al tema oscuro',
+
+  'theme.toLight': 'Ir al tema claro',
 };
 
 /* -------------------------------------------------------------------------- */
