@@ -4,7 +4,6 @@ import { prisma } from '@/server/db';
 import { safeRead } from '@/server/db-guard';
 import { askGemini, isConfigured } from '@/server/ai/gemini';
 import { getLanguage } from '@/server/i18n';
-import { findStoredAnswer } from '@/server/ai/stored-answer';
 
 /**
  * POST /api/ask
@@ -87,26 +86,25 @@ export async function POST(request: Request) {
   const result = await askGemini({ question, category, lang: languageCode });
 
   /*
-   * If the AI could not answer, look for one of the site's own articles.
+   * No database lookup, deliberately.
    *
-   * The site already contains sixteen pieces of real guidance. Returning "no
-   * answer, try later" while the answer sits in the database two pages away is
-   * the failure that was reported: ask a question, get nothing. So the stored
-   * article is attached to the response and the box renders it with a link.
+   * There was a fallback here that matched the question against the sixteen
+   * stored articles and returned the best one as the answer. It is gone, because
+   * the owner said the only thing that is wanted is a direct answer:
    *
-   * `question` is passed in rather than remembered in a module-level variable,
-   * because two visitors asking at the same moment would otherwise read each
-   * other's question — and one of them would be shown an article about the other
-   * person's problem.
+   *   "I don't want an article for any question. I want a direct answer. What is
+   *    the use of an article for the user? He wants an immediate answer to his
+   *    question."
+   *
+   * The objection is correct and the fallback deserved to go. A matched article
+   * is not an answer to the question that was asked. Someone asking about
+   * something they are actually experiencing got a page about something else and
+   * had to work out whether it applied to them — that is more work than the
+   * problem, not less.
+   *
+   * The articles stay as pages. They are worth having and are linked from the
+   * topic list below. They are just no longer dressed up as answers.
    */
-  const match = result.ok ? null : await findStoredAnswer(question);
-  const stored = match
-    ? {
-        title: match.title,
-        summary: match.summary,
-        href: `/p/${match.categorySlug}/${match.slug}`,
-      }
-    : null;
 
   /*
    * When there is no answer at all, hand back the site's own subject list.
@@ -121,7 +119,7 @@ export async function POST(request: Request) {
    * one small query and it only runs when there is genuinely nothing to say.
    */
   const topics =
-    result.ok || stored
+    result.ok
       ? []
       : await safeRead(
           'ask:topics',
@@ -159,7 +157,6 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     ...result,
-    ...(stored ? { stored } : {}),
     ...(topics.length > 0 ? { topics } : {}),
   });
 }

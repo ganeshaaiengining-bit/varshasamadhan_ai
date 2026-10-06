@@ -269,7 +269,6 @@ const HINDI: Record<string, string> = {
   'ask.stopSpeak': 'रोकिए',
   'ask.readAloud': 'सुनिए',
   'ask.aiNote': 'यह उत्तर AI ने दिया है। किसी विशेषज्ञ की सलाह का विकल्प नहीं है।',
-  'ask.serviceNote': 'यह सेवा-संबंधी उत्तर है।',
   'ask.errorRateLimit':
     'बहुत सारे सवाल एक साथ भेज दिए गए। थोड़ी देर बाद कोशिश कीजिए।',
   'ask.errorNetwork': 'इंटरनेट नहीं चल पा रहा। कनेक्शन जाँचकर फिर कोशिश कीजिए।',
@@ -699,7 +698,6 @@ const ENGLISH: Record<string, string> = {
   'ask.stopSpeak': 'Stop',
   'ask.readAloud': 'Listen',
   'ask.aiNote': 'This answer came from AI. It is not a substitute for an expert.',
-  'ask.serviceNote': 'This is an informational answer.',
   'ask.errorRateLimit':
     'Too many questions at once. Please try again in a moment.',
   'ask.errorNetwork': 'The internet is not working. Check the connection and try again.',
@@ -1093,7 +1091,6 @@ const BENGALI: Record<string, string> = {
 
   'ask.notAnswer': 'এই প্রশ্নের সরাসরি উত্তর আমাদের কাছে নেই।',
 
-  'ask.serviceNote': 'এটি সেবা সম্পর্কিত উত্তর।',
 
   'article.askAbout': 'এই বিষয়ে জিজ্ঞাসা করুন',
 
@@ -1274,7 +1271,6 @@ const TAMIL: Record<string, string> = {
 
   'ask.notAnswer': 'இந்தக் கேள்விக்கு நேரடி பதில் எங்களிடம் இல்லை.',
 
-  'ask.serviceNote': 'இது சேவை தொடர்பான பதில்.',
 
   'article.askAbout': 'இந்தத் தலைப்பில் கேளுங்கள்',
 
@@ -1455,7 +1451,6 @@ const TELUGU: Record<string, string> = {
 
   'ask.notAnswer': 'ఈ ప్రశ్నకు నేరుగా సమాధానం మేము వద్ద లేదు.',
 
-  'ask.serviceNote': 'ఇది సేవకు సంబంధించిన సమాధానం.',
 
   'article.askAbout': 'ఈ అంశంలో అడగండి',
 
@@ -1636,7 +1631,6 @@ const MARATHI: Record<string, string> = {
 
   'ask.notAnswer': 'या प्रश्नाचे थेट उत्तर आमच्याकडे नाही.',
 
-  'ask.serviceNote': 'हे सेवेसंबंधी उत्तर आहे.',
 
   'article.askAbout': 'या विषयाबद्दल विचारा',
 
@@ -1817,7 +1811,6 @@ const GUJARATI: Record<string, string> = {
 
   'ask.notAnswer': 'આ પ્રશ્નનું સીધું જવાબ અમારે પાસે નથી.',
 
-  'ask.serviceNote': 'આ સેવા સંબંધી જવાબ છે.',
 
   'article.askAbout': 'આ વિષય વિશે પૂછો',
 
@@ -2000,7 +1993,6 @@ const KANNADA: Record<string, string> = {
 
   'ask.notAnswer': 'ಈ ಪ್ರಶ್ನೆಗೆ ನೇರ ಉತ್ತರ ನಮ್ಮ ಬಳಿ ಇಲ್ಲ.',
 
-  'ask.serviceNote': 'ಇದು ಸೇವೆಯ ಸಂಬಂಧದ ಉತ್ತರ.',
 
   'ask.stopListening': 'ಕೇಳುವುದನ್ನು ನಿಲ್ಲಿಸಿ',
 
@@ -2191,7 +2183,6 @@ const MALAYALAM: Record<string, string> = {
 
   'ask.notAnswer': 'ഈ ചോദ്യത്തിന് നേരിട്ട ഉത്തരം ഞങ്ങളുടെ കയ്യിൽ ഇല്ല.',
 
-  'ask.serviceNote': 'ഇത് സേവനവുമായി ബന്ധപ്പെട്ട ഉത്തരമാണ്.',
 
   'ask.stopListening': 'കേൾക്കുന്നത് നിർത്തുക',
 
@@ -2383,7 +2374,6 @@ const PUNJABI: Record<string, string> = {
 
   'ask.notAnswer': 'ਇਸ ਸਵਾਲ ਦਾ ਸਿੱਧਾ ਜਵਾਬ ਸਾਡੇ ਕੋਲ ਨਹੀਂ ਹੈ।',
 
-  'ask.serviceNote': 'ਇਹ ਸੇਵਾ ਸੰਬੰਧੀ ਜਵਾਬ ਹੈ।',
 
   'ask.stopListening': 'ਸੁਣਨਾ ਰੋਕੋ',
 
@@ -2574,7 +2564,6 @@ const URDU: Record<string, string> = {
 
   'ask.notAnswer': 'اس سوال کا براہِ راست جواب ہمارے پاس نہیں ہے۔',
 
-  'ask.serviceNote': 'یہ خدمت سے متعلق جواب ہے۔',
 
   'ask.stopListening': 'سننا بند کریں',
 
@@ -2765,7 +2754,6 @@ const ARABIC: Record<string, string> = {
 
   'ask.notAnswer': 'ليس لدينا جواب مباشر عن هذا السؤال.',
 
-  'ask.serviceNote': 'هذه إجابة informacyjna عن الخدمة.',
 
   'ask.stopListening': 'إيقاف الاستماع',
 
@@ -2954,7 +2942,6 @@ const SPANISH: Record<string, string> = {
 
   'ask.notAnswer': 'No tenemos una respuesta directa a esta pregunta.',
 
-  'ask.serviceNote': 'Esta es una respuesta informativa sobre el servicio.',
 
   'ask.stopListening': 'Dejar de escuchar',
 

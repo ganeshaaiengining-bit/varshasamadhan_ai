@@ -21,8 +21,17 @@ import { restoreDraft } from '@/components/language/draft';
  *   screen-reader user knows when it is listening
  * • every failure is spoken and written: no mic, no permission, no network
  * • the answer is announced to a screen reader via a live region
- * • a stored article is offered when the AI is unavailable, so the visitor
- *   always leaves with something useful
+ * —— There is no article fallback, on purpose ——————————————————
+ * One was removed. It matched the question against the site's own articles and
+ * returned the best one as "the answer", and the owner's objection to it was
+ * right: a matched article is not an answer to the question that was asked. It
+ * was also actively misleading — the matcher had once returned the
+ * fire-safety article to "my child has a fever", which read as a confident
+ * answer to a question about fever.
+ *
+ * When the model cannot answer, the box now says so plainly and offers the
+ * site's subject list. That is honest. Dressing up a related page as a reply is
+ * not. See the note in src/app/api/ask/route.ts.
  *
  * ── Language, end to end ──────────────────────────────────────────────────
  * Four separate places have to agree, and any one of them being left in Hindi
@@ -47,10 +56,7 @@ export function AskBox({
 }) {
   const [question, setQuestion] = React.useState('');
   const [asking, setAsking] = React.useState(false);
-  const [answer, setAnswer] = React.useState<{ text: string; fromAi: boolean } | null>(null);
-  const [stored, setStored] = React.useState<{ title: string; summary: string; href: string } | null>(
-    null,
-  );
+  const [answer, setAnswer] = React.useState<string | null>(null);
   const [topics, setTopics] = React.useState<{ title: string; slug: string }[]>([]);
   const [notice, setNotice] = React.useState<string | null>(null);
   const [speakError, setSpeakError] = React.useState<string | null>(null);
@@ -98,7 +104,6 @@ export function AskBox({
     setAsking(true);
     setNotice(null);
     setSpeakError(null);
-    setStored(null);
     setTopics([]);
 
     try {
@@ -116,12 +121,11 @@ export function AskBox({
         reasonKey?: string;
         reason?: string;
         fallback: boolean;
-        stored?: { title: string; summary: string; href: string } | null;
         topics?: { title: string; slug: string }[] | null;
       };
 
       if (data.ok && data.answer) {
-        setAnswer({ text: data.answer, fromAi: true });
+        setAnswer(data.answer);
         onAnswered?.();
         return;
       }
@@ -132,14 +136,6 @@ export function AskBox({
        * whether they are reading an answer or an article, because one was written
        * carefully and the other was matched by word overlap.
        */
-      if (data.stored) {
-        setAnswer({ text: data.stored.summary || data.stored.title, fromAi: false });
-        setStored(data.stored);
-        setNotice(null);
-        onAnswered?.();
-        return;
-      }
-
       /*
        * Nothing matched, but the site has nine other subjects. Show them.
        *
@@ -306,10 +302,8 @@ export function AskBox({
 
       {answer ? (
         <AnswerCard
-          text={answer.text}
-          fromAi={answer.fromAi}
+          text={answer}
           language={language.code}
-          stored={stored}
           onSpeakError={setSpeakError}
         />
       ) : null}
@@ -365,15 +359,11 @@ export function AskBox({
 
 function AnswerCard({
   text,
-  fromAi,
   language,
-  stored,
   onSpeakError,
 }: {
   text: string;
-  fromAi: boolean;
   language: string;
-  stored: { title: string; summary: string; href: string } | null;
   onSpeakError: (message: string) => void;
 }) {
   const { t } = useLanguage();
@@ -406,13 +396,7 @@ function AnswerCard({
           {t('ask.answerTitle')}
         </h2>
 
-        {/* The full article, when what is shown came from the database. */}
-        {stored ? (
-          <Link href={stored.href} className="btn-outline !min-h-[2.75rem] !px-4 text-sm">
-            {t('home.readMore')}
-            <Icon name="arrow" size={16} />
-          </Link>
-        ) : null}
+
 
         <button
           type="button"
@@ -435,7 +419,7 @@ function AnswerCard({
       </div>
 
       <p className="mt-5 border-t border-line pt-3 text-sm text-ink-subtle">
-        {fromAi ? t('ask.aiNote') : t('ask.serviceNote')}
+        {t('ask.aiNote')}
       </p>
     </section>
   );
