@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Icon } from '@/components/ui/icon';
 import { useVoiceInput, speak, speechTag } from '@/components/voice/use-voice';
 import { useLanguage } from '@/components/language/language';
+import { restoreDraft } from '@/components/language/draft';
 
 /**
  * ===========================================================================
@@ -55,6 +56,18 @@ export function AskBox({
     onResult: (text) => setQuestion(text),
     lang: speechTag(language.code),
   });
+
+  /*
+   * Put back whatever was typed before the page reloaded for a language change.
+   *
+   * `takeDraft` clears itself on read, so this runs once — a question typed now
+   * is never resurrected by a later language change.
+   */
+  React.useEffect(() => {
+    restoreDraft((draft) => {
+      if (draft.question) setQuestion(draft.question);
+    });
+  }, []);
 
   /**
    * Turn a `key|hindi` pair from the voice hook into a translated string.

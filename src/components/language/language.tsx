@@ -1,9 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import { useRouter } from 'next/navigation';
 import { LANGUAGES, fill, stringsFor, type Language } from '@/content/i18n';
 import { Icon } from '@/components/ui/icon';
+import { stashForLanguageChange } from '@/components/language/draft';
 
 /**
  * ===========================================================================
@@ -116,7 +116,6 @@ export function LanguageProvider({
    */
   initialLanguage?: string;
 }) {
-  const router = useRouter();
   const [language, setLanguageState] = React.useState<Language>(() => {
     const found = initialLanguage
       ? LANGUAGES.find((l) => l.code === initialLanguage)
@@ -209,34 +208,53 @@ export function LanguageProvider({
    * It is deliberately not `router.push`, because that would add a history entry
    * and the back button would walk through eighteen languages.
    *
-   * ── The cookie is written here, synchronously, before the refresh ─────────
+   * ── Why a reload and not `router.refresh()` ───────────────────────────────
    *
-   * This is the whole fix, and getting the order wrong makes it look like
-   * `refresh()` does not work at all. The refresh asks the server to re-render,
-   * and the server can only know the new language from the cookie. If the cookie
-   * were written in an effect it would be written *after* this render committed —
-   * so the refresh would fetch with the previous language and the page would come
-   * back unchanged. The client half would be Tamil and the server half Hindi, and
-   * the only evidence would be that `document.documentElement.lang` says `ta`
-   * while the text is not Tamil.
+   * `router.refresh()` was the first attempt and it was measured and abandoned.
+   * Chrome's console showed `Maximum update depth exceeded` and a hydration
+   * mismatch on every language change, and the question box visibly flickered.
+   * The RSC response that came back was *correct* — it carried the new language —
+   * and the DOM still showed the old text, so the fetch was not the problem and
+   * neither was the cookie: loading the same URL with the same cookie produced
+   * the right page immediately. Something about re-rendering the tree underneath a
+   * context provider that the tree itself depends on did not settle.
    *
-   * So: write the cookie, then refresh. `localStorage` and `document.documentElement`
-   * still happen in the effect, because those only affect this browser's own
-   * state and nothing the server needs to know.
+   * A real navigation is one request and one render, has no loop to fall into, and
+   * cannot leave the page half-updated. It costs a scroll position, which is what
+   * `draft.ts` is for.
+   *
+   * ── Why the cookie is written here, first ─────────────────────────────────
+   *
+   * The server can only know the new language from the cookie, and the navigation
+   * below is issued in this same tick. A cookie written in an effect would be
+   * written *after* this render committed, so the page would come back in the
+   * previous language — client half Tamil, server half Hindi, and no error to
+   * explain it. Write it here, then navigate.
    */
   const setLanguage = React.useCallback(
     (next: Language) => {
       try {
         document.cookie =
           `${COOKIE}=${encodeURIComponent(next.code)}; path=/; max-age=${MAX_AGE}; samesite=lax`;
+        localStorage.setItem(KEY, next.code);
       } catch {
         /* cookies disabled; the page still translates for this session */
       }
 
+      /*
+       * Set the state as well as reloading. It is not needed for the server half —
+       * the navigation handles that — but it means `<html lang>` is correct
+       * immediately, so a screen reader does not announce the page in the old
+       * language for the length of the reload.
+       */
       setLanguageState(next);
-      router.refresh();
+
+      // Put the visitor's half-typed question somewhere safe before the page goes.
+      stashForLanguageChange();
+
+      window.location.reload();
     },
-    [router],
+    [],
   );
 
   return (
