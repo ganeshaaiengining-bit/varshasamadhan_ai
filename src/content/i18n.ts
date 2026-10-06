@@ -1150,6 +1150,46 @@ const BENGALI: Record<string, string> = {
 
   'ask.browseTitle': 'এখানে যা লেখা আছে, তা দেখুন',
 
+  'health.heading': 'আপনার বয়স বলুন',
+
+  'health.intro': 'প্রতিটি বয়সের মানুষ সবচেয়ে বেশি যে প্রশ্নগুলো করেন। যেকোনো একটিতে চাপ দিলে সেটি নিচের ঘরে বসবে, তারপর জিজ্ঞাসা করুন।',
+
+  'health.ageLabel': 'বয়স (বছর)',
+
+  'health.years': 'বছর',
+
+  'health.bandsLabel': 'বয়স অনুযায়ী বেছে নিন',
+
+  'health.notAdviceStrong': 'এটি চিকিৎসা পরামর্শ নয়।',
+
+  'health.notAdvice': 'কোনো ওষুধ শুরু বা বন্ধ করবেন না — আগে ডাক্তারের পরামর্শ নিন।',
+
+  'health.emergencyStrong': 'জরুরি অবস্থায় ফোন করুন:',
+
+  'health.emergencyCall': '(জরুরি)',
+
+  'health.emergencyAmbulance': '(অ্যাম্বুলেন্স)',
+
+  'health.emergencyWomen': '(নারী সহায়তা নম্বর)',
+
+  'health.privacy': 'নাম বা ঠিকানা লিখতে হবে না।',
+
+  'health.band.infant.label': '০ – ২ বছর',
+
+  'health.band.child.label': '৩ – ১২ বছর',
+
+  'health.band.teen.label': '১৩ – ১৭ বছর',
+
+  'health.band.young.label': '১৮ – ৩০ বছর',
+
+  'health.band.middle.label': '৩১ – ৪৫ বছর',
+
+  'health.band.later.label': '৪৬ – ৬০ বছর',
+
+  'health.band.senior.label': '৬১ – ৭৫ বছর',
+
+  'health.band.elder.label': '৭৬ – ১০০ বছর',
+
 };
 
 const TAMIL: Record<string, string> = {
@@ -1329,6 +1369,46 @@ const TAMIL: Record<string, string> = {
   'ask.notConfigured': 'இந்தச் சேவை இப்போது சேமித்த பதிவுகளிலிருந்து பதிலளிக்கிறது. உங்கள் கேள்வி அதில் இல்லை.',
 
   'ask.browseTitle': 'இங்கு உள்ள கட்டுரைகளைப் பாருங்கள்',
+
+  'health.heading': 'உங்கள் வயதைச் சொல்லுங்கள்',
+
+  'health.intro': 'ஒவ்வொரு வயதினரும் அதிகம் கேட்பது கேள்விகள். ஏதொன்றைத் தட்டினால் அது கீழே இடத்தில் நிரம்பி, பின்னர் கேளுங்கள்.',
+
+  'health.ageLabel': 'வயது (வருடம்)',
+
+  'health.years': 'வருடம்',
+
+  'health.bandsLabel': 'வயதால் தேர்வு செய்யுங்கள்',
+
+  'health.notAdviceStrong': 'இது மருத்துவ ஆலோசனை அல்ல.',
+
+  'health.notAdvice': 'எந்த மருந்தையும் தொடங்கவோ நிறுத்தவோ மாட்டீர்கள் — முதலில் மருத்துவரைப் பாருங்கள்.',
+
+  'health.emergencyStrong': 'அவசர நிலையில் அழைக்கவும்:',
+
+  'health.emergencyCall': '(அவசரம்)',
+
+  'health.emergencyAmbulance': '(ஆம்புலன்ஸ்)',
+
+  'health.emergencyWomen': '(பெண்கள் உதவி எண்)',
+
+  'health.privacy': 'பெயர் அல்லது முகவரி எழுதத் தேவையில்லை.',
+
+  'health.band.infant.label': '0 – 2 வருடம்',
+
+  'health.band.child.label': '3 – 12 வருடம்',
+
+  'health.band.teen.label': '13 – 17 வருடம்',
+
+  'health.band.young.label': '18 – 30 வருடம்',
+
+  'health.band.middle.label': '31 – 45 வருடம்',
+
+  'health.band.later.label': '46 – 60 வருடம்',
+
+  'health.band.senior.label': '61 – 75 வருடம்',
+
+  'health.band.elder.label': '76 – 100 வருடம்',
 
 };
 
@@ -1510,6 +1590,46 @@ const TELUGU: Record<string, string> = {
 
   'ask.browseTitle': 'ఇక్కడ ఉన్న వ్యాసాలు చూడండి',
 
+  'health.heading': 'మీ వయస్సు చెప్పండి',
+
+  'health.intro': 'ఏ వయస్సుల వారు అత్యధికంగా అడిగే ప్రశ్నలు ఇవి. ఏదైనా నొక్కండి అది దిగువ బాక్స్‌లో నింపుతుంది, తర్వాత అడగండి.',
+
+  'health.ageLabel': 'వయస్సు (సంవత్సరాలు)',
+
+  'health.years': 'సంవత్సరాలు',
+
+  'health.bandsLabel': 'వయస్సు ప్రకారం ఎంచుకోండి',
+
+  'health.notAdviceStrong': 'ఇది వైద్య సలహా కాదు.',
+
+  'health.notAdvice': 'ఏ మందులను మొదలు పెట్టవద్దు లేదా ఆపవద్దు — ముందుగా వైద్యుడిని సంప్రదించండి.',
+
+  'health.emergencyStrong': 'అత్యవసరంలో ఫోన్ చేయండి:',
+
+  'health.emergencyCall': '(అత్యవసరం)',
+
+  'health.emergencyAmbulance': '(అంబులెన్స్)',
+
+  'health.emergencyWomen': '(మహిళా సహాయం)',
+
+  'health.privacy': 'పేరు లేదా చిరునామా రాయాల్సిన అవసరం లేదు.',
+
+  'health.band.infant.label': '0 – 2 సంవత్సరాలు',
+
+  'health.band.child.label': '3 – 12 సంవత్సరాలు',
+
+  'health.band.teen.label': '13 – 17 సంవత్సరాలు',
+
+  'health.band.young.label': '18 – 30 సంవత్సరాలు',
+
+  'health.band.middle.label': '31 – 45 సంవత్సరాలు',
+
+  'health.band.later.label': '46 – 60 సంవత్సరాలు',
+
+  'health.band.senior.label': '61 – 75 సంవత్సరాలు',
+
+  'health.band.elder.label': '76 – 100 సంవత్సరాలు',
+
 };
 
 const MARATHI: Record<string, string> = {
@@ -1690,6 +1810,46 @@ const MARATHI: Record<string, string> = {
 
   'ask.browseTitle': 'इथले असलेले लेख पहा',
 
+  'health.heading': 'तुमचे वय सांगा',
+
+  'health.intro': 'या वयातील लोकांचे सर्वाधिक विचारले जाणारे प्रश्न. एखादा वर क्लिक केल्यावर तो खालील डब्यात भरला जातो, मग विचारा.',
+
+  'health.ageLabel': 'वय (वर्षे)',
+
+  'health.years': 'वर्षे',
+
+  'health.bandsLabel': 'वयानुसार निवडा',
+
+  'health.notAdviceStrong': 'हे वैद्यकीय सल्ला नाही.',
+
+  'health.notAdvice': 'कोणतेही औषध सुरू करू नका किंवा बंद करू नका — आधी डॉक्टरांचा सल्ला घ्या.',
+
+  'health.emergencyStrong': 'आणीबाणीत फोन करा:',
+
+  'health.emergencyCall': '(आणीबाणी)',
+
+  'health.emergencyAmbulance': '(रुग्णवाहिका)',
+
+  'health.emergencyWomen': '(महिला मदतवाहिनी)',
+
+  'health.privacy': 'नाव किंवा पत्ता लिहिण्याची गरज नाही.',
+
+  'health.band.infant.label': '० – २ वर्षे',
+
+  'health.band.child.label': '३ – १२ वर्षे',
+
+  'health.band.teen.label': '१३ – १७ वर्षे',
+
+  'health.band.young.label': '१८ – ३० वर्षे',
+
+  'health.band.middle.label': '३१ – ४५ वर्षे',
+
+  'health.band.later.label': '४६ – ६० वर्षे',
+
+  'health.band.senior.label': '६१ – ७५ वर्षे',
+
+  'health.band.elder.label': '७६ – १०० वर्षे',
+
 };
 
 const GUJARATI: Record<string, string> = {
@@ -1869,6 +2029,46 @@ const GUJARATI: Record<string, string> = {
   'ask.notConfigured': 'આ સેવા હાલ સચવાયેલા જવાબોના ભંડોળમાંથી જવાબ આપી રહી છે. તમારો પ્રશ્ન તેમાં નથી.',
 
   'ask.browseTitle': 'અહીં જે લેખ છે તે જુઓ',
+
+  'health.heading': 'તમારી ઉંમર કહો',
+
+  'health.intro': 'આ ઉંમરના લોકો સૌથી વધુ પૂછતા હોય એવા પ્રશ્નો. કોઈપણ એક પર ક્લિક કરો, તે નીચે બોક્સમાં ભરાઈ જશે, પછી પૂછો.',
+
+  'health.ageLabel': 'ઉંમર (વર્ષ)',
+
+  'health.years': 'વર્ષ',
+
+  'health.bandsLabel': 'ઉંમર પ્રમાણે પસંદ કરો',
+
+  'health.notAdviceStrong': 'આ તબીબી સલાહ નથી.',
+
+  'health.notAdvice': 'કોઈ દવા શરૂ કરો કે બંધ કરો નહીં — પહેલા ડૉક્ટરને મળો.',
+
+  'health.emergencyStrong': 'કટોકટીમાં ફોન કરો:',
+
+  'health.emergencyCall': '(કટોકટી)',
+
+  'health.emergencyAmbulance': '(એમ્બ્યુલન્સ)',
+
+  'health.emergencyWomen': '(મહિલા મદદ નંબર)',
+
+  'health.privacy': 'નામ કે સરનામું લખવાની જરૂર નથી.',
+
+  'health.band.infant.label': '0 – 2 વર્ષ',
+
+  'health.band.child.label': '3 – 12 વર્ષ',
+
+  'health.band.teen.label': '13 – 17 વર્ષ',
+
+  'health.band.young.label': '18 – 30 વર્ષ',
+
+  'health.band.middle.label': '31 – 45 વર્ષ',
+
+  'health.band.later.label': '46 – 60 વર્ષ',
+
+  'health.band.senior.label': '61 – 75 વર્ષ',
+
+  'health.band.elder.label': '76 – 100 વર્ષ',
 
 };
 
@@ -2055,6 +2255,46 @@ const KANNADA: Record<string, string> = {
   'ask.notConfigured': 'ಈ ಸೇವೆ ಈಗ ಉಳಿಸಿದ ಉತ್ತರಗಳ ದಾಸ್ತಾನದಿಂದ ಉತ್ತರಿಸುತ್ತಿದೆ. ನಿಮ್ಮ ಪ್ರಶ್ನೆ ಅದರಲ್ಲಿ ಇಲ್ಲ.',
 
   'ask.browseTitle': 'ಇಲ್ಲಿರುವ ಲೇಖಗಳನ್ನು ನೋಡಿ',
+
+  'health.heading': 'ನಿಮ್ಮ ವಯಸ್ಸು ಹೇಳಿ',
+
+  'health.intro': 'ಈ ವಯಸ್ಸಿನ ಜನರು ಹೆಚ್ಚು ಕೇಳುವ ಪ್ರಶ್ನೆಗಳು ಇವೆ. ಯಾವುದನ್ನಾದರೂ ಒತ್ತಿದರೆ ಅದು ಕೆಳಗಿನ ಪೆಟ್ಟಿಗೆಗೆ ಹೋಗುತ್ತದೆ, ನಂತರ ಕೇಳಿ.',
+
+  'health.ageLabel': 'ವಯಸ್ಸು (ವರ್ಷ)',
+
+  'health.years': 'ವರ್ಷ',
+
+  'health.bandsLabel': 'ವಯಸ್ಸಿನ ಪ್ರಕಾರ ಆಯ್ಕೆಮಾಡಿ',
+
+  'health.notAdviceStrong': 'ಇದು ವೈದ್ಯ ಸಲಹೆ ಅಲ್ಲ.',
+
+  'health.notAdvice': 'ಯಾವುದೇ ಔಷಧಿ ಪ್ರಾರಂಭಿಸಬೇಡಿ ಅಥವಾ ನಿಲ್ಲಿಸಬೇಡಿ — ಮೊದಲು ವೈದ್ಯರನ್ನು ಭೇಟಿಯಾಗಿ.',
+
+  'health.emergencyStrong': 'ತುರ್ತು ಸಂಭವದಲ್ಲಿ ಫೋನ್ ಮಾಡಿ:',
+
+  'health.emergencyCall': '(ತುರ್ತು ಸಂಭವ)',
+
+  'health.emergencyAmbulance': '(ಅಂಬ್ಯುಲೆನ್ಸ್)',
+
+  'health.emergencyWomen': '(ಮಹಿಳಾ ಸಹಾಯ ಸಂಖ್ಯೆ)',
+
+  'health.privacy': 'ಹೆಸರು ಅಥವಾ ವಿಳಾಸ ಬರೆಯುವ ಅಗತ್ಯವಿಲ್ಲ.',
+
+  'health.band.infant.label': '0 – 2 ವರ್ಷ',
+
+  'health.band.child.label': '3 – 12 ವರ್ಷ',
+
+  'health.band.teen.label': '13 – 17 ವರ್ಷ',
+
+  'health.band.young.label': '18 – 30 ವರ್ಷ',
+
+  'health.band.middle.label': '31 – 45 ವರ್ಷ',
+
+  'health.band.later.label': '46 – 60 ವರ್ಷ',
+
+  'health.band.senior.label': '61 – 75 ವರ್ಷ',
+
+  'health.band.elder.label': '76 – 100 ವರ್ಷ',
 
 };
 
@@ -2245,6 +2485,46 @@ const MALAYALAM: Record<string, string> = {
   'ask.notConfigured': 'ഈ സേവനം ഇപ്പോൾ സംരക്ഷിച്ച ഉത്തരങ്ങളുടെ ആക്കെയിൽ നിന്ന് ഉത്തരിക്കുന്നു. നിങ്ങളുടെ ചോദ്യം അതിൽ ഇല്ല.',
 
   'ask.browseTitle': 'ഇവിടെയുള്ള ലേഖകൾ കാണുക',
+
+  'health.heading': 'നിങ്ങളുടെ പ്രായം പറയൂ',
+
+  'health.intro': 'ഈ പ്രായത്തിലുള്ളവർ ഏറ്റവും കൂടുതൽ ചോദിക്കുന്ന ചോദ്യങ്ങൾ. ഏതെങ്കിലും അമർത്തിയാಲ് അത് താഴെയുള്ള ബോക്സിൽ നിറയും, ശേഷം ചോദിക്കൂ.',
+
+  'health.ageLabel': 'പ്രായം (വർഷം)',
+
+  'health.years': 'വർഷം',
+
+  'health.bandsLabel': 'പ്രായം അനുസരിച്ച് തിരഞ്ഞെടുക്കുക',
+
+  'health.notAdviceStrong': 'ഇത് വൈദ്യ ഉപദേശമല്ല.',
+
+  'health.notAdvice': 'ഏത് മരുന്നും തുടങ്ങുകയോ നിർത്തുകയോ ചെയ്യരുത് — ആദ്യം ഡോക്ടറെ കാണുക.',
+
+  'health.emergencyStrong': 'അടിയന്തരത്തിൽ വിളിക്കുക:',
+
+  'health.emergencyCall': '(അടിയന്തരം)',
+
+  'health.emergencyAmbulance': '(ആംബുലൻസ്)',
+
+  'health.emergencyWomen': '(വനിതാ സഹായ നമ്പർ)',
+
+  'health.privacy': 'പേരോ വിലാസമോ എഴുതേണ്ടതില്ല.',
+
+  'health.band.infant.label': '0 – 2 വർഷം',
+
+  'health.band.child.label': '3 – 12 വർഷം',
+
+  'health.band.teen.label': '13 – 17 വർഷം',
+
+  'health.band.young.label': '18 – 30 വർഷം',
+
+  'health.band.middle.label': '31 – 45 വർഷം',
+
+  'health.band.later.label': '46 – 60 വർഷം',
+
+  'health.band.senior.label': '61 – 75 വർഷം',
+
+  'health.band.elder.label': '76 – 100 വർഷം',
 
 };
 
@@ -2439,6 +2719,46 @@ const PUNJABI: Record<string, string> = {
 
   'ask.browseTitle': 'ਇੱਥੇ ਜੋ ਲੇਖ ਹਨ ਉਹ ਵੇਖੋ',
 
+  'health.heading': 'ਆਪਣੀ ਉਮਰ ਦੱਸੋ',
+
+  'health.intro': 'ਇਸ ਉਮਰ ਦੇ ਲੋਕਾਂ ਦੁਆਰਾਂ ਸਭ ਤੋਂ ਵੱਧ ਪੁੱਛੇ ਜਾਂਦੇ ਸਵਾਲ ਇਹ ਹਨ। ਕੋਈ ਵੀ ਦਬਾਓ, ਇਹ ਹੇਠਾਂ ਖਾਲੇ ਵਿੱਚ ਭਰ ਜਾਵੇਗਾ, ਫਿਰ ਪੁੱਛੋ।',
+
+  'health.ageLabel': 'ਉਮਰ (ਸਾਲ)',
+
+  'health.years': 'ਸਾਲ',
+
+  'health.bandsLabel': 'ਉਮਰ ਅਨੁਸਾਰ ਚੁਣੋ',
+
+  'health.notAdviceStrong': 'ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।',
+
+  'health.notAdvice': 'ਕੋਈ ਦਵਾ ਸ਼ੁਰੂ ਜਾਂ ਬੰਦ ਨਾ ਕਰੋ — ਪਹਿਲਾਂ ਡਾਕਟਰ ਨਾਲ ਮਿਲੋ।',
+
+  'health.emergencyStrong': 'ਐਮਰਜੈਂਸੀ ਹਾਲਤ ਵਿੱਚ ਫ਼ੋਨ ਕਰੋ:',
+
+  'health.emergencyCall': '(ਐਮਰਜੈਂਸੀ)',
+
+  'health.emergencyAmbulance': '(ਐਂਬੂਲੰਸ)',
+
+  'health.emergencyWomen': '(ਔਰਤ ਹੈਲਪਲਾਈਨ)',
+
+  'health.privacy': 'ਨਾਮ ਜਾਂ ਪਤਾ ਲਿਖਣ ਦੀ ਲੋੜ ਨਹੀਂ।',
+
+  'health.band.infant.label': '0 – 2 ਸਾਲ',
+
+  'health.band.child.label': '3 – 12 ਸਾਲ',
+
+  'health.band.teen.label': '13 – 17 ਸਾਲ',
+
+  'health.band.young.label': '18 – 30 ਸਾਲ',
+
+  'health.band.middle.label': '31 – 45 ਸਾਲ',
+
+  'health.band.later.label': '46 – 60 ਸਾਲ',
+
+  'health.band.senior.label': '61 – 75 ਸਾਲ',
+
+  'health.band.elder.label': '76 – 100 ਸਾਲ',
+
 };
 
 const URDU: Record<string, string> = {
@@ -2624,6 +2944,46 @@ const URDU: Record<string, string> = {
   'ask.notConfigured': 'یہ خدمت اِس وقت محفوظ جوابات کے ذخیرے سے جواب دے رہی ہے۔ آپ کا سوال اس میں نہیں ملا۔',
 
   'ask.browseTitle': 'یہاں جو مضامین ہیں وہ دیکھیں',
+
+  'health.heading': 'اپنی عمر بتائیے',
+
+  'health.intro': 'اس عمر کے لوگوں کے سب سے زیادہ پوچھے جانے والے سوالات یہ ہیں۔ کوئی بھی ایک دبائیں، وہ نیچے خانے میں بھر جائے گا، پھر پوچھ لیں۔',
+
+  'health.ageLabel': 'عمر (سال)',
+
+  'health.years': 'سال',
+
+  'health.bandsLabel': 'عمر کے مطابق منتخب کریں',
+
+  'health.notAdviceStrong': 'یہ طبی مشورہ نہیں ہے۔',
+
+  'health.notAdvice': 'کوئی دوا شروع یا بند نہ کریں — پہلے ڈاکٹر سے ملیں۔',
+
+  'health.emergencyStrong': 'ہنگامی صورتحال میں فون کریں:',
+
+  'health.emergencyCall': '(ہنگامی)',
+
+  'health.emergencyAmbulance': '(ایمبولینس)',
+
+  'health.emergencyWomen': '(خواتین کی مدد کا نمبر)',
+
+  'health.privacy': 'نام یا پتہ لکھنے کی ضرورت نہیں۔',
+
+  'health.band.infant.label': '0 – 2 سال',
+
+  'health.band.child.label': '3 – 12 سال',
+
+  'health.band.teen.label': '13 – 17 سال',
+
+  'health.band.young.label': '18 – 30 سال',
+
+  'health.band.middle.label': '31 – 45 سال',
+
+  'health.band.later.label': '46 – 60 سال',
+
+  'health.band.senior.label': '61 – 75 سال',
+
+  'health.band.elder.label': '76 – 100 سال',
 
 };
 
@@ -2817,6 +3177,46 @@ const ARABIC: Record<string, string> = {
 
   'ask.browseTitle': 'هنا المقالات المتاحة',
 
+  'health.heading': 'اذكر عمرك',
+
+  'health.intro': 'هذه أكثر الأسئلة التي يطرحها الناس في هذا العمر. اضغط على أي سؤال فيملأ الخانة بالأسفل، ثم اسأل.',
+
+  'health.ageLabel': 'العمر (بالسنوات)',
+
+  'health.years': 'سنوات',
+
+  'health.bandsLabel': 'اختر حسب العمر',
+
+  'health.notAdviceStrong': 'هذه ليست نصيحة طبية.',
+
+  'health.notAdvice': 'لا تبدأ أي دواء ولا توقفه — راجع الطبيب أولاً.',
+
+  'health.emergencyStrong': 'في الحالات الطارئة اتصل على:',
+
+  'health.emergencyCall': '(الطوارئ)',
+
+  'health.emergencyAmbulance': '(الإسعاف)',
+
+  'health.emergencyWomen': '(خط مساعدة المرأة)',
+
+  'health.privacy': 'لا حاجة لكتابة الاسم أو العنوان.',
+
+  'health.band.infant.label': '0 – 2 سنة',
+
+  'health.band.child.label': '3 – 12 سنة',
+
+  'health.band.teen.label': '13 – 17 سنة',
+
+  'health.band.young.label': '18 – 30 سنة',
+
+  'health.band.middle.label': '31 – 45 سنة',
+
+  'health.band.later.label': '46 – 60 سنة',
+
+  'health.band.senior.label': '61 – 75 سنة',
+
+  'health.band.elder.label': '76 – 100 سنة',
+
 };
 
 const SPANISH: Record<string, string> = {
@@ -3002,6 +3402,46 @@ const SPANISH: Record<string, string> = {
   'ask.notConfigured': 'Este servicio responde ahora desde su biblioteca guardada. Tu pregunta no estaba en ella.',
 
   'ask.browseTitle': 'Esto es lo que cubre este sitio',
+
+  'health.heading': 'Dinos tu edad',
+
+  'health.intro': 'Estas son las preguntas que más hacen las personas de esta edad. Toca cualquiera y se rellenará el recuadro de abajo; luego pregunta.',
+
+  'health.ageLabel': 'Edad (años)',
+
+  'health.years': 'años',
+
+  'health.bandsLabel': 'Elige por edad',
+
+  'health.notAdviceStrong': 'Esto no es consejo médico.',
+
+  'health.notAdvice': 'No empieces ni dejes ninguna medicina; consulta antes con un médico.',
+
+  'health.emergencyStrong': 'En una emergencia, llama al:',
+
+  'health.emergencyCall': '(emergencias)',
+
+  'health.emergencyAmbulance': '(ambulancia)',
+
+  'health.emergencyWomen': '(línea de ayuda a la mujer)',
+
+  'health.privacy': 'No hace falta escribir tu nombre ni tu dirección.',
+
+  'health.band.infant.label': '0 – 2 años',
+
+  'health.band.child.label': '3 – 12 años',
+
+  'health.band.teen.label': '13 – 17 años',
+
+  'health.band.young.label': '18 – 30 años',
+
+  'health.band.middle.label': '31 – 45 años',
+
+  'health.band.later.label': '46 – 60 años',
+
+  'health.band.senior.label': '61 – 75 años',
+
+  'health.band.elder.label': '76 – 100 años',
 
 };
 
