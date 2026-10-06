@@ -884,6 +884,74 @@ const BENGALI: Record<string, string> = {
   'theme.toDark': 'অন্ধকার রঙে যান',
 
   'theme.toLight': 'উজ্জ্বল রঙে যান',
+
+  'ask.emptyAnswer': 'এবার উত্তর বানানো গেল না। একটু অন্য কথায় আবার জিজ্ঞাসা করুন।',
+
+  'ask.errorNetwork': 'ইন্টারনেট কাজ করছে না। সংযোগ দেখে আবার চেষ্টা করুন।',
+
+  'ask.errorRateLimit': 'খুব একসাথে অনেক প্রশ্ন পাঠানো হয়েছে। একটু পরে চেষ্টা করুন।',
+
+  'ask.heardWith': 'এখন শুনছি',
+
+  'ask.micUnsupported': 'এই ব্রাউজারে বলে জিজ্ঞাসা করা কাজ করবে না। লিখে জিজ্ঞাসা করুন।',
+
+  'ask.notAnswer': 'কোনো উত্তর পাওয়া যায়নি। আবার জিজ্ঞাসা করতে উপরের বোতামে চাপ দিন।',
+
+  'ask.serviceNote': 'এটি সেবা সম্পর্কিত উত্তর।',
+
+  'article.askAbout': 'এই বিষয়ে জিজ্ঞাসা করুন',
+
+  'article.count': '{count}টি লেখা',
+
+  'article.emergency': 'জরুরি',
+
+  'article.others': 'এই বিষয়ের আরও লেখা',
+
+  'article.readAloud': 'এই লেখাটি শুনুন',
+
+  'footer.admin': 'প্রবন্ধক',
+
+  'footer.ambulance': 'অ্যাম্বুলেন্স',
+
+  'footer.emergency': 'জরুরি অবস্থা',
+
+  'footer.rights': 'নিঃশুল্প সেবা',
+
+  'footer.women': 'মহিলা হেল্পলাইন',
+
+  'sound.allHint': 'একসাথে',
+
+  'sound.bansuriHint': 'কোমল, ধীর',
+
+  'sound.dholHint': 'তীক্ষ্ণ, দ্রুত',
+
+  'sound.errGeneric': 'ধ্বনি চালাতে সমস্যা হয়েছে।',
+
+  'sound.errUnsupported': 'এই ব্রাউজার ধ্বনি চালাতে পারছে না।',
+
+  'sound.listenLabel': 'শুনুন',
+
+  'sound.playing': 'আওয়াজ বাজছে। থামাতে একই বোতামে আবার চাপুন।',
+
+  'sound.shankhHint': 'গভীর, দীর্ঘ',
+
+  'voice.aborted': 'থেমে গেছে। আবার চেষ্টা করুন।',
+
+  'voice.audioCapture': 'মাইক পাওয়া যায়নি। ডিভাইসটি লাগান, অথবা লিখে জিজ্ঞাসা করুন।',
+
+  'voice.generic': 'কিছু একটা গোলমাল হয়েছে। আবার চেষ্টা করুন।',
+
+  'voice.network': 'বলে জিজ্ঞাসা করতে ইন্টারনেট দরকার, কিন্তু সেটি চলছে না। লিখে জিজ্ঞাসা করুন — একই উত্তর পাবেন।',
+
+  'voice.noSpeech': 'কোনো কথা শোনা যায়নি। মাইকের কাছে বলুন, অথবা লিখুন।',
+
+  'voice.notAllowed': 'মাইকের অনুমতি পাওয়া যায়নি। উপরে গিয়ে অনুমতি দিন, অথবা লিখে জিজ্ঞাসা করুন।',
+
+  'voice.serviceNotAllowed': 'মাইকের অনুমতি পাওয়া যায়নি। উপরে গিয়ে অনুমতি দিন, অথবা লিখে জিজ্ঞাসা করুন।',
+
+  'voice.speakFailed': 'এই উত্তরটি পড়ে শোনানো যায়নি।',
+
+  'voice.unsupported': 'এই ব্রাউজারে বলে জিজ্ঞাসা করা কাজ করবে না। লিখে জিজ্ঞাসা করুন।',
 };
 
 const TAMIL: Record<string, string> = {
@@ -992,6 +1060,74 @@ const TAMIL: Record<string, string> = {
   'theme.toDark': 'இருள் வடிவத்திற்குச் செல்லவும்',
 
   'theme.toLight': 'வெளிர் வடிவத்திற்குச் செல்லவும்',
+
+  'ask.emptyAnswer': 'இந்த முறை பதில் உருவாகவில்லை. வேறு சொல்லி மீண்டும் கேளுங்கள்.',
+
+  'ask.errorNetwork': 'இண்டர்னெட் இயங்கவில்லை. இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.',
+
+  'ask.errorRateLimit': 'ஒரே நேரத்தில் பல கேள்விகள் அனுப்பப்பட்டுள்ளன. சிறிது நேரம் கழித்து முயற்சிக்கவும்.',
+
+  'ask.heardWith': 'இப்போது கேட்கிறோம்',
+
+  'ask.micUnsupported': 'இந்த உலாவியில் பேசி கேட்பது வேலை செய்யாது. எழுதி கேளுங்கள்.',
+
+  'ask.notAnswer': 'எந்த பதிலும் கிடைக்கவில்லை. மீண்டும் கேட்க மேலே உள்ள பொத்தானை அழுத்தவும்.',
+
+  'ask.serviceNote': 'இது சேவை தொடர்பான பதில்.',
+
+  'article.askAbout': 'இந்தத் தலைப்பில் கேளுங்கள்',
+
+  'article.count': '{count} கட்டுரைகள்',
+
+  'article.emergency': 'அவசரம்',
+
+  'article.others': 'இந்தத் தலைப்பின் மேலும் கட்டுரைகள்',
+
+  'article.readAloud': 'இந்தக் கட்டுரையைக் கேட்கவும்',
+
+  'footer.admin': 'நிர்வாகம்',
+
+  'footer.ambulance': 'ஆம்புலன்ஸ்',
+
+  'footer.emergency': 'அவசரம்',
+
+  'footer.rights': 'இலவச சேவை',
+
+  'footer.women': 'மகள் உதவி எண்',
+
+  'sound.allHint': 'ஒன்றாக',
+
+  'sound.bansuriHint': 'மென்மையான, மெதுவான',
+
+  'sound.dholHint': 'கூர்மையான, வேகமான',
+
+  'sound.errGeneric': 'ஒலியை இயக்குவதில் சிக்கல் ஏற்பட்டது.',
+
+  'sound.errUnsupported': 'இந்த உலாவியம் ஒலியை இயக்க முடியவில்லை.',
+
+  'sound.listenLabel': 'கேட்கவும்',
+
+  'sound.playing': 'ஒலி இயங்குகிறது. நிறுத்த அந்தப் பொத்தானை மீண்டும் அழுத்தவும்.',
+
+  'sound.shankhHint': 'ஆழமான, நீண்ட',
+
+  'voice.aborted': 'நிறுத்தப்பட்டது. மீண்டும் முயற்சிக்கவும்.',
+
+  'voice.audioCapture': 'மைக்ரோஃபோன் கிடைக்கவில்லை. சாதனத்தை இணைக்கவும், அல்லது எழுதி கேளுங்கள்.',
+
+  'voice.generic': 'ஏதோ தவறு நடந்தது. மீண்டும் முயற்சிக்கவும்.',
+
+  'voice.network': 'பேசி கேட்பதற்கு இண்டர்னெட் தேவை, அது இல்லை. எழுதி கேளுங்கள் — அதே பதிலே கிடைக்கும்.',
+
+  'voice.noSpeech': 'எந்த குரலும் கேட்க முடியவில்லை. மைக்கருகில் பேசுங்கள், அல்லது எழுதுங்கள்.',
+
+  'voice.notAllowed': 'மைக்ரோஃபோன் அனுமதி கிடைக்கவில்லை. மேலே சென்று அனுமதி அளியுங்கள், அல்லது எழுதி கேளுங்கள்.',
+
+  'voice.serviceNotAllowed': 'மைக்ரோஃபோன் அனுமதி கிடைக்கவில்லை. மேலே சென்று அனுமதி அளியுங்கள், அல்லது எழுதி கேளுங்கள்.',
+
+  'voice.speakFailed': 'இந்தப் பதிலைப் படித்து கேட்க முடியவில்லை.',
+
+  'voice.unsupported': 'இந்த உலாவியில் பேசி கேட்பது வேலை செய்யாது. எழுதி கேளுங்கள்.',
 };
 
 const TELUGU: Record<string, string> = {
@@ -1100,6 +1236,74 @@ const TELUGU: Record<string, string> = {
   'theme.toDark': 'చీకటి రంగుకు వెళ్ళండి',
 
   'theme.toLight': 'ప్రకాశవంతమైన రంగుకు వెళ్ళండి',
+
+  'ask.emptyAnswer': 'ఈసారి సమాధానం కాలేదు. కొంచెం భిన్నంగా మళ్లీ అడగండి.',
+
+  'ask.errorNetwork': 'ఇంటర్నెట్ పనిచేయడం లేదు. కనెక్షన్ చూసి మళ్లీ ప్రయత్నించండి.',
+
+  'ask.errorRateLimit': 'ఒకేసారి చాలా ప్రశ్నలు పంపబడ్డాయి. కొద్ది సేపేల తర్వాత ప్రయత్నించండి.',
+
+  'ask.heardWith': 'ఇప్పుడు వింటున్నాము',
+
+  'ask.micUnsupported': 'ఈ బ్రౌజర్‌లో మాట్లాడి అడగడం పనిచేయదు. టైప్ చేసి అడగండి.',
+
+  'ask.notAnswer': 'ఏ సమాధానం కాలేదు. మళ్లీ అడగడానికి పైన ఉన్న బటన్ నొక్కండి.',
+
+  'ask.serviceNote': 'ఇది సేవకు సంబంధించిన సమాధానం.',
+
+  'article.askAbout': 'ఈ అంశంలో అడగండి',
+
+  'article.count': '{count} వ్యాసాలు',
+
+  'article.emergency': 'అత్యవసరం',
+
+  'article.others': 'ఈ అంశంలో మరిన్ని వ్యాసాలు',
+
+  'article.readAloud': 'ఈ వ్యాసాన్ని వినండి',
+
+  'footer.admin': 'నిర్వహణ',
+
+  'footer.ambulance': 'అంబులెన్స్',
+
+  'footer.emergency': 'అత్యవసరం',
+
+  'footer.rights': 'ఉచిత సేవ',
+
+  'footer.women': 'మహిళా సహాయం',
+
+  'sound.allHint': 'ఒకటిగా',
+
+  'sound.bansuriHint': 'మృదువైన, నెమ్మది',
+
+  'sound.dholHint': 'తీవ్రంగా, వేగంగా',
+
+  'sound.errGeneric': 'శబ్దం ప్లే చేయడంలో సమస్య వచ్చింది.',
+
+  'sound.errUnsupported': 'ఈ బ్రౌజర్ శబ్దాన్ని ప్లే చేయలేదు.',
+
+  'sound.listenLabel': 'వినండి',
+
+  'sound.playing': 'శబ్దం ప్లే అవుతోంది. ఆపడానికి అదే బటన్ మళ్లీ నొక్కండి.',
+
+  'sound.shankhHint': 'లోతైన, పెద్ద',
+
+  'voice.aborted': 'ఆపేశారు. మళ్లీ ప్రయత్నించండి.',
+
+  'voice.audioCapture': 'మైక్ దొరకలేదు. పరికరం కనెక్ట్ చేయండి, లేదా టైప్ చేసి అడగండి.',
+
+  'voice.generic': 'ఏదో తప్పు జరిగింది. మళ్లీ ప్రయత్నించండి.',
+
+  'voice.network': 'మాట్లాడి అడగడానికి ఇంటర్నెట్ కావాలి, అది లేదు. టైప్ చేసి అడగండి — అదే సమాధానం దొస్తుంది.',
+
+  'voice.noSpeech': 'ఏ మాట కూడా వినబడలేదు. మైక్ దగ్గర మాట్లాడండి, లేదా టైప్ చేయండి.',
+
+  'voice.notAllowed': 'మైక్ అనుమతి రాలేదు. పైకి వెళ్ళి అనుమతి ఇవ్వండి, లేదా టైప్ చేసి అడగండి.',
+
+  'voice.serviceNotAllowed': 'మైక్ అనుమతి రాలేదు. పైకి వెళ్ళి అనుమతి ఇవ్వండి, లేదా టైప్ చేసి అడగండి.',
+
+  'voice.speakFailed': 'ఈ సమాధానాన్ని చదివి వినించలేకపోయాము.',
+
+  'voice.unsupported': 'ఈ బ్రౌజర్‌లో మాట్లాడి అడగడం పనిచేయదు. టైప్ చేసి అడగండి.',
 };
 
 const MARATHI: Record<string, string> = {
@@ -1208,6 +1412,74 @@ const MARATHI: Record<string, string> = {
   'theme.toDark': 'अंधारदार रंगाकडे जा',
 
   'theme.toLight': 'उजळ रंगाकडे जा',
+
+  'ask.emptyAnswer': 'यावेळी उत्तर तयार झाले नाही. थोडे वेगळे सांगून पुन्हा विचारा.',
+
+  'ask.errorNetwork': 'इंटरनेट चालू होत नाही. कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.',
+
+  'ask.errorRateLimit': 'एकदमच अनेक प्रश्न पाठवले गेले. थोड्या वेळानंतर प्रयत्न करा.',
+
+  'ask.heardWith': 'आता ऐकत आहे',
+
+  'ask.micUnsupported': 'या ब्राउझरमध्ये बोलून विचारणार काम करणार नाही. लिहून विचारा.',
+
+  'ask.notAnswer': 'कोणतेही उत्तर मिळाले नाही. पुन्हा विचारण्यासाठी वरच्या बटणाला दाबा.',
+
+  'ask.serviceNote': 'हे सेवेसंबंधी उत्तर आहे.',
+
+  'article.askAbout': 'या विषयाबद्दल विचारा',
+
+  'article.count': '{count} लेख',
+
+  'article.emergency': 'ज़रूरी',
+
+  'article.others': 'या विषयाचे आणखी लेख',
+
+  'article.readAloud': 'हा लेख ऐका',
+
+  'footer.admin': 'व्यवस्थापक',
+
+  'footer.ambulance': 'रुग्णवाहिका',
+
+  'footer.emergency': 'आपत्कालीन',
+
+  'footer.rights': 'विनामूल्य सेवा',
+
+  'footer.women': 'महिला मदतवाहिनी',
+
+  'sound.allHint': 'एकत्र',
+
+  'sound.bansuriHint': 'कोमल, हळू',
+
+  'sound.dholHint': 'तीव्र, जलद',
+
+  'sound.errGeneric': 'ध्वनी चालवण्यात समस्या आली.',
+
+  'sound.errUnsupported': 'हा ब्राउझर ध्वनी चालू करू शकत नाही.',
+
+  'sound.listenLabel': 'ऐका',
+
+  'sound.playing': 'आवाज चालू आहे. थांबवण्यासाठी तेच बटण पुन्हा दाबा.',
+
+  'sound.shankhHint': 'खोल, लांब',
+
+  'voice.aborted': 'थांबवले. पुन्हा प्रयत्न करा.',
+
+  'voice.audioCapture': 'माइक मिळाला नाही. उपकरण जोडा, किंवा लिहून विचारा.',
+
+  'voice.generic': 'काहीतरी चुकचुकली. पुन्हा प्रयत्न करा.',
+
+  'voice.network': 'बोलून विचारण्यासाठी इंटरनेट हवे, पण ते चालू नाही. लिहून विचारा — तेच उत्तर मिळेल.',
+
+  'voice.noSpeech': 'कोणताही आवाज ऐकली नाही. माइकजवळ बोला, किंवा लिहा.',
+
+  'voice.notAllowed': 'माइकची परवानगी मिळाली नाही. वर जाऊन परवानगी द्या, किंवा लिहून विचारा.',
+
+  'voice.serviceNotAllowed': 'माइकची परवानगी मिळाली नाही. वर जाऊन परवानगी द्या, किंवा लिहून विचारा.',
+
+  'voice.speakFailed': 'हे उत्तर वाचून ऐकता आले नाहीत.',
+
+  'voice.unsupported': 'या ब्राउझरमध्ये बोलून विचारणार काम करणार नाही. लिहून विचारा.',
 };
 
 const GUJARATI: Record<string, string> = {
@@ -1316,6 +1588,74 @@ const GUJARATI: Record<string, string> = {
   'theme.toDark': 'અંધારા રંગ પર જાઓ',
 
   'theme.toLight': 'ઉજળ રંગ પર જાઓ',
+
+  'ask.emptyAnswer': 'આ વાર જવાબ બન્યો નહીં. થોડું અલગ કરીને ફરી પૂછો.',
+
+  'ask.errorNetwork': 'ઇન્ટરનેટ ચાલુ નથી. કનેક્શન તપાસીને ફરી પ્રયત્ન કરો.',
+
+  'ask.errorRateLimit': 'એક સાથે ઘણા પ્રશ્નો મોકલાયા. થોડી વાર પછી પ્રયત્ન કરો.',
+
+  'ask.heardWith': 'અત્યારે સાંભળું રહ્યા છીએ',
+
+  'ask.micUnsupported': 'આ બ્રાઉઝરમાં બોલીને પૂછવાનું કામ નહીં કરે. લખીને પૂછો.',
+
+  'ask.notAnswer': 'કોઈ જવાબ મળ્યો નહીં. ફરી પૂછવા ઉપરના બટને દબાવો.',
+
+  'ask.serviceNote': 'આ સેવા સંબંધી જવાબ છે.',
+
+  'article.askAbout': 'આ વિષય વિશે પૂછો',
+
+  'article.count': '{count} લેખ',
+
+  'article.emergency': 'જરૂરી',
+
+  'article.others': 'આ વિષયના વધુ લેખ',
+
+  'article.readAloud': 'આ લેખ સાંભળો',
+
+  'footer.admin': 'વ્યવસ્થાપક',
+
+  'footer.ambulance': 'એમ્બ્યુલન્સ',
+
+  'footer.emergency': 'કટોકટી',
+
+  'footer.rights': 'મફત સેવા',
+
+  'footer.women': 'મહિલા મદદ',
+
+  'sound.allHint': 'સાથે જ',
+
+  'sound.bansuriHint': 'કોમળ, ધીમી',
+
+  'sound.dholHint': 'તેજ, ઝડપી',
+
+  'sound.errGeneric': 'ધ્વનિ વગાડવામાં સમસ્યા આવી.',
+
+  'sound.errUnsupported': 'આ બ્રાઉઝર ધ્વનિ વગાડી શકતો નથી.',
+
+  'sound.listenLabel': 'સાંભળો',
+
+  'sound.playing': 'અવાજ વાગી રહ્યો છે. બંધ કરવા એ જ બટન ફરી દબાવો.',
+
+  'sound.shankhHint': 'ઘેલું, લાંબું',
+
+  'voice.aborted': 'થોભાયું. ફરી પ્રયત્ન કરો.',
+
+  'voice.audioCapture': 'માઇક મળ્યો નહીં. ઉપकरણ જોડો, અથવા લખીને પૂછો.',
+
+  'voice.generic': 'કંઈક ગડબડ થઈ. ફરી પ્રયત્ન કરો.',
+
+  'voice.network': 'બોલીને પૂછવા ઇન્ટરનેટ જોઈએ, પણ તે ચાલુ નથી. લખીને પૂછો — એ જ જવાબ મળશે.',
+
+  'voice.noSpeech': 'કોઈ અવાજ સુધરાયો નહીં. માઇક પાસે બોલો, અથવા લખો.',
+
+  'voice.notAllowed': 'માઇકની પરવાનગી મળી નથી. ઉપર જઈને પરવાનગી આપો, અથવા લખીને પૂછો.',
+
+  'voice.serviceNotAllowed': 'માઇકની પરવાનગી મળી નથી. ઉપર જઈને પરવાનગી આપો, અથવા લખીને પૂછો.',
+
+  'voice.speakFailed': 'આ જવાબ વાંચીને સાંભળવામાં આવ્યું નહીં.',
+
+  'voice.unsupported': 'આ બ્રાઉઝરમાં બોલીને પૂછવાનું કામ નહીં કરે. લખીને પૂછો.',
 };
 
 const KANNADA: Record<string, string> = {
@@ -1424,6 +1764,80 @@ const KANNADA: Record<string, string> = {
   'theme.toDark': 'ಕಡು ಬಣ್ಣಕ್ಕೆ ಹೋಗಿ',
 
   'theme.toLight': 'ಉಜ್ಜಲ ಬಣ್ಣಕ್ಕೆ ಹೋಗಿ',
+
+  'ask.clear': 'ಬರೆದಿರುವುದನ್ನು ಅಳಿಸಿ',
+
+  'ask.emptyAnswer': 'ಈ ಬಾರಿ ಉತ್ತರ ಸಿಗಲಿಲ್ಲ. ಸ್ವಲ್ಪ ಬೇರೆಯ ಮಾತನಾಡಿ ಮತ್ತೆ ಕೇಳಿ.',
+
+  'ask.errorNetwork': 'ಇಂಟರ್ನೆಟ್ ಕೆಲಸ ಮಾಡುತ್ತಿಲ್ಲ. ಸಂಪರ್ಕ ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.',
+
+  'ask.errorRateLimit': 'ಒಂದೇ ಸಮಯದಲ್ಲಿ ಹಲವಾದ ಪ್ರಶ್ನೆಗಳು ಕಳುಹಿಸಲ್ಪಟ್ಟಿವೆ. ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಪ್ರಯತ್ನಿಸಿ.',
+
+  'ask.heardWith': 'ಈಗ ಕೇಳುತ್ತಿದ್ದೇವೆ',
+
+  'ask.micUnsupported': 'ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಮಾತನಾಡಿ ಕೇಳುವುದು ಕೆಲಸ ಮಾಡುವುದಿಲ್ಲ. ಬರೆದು ಕೇಳಿ.',
+
+  'ask.notAnswer': 'ಯಾವುದೇ ಉತ್ತರ ಸಿಗಲಿಲ್ಲ. ಮತ್ತೆ ಕೇಳಲು ಮೇಲಿನ ಬಟನ್ ಒತ್ತಿ.',
+
+  'ask.serviceNote': 'ಇದು ಸೇವೆಯ ಸಂಬಂಧದ ಉತ್ತರ.',
+
+  'ask.stopListening': 'ಕೇಳುವುದನ್ನು ನಿಲ್ಲಿಸಿ',
+
+  'article.askAbout': 'ಈ ವಿಷಯದಲ್ಲಿ ಕೇಳಿ',
+
+  'article.count': '{count} ಲೇಖನಗಳು',
+
+  'article.emergency': 'ಅಗತ್ಯ',
+
+  'article.others': 'ಈ ವಿಷಯದ ಇನ್ನಷ್ಟು ಲೇಖನಗಳು',
+
+  'article.readAloud': 'ಈ ಲೇಖನವನ್ನು ಕೇಳಿ',
+
+  'footer.admin': 'ನಿರ್ವಹಣೆ',
+
+  'footer.ambulance': 'ಆಂಬ್ಯುಲೆನ್ಸ್',
+
+  'footer.emergency': 'ತುರ್ತು',
+
+  'footer.readStory': 'ಅವರ ಪೂರ್ಣ ಕಥೆ ಓದಿ',
+
+  'footer.rights': 'ಉಚಿತ ಸೇವೆ',
+
+  'footer.women': 'ಮಹಿಳಾ ಸಹಾಯ',
+
+  'sound.allHint': 'ಒಂದಾಗ',
+
+  'sound.bansuriHint': 'ಮೃದು, ನಿಧಾನ',
+
+  'sound.dholHint': 'ತೀವ್ರ, ವೇಗದ',
+
+  'sound.errGeneric': 'ಧ್ವನಿ ಪ್ಲೇ ಮಾಡುವಲ್ಲಿ ಸಮಸ್ಯೆ ಆಗಿದೆ.',
+
+  'sound.errUnsupported': 'ಈ ಬ್ರೌಸರ್ ಧ್ವನಿ ಪ್ಲೇ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ.',
+
+  'sound.listenLabel': 'ಕೇಳಿ',
+
+  'sound.playing': 'ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ನಿಲ್ಲಿಸಲು ಅದೇ ಬಟನ್ ಮತ್ತೆ ಒತ್ತಿ.',
+
+  'sound.shankhHint': 'ದಾವದ, ಉದ್ದ',
+
+  'voice.aborted': 'ನಿಲ್ಲಿಸಲಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.',
+
+  'voice.audioCapture': 'ಮೈಕ್ ಸಿಗಲಿಲ್ಲ. ಸಾಧನ ಸಂಪರ್ಕಿಸಿ, ಅಥವಾ ಬರೆದು ಕೇಳಿ.',
+
+  'voice.generic': 'ಏನೋ ತಪ್ಪಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.',
+
+  'voice.network': 'ಮಾತನಾಡಿ ಕೇಳಲು ಇಂಟರ್ನೆಟ್ ಬೇಕು, ಅದು ಇಲ್ಲ. ಬರೆದು ಕೇಳಿ — ಅದೇ ಉತ್ತರ ಸಿಗುತ್ತದೆ.',
+
+  'voice.noSpeech': 'ಯಾವುದೇ ಧ್ವನಿ ಕೇಳಿಸಲಿಲ್ಲ. ಮೈಕ್ ಹತ್ತಿರ ಮಾತನಾಡಿ, ಅಥವಾ ಬರೆಯಿರಿ.',
+
+  'voice.notAllowed': 'ಮೈಕ್‌ಗೆ ಅನುಮತಿ ಸಿಗಲಿಲ್ಲ. ಮೇಲಕ್ಕೆ ಹೋಗಿ ಅನುಮತಿ ನೀಡಿ, ಅಥವಾ ಬರೆದು ಕೇಳಿ.',
+
+  'voice.serviceNotAllowed': 'ಮೈಕ್‌ಗೆ ಅನುಮತಿ ಸಿಗಲಿಲ್ಲ. ಮೇಲಕ್ಕೆ ಹೋಗಿ ಅನುಮತಿ ನೀಡಿ, ಅಥವಾ ಬರೆದು ಕೇಳಿ.',
+
+  'voice.speakFailed': 'ಈ ಉತ್ತರವನ್ನು ಓದಿ ಕೇಳಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.',
+
+  'voice.unsupported': 'ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಮಾತನಾಡಿ ಕೇಳುವುದು ಕೆಲಸ ಮಾಡುವುದಿಲ್ಲ. ಬರೆದು ಕೇಳಿ.',
 };
 
 const MALAYALAM: Record<string, string> = {
@@ -1534,6 +1948,82 @@ const MALAYALAM: Record<string, string> = {
   'theme.toDark': 'ഇരുണ്ട രൂപത്തിലേക്ക് പോകുക',
 
   'theme.toLight': 'ഇളംപ്പം വർണ്ണത്തിലേക്ക് പോകുക',
+
+  'ask.clear': 'എഴുതിയത് മായ്ക്കുക',
+
+  'ask.emptyAnswer': 'ഈവാളു ഉത്തരം ഉണ്ടായില്ല. കുറച്ച് വ്യത്യസ്തമായി വീണ്ടും ചോദിക്കുക.',
+
+  'ask.errorNetwork': 'ഇന്റര്‍നെറ്റ് പ്രവർത്തിക്കുന്നില്ല. കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.',
+
+  'ask.errorRateLimit': 'ഒരുസമയം കൂടുതൽ ചോദ്യങ്ങൾ അയച്ചു. കുറച്ച് സമയം കഴിഞ്ഞ് ശ്രമിക്കുക.',
+
+  'ask.heardWith': 'ഇപ്പോൾ കേളുന്നു',
+
+  'ask.listening': 'പറയാൻ തുടങ്ങുക…',
+
+  'ask.micUnsupported': 'ഈ ബ്രൗസറിൽ പറഞ്ഞ് ചോദിക്കിയാൽ പ്രവർത്തിക്കില്ല. എഴുതി ചോദിക്കുക.',
+
+  'ask.notAnswer': 'ഒരു ഉത്തരവും ലഭിച്ചില്ല. വീണ്ടും ചോദിക്കാൻ മുകളിലുള്ള ബട്ടൺ അമർത്തുക.',
+
+  'ask.serviceNote': 'ഇത് സേവനവുമായി ബന്ധപ്പെട്ട ഉത്തരമാണ്.',
+
+  'ask.stopListening': 'കേൾക്കുന്നത് നിർത്തുക',
+
+  'article.askAbout': 'ഈ വിഷയത്തിൽ ചോദിക്കുക',
+
+  'article.count': '{count} ലേഖനങ്ങൾ',
+
+  'article.emergency': 'അടിയന്തരം',
+
+  'article.others': 'ഈ വിഷയത്തിലെ കൂടുതൽ ലേഖനങ്ങൾ',
+
+  'article.readAloud': 'ഈ ലേഖനം കേൾക്കുക',
+
+  'footer.admin': 'നിരൂപണം',
+
+  'footer.ambulance': 'ആംബുലൻസ്',
+
+  'footer.emergency': 'അടിയന്തരം',
+
+  'footer.readStory': 'അവളുടെ പൂർണ്ണ കഥ വായിക്കുക',
+
+  'footer.rights': 'സൗജന്യ സേവനം',
+
+  'footer.women': 'വനിതാ സഹായം',
+
+  'sound.allHint': 'ഒരുമിച്ച്',
+
+  'sound.bansuriHint': 'മൃദുവായ, മന്ത്രത്തം',
+
+  'sound.dholHint': 'ശക്തമായ, വേഗമുള്ള',
+
+  'sound.errGeneric': 'ശബ്ദം കളിക്കുമ്പോൾ പ്രശ്നം ഉണ്ടായി.',
+
+  'sound.errUnsupported': 'ഈ ബ്രൗസറിന് ശബ്ദം കളിക്കാനാവില്ല.',
+
+  'sound.listenLabel': 'കേൾക്കുക',
+
+  'sound.playing': 'ശബ്ദം കളിക്കുകയാണ്. നിർത്താൻ ആ അതേ ബട്ടൺ വീണ്ടും അമർത്തുക.',
+
+  'sound.shankhHint': 'ആഴമുള്ള, ദീർഘമായ',
+
+  'voice.aborted': 'നിർത്തി. വീണ്ടും ശ്രമിക്കുക.',
+
+  'voice.audioCapture': 'മൈക്രോഫോൺ ലഭിച്ചില്ല. ഉപകരണം കണക്ഷൻ ചെയ്യുക, അല്ലെങ്കിൽ എഴുതി ചോദിക്കുക.',
+
+  'voice.generic': 'എന്തോ കുഴപ്പം സംഭവിച്ചു. വീണ്ടും ശ്രമിക്കുക.',
+
+  'voice.network': 'പറഞ്ഞ് ചോദിക്കാൻ ഇന്റര്‍നെറ്റ് വേണം, അത് ഇല്ല. എഴുതി ചോദിക്കുക — അതേ ഉത്തരം കിട്ടും.',
+
+  'voice.noSpeech': 'ഒരു ശബ്ദവും കേളാനാകാത്തിരുന്നു. മൈക്രോഫോണിനരികിൽ പറയുക, അല്ലെങ്കിൽ എഴുതുക.',
+
+  'voice.notAllowed': 'മൈക്രോഫോണിന് അനുമതി ലഭിച്ചില്ല. മുകളിലേക്ക് പോയി അനുമതി നൽകുക, അല്ലെങ്കിൽ എഴുതി ചോദിക്കുക.',
+
+  'voice.serviceNotAllowed': 'മൈക്രോഫോണിന് അനുമതി ലഭിച്ചില്ല. മുകളിലേക്ക് പോയി അനുമതി നൽകുക, അല്ലെങ്കിൽ എഴുതി ചോദിക്കുക.',
+
+  'voice.speakFailed': 'ഈ ഉത്തരം വായിക്കുകയാകാത്തിരുന്നു.',
+
+  'voice.unsupported': 'ഈ ബ്രൗസറിൽ പറഞ്ഞ് ചോദിക്കിയാൽ പ്രവർത്തിക്കില്ല. എഴുതി ചോദിക്കുക.',
 };
 
 const PUNJABI: Record<string, string> = {
@@ -1643,6 +2133,86 @@ const PUNJABI: Record<string, string> = {
   'theme.toDark': 'ਹਨੇਰੇ ਰੰਗ ਤੇ ਜਾਓ',
 
   'theme.toLight': 'ਉਜਲੇ ਰੰਗ ਤੇ ਜਾਓ',
+
+  'ask.clear': 'ਲਿਖਿਆ ਮਿਟਾਓ',
+
+  'ask.emptyAnswer': 'ਇਸ ਵਾਰ ਜਵਾਬ ਨਹੀਂ ਬਣਿਆ। ਥੋੜ੍ਹਾ ਵੱਖਰਾ ਲਿਖ ਕੇ ਦੁਬਾਰਾ ਪੁੱਛੋ।',
+
+  'ask.errorNetwork': 'ਇੰਟਰਨੈੱਟ ਨਹੀਂ ਚੱਲ ਰਿਹਾ। ਕਨੈਕਸ਼ਨ ਜਾਂਚੋ ਅਤੇ ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ।',
+
+  'ask.errorRateLimit': 'ਇੱਕੋ ਵਾਰ ਬਹੁਤ ਸਾਰੇ ਸਵਾਲ ਭੇਜੇ ਗਏ। ਥੋੜ੍ਹੀ ਦੇਰ ਬਾਅਦ ਕੋਸ਼ਿਸ਼ ਕਰੋ।',
+
+  'ask.heardWith': 'ਹੁਣ ਸੁਣ ਰਹੇ ਹਾਂ',
+
+  'ask.help': 'Enter ਦਬਾ ਕੇ ਵੀ ਭੇਜ ਸਕਦੇ ਹੋ।',
+
+  'ask.listening': 'ਬੋਲਣਾ ਸ਼ੁਰੂ ਕਰੋ…',
+
+  'ask.micUnsupported': 'ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਬੋਲ ਕੇ ਪੁੱਛਣਾ ਕੰਮ ਨਹੀਂ ਕਰੇਗਾ। ਲਿਖ ਕੇ ਪੁੱਛੋ।',
+
+  'ask.notAnswer': 'ਕੋਈ ਜਵਾਬ ਨਹੀਂ ਮਿਲਿਆ। ਦੁਬਾਰਾ ਪੁੱਛਣ ਲਈ ਉੱਪਰ ਦਾ ਬਟਨ ਦਬਾਓ।',
+
+  'ask.serviceNote': 'ਇਹ ਸੇਵਾ ਸੰਬੰਧੀ ਜਵਾਬ ਹੈ।',
+
+  'ask.stopListening': 'ਸੁਣਨਾ ਰੋਕੋ',
+
+  'ask.stopSpeak': 'ਰੋਕੋ',
+
+  'article.askAbout': 'ਇਸ ਵਿਸ਼ੇ ਬਾਰੇ ਪੁੱਛੋ',
+
+  'article.count': '{count} ਲੇਖ',
+
+  'article.emergency': 'ਜ਼ਰੂਰੀ',
+
+  'article.others': 'ਇਸ ਵਿਸ਼ੇ ਦੇ ਹੋਰ ਲੇਖ',
+
+  'article.readAloud': 'ਇਹ ਲੇਖ ਸੁਣੋ',
+
+  'footer.admin': 'ਵਿਅਪਤੀ',
+
+  'footer.ambulance': 'ਐਂਬੂਲੈਂਸ',
+
+  'footer.emergency': 'ਐਮਰਜੈਂਸੀ',
+
+  'footer.readStory': 'ਉਹਨਾਂ ਦੀ ਪੂਰੀ ਕਹਾਣੀ ਪੜ੍ਹੋ',
+
+  'footer.rights': 'ਮੁਫ਼ਤ ਸੇਵਾ',
+
+  'footer.women': 'ਔਰਤ ਹੈਲਪਲਾਈਨ',
+
+  'sound.allHint': 'ਇਕੱਠ',
+
+  'sound.bansuriHint': 'ਕੋਮਲ, ਹੌਲੀ',
+
+  'sound.dholHint': 'ਤਿੱਖੀ, ਤੇਜ਼',
+
+  'sound.errGeneric': 'ਧੁਨ ਚਲਾਉਣ ਵਿੱਚ ਸਮੱਸਿਆ ਹੋਈ।',
+
+  'sound.errUnsupported': 'ਇਹ ਬ੍ਰਾਊਜ਼ਰ ਧੁਨ ਨਹੀਂ ਚਲਾ ਸਕਦਾ।',
+
+  'sound.listenLabel': 'ਸੁਣੋ',
+
+  'sound.playing': 'ਆਵਾਜ਼ ਚੱਲ ਰਹੀ ਹੈ। ਰੋਕਣ ਲਈ ਉਸੇ ਹੀ ਬਟਨ ਦੁਬਾਰਾ ਦਬਾਓ।',
+
+  'sound.shankhHint': 'ਡੂੰਘੀ, ਲੰਬੀ',
+
+  'voice.aborted': 'ਰੁਕ ਗਿਆ। ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ।',
+
+  'voice.audioCapture': 'ਮਾਈਕ ਨਹੀਂ ਮਿਲਿਆ। ਡਿਵਾਈਸ ਜੋੜੋ, ਜਾਂ ਲਿਖ ਕੇ ਪੁੱਛੋ।',
+
+  'voice.generic': 'ਕੁਝ ਗੜਬੜ ਹੋਈ। ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ।',
+
+  'voice.network': 'ਬੋਲ ਕੇ ਪੁੱਛਣ ਲਈ ਇੰਟਰਨੈੱਟ ਚਾਹੀਦਾ, ਪਰ ਉਹ ਨਹੀਂ ਚੱਲ ਰਿਹਾ। ਲਿਖ ਕੇ ਪੁੱਛੋ — ਉਹੀ ਜਵਾਬ ਮਿਲੇਗਾ।',
+
+  'voice.noSpeech': 'ਕੋਈ ਆਵਾਜ਼ ਨਹੀਂ ਸੁਣਾਈ ਦਿੱਤੀ। ਮਾਈਕ ਕੋਲ ਬੋਲੋ, ਜਾਂ ਲਿਖੋ।',
+
+  'voice.notAllowed': 'ਮਾਈਕ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਮਿਲੀ। ਉੱਪਰ ਜਾ ਕੇ ਇਜਾਜ਼ਤ ਦਿਓ, ਜਾਂ ਲਿਖ ਕੇ ਪੁੱਛੋ।',
+
+  'voice.serviceNotAllowed': 'ਮਾਈਕ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਮਿਲੀ। ਉੱਪਰ ਜਾ ਕੇ ਇਜਾਜ਼ਤ ਦਿਓ, ਜਾਂ ਲਿਖ ਕੇ ਪੁੱਛੋ।',
+
+  'voice.speakFailed': 'ਇਹ ਜਵਾਬ ਪੜ੍ਹ ਕੇ ਸੁਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਿਆ।',
+
+  'voice.unsupported': 'ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਬੋਲ ਕੇ ਪੁੱਛਣਾ ਕੰਮ ਨਹੀਂ ਕਰੇਗਾ। ਲਿਖ ਕੇ ਪੁੱਛੋ।',
 };
 
 const URDU: Record<string, string> = {
@@ -1753,6 +2323,78 @@ const URDU: Record<string, string> = {
   'theme.toDark': 'تاریک رنگ پر جائیں',
 
   'theme.toLight': 'روشن رنگ پر جائیں',
+
+  'ask.clear': 'لکھا ہوا متن مٹا دیں',
+
+  'ask.emptyAnswer': 'اس بار جواب نہیں بنا۔ تھوڑا مختلف لے کر پوچھیں۔',
+
+  'ask.errorNetwork': 'انٹرنیٹ کام نہیں کر رہا۔ کنکشن دیکھ کر دوبارہ کوشش کریں۔',
+
+  'ask.errorRateLimit': 'ایک ہی وقت میں بہت سے سوالات بھیج دیے گئے۔ کچھ دیر بعد کوشش کریں۔',
+
+  'ask.heardWith': 'اب ہم سن رہے ہیں',
+
+  'ask.micUnsupported': 'اس براؤزر میں بول کر پوچھنا کام نہیں کرے گا۔ لکھ کر پوچھیں۔',
+
+  'ask.notAnswer': 'کوئی جواب نہیں ملا۔ دوبارہ پوچھنے کے لیے اوپر کا بٹن دبائیں۔',
+
+  'ask.serviceNote': 'یہ خدمت سے متعلق جواب ہے۔',
+
+  'ask.stopListening': 'سننا بند کریں',
+
+  'article.askAbout': 'اس موضوع میں پوچھیں',
+
+  'article.count': '{count} مضامین',
+
+  'article.emergency': 'ضروری',
+
+  'article.others': 'اس موضوع کے مزید مضامین',
+
+  'article.readAloud': 'یہ مضمون سنیں',
+
+  'footer.admin': 'منتظم',
+
+  'footer.ambulance': 'ایمبولینس',
+
+  'footer.emergency': 'ہنگامی صورتحال',
+
+  'footer.rights': 'مفت خدمت',
+
+  'footer.women': 'خواتین کی مدد',
+
+  'sound.allHint': 'ایک ساتھ',
+
+  'sound.bansuriHint': 'نرم، آہستہ',
+
+  'sound.dholHint': 'تیز، تیز',
+
+  'sound.errGeneric': 'آواز چلانے میں مسئلہ پیش آیا۔',
+
+  'sound.errUnsupported': 'یہ براؤزر آواز نہیں چلا سکتا۔',
+
+  'sound.listenLabel': 'سنیں',
+
+  'sound.playing': 'آواز چل رہی ہے۔ روکنے کے لیے وہی بٹن دوبارہ دبائیں۔',
+
+  'sound.shankhHint': 'گہری، لمبی',
+
+  'voice.aborted': 'رک گیا۔ دوبارہ کوشش کریں۔',
+
+  'voice.audioCapture': 'مائیک نہیں ملا۔ ڈیوائس لگائیں، یا لکھ کر پوچھیں۔',
+
+  'voice.generic': 'کچھ گڑبڑ ہو گیا۔ دوبارہ کوشش کریں۔',
+
+  'voice.network': 'بول کر پوچھنے کے لیے انٹرنیٹ چاہیے، مگر وہ کام نہیں کر رہا۔ لکھ کر پوچھیں — یہی جواب ملے گا۔',
+
+  'voice.noSpeech': 'کوئی آواز نہیں سنائی دی۔ مائیک کے قریب بولیں، یا لکھیں۔',
+
+  'voice.notAllowed': 'مائیک کی اجازت نہیں ملی۔ اوپر جا کر اجازت دیں، یا لکھ کر پوچھیں۔',
+
+  'voice.serviceNotAllowed': 'مائیک کی اجازت نہیں ملی۔ اوپر جا کر اجازت دیں، یا لکھ کر پوچھیں۔',
+
+  'voice.speakFailed': 'یہ جواب پڑھ کر سنायا نہیں جا سکا۔',
+
+  'voice.unsupported': 'اس براؤزر میں بول کر پوچھنا کام نہیں کرے گا۔ لکھ کر پوچھیں۔',
 };
 
 const ARABIC: Record<string, string> = {
@@ -1867,6 +2509,80 @@ const ARABIC: Record<string, string> = {
   'theme.toDark': 'انتقل إلى المظهر الداكن',
 
   'theme.toLight': 'انتقل إلى المظهر الفاتح',
+
+  'ask.clear': 'امسح ما كتبته',
+
+  'ask.emptyAnswer': 'لم تُنشأ إجابة هذه المرة. صُغ سؤالك بصيغة أخرى وأعد المحاولة.',
+
+  'ask.errorNetwork': 'الإنترنت لا يعمل. افحص الاتصال ثم أعد المحاولة.',
+
+  'ask.errorRateLimit': 'تم إرسال أسئلة كثيرة دفعة واحدة. أعد المحاولة بعد قليل.',
+
+  'ask.heardWith': 'نسمع الآن',
+
+  'ask.micUnsupported': 'السؤال بالصوت لن يعمل في هذا المتصفح. اكتب سؤالك بدلاً من ذلك.',
+
+  'ask.notAnswer': 'لم تصل أي إجابة. اضغط الزر في الأعلى للسؤال مرة أخرى.',
+
+  'ask.serviceNote': 'هذه إجابة informacyjna عن الخدمة.',
+
+  'ask.stopListening': 'إيقاف الاستماع',
+
+  'article.askAbout': 'اسأل عن هذا الموضوع',
+
+  'article.count': '{count} مقالات',
+
+  'article.emergency': 'عاجل',
+
+  'article.others': 'مزيد من المقالات في هذا الموضوع',
+
+  'article.readAloud': 'استمع إلى هذه المقالة',
+
+  'footer.admin': 'المسؤول',
+
+  'footer.ambulance': 'الإسعاف',
+
+  'footer.emergency': 'طوارئ',
+
+  'footer.readStory': 'اقرأ قصتها كاملة',
+
+  'footer.rights': 'خدمة مجانية',
+
+  'footer.women': 'خط مساعدة النساء',
+
+  'sound.allHint': 'معًا',
+
+  'sound.bansuriHint': 'لطيفة، هادئة',
+
+  'sound.dholHint': 'قوية، سريعة',
+
+  'sound.errGeneric': 'حدثت مشكلة في تشغيل الصوت.',
+
+  'sound.errUnsupported': 'هذا المتصفح لا يستطيع تشغيل الصوت.',
+
+  'sound.listenLabel': 'استمع',
+
+  'sound.playing': 'الصوت يعمل. اضغط الزر نفسه لإيقافه.',
+
+  'sound.shankhHint': 'عميقة، طويلة',
+
+  'voice.aborted': 'توقف. أعد المحاولة.',
+
+  'voice.audioCapture': 'لم يُعثر على الميكروفون. وصّل الجهاز، أو اكتب سؤالك.',
+
+  'voice.generic': 'حدث خطأ ما. أعد المحاولة.',
+
+  'voice.network': 'السؤال بالصوت يحتاج إنترنت، وهو غير متاح. اكتب سؤالك — ستحصل على نفس الإجابة.',
+
+  'voice.noSpeech': 'لم يُسمع أي صوت. تحدّث قرب الميكروفون، أو اكتب.',
+
+  'voice.notAllowed': 'لم يُمنح الإذن للميكروفون. اذهب إلى الأعلى وامنح الإذن، أو اكتب سؤالك.',
+
+  'voice.serviceNotAllowed': 'لم يُمنح الإذن للميكروفون. اذهب إلى الأعلى وامنح الإذن، أو اكتب سؤالك.',
+
+  'voice.speakFailed': 'تعذّرت قراءة هذه الإجابة صوتيًا.',
+
+  'voice.unsupported': 'السؤال بالصوت لن يعمل في هذا المتصفح. اكتب سؤالك بدلاً من ذلك.',
 };
 
 const SPANISH: Record<string, string> = {
@@ -1977,6 +2693,78 @@ const SPANISH: Record<string, string> = {
   'theme.toDark': 'Ir al tema oscuro',
 
   'theme.toLight': 'Ir al tema claro',
+
+  'ask.clear': 'Borrar lo escrito',
+
+  'ask.emptyAnswer': 'Esta vez no se pudo generar una respuesta. Pruébelo con otras palabras.',
+
+  'ask.errorNetwork': 'Internet no funciona. Compruebe la conexión y vuelva a intentarlo.',
+
+  'ask.errorRateLimit': 'Se enviaron muchas preguntas a la vez. Vuelva a intentarlo en unos minutos.',
+
+  'ask.heardWith': 'Escuchando:',
+
+  'ask.micUnsupported': 'Hablar para preguntar no funciona en este navegador. Escriba su pregunta.',
+
+  'ask.notAnswer': 'No se recibió ninguna respuesta. Pulse el botón de arriba para preguntar de nuevo.',
+
+  'ask.serviceNote': 'Esta es una respuesta informativa sobre el servicio.',
+
+  'ask.stopListening': 'Dejar de escuchar',
+
+  'article.askAbout': 'Preguntar sobre este tema',
+
+  'article.count': '{count} artículos',
+
+  'article.emergency': 'Importante',
+
+  'article.others': 'Más artículos sobre este tema',
+
+  'article.readAloud': 'Escuchar este artículo',
+
+  'footer.admin': 'Administración',
+
+  'footer.ambulance': 'Ambulancia',
+
+  'footer.emergency': 'Emergencia',
+
+  'footer.rights': 'Servicio gratuito',
+
+  'footer.women': 'Línea de ayuda a la mujer',
+
+  'sound.allHint': 'Juntos',
+
+  'sound.bansuriHint': 'Suave, lenta',
+
+  'sound.dholHint': 'Fuerte, rápida',
+
+  'sound.errGeneric': 'Hubo un problema al reproducir el sonido.',
+
+  'sound.errUnsupported': 'Este navegador no puede reproducir el sonido.',
+
+  'sound.listenLabel': 'Escuchar',
+
+  'sound.playing': 'Está sonando. Pulse el mismo botón para parar.',
+
+  'sound.shankhHint': 'Profunda, larga',
+
+  'voice.aborted': 'Se detuvo. Vuelva a intentarlo.',
+
+  'voice.audioCapture': 'No se encontró el micrófono. Conecte el dispositivo o escriba su pregunta.',
+
+  'voice.generic': 'Algo salió mal. Vuelva a intentarlo.',
+
+  'voice.network': 'Preguntar por voz necesita internet, y no funciona. Escriba su pregunta: receberá la misma respuesta.',
+
+  'voice.noSpeech': 'No se oyó ninguna voz. Hable cerca del micrófono o escriba.',
+
+  'voice.notAllowed': 'No se concedió permiso para el micrófono. Conceda el permiso arriba o escriba su pregunta.',
+
+  'voice.serviceNotAllowed': 'No se concedió permiso para el micrófono. Conceda el permiso arriba o escriba su pregunta.',
+
+  'voice.speakFailed': 'No se pudo leer esta respuesta en voz alta.',
+
+  'voice.unsupported': 'Hablar para preguntar no funciona en este navegador. Escriba su pregunta.',
 };
 
 /* -------------------------------------------------------------------------- */
