@@ -6,6 +6,7 @@ import { isOwnerConfigured, isOwnerSession } from '@/server/owner';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { AdminLogin } from '@/components/admin/admin-login';
 import { AdminPanel } from '@/components/admin/admin-panel';
+import { SetupWarning } from '@/components/admin/setup-warning';
 
 export const dynamic = 'force-dynamic';
 
@@ -124,6 +125,13 @@ export default async function AdminPage() {
   return (
     <SiteChrome siteName={siteName}>
       <div className="wrap-narrow py-10 sm:py-14">
+        {/*
+          Above the panel, before the numbers. A missing API key leaves no trace
+          anywhere else on the site — every question answers politely and nothing
+          looks broken — so the one place the owner can fix it should say so.
+        */}
+        <SetupWarning />
+
         <AdminPanel
           pending={pending.map((r) => ({ ...r, createdAt: r.createdAt.toISOString() }))}
           published={published.map((r) => ({ ...r, createdAt: r.createdAt.toISOString() }))}

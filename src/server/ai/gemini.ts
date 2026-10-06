@@ -130,11 +130,26 @@ export async function askGemini(raw: unknown): Promise<AskResult> {
   }
 
   if (!isConfigured()) {
+    /*
+     * Its own key, not `ask.notAnswer`.
+     *
+     * That message told the visitor to press the ask button again, which is the
+     * one action that cannot help here: there is no key, so every retry produced
+     * the identical page. A visitor who has no way to fix it should not be told
+     * to keep trying, and the owner should be told it plainly in the admin panel
+     * rather than discovering it from a support request.
+     *
+     * The wording stays visitor-facing and does not name the missing setting —
+     * the site is free and public, and "the developer forgot a key" is not help
+     * to anyone. It says what is true: this is a saved library, and the answer
+     * was not in it.
+     */
     return {
       ok: false,
       fallback: true,
-      reasonKey: 'ask.notAnswer',
-      reason: 'अभी AI जोड़ा नहीं गया है, इसलिए नीचे पहले से तैयार जानकारी दी गई है।',
+      reasonKey: 'ask.notConfigured',
+      reason:
+        'यह सेवा अभी अपने पुराने जवाबों के बंद दराज़ से जवाब दे रही है। आपका सवाल उसमें नहीं मिला।',
     };
   }
 

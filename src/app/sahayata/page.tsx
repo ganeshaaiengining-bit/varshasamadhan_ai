@@ -5,6 +5,7 @@ import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { getT } from '@/server/i18n';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { AskBox } from '@/components/ask/ask-box';
+import { HealthBox } from '@/components/health/health-box';
 
 export const dynamic = 'force-dynamic';
 
@@ -65,6 +66,18 @@ export default async function SahayataPage() {
             ]}
           />
         </div>
+
+        {/*
+         * The age box sits above the topic chips, not below them.
+
+         * The topic chips ask the visitor to know which of the nine subjects
+         * their problem falls under, which is the thing someone in pain is least
+         * able to do — the reported case was a fifty-four-year-old asking about
+         * back pain and getting nothing back. Age is something everyone knows
+         * without diagnosing themselves, so it is asked first and the subject
+         * chips stay as the second, harder way in.
+         */}
+        <HealthBox />
 
         {categories.length > 0 ? (
           <section className="mt-10">

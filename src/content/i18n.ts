@@ -273,7 +273,7 @@ const HINDI: Record<string, string> = {
   'ask.errorRateLimit':
     'बहुत सारे सवाल एक साथ भेज दिए गए। थोड़ी देर बाद कोशिश कीजिए।',
   'ask.errorNetwork': 'इंटरनेट नहीं चल पा रहा। कनेक्शन जाँचकर फिर कोशिश कीजिए।',
-  'ask.notAnswer': 'कोई जवाब नहीं मिल पाया। दोबारा पूछने के लिए ऊपर का बटन दबाइए।',
+  'ask.notAnswer': 'इस सवाल का सीधा जवाब हमारे पास नहीं है।',
   'ask.emptyAnswer': 'इस बार जवाब नहीं बना पाया। थोड़ा अलग करके फिर पूछिए।',
   'ask.micUnsupported': 'इस ब्राउज़र में बोलकर पूछना काम नहीं करेगा। लिखकर पूछिए।',
   'ask.speakHint': 'बोलना शुरू करने के लिए माइक दबाइए।',
@@ -440,6 +440,102 @@ const HINDI: Record<string, string> = {
   'sound.preparing': 'ध्वनि तैयार हो रही है',
 
   'nav.path': 'पथ',
+  /* ---- health questions, by age ---- */
+  'health.heading': 'अपनी उम्र बताइए',
+  'health.intro': 'उम्र के हिसाब से जो सवाल अक्सर पूछे जाते हैं, वे यहाँ दिखेंगे। कोई बटन दबाइए — सवाल नीचे भर जाएगा, फिर पूछ लीजिए।',
+  'health.ageLabel': 'उम्र (साल)',
+  'health.years': 'साल',
+  'health.bandsLabel': 'उम्र के हिसाब से चुनिए',
+  'health.notAdviceStrong': 'यह चिकित्सा सलाह नहीं है।',
+  'health.notAdvice': 'कोई भी दवाई शुरू या बंद न करें — पहले डॉक्टर से मिलें।',
+  'health.emergencyStrong': 'आपातकाल में फोन कीजिए:',
+  'health.emergencyCall': '(आपातकाल)',
+  'health.emergencyAmbulance': '(एम्बुलेंस)',
+  'health.emergencyWomen': '(महिला हेल्पलाइन)',
+  'health.privacy': 'कोई नाम या पता लिखने की ज़रूरत नहीं है।',
+  'health.band.infant.label': '0 – 2 साल',
+  'health.band.infant.note': 'नन्हे बच्चे, जो अभी अपनी बात नहीं बता सकते',
+  'health.c.infant1': 'तेज़ बुखार',
+  'health.q.infant1': 'मेरे बच्चे को तेज़ बुखार है, क्या दूध दूँ?',
+  'health.c.infant2': 'खाना नहीं खा रहा',
+  'health.q.infant2': 'छोटा बच्चा खाना नहीं खा रहा, क्या करूँ?',
+  'health.c.infant3': 'उल्टी हो रही है',
+  'health.q.infant3': 'बच्चे को उल्टी हो रही है, कब डॉक्टर को दिखाऊँ?',
+  'health.c.infant4': 'दस्त हो रहे हैं',
+  'health.q.infant4': 'बच्चे को दस्त हो रहे हैं, क्या खिलाऊँ?',
+  'health.band.child.label': '3 – 12 साल',
+  'health.band.child.note': 'बच्चे जो बोल सकते हैं, पर सवाल पूछने से डरते हैं',
+  'health.c.child1': 'पढ़ाई में मन नहीं',
+  'health.q.child1': 'बच्चे की पढ़ाई में मन नहीं लगता, क्या करूँ?',
+  'health.c.child2': 'स्कूल से मना करता है',
+  'health.q.child2': 'बच्चा रोज़ स्कूल जाने से मना कर रहा है, कारण क्या हो सकता है?',
+  'health.c.child3': 'रात में बुखार',
+  'health.q.child3': 'बच्चे को रात में बुखार आता है, क्या करूँ?',
+  'health.c.child4': 'दाँत टूट रहे हैं',
+  'health.q.child4': 'बच्चे के दाँत टूट रहे हैं, दाँतों की देखभाल कैसे करूँ?',
+  'health.band.teen.label': '13 – 17 साल',
+  'health.band.teen.note': 'किशोर, जिन्हें अक्सर कोई ऐसा व्यक्ति नहीं मिलता जो सुन ले',
+  'health.c.teen1': 'पढ़ाई का दबाव',
+  'health.q.teen1': 'पढ़ाई का बहुत दबाव है, इसे कैसे सामना करूँ?',
+  'health.c.teen2': 'नींद नहीं आती',
+  'health.q.teen2': 'रात को नींद ठीक से नहीं आती, क्या करूँ?',
+  'health.c.teen3': 'मोबाइल की लत',
+  'health.q.teen3': 'मोबाइल की लत लग गई है, छोड़ने का तरीका बताइए।',
+  'health.c.teen4': 'बहुत उदासी',
+  'health.q.teen4': 'बहुत उदासी महसूस होती है, किससे बात करूँ?',
+  'health.band.young.label': '18 – 30 साल',
+  'health.band.young.note': 'नौकरी, पैसा और नींद — तीनों का एक साथ बोझ',
+  'health.c.young1': 'काम का तनाव',
+  'health.q.young1': 'काम का तनाव बहुत ज़्यादा है, कैसे कम करूँ?',
+  'health.c.young2': 'बैठने से पीठ दर्द',
+  'health.q.young2': 'बैठे रहने से पीठ में दर्द हो रहा है, क्या करूँ?',
+  'health.c.young3': 'नींद नहीं आती',
+  'health.q.young3': 'रात को नींद नहीं आती, क्या उपाय है?',
+  'health.c.young4': 'पैसा कम है',
+  'health.q.young4': 'पैसे कम हैं और खर्च ज़्यादा, क्या करूँ?',
+  'health.band.middle.label': '31 – 45 साल',
+  'health.band.middle.note': 'घर, बच्चे और अपनी सेहत — सबकी ज़िम्मेदारी एक साथ',
+  'health.c.middle1': 'कमर में दर्द',
+  'health.q.middle1': 'कमर में दर्द हो रहा है, कारण क्या हो सकती है?',
+  'health.c.middle2': 'नींद सही नहीं',
+  'health.q.middle2': 'नींद अच्छी नहीं आ रही, सुधारने का क्या उपाय है?',
+  'health.c.middle3': 'घर का तनाव',
+  'health.q.middle3': 'घर का तनाव बहुत है, बच्चों को कैसे संभालूँ?',
+  'health.c.middle4': 'पेट में गैस',
+  'health.q.middle4': 'काम पर कई साल से पेट में गैस की समस्या है, क्या करूँ?',
+  'health.band.later.label': '46 – 60 साल',
+  'health.band.later.note': 'शरीर की उम्र और उसकी देखभाल — दोनों एक साथ',
+  'health.c.later1': 'पीठ में दर्द',
+  'health.q.later1': 'मेरी उम्र 54 साल है और मेरी पीठ में दर्द है, क्या करूँ?',
+  'health.c.later2': 'घुटने में दर्द',
+  'health.q.later2': 'घुटने में दर्द हो रहा है चढ़ने पर, क्यों?',
+  'health.c.later3': 'रात को पैर में ऐंठन',
+  'health.q.later3': 'रात को पैर में ऐंठन होता है, क्या करूँ?',
+  'health.c.later4': 'सुबह जकड़न',
+  'health.q.later4': 'सुबह उठकर कमर में जकड़न होती है, कारण क्या हो सकती है?',
+  'health.band.senior.label': '61 – 75 साल',
+  'health.band.senior.note': 'दवाई, संतुलन और अकेलापन — तीनों साथ में',
+  'health.c.senior1': 'चलने में तकलीफ़',
+  'health.q.senior1': 'घुटनों में इतना दर्द है कि चलना मुश्किल है, क्या करूँ?',
+  'health.c.senior2': 'दवाई की जाँच',
+  'health.q.senior2': 'कई दवाइयाँ रोज़ खानी पड़ती हैं — कैसे पता चलेगा कि कौन सी हानिकारक है?',
+  'health.c.senior3': 'रात में पेशाब',
+  'health.q.senior3': 'रात को बार-बार पेशाब की दिक़्क़त है, क्या करूँ?',
+  'health.c.senior4': 'सुनाई कम',
+  'health.q.senior4': 'कम सुनाई देता है, सुनने का कोई उपाय बताइए।',
+  'health.band.elder.label': '76 – 100 साल',
+  'health.band.elder.note': 'हर दवा की जाँच ज़रूरी, हर गिरना गंभीर',
+  'health.c.elder1': 'गिरने का डर',
+  'health.q.elder1': 'घर में गिर जाने का डर है, कौन-सी सुरक्षा रखूँ?',
+  'health.c.elder2': 'याददाश्त कमज़ोर',
+  'health.q.elder2': 'याददाश्त कमज़ोर हो रही है, क्या उपाय है?',
+  'health.c.elder3': 'रोज़ की दर्द-दवा',
+  'health.q.elder3': 'दर्द की दवा रोज़ खानी पड़ती है — क्या इसका कोई नुकसान है?',
+  'health.c.elder4': 'कब डॉक्टर के पास',
+  'health.q.elder4': 'कब डॉक्टर के पास जाना ज़रूरी है?',
+
+  'ask.notConfigured': 'यह सेवा अभी अपने पुराने जवाबों के बंद दराज़ से जवाब दे रही है। आपका सवाल उसमें नहीं मिला।',
+
 };
 
 /* -------------------------------------------------------------------------- */
@@ -605,7 +701,7 @@ const ENGLISH: Record<string, string> = {
   'ask.errorRateLimit':
     'Too many questions at once. Please try again in a moment.',
   'ask.errorNetwork': 'The internet is not working. Check the connection and try again.',
-  'ask.notAnswer': 'No answer came back. Press the button above to ask again.',
+  'ask.notAnswer': 'We do not have a direct answer to this question.',
   'ask.emptyAnswer': 'No answer could be made this time. Try asking a little differently.',
   'ask.micUnsupported': 'Speaking is not available in this browser. Please write instead.',
   'ask.speakHint': 'Press the microphone to start speaking.',
@@ -764,6 +860,102 @@ const ENGLISH: Record<string, string> = {
   'sound.preparing': 'Getting the sound ready',
 
   'nav.path': 'Breadcrumb',
+  /* ---- health questions, by age ---- */
+  'health.heading': 'Tell us your age',
+  'health.intro': 'The questions people of each age ask most often. Tap any one — it fills the box below, then ask it.',
+  'health.ageLabel': 'Age (years)',
+  'health.years': 'years',
+  'health.bandsLabel': 'Choose by age',
+  'health.notAdviceStrong': 'This is not medical advice.',
+  'health.notAdvice': 'Do not start or stop any medicine — see a doctor first.',
+  'health.emergencyStrong': 'In an emergency, call:',
+  'health.emergencyCall': '(emergency)',
+  'health.emergencyAmbulance': '(ambulance)',
+  'health.emergencyWomen': '(women\'s helpline)',
+  'health.privacy': 'No name or address is needed.',
+  'health.band.infant.label': '0 – 2 years',
+  'health.band.infant.note': 'Babies too young to say what is wrong',
+  'health.c.infant1': 'High fever',
+  'health.q.infant1': 'My baby has a high fever — should I give milk?',
+  'health.c.infant2': 'Not eating',
+  'health.q.infant2': 'My baby is not eating at all, what should I do?',
+  'health.c.infant3': 'Vomiting',
+  'health.q.infant3': 'My baby is vomiting, when should I see a doctor?',
+  'health.c.infant4': 'Diarrhoea',
+  'health.q.infant4': 'My baby has diarrhoea, what should I feed?',
+  'health.band.child.label': '3 – 12 years',
+  'health.band.child.note': 'Children who can speak, but are afraid to ask',
+  'health.c.child1': 'Won\'t study',
+  'health.q.child1': 'My child will not concentrate on studies, what should I do?',
+  'health.c.child2': 'Refuses school',
+  'health.q.child2': 'My child refuses to go to school every day, why might that be?',
+  'health.c.child3': 'Night fever',
+  'health.q.child3': 'My child gets a fever at night, what should I do?',
+  'health.c.child4': 'Teeth breaking',
+  'health.q.child4': 'My child\'s teeth are breaking, how do I look after them?',
+  'health.band.teen.label': '13 – 17 years',
+  'health.band.teen.note': 'Teenagers, who often have nobody who will listen',
+  'health.c.teen1': 'Study pressure',
+  'health.q.teen1': 'The pressure of studies is too much, how do I handle it?',
+  'health.c.teen2': 'No sleep',
+  'health.q.teen2': 'I cannot sleep properly at night, what should I do?',
+  'health.c.teen3': 'Phone addiction',
+  'health.q.teen3': 'I am addicted to my phone, how do I get free of it?',
+  'health.c.teen4': 'Very low mood',
+  'health.q.teen4': 'I feel very depressed, who should I talk to?',
+  'health.band.young.label': '18 – 30 years',
+  'health.band.young.note': 'Work, money and sleep — all three at once',
+  'health.c.young1': 'Work stress',
+  'health.q.young1': 'The stress from work is far too much, how do I reduce it?',
+  'health.c.young2': 'Back pain from sitting',
+  'health.q.young2': 'My back hurts from sitting all day, what should I do?',
+  'health.c.young3': 'No sleep',
+  'health.q.young3': 'I cannot fall asleep at night, what can I try?',
+  'health.c.young4': 'Money is short',
+  'health.q.young4': 'My money is short and my expenses are high, what should I do?',
+  'health.band.middle.label': '31 – 45 years',
+  'health.band.middle.note': 'Home, children and your own health, all at once',
+  'health.c.middle1': 'Lower back pain',
+  'health.q.middle1': 'I have lower back pain, what could be causing it?',
+  'health.c.middle2': 'Poor sleep',
+  'health.q.middle2': 'My sleep is not improving, what can I do about it?',
+  'health.c.middle3': 'Stress at home',
+  'health.q.middle3': 'There is a lot of stress at home, how do I handle the children?',
+  'health.c.middle4': 'Stomach gas',
+  'health.q.middle4': 'I have had stomach gas at work for years, what should I do?',
+  'health.band.later.label': '46 – 60 years',
+  'health.band.later.note': 'The age of the body, and looking after it, together',
+  'health.c.later1': 'Back pain',
+  'health.q.later1': 'I am 54 years old and I have back pain, what should I do?',
+  'health.c.later2': 'Knee pain',
+  'health.q.later2': 'My knee hurts when I climb stairs, why is that?',
+  'health.c.later3': 'Night cramps',
+  'health.q.later3': 'I get cramps in my leg at night, what should I do?',
+  'health.c.later4': 'Morning stiffness',
+  'health.q.later4': 'My lower back is stiff when I get up in the morning, why?',
+  'health.band.senior.label': '61 – 75 years',
+  'health.band.senior.note': 'Medicines, balance and loneliness, all together',
+  'health.c.senior1': 'Trouble walking',
+  'health.q.senior1': 'My knees hurt so much that walking is difficult, what should I do?',
+  'health.c.senior2': 'Too many medicines',
+  'health.q.senior2': 'I have to take many medicines daily — how do I know which ones are harmful?',
+  'health.c.senior3': 'Night urine',
+  'health.q.senior3': 'I have to get up for the toilet several times a night, what should I do?',
+  'health.c.senior4': 'Hearing loss',
+  'health.q.senior4': 'I am finding it hard to hear — what can I do about it?',
+  'health.band.elder.label': '76 – 100 years',
+  'health.band.elder.note': 'Every medicine needs checking, every fall matters',
+  'health.c.elder1': 'Fear of falling',
+  'health.q.elder1': 'I am afraid of falling at home — what safety can I add?',
+  'health.c.elder2': 'Failing memory',
+  'health.q.elder2': 'My memory is getting weaker, what can I do about it?',
+  'health.c.elder3': 'Daily painkillers',
+  'health.q.elder3': 'I take a painkiller every day — is that harmful?',
+  'health.c.elder4': 'When to see a doctor',
+  'health.q.elder4': 'When does it become important to see a doctor?',
+
+  'ask.notConfigured': 'This service is answering from its saved library for now. Your question was not in it.',
+
 };
 
 /* -------------------------------------------------------------------------- */
@@ -895,7 +1087,7 @@ const BENGALI: Record<string, string> = {
 
   'ask.micUnsupported': 'এই ব্রাউজারে বলে জিজ্ঞাসা করা কাজ করবে না। লিখে জিজ্ঞাসা করুন।',
 
-  'ask.notAnswer': 'কোনো উত্তর পাওয়া যায়নি। আবার জিজ্ঞাসা করতে উপরের বোতামে চাপ দিন।',
+  'ask.notAnswer': 'এই প্রশ্নের সরাসরি উত্তর আমাদের কাছে নেই।',
 
   'ask.serviceNote': 'এটি সেবা সম্পর্কিত উত্তর।',
 
@@ -952,6 +1144,9 @@ const BENGALI: Record<string, string> = {
   'voice.speakFailed': 'এই উত্তরটি পড়ে শোনানো যায়নি।',
 
   'voice.unsupported': 'এই ব্রাউজারে বলে জিজ্ঞাসা করা কাজ করবে না। লিখে জিজ্ঞাসা করুন।',
+
+  'ask.notConfigured': 'এই সেবাটি এখন সংরক্ষিত উত্তরের ভাণ্ডার থেকে উত্তর দিচ্ছে। আপনার প্রশ্ন সেখানে ছিল না।',
+
 };
 
 const TAMIL: Record<string, string> = {
@@ -1071,7 +1266,7 @@ const TAMIL: Record<string, string> = {
 
   'ask.micUnsupported': 'இந்த உலாவியில் பேசி கேட்பது வேலை செய்யாது. எழுதி கேளுங்கள்.',
 
-  'ask.notAnswer': 'எந்த பதிலும் கிடைக்கவில்லை. மீண்டும் கேட்க மேலே உள்ள பொத்தானை அழுத்தவும்.',
+  'ask.notAnswer': 'இந்தக் கேள்விக்கு நேரடி பதில் எங்களிடம் இல்லை.',
 
   'ask.serviceNote': 'இது சேவை தொடர்பான பதில்.',
 
@@ -1128,6 +1323,9 @@ const TAMIL: Record<string, string> = {
   'voice.speakFailed': 'இந்தப் பதிலைப் படித்து கேட்க முடியவில்லை.',
 
   'voice.unsupported': 'இந்த உலாவியில் பேசி கேட்பது வேலை செய்யாது. எழுதி கேளுங்கள்.',
+
+  'ask.notConfigured': 'இந்தச் சேவை இப்போது சேமித்த பதிவுகளிலிருந்து பதிலளிக்கிறது. உங்கள் கேள்வி அதில் இல்லை.',
+
 };
 
 const TELUGU: Record<string, string> = {
@@ -1247,7 +1445,7 @@ const TELUGU: Record<string, string> = {
 
   'ask.micUnsupported': 'ఈ బ్రౌజర్‌లో మాట్లాడి అడగడం పనిచేయదు. టైప్ చేసి అడగండి.',
 
-  'ask.notAnswer': 'ఏ సమాధానం కాలేదు. మళ్లీ అడగడానికి పైన ఉన్న బటన్ నొక్కండి.',
+  'ask.notAnswer': 'ఈ ప్రశ్నకు నేరుగా సమాధానం మేము వద్ద లేదు.',
 
   'ask.serviceNote': 'ఇది సేవకు సంబంధించిన సమాధానం.',
 
@@ -1304,6 +1502,9 @@ const TELUGU: Record<string, string> = {
   'voice.speakFailed': 'ఈ సమాధానాన్ని చదివి వినించలేకపోయాము.',
 
   'voice.unsupported': 'ఈ బ్రౌజర్‌లో మాట్లాడి అడగడం పనిచేయదు. టైప్ చేసి అడగండి.',
+
+  'ask.notConfigured': 'ఈ సేవ ఇప్పుడు సేవ్ చేసిన సమాధానాల కోస్తం నుండి సమాధానమిస్తోంది. మీ ప్రశ్న దానిలో లేదు.',
+
 };
 
 const MARATHI: Record<string, string> = {
@@ -1423,7 +1624,7 @@ const MARATHI: Record<string, string> = {
 
   'ask.micUnsupported': 'या ब्राउझरमध्ये बोलून विचारणार काम करणार नाही. लिहून विचारा.',
 
-  'ask.notAnswer': 'कोणतेही उत्तर मिळाले नाही. पुन्हा विचारण्यासाठी वरच्या बटणाला दाबा.',
+  'ask.notAnswer': 'या प्रश्नाचे थेट उत्तर आमच्याकडे नाही.',
 
   'ask.serviceNote': 'हे सेवेसंबंधी उत्तर आहे.',
 
@@ -1480,6 +1681,9 @@ const MARATHI: Record<string, string> = {
   'voice.speakFailed': 'हे उत्तर वाचून ऐकता आले नाहीत.',
 
   'voice.unsupported': 'या ब्राउझरमध्ये बोलून विचारणार काम करणार नाही. लिहून विचारा.',
+
+  'ask.notConfigured': 'ही सेवा सध्या जतन केलेल्या उत्तरांच्या संग्रहातून उत्तर देत आहे. तुमचा प्रश्न त्यात नाही.',
+
 };
 
 const GUJARATI: Record<string, string> = {
@@ -1599,7 +1803,7 @@ const GUJARATI: Record<string, string> = {
 
   'ask.micUnsupported': 'આ બ્રાઉઝરમાં બોલીને પૂછવાનું કામ નહીં કરે. લખીને પૂછો.',
 
-  'ask.notAnswer': 'કોઈ જવાબ મળ્યો નહીં. ફરી પૂછવા ઉપરના બટને દબાવો.',
+  'ask.notAnswer': 'આ પ્રશ્નનું સીધું જવાબ અમારે પાસે નથી.',
 
   'ask.serviceNote': 'આ સેવા સંબંધી જવાબ છે.',
 
@@ -1656,6 +1860,9 @@ const GUJARATI: Record<string, string> = {
   'voice.speakFailed': 'આ જવાબ વાંચીને સાંભળવામાં આવ્યું નહીં.',
 
   'voice.unsupported': 'આ બ્રાઉઝરમાં બોલીને પૂછવાનું કામ નહીં કરે. લખીને પૂછો.',
+
+  'ask.notConfigured': 'આ સેવા હાલ સચવાયેલા જવાબોના ભંડોળમાંથી જવાબ આપી રહી છે. તમારો પ્રશ્ન તેમાં નથી.',
+
 };
 
 const KANNADA: Record<string, string> = {
@@ -1777,7 +1984,7 @@ const KANNADA: Record<string, string> = {
 
   'ask.micUnsupported': 'ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಮಾತನಾಡಿ ಕೇಳುವುದು ಕೆಲಸ ಮಾಡುವುದಿಲ್ಲ. ಬರೆದು ಕೇಳಿ.',
 
-  'ask.notAnswer': 'ಯಾವುದೇ ಉತ್ತರ ಸಿಗಲಿಲ್ಲ. ಮತ್ತೆ ಕೇಳಲು ಮೇಲಿನ ಬಟನ್ ಒತ್ತಿ.',
+  'ask.notAnswer': 'ಈ ಪ್ರಶ್ನೆಗೆ ನೇರ ಉತ್ತರ ನಮ್ಮ ಬಳಿ ಇಲ್ಲ.',
 
   'ask.serviceNote': 'ಇದು ಸೇವೆಯ ಸಂಬಂಧದ ಉತ್ತರ.',
 
@@ -1838,6 +2045,9 @@ const KANNADA: Record<string, string> = {
   'voice.speakFailed': 'ಈ ಉತ್ತರವನ್ನು ಓದಿ ಕೇಳಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.',
 
   'voice.unsupported': 'ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಮಾತನಾಡಿ ಕೇಳುವುದು ಕೆಲಸ ಮಾಡುವುದಿಲ್ಲ. ಬರೆದು ಕೇಳಿ.',
+
+  'ask.notConfigured': 'ಈ ಸೇವೆ ಈಗ ಉಳಿಸಿದ ಉತ್ತರಗಳ ದಾಸ್ತಾನದಿಂದ ಉತ್ತರಿಸುತ್ತಿದೆ. ನಿಮ್ಮ ಪ್ರಶ್ನೆ ಅದರಲ್ಲಿ ಇಲ್ಲ.',
+
 };
 
 const MALAYALAM: Record<string, string> = {
@@ -1963,7 +2173,7 @@ const MALAYALAM: Record<string, string> = {
 
   'ask.micUnsupported': 'ഈ ബ്രൗസറിൽ പറഞ്ഞ് ചോദിക്കിയാൽ പ്രവർത്തിക്കില്ല. എഴുതി ചോദിക്കുക.',
 
-  'ask.notAnswer': 'ഒരു ഉത്തരവും ലഭിച്ചില്ല. വീണ്ടും ചോദിക്കാൻ മുകളിലുള്ള ബട്ടൺ അമർത്തുക.',
+  'ask.notAnswer': 'ഈ ചോദ്യത്തിന് നേരിട്ട ഉത്തരം ഞങ്ങളുടെ കയ്യിൽ ഇല്ല.',
 
   'ask.serviceNote': 'ഇത് സേവനവുമായി ബന്ധപ്പെട്ട ഉത്തരമാണ്.',
 
@@ -2024,6 +2234,9 @@ const MALAYALAM: Record<string, string> = {
   'voice.speakFailed': 'ഈ ഉത്തരം വായിക്കുകയാകാത്തിരുന്നു.',
 
   'voice.unsupported': 'ഈ ബ്രൗസറിൽ പറഞ്ഞ് ചോദിക്കിയാൽ പ്രവർത്തിക്കില്ല. എഴുതി ചോദിക്കുക.',
+
+  'ask.notConfigured': 'ഈ സേവനം ഇപ്പോൾ സംരക്ഷിച്ച ഉത്തരങ്ങളുടെ ആക്കെയിൽ നിന്ന് ഉത്തരിക്കുന്നു. നിങ്ങളുടെ ചോദ്യം അതിൽ ഇല്ല.',
+
 };
 
 const PUNJABI: Record<string, string> = {
@@ -2150,7 +2363,7 @@ const PUNJABI: Record<string, string> = {
 
   'ask.micUnsupported': 'ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਬੋਲ ਕੇ ਪੁੱਛਣਾ ਕੰਮ ਨਹੀਂ ਕਰੇਗਾ। ਲਿਖ ਕੇ ਪੁੱਛੋ।',
 
-  'ask.notAnswer': 'ਕੋਈ ਜਵਾਬ ਨਹੀਂ ਮਿਲਿਆ। ਦੁਬਾਰਾ ਪੁੱਛਣ ਲਈ ਉੱਪਰ ਦਾ ਬਟਨ ਦਬਾਓ।',
+  'ask.notAnswer': 'ਇਸ ਸਵਾਲ ਦਾ ਸਿੱਧਾ ਜਵਾਬ ਸਾਡੇ ਕੋਲ ਨਹੀਂ ਹੈ।',
 
   'ask.serviceNote': 'ਇਹ ਸੇਵਾ ਸੰਬੰਧੀ ਜਵਾਬ ਹੈ।',
 
@@ -2213,6 +2426,9 @@ const PUNJABI: Record<string, string> = {
   'voice.speakFailed': 'ਇਹ ਜਵਾਬ ਪੜ੍ਹ ਕੇ ਸੁਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਿਆ।',
 
   'voice.unsupported': 'ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਬੋਲ ਕੇ ਪੁੱਛਣਾ ਕੰਮ ਨਹੀਂ ਕਰੇਗਾ। ਲਿਖ ਕੇ ਪੁੱਛੋ।',
+
+  'ask.notConfigured': 'ਇਹ ਸੇਵਾ ਹਾਲੇ ਸੰਭਾਲੀਆਂ ਜਵਾਬਾਂ ਦੇ ਭੰਡਾਰ ਤੋਂ ਜਵਾਬ ਦੇ ਰਹੀ ਹੈ। ਤੁਹਾਡਾ ਸਵਾਲ ਉਸਮੇਂ ਨਹੀਂ ਮਿਲਿਆ।',
+
 };
 
 const URDU: Record<string, string> = {
@@ -2336,7 +2552,7 @@ const URDU: Record<string, string> = {
 
   'ask.micUnsupported': 'اس براؤزر میں بول کر پوچھنا کام نہیں کرے گا۔ لکھ کر پوچھیں۔',
 
-  'ask.notAnswer': 'کوئی جواب نہیں ملا۔ دوبارہ پوچھنے کے لیے اوپر کا بٹن دبائیں۔',
+  'ask.notAnswer': 'اس سوال کا براہِ راست جواب ہمارے پاس نہیں ہے۔',
 
   'ask.serviceNote': 'یہ خدمت سے متعلق جواب ہے۔',
 
@@ -2395,6 +2611,9 @@ const URDU: Record<string, string> = {
   'voice.speakFailed': 'یہ جواب پڑھ کر سنायا نہیں جا سکا۔',
 
   'voice.unsupported': 'اس براؤزر میں بول کر پوچھنا کام نہیں کرے گا۔ لکھ کر پوچھیں۔',
+
+  'ask.notConfigured': 'یہ خدمت اِس وقت محفوظ جوابات کے ذخیرے سے جواب دے رہی ہے۔ آپ کا سوال اس میں نہیں ملا۔',
+
 };
 
 const ARABIC: Record<string, string> = {
@@ -2522,7 +2741,7 @@ const ARABIC: Record<string, string> = {
 
   'ask.micUnsupported': 'السؤال بالصوت لن يعمل في هذا المتصفح. اكتب سؤالك بدلاً من ذلك.',
 
-  'ask.notAnswer': 'لم تصل أي إجابة. اضغط الزر في الأعلى للسؤال مرة أخرى.',
+  'ask.notAnswer': 'ليس لدينا جواب مباشر عن هذا السؤال.',
 
   'ask.serviceNote': 'هذه إجابة informacyjna عن الخدمة.',
 
@@ -2583,6 +2802,9 @@ const ARABIC: Record<string, string> = {
   'voice.speakFailed': 'تعذّرت قراءة هذه الإجابة صوتيًا.',
 
   'voice.unsupported': 'السؤال بالصوت لن يعمل في هذا المتصفح. اكتب سؤالك بدلاً من ذلك.',
+
+  'ask.notConfigured': 'تخدم هذه الخدمة حالياً من مكتبتها المحفوظة. لم يظهر سؤالك فيها.',
+
 };
 
 const SPANISH: Record<string, string> = {
@@ -2706,7 +2928,7 @@ const SPANISH: Record<string, string> = {
 
   'ask.micUnsupported': 'Hablar para preguntar no funciona en este navegador. Escriba su pregunta.',
 
-  'ask.notAnswer': 'No se recibió ninguna respuesta. Pulse el botón de arriba para preguntar de nuevo.',
+  'ask.notAnswer': 'No tenemos una respuesta directa a esta pregunta.',
 
   'ask.serviceNote': 'Esta es una respuesta informativa sobre el servicio.',
 
@@ -2765,6 +2987,9 @@ const SPANISH: Record<string, string> = {
   'voice.speakFailed': 'No se pudo leer esta respuesta en voz alta.',
 
   'voice.unsupported': 'Hablar para preguntar no funciona en este navegador. Escriba su pregunta.',
+
+  'ask.notConfigured': 'Este servicio responde ahora desde su biblioteca guardada. Tu pregunta no estaba en ella.',
+
 };
 
 /* -------------------------------------------------------------------------- */
