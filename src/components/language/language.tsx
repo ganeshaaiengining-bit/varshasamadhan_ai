@@ -289,9 +289,11 @@ export function LanguageSelect({
   );
 }
 
-/* ========================================================================= */
-
-/** Small helper so callers do not need the whole context object. */
-export function useTranslate() {
-  return useLanguage().t;
-}
+/* ===========================================================================
+ *  Removed
+ *  ===========================================================================
+ *
+ *  `useTranslate()` — a one-line wrapper around `useLanguage().t`. Nothing used
+ *  it, and it was an easy way for a caller to take only `t` and miss `tf`, which
+ *  is the one that fills `{placeholders}`.
+ */

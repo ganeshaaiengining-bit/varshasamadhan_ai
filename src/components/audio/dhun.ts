@@ -373,19 +373,13 @@ export async function playOpeningDhun(volume = 0.5): Promise<DhunHandle | null> 
   };
 }
 
-/** True when this browser will let a page make sound without a gesture. */
-export function audioLikelyBlocked(): boolean {
-  if (typeof window === 'undefined') return true;
-  const Ctor =
-    window.AudioContext ??
-    (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-  if (!Ctor) return true;
-  try {
-    const probe = new Ctor();
-    const state = probe.state;
-    void probe.close();
-    return state === 'suspended';
-  } catch {
-    return true;
-  }
-}
+/* ===========================================================================
+ *  Removed
+ *  ===========================================================================
+ *
+ *  `audioLikelyBlocked()` — it answered the same question as "does `playOpeningDhun`
+ *  return null?", by opening a throwaway `AudioContext` to read its state and then
+ *  discarding it. Callers already branch on the return value, and on Safari the
+ *  probe and the real context can disagree, so it could report "blocked" for a
+ *  context that then played fine.
+ */

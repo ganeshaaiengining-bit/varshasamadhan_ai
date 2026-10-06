@@ -81,10 +81,6 @@ function recognitionCtor(): RecognitionCtor | null {
   return (w.SpeechRecognition ?? w.webkitSpeechRecognition) as RecognitionCtor | null;
 }
 
-export function isVoiceInputSupported(): boolean {
-  return typeof window !== 'undefined' && recognitionCtor() !== null;
-}
-
 export type ListenState = 'idle' | 'starting' | 'listening' | 'error' | 'unsupported';
 
 /** Human messages. Written for someone who may not know what "network" means. */
@@ -239,7 +235,17 @@ export function useVoiceInput({
     }
   }, [lang, state, stop]);
 
-  return { state, interim, error, start, stop, supported: isVoiceInputSupported() };
+  return {
+    state,
+    interim,
+    error,
+    start,
+    stop,
+    // Inlined rather than calling a named helper: this is the only place that
+    // needs to know, and a second exported way to ask the same question is how
+    // one of them stops being updated.
+    supported: typeof window !== 'undefined' && recognitionCtor() !== null,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -346,6 +352,15 @@ export function stopSpeaking() {
   }
 }
 
+/* ===========================================================================
+ *  Removed
+ *  ===========================================================================
+ *
+ *  `isVoiceInputSupported()` — superseded by the `supported` flag already
+ *  returned from `useVoiceInput()`, which every caller used instead. Two ways to
+ *  ask the same question is how one of them stops being updated.
+ */
+
 /** True when the machine has any Hindi voice at all — surfaced in the admin panel. */
 export function hindiVoiceInstalled(): boolean {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return false;
@@ -355,10 +370,11 @@ export function hindiVoiceInstalled(): boolean {
 /**
  * True when a voice exists for the chosen language.
  *
- * Used to decide whether to warn *before* the visitor presses play. Discovering
- * it only when `speak()` fails is worse: the button appears to work, nothing is
- * heard, and someone who cannot see the screen has no way to know the audio path
- * is the problem rather than the answer.
+ * Kept because it is the check that belongs in front of the read-aloud button:
+ * discovering the problem only when `speak()` fails is worse, because the button
+ * appears to work, nothing is heard, and someone who cannot see the screen has
+ * no way to know the audio path is at fault rather than the answer. Nothing calls
+ * it yet, which is why it is documented rather than left looking load-bearing.
  */
 export function voiceInstalledFor(languageCode: string): boolean {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return false;
