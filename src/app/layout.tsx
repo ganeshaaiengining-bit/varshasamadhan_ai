@@ -107,7 +107,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {t('nav.skip')}
           </span>
         </a>
-        <LanguageProvider>
+        <LanguageProvider initialLanguage={lang}>
           <ToastProvider>
             <AppBar siteName={siteName()} />
             {children}

@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { Icon } from '@/components/ui/icon';
+import { useLanguage } from '@/components/language/language';
 
 /**
  * Read-aloud button.
@@ -13,8 +14,26 @@ import { Icon } from '@/components/ui/icon';
  * The prototype's version read the whole page with no speed control and no
  * error message — on a machine with no Hindi voice it produced silence and the
  * user assumed the button was broken.
+ *
+ * ── The language of the audio ──────────────────────────────────────────────
+ * The text being read is an article body, which is the owner's own writing and
+ * is in Hindi regardless of the interface language. So the voice is chosen from
+ * the *text's* language rather than the visitor's choice: a Tamil visitor who
+ * opens a Hindi article should hear it read as Hindi, because that is what is
+ * written on the screen. Reading it with a Tamil voice produces something the
+ * listener cannot decipher while having no way to tell the audio is at fault.
+ * Pass `language` explicitly to override.
  */
-export function ReadAloud({ text, label = 'सुनें' }: { text: string; label?: string }) {
+export function ReadAloud({
+  text,
+  label,
+  language = 'hi',
+}: {
+  text: string;
+  label?: string;
+  language?: string;
+}) {
+  const { t } = useLanguage();
   const [speaking, setSpeaking] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -39,10 +58,11 @@ export function ReadAloud({ text, label = 'सुनें' }: { text: string; l
     setSpeaking(true);
     speak(text, {
       rate: 0.85,
+      language,
       onEnd: () => setSpeaking(false),
-      onError: (message) => {
+      onError: (reasonKey) => {
         setSpeaking(false);
-        setError(message);
+        setError(t(reasonKey));
       },
     });
   };
@@ -56,7 +76,7 @@ export function ReadAloud({ text, label = 'सुनें' }: { text: string; l
         className={speaking ? 'btn !min-h-[2.75rem] !px-4 text-sm' : 'btn-outline !min-h-[2.75rem] !px-4 text-sm'}
       >
         <Icon name="speaker" size={20} />
-        {speaking ? 'रोकें' : label}
+        {speaking ? t('ask.stopSpeak') : (label ?? t('ask.listen'))}
       </button>
 
       {error ? (

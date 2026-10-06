@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/server/db';
+import { getT } from '@/server/i18n';
 import { Icon } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs';
@@ -26,6 +27,7 @@ export default async function ArticlePage({
   params: Promise<{ slug: string; article: string }>;
 }) {
   const { slug, article } = await params;
+  const { t, lang } = await getT();
 
   const row = await prisma.article.findFirst({
     where: { slug: article, isPublished: true },
@@ -60,8 +62,9 @@ export default async function ArticlePage({
     <SiteChrome siteName={siteName}>
       <div className="wrap-narrow py-8 sm:py-12">
         <Breadcrumbs
+          ariaLabel={t('nav.path')}
           items={[
-            { href: '/', label: 'होम' },
+            { href: '/', label: t('nav.home') },
             { href: `/p/${row.category.slug}`, label: row.category.title },
             { label: row.title },
           ]}
@@ -72,7 +75,7 @@ export default async function ArticlePage({
             {row.isEmergency ? (
               <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-rose-soft px-3 py-1.5 text-sm font-bold text-rose">
                 <Icon name="alert" size={16} />
-                ज़रूरी जानकारी
+                {t('article.emergencyInfo')}
               </p>
             ) : null}
 
@@ -87,7 +90,7 @@ export default async function ArticlePage({
               role="alert"
               className="card mt-6 border-rose/40 bg-rose-soft p-5 text-center"
             >
-              <p className="text-sm font-bold uppercase tracking-wide text-rose">याद रखिए</p>
+              <p className="text-sm font-bold uppercase tracking-wide text-rose">{t('article.remember')}</p>
               <p className="mt-1 text-xl font-extrabold text-rose">{row.helpline}</p>
             </div>
           ) : null}
@@ -95,7 +98,7 @@ export default async function ArticlePage({
           <div className="mt-6 flex flex-wrap gap-2">
             <ReadAloud
               text={row.voiceSummary || `${row.title}। ${row.summary}`}
-              label="इस पन्ने को सुनें"
+              label={t('article.readAloud')}
             />
           </div>
 
@@ -145,11 +148,9 @@ export default async function ArticlePage({
             <aside className="card mt-10 border-amber/40 bg-amber-soft p-5">
               <h2 className="flex items-center gap-2 text-amber">
                 <Icon name="shield" size={20} />
-                यह चिकित्सा सलाह नहीं है
+                {t('article.medicalTitle')}
               </h2>
-              <p className="mt-2">
-                यह जानकारी सामान्य मदद के लिए है। कोई भी दवाई शुरू या बंद न करें — पहले डॉक्टर से मिलें।
-              </p>
+              <p className="mt-2">{t('article.medicalBody')}</p>
             </aside>
           ) : null}
         </article>
@@ -160,9 +161,15 @@ export default async function ArticlePage({
           </Link>
           <Link href="/sahayata" className="btn-primary">
             <Icon name="mic" size={20} />
-            कोई सवाल पूछें
+            {t('article.askAny')}
           </Link>
         </div>
+
+        {lang !== 'hi' ? (
+          <p className="mt-8 rounded-md border border-line bg-saffron-soft/40 px-4 py-3 text-sm text-ink-soft">
+            {t('language.articlesIn')} {t('language.articlesInHint')}
+          </p>
+        ) : null}
       </div>
     </SiteChrome>
   );

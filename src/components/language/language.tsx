@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { LANGUAGES, stringsFor, type Language } from '@/content/i18n';
+import { LANGUAGES, fill, stringsFor, type Language } from '@/content/i18n';
 import { Icon } from '@/components/ui/icon';
 
 /**
@@ -57,12 +57,22 @@ interface LanguageValue {
   language: Language;
   dir: 'ltr' | 'rtl';
   t: (key: string) => string;
+  /**
+   * `t` with `{placeholder}` substitution.
+   *
+   * Part of the same context rather than a separate hook so a component cannot
+   * translate a key and then forget to fill its placeholders — `t()` alone would
+   * happily render the literal `{count}` on screen.
+   */
+  tf: (key: string, values: Record<string, string | number>) => string;
 }
 
 const LanguageContext = React.createContext<LanguageValue>({
   language: LANGUAGES[0],
   dir: 'ltr',
   t: (key: string) => stringsFor('hi')(key),
+  tf: (key: string, values: Record<string, string | number>) =>
+    fill(stringsFor('hi')(key), values),
 });
 
 export function useLanguage(): LanguageValue {
@@ -83,8 +93,34 @@ function useSetLanguage() {
   return React.useContext(SetLanguageContext);
 }
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = React.useState<Language>(LANGUAGES[0]);
+export function LanguageProvider({
+  children,
+  initialLanguage,
+}: {
+  children: React.ReactNode;
+  /**
+   * The language the *server* already resolved from the cookie.
+   *
+   * This is what makes the whole site change language on the first paint rather
+   * than after hydration. Client components are rendered on the server too, and
+   * without this they all start from `LANGUAGES[0]` — Hindi — so the footer, the
+   * app bar, the theme toggle and the sound pad came down in Hindi while the
+   * server-rendered page around them came down in Tamil. The result looked like
+   * a half-translated site: a Tamil heading above a Hindi footer, with no error
+   * anywhere to explain it.
+   *
+   * The old version read `localStorage` in an effect and corrected itself a
+   * moment later, which is fine for a page that is entirely client-rendered and
+   * wrong for this one, because the mismatch is visible in the first frame.
+   */
+  initialLanguage?: string;
+}) {
+  const [language, setLanguageState] = React.useState<Language>(() => {
+    const found = initialLanguage
+      ? LANGUAGES.find((l) => l.code === initialLanguage)
+      : undefined;
+    return found ?? LANGUAGES[0];
+  });
 
   /*
    * Read after mount, and only ever to *honour* a previous choice.
@@ -134,11 +170,15 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, [language]);
 
   const value = React.useMemo<LanguageValue>(
-    () => ({
-      language,
-      dir: language.direction,
-      t: stringsFor(language.code),
-    }),
+    () => {
+      const t = stringsFor(language.code);
+      return {
+        language,
+        dir: language.direction,
+        t,
+        tf: (key, values) => fill(t(key), values),
+      };
+    },
     [language],
   );
 

@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { Icon } from '@/components/ui/icon';
+import { useLanguage } from '@/components/language/language';
 
 /**
  * ===========================================================================
@@ -26,9 +27,17 @@ import { Icon } from '@/components/ui/icon';
 
 interface ToneSpec {
   id: string;
-  label: string;
+  /**
+   * Translation keys rather than finished text.
+   *
+   * The sound itself is identical for every visitor — it is synthesised from
+   * these frequencies — so only the two labels around it need translating, and
+   * keeping the acoustic description next to the spectrum it describes is what
+   * stops the two drifting apart.
+   */
+  labelKey: string;
   icon: string;
-  description: string;
+  descriptionKey: string;
   /** Frequencies in Hz, and how long each rings for, in seconds. */
   partials: { freq: number; gain: number; decay: number }[];
   gap: number;
@@ -42,9 +51,9 @@ interface ToneSpec {
 const TONES: ToneSpec[] = [
   {
     id: 'shankh',
-    label: 'शंख',
+    labelKey: 'sound.shankh',
     icon: '📯',
-    description: 'गहरी, लंबी — ध्यान के लिए',
+    descriptionKey: 'sound.shankhHint',
     partials: [
       { freq: 220, gain: 0.32, decay: 3.2 },
       { freq: 443, gain: 0.18, decay: 2.6 },
@@ -55,9 +64,9 @@ const TONES: ToneSpec[] = [
   },
   {
     id: 'bansuri',
-    label: 'बांसुरी',
+    labelKey: 'sound.bansuri',
     icon: '🎶',
-    description: 'कोमल, धीमी — पल की ठहराव के लिए',
+    descriptionKey: 'sound.bansuriHint',
     partials: [
       { freq: 523.25, gain: 0.26, decay: 2.4 },
       { freq: 784, gain: 0.12, decay: 2.0 },
@@ -67,9 +76,9 @@ const TONES: ToneSpec[] = [
   },
   {
     id: 'nagada',
-    label: 'नगाड़ा',
+    labelKey: 'sound.dhol',
     icon: '🥁',
-    description: 'तीखी — ध्यान खींचने के लिए',
+    descriptionKey: 'sound.dholHint',
     partials: [
       { freq: 82, gain: 0.38, decay: 1.5 },
       { freq: 165, gain: 0.22, decay: 1.1 },
@@ -79,9 +88,9 @@ const TONES: ToneSpec[] = [
   },
   {
     id: 'gan',
-    label: 'गंभीर गण',
+    labelKey: 'sound.all',
     icon: '🔔',
-    description: 'एक साथ — ध्यान ले जाने के लिए',
+    descriptionKey: 'sound.allHint',
     partials: [
       { freq: 196, gain: 0.24, decay: 3.6 },
       { freq: 294, gain: 0.18, decay: 3.2 },
@@ -93,6 +102,7 @@ const TONES: ToneSpec[] = [
 ];
 
 export function SoundPad({ className = '' }: { className?: string }) {
+  const { t } = useLanguage();
   const [playing, setPlaying] = React.useState<string | null>(null);
   const [ready, setReady] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -123,7 +133,7 @@ export function SoundPad({ className = '' }: { className?: string }) {
     try {
       const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (!Ctor) {
-        setError('इस ब्राउज़र में ध्वनि नहीं चल पा रही।');
+        setError(t('sound.errUnsupported'));
         return;
       }
 
@@ -172,7 +182,7 @@ export function SoundPad({ className = '' }: { className?: string }) {
         }
       }, total + 400);
     } catch {
-      setError('ध्वनि चलाने में समस्या हुई। दोबारा कोशिश कीजिए।');
+      setError(t('sound.errGeneric'));
     }
   };
 
@@ -193,16 +203,16 @@ export function SoundPad({ className = '' }: { className?: string }) {
             <span className="text-4xl" aria-hidden="true">
               {tone.icon}
             </span>
-            <span className="mt-1 text-lg font-bold">{tone.label}</span>
-            <span className="text-sm text-ink-muted">{tone.description}</span>
+            <span className="mt-1 text-lg font-bold">{t(tone.labelKey)}</span>
+            <span className="text-sm text-ink-muted">{t(tone.descriptionKey)}</span>
             <span className="mt-2 flex items-center gap-1.5 text-sm font-bold text-saffron-deep">
               {playing === tone.id ? (
                 <>
                   <Icon name="speaker" size={16} />
-                  बज रही है
+                  {t('sound.playing')}
                 </>
               ) : (
-                'सुनें'
+                t('sound.listenLabel')
               )}
             </span>
           </button>
@@ -210,7 +220,7 @@ export function SoundPad({ className = '' }: { className?: string }) {
       </div>
 
       <p aria-live="polite" className="mt-4 text-sm text-ink-subtle">
-        {playing ? 'आवाज़ चल रही है। रोकने के लिए दोबारा उसी बटन को दबाएँ।' : 'कोई बटन दबाकर ध्वनि सुनिए।'}
+        {playing ? t('sound.hintPlaying') : t('sound.hintIdle')}
       </p>
 
       {error ? (
@@ -219,7 +229,7 @@ export function SoundPad({ className = '' }: { className?: string }) {
         </p>
       ) : null}
 
-      {!ready ? <p className="sr-only">ध्वनि तैयार हो रही है</p> : null}
+      {!ready ? <p className="sr-only">{t('sound.preparing')}</p> : null}
     </div>
   );
 }

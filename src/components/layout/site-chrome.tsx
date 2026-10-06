@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Icon } from '@/components/ui/icon';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { Sunrise } from '@/components/visual/sunrise';
-import { LanguageSelect } from '@/components/language/language';
+import { LanguageSelect, useLanguage } from '@/components/language/language';
 import { VARSHA } from '@/content/tribute';
 
 /**
@@ -22,6 +22,7 @@ export function SiteChrome({
   children: React.ReactNode;
 }) {
   const [open, setOpen] = React.useState(false);
+  const { t } = useLanguage();
 
   // A drawer left open behind a page navigation traps a screen-reader user.
   React.useEffect(() => {
@@ -59,19 +60,19 @@ export function SiteChrome({
    * anywhere else: the site name, and the language picker.
    */
   const links = [
-    { href: '/', label: 'होम', icon: 'home' },
-    { href: '/smriti', label: 'स्मृति', icon: 'sun' },
-    { href: '/sahayata', label: 'सहायता', icon: 'search' },
-    { href: '/samaroh', label: 'संदर्भ', icon: 'scroll' },
-    { href: '/reviews', label: 'राय', icon: 'star' },
-    { href: '/madad', label: 'मदद करें', icon: 'heart' },
+    { href: '/', labelKey: 'nav.home', icon: 'home' },
+    { href: '/smriti', labelKey: 'nav.tribute', icon: 'sun' },
+    { href: '/sahayata', labelKey: 'nav.help', icon: 'search' },
+    { href: '/samaroh', labelKey: 'nav.reference', icon: 'scroll' },
+    { href: '/reviews', labelKey: 'nav.reviews', icon: 'star' },
+    { href: '/madad', labelKey: 'nav.support', icon: 'heart' },
   ];
 
   return (
     <>
       <header className="sticky top-0 z-30 border-b border-line bg-surface/95 backdrop-blur">
         <div className="wrap flex min-h-[4.5rem] items-center gap-3 py-2">
-          <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label={`${siteName} — होम`}>
+          <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label={`${siteName} — ${t('nav.home')}`}>
             {/* The rising sun plays on load, then rests as a plain mark. */}
             <Sunrise size={44} />
             <span className="hidden text-lg font-extrabold leading-tight sm:block">
@@ -120,52 +121,54 @@ export function SiteChrome({
               href="/smriti"
               className="mt-3 inline-flex items-center gap-1.5 font-bold text-saffron-deep hover:underline"
             >
-              उनकी पूरी कथा पढ़िए
+              {t('footer.readStory')}
               <Icon name="arrow" size={16} />
             </Link>
 
-            <p className="mt-4 text-sm text-ink-subtle">
-              यह सेवा पूरी तरह निःशुल्क है। किसी से कोई पैसे नहीं लिया जाता।
-            </p>
+            <p className="mt-4 text-sm text-ink-subtle">{t('footer.free')}</p>
           </div>
 
-          <nav aria-label="पन्ने">
-            <h2 className="text-sm font-bold uppercase tracking-wide text-ink-subtle">पन्ने</h2>
+          <nav aria-label={t('footer.pages')}>
+            <h2 className="text-sm font-bold uppercase tracking-wide text-ink-subtle">
+              {t('footer.pages')}
+            </h2>
             <ul className="mt-3 space-y-1.5">
               {links.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-ink-muted hover:text-saffron-deep">
-                    {link.label}
+                    {t(link.labelKey)}
                   </Link>
                 </li>
               ))}
               <li>
                 <Link href="/admin" className="text-ink-muted hover:text-saffron-deep">
-                  प्रबंधक
+                  {t('footer.admin')}
                 </Link>
               </li>
             </ul>
           </nav>
 
           <div>
-            <h2 className="text-sm font-bold uppercase tracking-wide text-ink-subtle">ज़रूरी नंबर</h2>
+            <h2 className="text-sm font-bold uppercase tracking-wide text-ink-subtle">
+              {t('footer.helplines')}
+            </h2>
             <ul className="mt-3 space-y-2 text-ink-muted">
               <li className="flex items-center gap-2">
                 <Icon name="phone" size={16} />
                 <a href="tel:112" className="hover:text-saffron-deep">
-                  112 — आपातकाल
+                  112 — {t('footer.emergency')}
                 </a>
               </li>
               <li className="flex items-center gap-2">
                 <Icon name="phone" size={16} />
                 <a href="tel:108" className="hover:text-saffron-deep">
-                  108 — एम्बुलेंस
+                  108 — {t('footer.ambulance')}
                 </a>
               </li>
               <li className="flex items-center gap-2">
                 <Icon name="phone" size={16} />
                 <a href="tel:181" className="hover:text-saffron-deep">
-                  181 — महिला हेल्पलाइन
+                  181 — {t('footer.women')}
                 </a>
               </li>
             </ul>
@@ -173,7 +176,7 @@ export function SiteChrome({
         </div>
 
         <div className="wrap mt-10 border-t border-line pt-6 text-sm text-ink-subtle">
-          © {new Date().getFullYear()} {siteName} · निःशुल्क सेवा
+          © {new Date().getFullYear()} {siteName} · {t('footer.rights')}
         </div>
       </footer>
     </>

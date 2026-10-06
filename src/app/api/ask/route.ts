@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/server/db';
 import { askGemini, isConfigured } from '@/server/ai/gemini';
+import { getLanguage } from '@/server/i18n';
 
 /**
  * POST /api/ask
@@ -23,6 +24,7 @@ export const dynamic = 'force-dynamic';
 const bodySchema = z.object({
   question: z.string().trim().min(3).max(800),
   category: z.string().trim().max(80).optional().default(''),
+  lang: z.string().trim().max(10).optional(),
 });
 
 /** Words that mean the question is incomplete or a test. */
@@ -59,17 +61,28 @@ export async function POST(request: Request) {
 
   const { question, category } = parsed.data;
 
+  // The cookie wins over the body. See the note at the top of this file.
+  const language = await getLanguage();
+  const languageCode = language.code;
+
   // A greeting is not a question. Answering one wastes a metered call and tells
   // the visitor something is broken.
-  if (TRIVIAL.has(question.replace(/[।.!?।]/g, '').trim().toLowerCase())) {
+  //
+  // Matched in several scripts, not just Devanagari: a visitor who has chosen
+  // Tamil will say "வணக்கம்", and checking only Hindi would spend a metered
+  // call answering a greeting and return a blank-feeling result to someone who
+  // never asked anything.
+  const greeting = question.replace(/[।.!?।]/g, '').trim().toLowerCase();
+  if (TRIVIAL.has(greeting) || isGreetingIn(languageCode, greeting)) {
     return NextResponse.json({
       ok: false,
       fallback: true,
+      reasonKey: 'ask.welcome',
       reason: 'आपका स्वागत है! नीचे अपनी समस्या लिखिए या कोई श्रेणी चुनिए।',
     });
   }
 
-  const result = await askGemini({ question, category });
+  const result = await askGemini({ question, category, lang: languageCode });
 
   await prisma.askedQuestion.create({
     data: {
@@ -81,7 +94,36 @@ export async function POST(request: Request) {
     select: { id: true },
   });
 
-  return NextResponse.json(result, { status: result.ok ? 200 : 200 });
+  return NextResponse.json(result);
+}
+
+/**
+ * Greetings in the scripts most of the offered languages use.
+ *
+ * Deliberately a short list and not a full language table. A greeting is cheap to
+ * miss — the cost of not recognising one is one wasted answer — while a long
+ * hardcoded list of foreign words is a second translation file to keep in step
+ * with `i18n.ts`, for very little gain.
+ */
+function isGreetingIn(language: string, text: string): boolean {
+  const sets: Record<string, string[]> = {
+    ta: ['வணக்கம்', 'நமச்சிவ'],
+    te: ['నమస్కారం'],
+    bn: ['নমস্কার', 'আসসালামু'],
+    ml: ['നമസ്കാരം'],
+    kn: ['ನಮಸ್ಕಾರ'],
+    gu: ['નમસ્તે'],
+    mr: ['नमस्कार'],
+    pa: ['ਸਤਿਸ੍ਰੀਅਕਾਲ'],
+    ur: ['السلام علیکم'],
+    ar: ['مرحبا', 'السلام عليكم'],
+    es: ['hola', 'buenos días'],
+    en: ['hello', 'hi there'],
+  };
+
+  const words = sets[language];
+  if (!words) return false;
+  return words.some((w) => text === w || text.startsWith(w));
 }
 
 /** GET tells the client whether AI is available, so the UI can say so honestly. */

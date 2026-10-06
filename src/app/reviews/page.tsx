@@ -1,16 +1,23 @@
 import type { Metadata } from 'next';
 import { prisma } from '@/server/db';
+import { getT } from '@/server/i18n';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { ReviewsSection } from '@/components/reviews/reviews-section';
 import { getRatingSummary } from '@/server/reviews/actions';
 
 export const dynamic = 'force-dynamic';
-export const metadata: Metadata = {
-  title: 'समीक्षाएँ',
-  description: 'लोगों की राय — और आप अपनी राय लिख सकते हैं। बिना पंजीकरण, बिना फ़ोन नंबर।',
-};
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT();
+  return {
+    title: t('reviews.pageTitle'),
+    description: t('reviews.pageIntro'),
+  };
+}
 
 export default async function ReviewsPage() {
+  const { t } = await getT();
+
   const [reviews, summary] = await Promise.all([
     prisma.review.findMany({
       // Only approved reviews are read here. The moderation state is not
@@ -38,11 +45,8 @@ export default async function ReviewsPage() {
     <SiteChrome siteName={siteName}>
       <div className="wrap-narrow py-10 sm:py-14">
         <div className="text-center">
-          <h1>आपकी राय, आपकी बात</h1>
-          <p className="mx-auto mt-3 max-w-xl text-ink-muted">
-            क्या यह सेवा आपके काम आई? अपनी बात लिखिए — आपका नाम लेना ज़रूरी नहीं है।
-            आपकी बात से दूसरे लोगों को फ़ैसला लेने में मदद मिलेगी।
-          </p>
+          <h1>{t('reviews.title')}</h1>
+          <p className="mx-auto mt-3 max-w-xl text-ink-muted">{t('reviews.intro')}</p>
         </div>
 
         <ReviewsSection

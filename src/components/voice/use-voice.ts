@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { localeTag } from '@/content/i18n';
 
 /**
  * ===========================================================================
@@ -100,6 +101,29 @@ const ERROR_MESSAGES: Record<string, string> = {
 // useVoiceInput
 // ---------------------------------------------------------------------------
 
+/**
+ * The tag for a site language code, for both speech recognition and speech
+ * output.
+ *
+ * Delegates to `localeTag` in `i18n.ts` rather than keeping its own table. Two
+ * copies of this mapping is how the date on a review, the voice reading an
+ * article, and the language the AI writes in end up disagreeing with each other,
+ * and none of the three would show an error when it happened.
+ */
+export function speechTag(languageCode: string): string {
+  return localeTag(languageCode);
+}
+
+/** Human-readable error text in the visitor's language. */
+const ERROR_KEYS: Record<string, string> = {
+  'not-allowed': 'voice.notAllowed',
+  'service-not-allowed': 'voice.serviceNotAllowed',
+  'no-speech': 'voice.noSpeech',
+  'audio-capture': 'voice.audioCapture',
+  network: 'voice.network',
+  aborted: 'voice.aborted',
+};
+
 export function useVoiceInput({
   onResult,
   lang = 'hi-IN',
@@ -148,7 +172,7 @@ export function useVoiceInput({
     const Ctor = recognitionCtor();
     if (!Ctor) {
       setState('unsupported');
-      setError('इस ब्राउज़र में आवाज़ से पूछने की सुविधा नहीं है। नीचे टाइप करके पूछ सकते हैं।');
+      setError('ask.micUnsupported|');
       return;
     }
 
@@ -190,8 +214,10 @@ export function useVoiceInput({
     };
 
     rec.onerror = (event) => {
-      const message = ERROR_MESSAGES[event.error] ?? 'आवाज़ से समझ नहीं पाई। कृपया लिखकर पूछें।';
-      setError(message);
+      // The raw key is returned so the caller can translate it; the Hindi text is
+      // kept for anyone calling this hook without a language context.
+      const key = ERROR_KEYS[event.error] ?? 'voice.generic';
+      setError(`${key}|${ERROR_MESSAGES[event.error] ?? ''}`);
       setState('error');
     };
 
@@ -222,21 +248,42 @@ export function useVoiceInput({
 
 export interface SpeakOptions {
   rate?: number;
+  /** Site language code, e.g. `ta`. Decides both the utterance tag and the voice. */
+  language?: string;
   onEnd?: () => void;
-  onError?: (message: string) => void;
+  /**
+   * Receives a translation key, not a finished sentence, so the caller can
+   * render it in the visitor's language.
+   */
+  onError?: (reasonKey: string) => void;
 }
 
 /**
- * Speaks Hindi text, slowly, and says so out loud when it cannot.
+ * Speaks text aloud, slowly, in the visitor's chosen language.
  *
  * `rate` defaults to 0.85 rather than 1. The browser default is pitched at a
  * clear young speaker; for a 70-year-old on a small phone speaker, that is
  * simply too fast to follow, and a user who cannot follow the answer will
  * assume there was none.
+ *
+ * ── Why the language is a parameter ────────────────────────────────────────
+ * This used to hardcode `hi-IN` and look for a voice matching `/^hi/`. That was
+ * correct while the whole site was Hindi. Once a visitor could pick Tamil, the
+ * answer came back in Tamil and was then read by a Hindi voice — which does not
+ * merely sound wrong, it produces something the listener cannot decipher while
+ * having no way to tell that the *audio* is at fault rather than the answer.
+ * Matching the voice to the answer's language is the whole point of having a
+ * read-aloud button on a multilingual page.
  */
-export function speak(text: string, options: SpeakOptions = {}) {
+export function speak(
+  text: string,
+  options: SpeakOptions = {},
+) {
+  const languageCode = options.language ?? 'hi';
+  const tag = speechTag(languageCode);
+
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
-    options.onError?.('इस ब्राउज़र में आवाज़ से सुनाने की सुविधा नहीं है। ऊपर लिखा हुआ जवाब पढ़ लें।');
+    options.onError?.('voice.speakFailed');
     return;
   }
 
@@ -246,17 +293,28 @@ export function speak(text: string, options: SpeakOptions = {}) {
   synth.cancel();
 
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'hi-IN';
+  utterance.lang = tag;
   utterance.rate = options.rate ?? 0.85;
   utterance.pitch = 1;
 
   const pickVoice = () => {
     const voices = synth.getVoices();
-    // Prefer an actual Hindi voice; otherwise the default voice will read Hindi
-    // text with English pronunciation, which is worse than no audio at all
-    // because the user cannot tell it is mispronounced.
-    const hindi = voices.find((v) => /^hi(-|_|$)/i.test(v.lang));
-    if (hindi) utterance.voice = hindi;
+    if (voices.length === 0) return;
+
+    /*
+     * An exact tag match first, then a bare-language match. Chrome on Android
+     * often reports `ta-IN` but some devices only ship `ta`, and a bare match
+     * beats the default voice by a wide margin.
+     */
+    const exact = voices.find((v) => v.lang.toLowerCase() === tag.toLowerCase());
+    if (exact) {
+      utterance.voice = exact;
+      return;
+    }
+
+    const base = tag.split('-')[0].toLowerCase();
+    const sameLanguage = voices.find((v) => v.lang.toLowerCase().split(/[-_]/)[0] === base);
+    if (sameLanguage) utterance.voice = sameLanguage;
   };
 
   pickVoice();
@@ -276,9 +334,7 @@ export function speak(text: string, options: SpeakOptions = {}) {
   utterance.onerror = (event) => {
     const reason = (event as unknown as { error?: string }).error;
     if (reason === 'interrupted' || reason === 'canceled') return; // our own cancel
-    options.onError?.(
-      'आवाज़ से नहीं सुनाया जा सका। कंप्यूटर पर हिंदी आवाज़ (voice) शायद से इंस्टॉल नहीं है। ऊपर पढ़ लें।',
-    );
+    options.onError?.('voice.speakFailed');
   };
 
   synth.speak(utterance);
@@ -294,4 +350,21 @@ export function stopSpeaking() {
 export function hindiVoiceInstalled(): boolean {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return false;
   return window.speechSynthesis.getVoices().some((v) => /^hi(-|_|$)/i.test(v.lang));
+}
+
+/**
+ * True when a voice exists for the chosen language.
+ *
+ * Used to decide whether to warn *before* the visitor presses play. Discovering
+ * it only when `speak()` fails is worse: the button appears to work, nothing is
+ * heard, and someone who cannot see the screen has no way to know the audio path
+ * is the problem rather than the answer.
+ */
+export function voiceInstalledFor(languageCode: string): boolean {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return false;
+  const tag = speechTag(languageCode);
+  const base = tag.split('-')[0].toLowerCase();
+  return window.speechSynthesis
+    .getVoices()
+    .some((v) => v.lang.toLowerCase().split(/[-_]/)[0] === base);
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useLanguage } from '@/components/language/language';
 
 /**
  * A small, non-blocking notice.
@@ -31,6 +32,7 @@ export function useToast() {
 }
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
+  const { t } = useLanguage();
   const [toasts, setToasts] = React.useState<Toast[]>([]);
   const nextId = React.useRef(1);
 
@@ -96,7 +98,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             <button
               type="button"
               onClick={() => dismiss(toast.id)}
-              aria-label="बंद करें"
+              aria-label={t('toast.dismiss')}
               className="btn-ghost !min-h-[2rem] !w-8 !px-0"
             >
               ✕

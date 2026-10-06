@@ -167,7 +167,7 @@ export function AppBar({ siteName }: { siteName: string }) {
         <button
           type="button"
           onClick={() => setRail((v) => !v)}
-          aria-label={rail ? 'बाँस बंद करें' : 'बाँस खोलें'}
+          aria-label={rail ? t('nav.collapse') : t('nav.expand')}
           aria-expanded={rail}
           className="btn-ghost hidden !min-h-[2.75rem] !w-full !px-0 lg:flex"
         >

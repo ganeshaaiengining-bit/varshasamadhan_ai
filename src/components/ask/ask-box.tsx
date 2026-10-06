@@ -2,15 +2,15 @@
 
 import * as React from 'react';
 import { Icon } from '@/components/ui/icon';
-import { useVoiceInput } from '@/components/voice/use-voice';
+import { useVoiceInput, speak, speechTag } from '@/components/voice/use-voice';
+import { useLanguage } from '@/components/language/language';
 
 /**
  * ===========================================================================
  *  ASK BOX
- * ===========================================================================
  *
- * The main way a visitor uses the site: type or speak a question, get an answer,
- * hear it read aloud.
+ *  The main way a visitor uses the site: type or speak a question, get an answer,
+ *  hear it read aloud.
  *
  * ── Fixes against the prototype ───────────────────────────────────────────
  * • a real `<form>`, so pressing Enter submits. The prototype had none, and
@@ -21,6 +21,18 @@ import { useVoiceInput } from '@/components/voice/use-voice';
  * • the answer is announced to a screen reader via a live region
  * • a stored article is offered when the AI is unavailable, so the visitor
  *   always leaves with something useful
+ *
+ * ── Language, end to end ──────────────────────────────────────────────────
+ * Four separate places have to agree, and any one of them being left in Hindi
+ * is enough for a Tamil visitor to conclude the site is broken:
+ *
+ *   1. the labels around the box      — `t()` here
+ *   2. what the microphone listens in — `speechTag(language.code)`
+ *   3. the language the model writes in — sent as `lang`
+ *   4. the voice that reads the answer aloud — `speak({ language })`
+ *
+ * Failures come back from the server as `reasonKey`, not as a Hindi sentence,
+ * precisely so step 1 can render them in the visitor's own language.
  */
 export function AskBox({
   category = '',
@@ -37,7 +49,28 @@ export function AskBox({
   const [notice, setNotice] = React.useState<string | null>(null);
   const [speakError, setSpeakError] = React.useState<string | null>(null);
 
-  const voice = useVoiceInput({ onResult: (text) => setQuestion(text) });
+  const { language, t } = useLanguage();
+
+  const voice = useVoiceInput({
+    onResult: (text) => setQuestion(text),
+    lang: speechTag(language.code),
+  });
+
+  /**
+   * Turn a `key|hindi` pair from the voice hook into a translated string.
+   * The Hindi half is only a fallback for the case where the key is missing
+   * from a translation table, which should never happen but should not leave a
+   * visitor staring at a raw key name either.
+   */
+  const voiceMessage = React.useCallback(
+    (raw: string | null) => {
+      if (!raw) return null;
+      const [key, fallback] = raw.split('|');
+      const translated = t(key);
+      return translated === key && fallback ? fallback : translated;
+    },
+    [t],
+  );
 
   const submit = async (event?: React.FormEvent) => {
     event?.preventDefault();
@@ -52,11 +85,15 @@ export function AskBox({
       const response = await fetch('/api/ask', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ question: text, category }),
+        // Sent as well as living in the cookie: the cookie is what the server
+        // trusts, but sending it makes the request self-describing when it is
+        // replayed or logged.
+        body: JSON.stringify({ question: text, category, lang: language.code }),
       });
       const data = (await response.json()) as {
         ok: boolean;
         answer?: string;
+        reasonKey?: string;
         reason?: string;
         fallback: boolean;
       };
@@ -67,9 +104,16 @@ export function AskBox({
         return;
       }
 
-      setNotice(data.reason ?? 'अभी उत्तर नहीं मिला।');
+      // Prefer the key: it is the only version that can be in the visitor's
+      // language. The Hindi `reason` is a last resort.
+      if (data.reasonKey) {
+        const translated = t(data.reasonKey);
+        setNotice(translated === data.reasonKey ? (data.reason ?? data.reasonKey) : translated);
+      } else {
+        setNotice(data.reason ?? t('ask.notAnswer'));
+      }
     } catch {
-      setNotice('इंटरनेट नहीं मिल पाया। कृपया लिखकर दोबारा पूछें।');
+      setNotice(t('ask.errorNetwork'));
     } finally {
       setAsking(false);
     }
@@ -79,7 +123,7 @@ export function AskBox({
     <div>
       <form onSubmit={submit} noValidate>
         <label htmlFor="ask-input" className="label">
-          अपनी समस्या लिखें या माइक से बोलें
+          {t('ask.label')}
         </label>
 
         {/*
@@ -96,7 +140,7 @@ export function AskBox({
               inputMode="search"
               autoComplete="off"
               className="field !pr-14"
-              placeholder="जैसे: बच्चे की पढ़ाई में कमज़ोरी है"
+              placeholder={t('ask.placeholder')}
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               aria-describedby="ask-help"
@@ -106,7 +150,7 @@ export function AskBox({
               <button
                 type="button"
                 onClick={() => setQuestion('')}
-                aria-label="लिखा हुआ मिटाएँ"
+                aria-label={t('ask.clear')}
                 className="absolute right-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full text-ink-subtle hover:bg-black/5"
               >
                 <Icon name="close" size={18} />
@@ -121,10 +165,10 @@ export function AskBox({
             aria-pressed={voice.state === 'listening'}
             aria-label={
               voice.state === 'listening'
-                ? 'सुनना बंद करें'
+                ? t('ask.stopListening')
                 : voice.supported
-                  ? 'बोलकर पूछें'
-                  : 'यह ब्राउज़र आवाज़ नहीं सुन सकता'
+                  ? t('ask.speak')
+                  : t('ask.micUnsupported')
             }
             className={[
               'btn !w-14 !px-0',
@@ -151,12 +195,12 @@ export function AskBox({
 
           <button type="submit" disabled={!question.trim() || asking} className="btn-primary !px-6">
             {asking ? (
-              'सोच रहे हैं…'
+              t('ask.sending')
             ) : (
               <>
                 <Icon name="send" size={20} />
-                <span className="hidden sm:inline">पूछें</span>
-                <span className="sm:hidden">पूछें</span>
+                <span className="hidden sm:inline">{t('ask.send')}</span>
+                <span className="sm:hidden">{t('ask.send')}</span>
               </>
             )}
           </button>
@@ -164,17 +208,17 @@ export function AskBox({
 
         <p id="ask-help" className="mt-2 text-sm text-ink-subtle">
           {voice.interim
-            ? `सुन रहे हैं: ${voice.interim}`
+            ? `${t('ask.heardWith')} ${voice.interim}`
             : voice.state === 'listening'
-              ? 'बोलना शुरू कीजिए…'
-              : 'Enter दबाकर भी भेज सकते हैं।'}
+              ? t('ask.listening')
+              : t('ask.help')}
         </p>
       </form>
 
       {/* A refusal to listen, written where a blind user will encounter it too. */}
-      {voice.error ? (
+      {voiceMessage(voice.error) ? (
         <p role="alert" className="mt-3 rounded-md border border-danger/30 bg-danger-soft p-3 text-danger">
-          {voice.error}
+          {voiceMessage(voice.error)}
         </p>
       ) : null}
 
@@ -185,7 +229,12 @@ export function AskBox({
       ) : null}
 
       {answer ? (
-        <AnswerCard text={answer.text} fromAi={answer.fromAi} onSpeakError={setSpeakError} />
+        <AnswerCard
+          text={answer.text}
+          fromAi={answer.fromAi}
+          language={language.code}
+          onSpeakError={setSpeakError}
+        />
       ) : null}
 
       {speakError ? (
@@ -196,7 +245,7 @@ export function AskBox({
 
       {suggested.length > 0 ? (
         <div className="mt-6">
-          <p className="text-sm font-bold text-ink-soft">आम सवाल:</p>
+          <p className="text-sm font-bold text-ink-soft">{t('ask.suggested')}</p>
           <ul className="mt-2 flex flex-wrap gap-2">
             {suggested.map((item) => (
               <li key={item.question}>
@@ -240,22 +289,27 @@ export function AskBox({
 function AnswerCard({
   text,
   fromAi,
+  language,
   onSpeakError,
 }: {
   text: string;
   fromAi: boolean;
+  language: string;
   onSpeakError: (message: string) => void;
 }) {
+  const { t } = useLanguage();
   const [speaking, setSpeaking] = React.useState(false);
 
-  const play = async () => {
+  const play = () => {
     setSpeaking(true);
-    const { speak } = await import('@/components/voice/use-voice');
     speak(text, {
+      language,
       onEnd: () => setSpeaking(false),
-      onError: (message) => {
+      onError: (reasonKey) => {
         setSpeaking(false);
-        onSpeakError(message);
+        // Spoken in the answer's own language: a Tamil answer that fails to play
+        // should not report the failure in Hindi.
+        onSpeakError(t(reasonKey));
       },
     });
   };
@@ -270,7 +324,7 @@ function AnswerCard({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="flex items-center gap-2 text-saffron-deep">
           <Icon name="sparkle" size={22} />
-          समाधान
+          {t('ask.answerTitle')}
         </h2>
 
         <button
@@ -280,7 +334,7 @@ function AnswerCard({
           className="btn-outline !min-h-[2.75rem] !px-4 text-sm"
         >
           <Icon name="speaker" size={20} />
-          {speaking ? 'बोल रहे हैं…' : 'सुनें'}
+          {speaking ? t('ask.stopSpeak') : t('ask.listen')}
         </button>
       </div>
 
@@ -294,9 +348,7 @@ function AnswerCard({
       </div>
 
       <p className="mt-5 border-t border-line pt-3 text-sm text-ink-subtle">
-        {fromAi
-          ? 'यह उत्तर AI ने दिया है। किसी विशेषज्ञ की सलाह का विकल्प नहीं है।'
-          : 'यह सेवा-संबंधी उत्तर है।'}
+        {fromAi ? t('ask.aiNote') : t('ask.serviceNote')}
       </p>
     </section>
   );

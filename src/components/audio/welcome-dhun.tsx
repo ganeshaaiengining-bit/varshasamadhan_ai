@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { playOpeningDhun } from '@/components/audio/dhun';
+import { useLanguage } from '@/components/language/language';
 
 /**
  * ===========================================================================
@@ -32,6 +33,7 @@ import { playOpeningDhun } from '@/components/audio/dhun';
 const KEY = 'vs-dhun-played';
 
 export function WelcomeDhun() {
+  const { t } = useLanguage();
   const [offer, setOffer] = React.useState<'checking' | 'offer' | 'playing' | 'done'>('checking');
   const [failed, setFailed] = React.useState(false);
 
@@ -91,7 +93,7 @@ export function WelcomeDhun() {
       // `assertive` is correct here: the visitor has come for the sound, and a
       // polite announcement can be lost behind whatever they are reading.
       role="alertdialog"
-      aria-label="ध्वनि चलाने के लिए सहमति"
+      aria-label={t('dhun.label')}
       className="fixed inset-x-3 bottom-3 z-40 sm:left-1/2 sm:right-auto sm:w-[30rem] sm:-translate-x-1/2"
     >
       <div className="flex flex-wrap items-center gap-3 rounded-[var(--radius)] border-2 border-saffron bg-surface p-3 shadow-lift">
@@ -100,11 +102,9 @@ export function WelcomeDhun() {
         </span>
 
         <div className="min-w-0 flex-1">
-          <p className="font-bold">स्वागत है</p>
-          <p className="text-sm text-ink-muted">
-            शंख, बांसुरी और नगाड़ा — साथ में सुनने के लिए छुएँ।
-          </p>
-          {failed ? <p className="mt-0.5 text-xs text-danger">ध्वनि नहीं चल पाई।</p> : null}
+          <p className="font-bold">{t('dhun.welcomeTitle')}</p>
+          <p className="text-sm text-ink-muted">{t('dhun.consent')}</p>
+          {failed ? <p className="mt-0.5 text-xs text-danger">{t('dhun.failed')}</p> : null}
         </div>
 
         <button
@@ -120,13 +120,13 @@ export function WelcomeDhun() {
           }}
           className="btn-primary !min-h-[2.75rem] !px-5"
         >
-          ▶ सुनें
+          ▶ {t('sound.listenLabel')}
         </button>
 
         <button
           type="button"
           onClick={() => setOffer('done')}
-          aria-label="ध्वनि छोड़ें"
+          aria-label={t('dhun.skip')}
           className="btn-ghost !min-h-[2.75rem] !w-10 !px-0"
         >
           ✕
@@ -141,13 +141,14 @@ export function WelcomeDhun() {
  * =========================================================================== */
 
 const VOICES = [
-  { id: 'shankh', label: 'शंख', emoji: '🐚', hint: 'गहरी, लंबी' },
-  { id: 'bansuri', label: 'बांसुरी', emoji: '🎶', hint: 'कोमल, धीमी' },
-  { id: 'dhol', label: 'नगाड़ा', emoji: '🥁', hint: 'तीखी, तेज़' },
-  { id: 'all', label: 'तीनों', emoji: '✨', hint: 'एक साथ' },
+  { id: 'shankh', labelKey: 'sound.shankh', emoji: '🐚', hintKey: 'sound.shankhHint' },
+  { id: 'bansuri', labelKey: 'sound.bansuri', emoji: '🎶', hintKey: 'sound.bansuriHint' },
+  { id: 'dhol', labelKey: 'sound.dhol', emoji: '🥁', hintKey: 'sound.dholHint' },
+  { id: 'all', labelKey: 'sound.all', emoji: '✨', hintKey: 'sound.allHint' },
 ] as const;
 
 export function SoundPad({ className = '' }: { className?: string }) {
+  const { t } = useLanguage();
   const [playing, setPlaying] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const ctxRef = React.useRef<AudioContext | null>(null);
@@ -175,14 +176,14 @@ export function SoundPad({ className = '' }: { className?: string }) {
     try {
       const handle = await playOpeningDhun(0.42);
       if (!handle) {
-        setError('यह ब्राउज़र ध्वनि नहीं चला पा रहा।');
+        setError(t('dhun.unsupported'));
         return;
       }
       ctxRef.current = handle.ctx;
       setPlaying(id);
       window.setTimeout(() => setPlaying((current) => (current === id ? null : current)), 6500);
     } catch {
-      setError('ध्वनि चलाने में समस्या हुई।');
+      setError(t('dhun.failedTry'));
     }
   };
 
@@ -203,10 +204,10 @@ export function SoundPad({ className = '' }: { className?: string }) {
             <span className="text-4xl" aria-hidden="true">
               {voice.emoji}
             </span>
-            <span className="mt-1 text-lg font-bold">{voice.label}</span>
-            <span className="text-sm text-ink-muted">{voice.hint}</span>
+            <span className="mt-1 text-lg font-bold">{t(voice.labelKey)}</span>
+            <span className="text-sm text-ink-muted">{t(voice.hintKey)}</span>
             <span className="mt-2 flex items-center gap-1.5 text-sm font-bold text-saffron-deep">
-              {playing === voice.id ? 'बज रही है' : 'सुनें'}
+              {playing === voice.id ? t('sound.playing') : t('sound.listenLabel')}
             </span>
           </button>
         ))}

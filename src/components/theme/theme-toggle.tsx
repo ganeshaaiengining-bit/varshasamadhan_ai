@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useLanguage } from '@/components/language/language';
 
 /**
  * Light / dark toggle.
@@ -10,6 +11,7 @@ import * as React from 'react';
  * then swapping it would flash the wrong icon on every page load.
  */
 export function ThemeToggle() {
+  const { t } = useLanguage();
   const [dark, setDark] = React.useState(false);
   const [ready, setReady] = React.useState(false);
 
@@ -37,7 +39,7 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={apply}
-      aria-label={dark ? 'रोशनी का रंग चालू करें' : 'अंधेरा रंग चालू करें'}
+      aria-label={dark ? t('theme.toLight') : t('theme.toDark')}
       className="btn-ghost !min-h-[2.75rem] !w-11 !px-0"
     >
       {ready ? <Icon2 dark={dark} /> : <span className="h-6 w-6" />}

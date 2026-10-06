@@ -4,6 +4,8 @@ import * as React from 'react';
 import { Icon } from '@/components/ui/icon';
 import { submitReview } from '@/server/reviews/actions';
 import { useToast } from '@/components/ui/toast';
+import { useLanguage } from '@/components/language/language';
+import { localeTag } from '@/content/i18n';
 
 /**
  * ===========================================================================
@@ -39,6 +41,7 @@ export function ReviewsSection({
   summary: { average: number; count: number; histogram: number[] };
 }) {
   const toast = useToast();
+  const { t, tf, language } = useLanguage();
   const [reviews, setReviews] = React.useState(initialReviews);
   const [rating, setRating] = React.useState(5);
   const [hovered, setHovered] = React.useState(0);
@@ -64,13 +67,13 @@ export function ReviewsSection({
       );
 
       if (result.ok) {
-        toast.success('धन्यवाद', result.message);
+        toast.success(t('reviews.toastSent'), result.message);
         setComment('');
         setName('');
         setCity('');
       } else {
         setErrors(result.fieldErrors ?? {});
-        toast.error('नहीं भेजा जा सका', result.message);
+        toast.error(t('reviews.toastFailed'), result.message);
       }
     } finally {
       setSending(false);
@@ -80,7 +83,7 @@ export function ReviewsSection({
   return (
     <section aria-labelledby="reviews-heading" className="mt-16">
       <h2 id="reviews-heading" className="text-center">
-        लोगों की राय
+        {t('reviews.summaryTitle')}
       </h2>
 
       {/* ------------------------------------------------------- summary */}
@@ -100,12 +103,10 @@ export function ReviewsSection({
                 <div className="mt-2 flex justify-center md:justify-start">
                   <Stars value={summary.average} />
                 </div>
-                <p className="mt-2 text-sm text-ink-muted">{summary.count} समीक्षाएँ</p>
+                <p className="mt-2 text-sm text-ink-muted">{summary.count} {t('reviews.count')}</p>
               </>
             ) : (
-              <p className="text-sm text-ink-muted">
-                अभी पर्याप्त समीक्षाएँ नहीं हैं।
-              </p>
+              <p className="text-sm text-ink-muted">{t('reviews.empty')}</p>
             )}
           </div>
 
@@ -137,15 +138,22 @@ export function ReviewsSection({
               <div className="flex flex-wrap items-center gap-3">
                 <Stars value={review.rating} />
                 <span className="font-bold">
-                  {review.authorName ?? 'एक अज्ञात व्यक्ति'}
+                  {review.authorName ?? t('reviews.anonymous')}
                 </span>
                 {review.city ? <span className="text-sm text-ink-muted">{review.city}</span> : null}
                 <span className="ml-auto text-2xs text-ink-subtle">
-                  {new Date(review.createdAt).toLocaleDateString('hi-IN', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                  })}
+                  {/*
+                    The date follows the interface language. Hardcoding `hi-IN`
+                    showed a Tamil reader a date written in Devanagari numerals
+                    and the Hindi month name, which reads as a bug rather than as
+                    a date.
+                  */}
+                  {new Date(review.createdAt).toLocaleDateString(
+                    // A BCP-47 tag, not the short code: `Intl` will not expand
+                    // `ta` on its own, and an invalid tag throws on some engines.
+                    localeTag(language.code),
+                    { day: 'numeric', month: 'short', year: 'numeric' },
+                  )}
                 </span>
               </div>
 
@@ -155,7 +163,7 @@ export function ReviewsSection({
                 <div className="mt-4 rounded-md border-s-4 border-saffron bg-saffron-soft/50 p-4">
                   <p className="flex items-center gap-2 text-sm font-bold text-saffron-deep">
                     <Icon name="heart" size={16} />
-                    प्रबंधक का जवाब
+                    {t('reviews.replyLabel')}
                   </p>
                   <p className="mt-1.5 leading-relaxed">{review.reply}</p>
                 </div>
@@ -165,7 +173,7 @@ export function ReviewsSection({
         </ul>
       ) : (
         <p className="mt-6 rounded-md border border-dashed border-line p-8 text-center text-ink-muted">
-          अभी कोई समीक्षा प्रकाशित नहीं है। नीचे पहली लिखिए।
+          {t('reviews.empty')}
         </p>
       )}
 
@@ -173,14 +181,12 @@ export function ReviewsSection({
       <form onSubmit={send} className="card mt-8 border-saffron bg-saffron-soft/30 p-5 sm:p-7">
         <h3 className="flex items-center gap-2 text-saffron-deep">
           <Icon name="edit" size={22} />
-          अपनी राय लिखिए
+          {t('reviews.write')}
         </h3>
-        <p className="mt-1.5 text-sm text-ink-muted">
-          आपका नाम और शहर लिखना ज़रूरी नहीं है। कोई पंजीकरण नहीं, कोई फ़ोन नंबर नहीं।
-        </p>
+        <p className="mt-1.5 text-sm text-ink-muted">{t('reviews.keepLabel')}</p>
 
         <fieldset className="mt-5">
-          <legend className="label">कितने तारे देंगे?</legend>
+          <legend className="label">{t('reviews.rateQuestion')}</legend>
           <div className="flex items-center gap-1" onMouseLeave={() => setHovered(0)}>
             {[1, 2, 3, 4, 5].map((value) => (
               <label
@@ -205,7 +211,7 @@ export function ReviewsSection({
                 >
                   <Icon name="star" size={34} />
                 </span>
-                <span className="sr-only">{value} तारे</span>
+                <span className="sr-only">{tf('reviews.starsShort', { value })}</span>
               </label>
             ))}
             <span className="ml-3 text-sm text-ink-muted">{shown} / 5</span>
@@ -215,7 +221,7 @@ export function ReviewsSection({
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           <div>
             <label htmlFor="rv-name" className="label">
-              आपका नाम (ज़रूरी नहीं)
+              {t('reviews.name')}
             </label>
             <input
               id="rv-name"
@@ -228,7 +234,7 @@ export function ReviewsSection({
           </div>
           <div>
             <label htmlFor="rv-city" className="label">
-              आपका शहर (ज़रूरी नहीं)
+              {t('reviews.city')}
             </label>
             <input
               id="rv-city"
@@ -242,7 +248,7 @@ export function ReviewsSection({
 
         <div className="mt-4">
           <label htmlFor="rv-comment" className="label">
-            आपकी बात
+            {t('reviews.comment')}
           </label>
           <textarea
             id="rv-comment"
@@ -252,7 +258,7 @@ export function ReviewsSection({
             maxLength={1200}
             required
             minLength={10}
-            placeholder="सेवा कैसी लगी? आपकी बात दूसरों के काम आ सकती है।"
+            placeholder={t('reviews.placeholder')}
             aria-describedby={errors.comment ? 'rv-comment-error' : undefined}
           />
           {errors.comment ? (
@@ -263,12 +269,10 @@ export function ReviewsSection({
         </div>
 
         <button type="submit" disabled={sending} className="btn-primary mt-5 w-full sm:w-auto">
-          {sending ? 'भेज रहे हैं…' : 'भेजिए'}
+          {sending ? t('reviews.sending') : t('reviews.submit')}
         </button>
 
-        <p className="mt-3 text-xs text-ink-subtle">
-          आपकी समीक्षा प्रकाशित होने से पहले एक बार देखी जाती है।
-        </p>
+        <p className="mt-3 text-xs text-ink-subtle">{t('reviews.moderated')}</p>
       </form>
     </section>
   );
@@ -277,8 +281,9 @@ export function ReviewsSection({
 /* ------------------------------------------------------------------------ */
 
 function Stars({ value }: { value: number }) {
+  const { tf } = useLanguage();
   return (
-    <span className="flex gap-0.5" aria-label={`${value.toFixed(1)} में से 5 तारे`} role="img">
+    <span className="flex gap-0.5" aria-label={tf('reviews.averageOutOf', { value: value.toFixed(1) })} role="img">
       {[1, 2, 3, 4, 5].map((star) => (
         <Icon
           key={star}

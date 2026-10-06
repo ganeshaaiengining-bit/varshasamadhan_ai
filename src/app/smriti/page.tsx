@@ -1,15 +1,18 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Sunrise } from '@/components/visual/sunrise';
+import { getT } from '@/server/i18n';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { VARSHA } from '@/content/tribute';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: `${VARSHA.honorific} ${VARSHA.name} जी — स्मृति`,
-  description: VARSHA.shortLine,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: `${VARSHA.honorific} ${VARSHA.name} जी — स्मृति`,
+    description: VARSHA.shortLine,
+  };
+}
 
 /**
  * The memorial page.
@@ -18,9 +21,18 @@ export const metadata: Metadata = {
  * it, and every element here earns its place: the sun marks the site, the
  * headings break the story into readable steps, and there is nothing on the page
  * that could not be read aloud to someone standing in a room.
+ *
+ * ── On the story's language ────────────────────────────────────────────────
+ * The chrome around the story is translated, but the story itself is the one
+ * piece of writing on this site that exists because somebody wrote it, and it is
+ * in Hindi. It is not translated, and rather than let a Tamil visitor land on a
+ * Tamil interface followed by a Hindi eulogy with no explanation, the page says
+ * plainly which language the text is in. The same notice the article pages use
+ * for the same reason.
  */
-export default function SmritiPage() {
+export default async function SmritiPage() {
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'वर्षा समाधान AI';
+  const { lang, t } = await getT();
 
   return (
     <SiteChrome siteName={siteName}>
@@ -30,7 +42,7 @@ export default function SmritiPage() {
           <Sunrise size={96} />
 
           <p className="mt-6 text-sm font-bold uppercase tracking-[0.2em] text-saffron-deep">
-            आदरांजलि
+            {t('smriti.eyebrow')}
           </p>
 
           <h1 className="mt-2">
@@ -40,6 +52,13 @@ export default function SmritiPage() {
           <p className="mx-auto mt-4 max-w-2xl text-lg text-ink-soft sm:text-xl">
             {VARSHA.shortLine}
           </p>
+
+          {lang !== 'hi' ? (
+            <p className="mx-auto mt-4 max-w-xl rounded-md border border-line bg-saffron-soft/50 px-4 py-2 text-sm text-ink-soft">
+              {t('language.articlesIn')}{' '}
+              <span className="text-ink-subtle">{t('language.articlesInHint')}</span>
+            </p>
+          ) : null}
         </header>
 
         {/* --------------------------------------------------------- story */}
@@ -56,21 +75,19 @@ export default function SmritiPage() {
 
         {/* ------------------------------------------------------- purpose */}
         <section className="card mt-12 border-saffron bg-saffron-soft/40 p-6 text-center sm:p-8">
-          <h2 className="text-saffron-deep">यह साइट क्यों है</h2>
+          <h2 className="text-saffron-deep">{t('smriti.whyTitle')}</h2>
           <p className="mx-auto mt-3 max-w-2xl text-lg leading-relaxed">{VARSHA.purpose}</p>
         </section>
 
         {/* -------------------------------------------------------- ending */}
-        <p className="mt-12 text-center text-2xl text-ink-muted">
-          उनका संघर्ष यहीं आगे बढ़ता है।
-        </p>
+        <p className="mt-12 text-center text-2xl text-ink-muted">{t('smriti.ending')}</p>
 
         <div className="mt-10 flex flex-wrap justify-center gap-3 border-t border-line pt-8">
           <Link href="/sahayata" className="btn-primary">
-            अपनी बात कहिए
+            {t('article.askAny')}
           </Link>
           <Link href="/" className="btn-outline">
-            मुख्य पन्ना
+            {t('nav.home')}
           </Link>
         </div>
       </div>

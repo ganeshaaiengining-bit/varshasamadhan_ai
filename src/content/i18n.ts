@@ -374,6 +374,72 @@ const HINDI: Record<string, string> = {
   'language.articlesIn': 'यह लेख हिन्दी में है।',
   'language.articlesInHint':
     'हर भाषा में अलग अनुवाद चाहिए। यह अनुवाद अभी नहीं हुआ है — जो लिखा है वह हिन्दी में ही सही और पूरा है।',
+
+  'ask.welcome': 'आपका स्वागत है! नीचे अपनी समस्या लिखिए या कोई विषय चुनिए।',
+
+  'ref.notTitle': 'यह क्या नहीं करती',
+
+  'ref.not1': 'यह डॉक्टर नहीं है। दवाई की सलाह कभी नहीं दी जाती।',
+
+  'ref.not2': 'यह वकील नहीं है। कानूनी सलाह नहीं दी जाती।',
+
+  'ref.not3': 'कोई भी पैसा नहीं लिया जाता, और कोई विज्ञापन नहीं दिखाया जाता।',
+
+  'ref.not4': 'आपका नाम, पता या फ़ोन नंबर नहीं माँगा जाता और नहीं रखा जाता।',
+
+  'ref.not5': 'कोई सरकारी योजना का दाम या नंबर नहीं बनाया जाता — सही जानकारी न हो तो साफ़ कहा जाता है कि नहीं पता।',
+
+  'ref.medicalTitle': 'ज़रूरी: यह डॉक्टर की सलाह नहीं है',
+
+  'ref.medicalBody': 'बीमारी, दवाई या कोई भी ज़हरीली चीज़ से जुड़ी बात हो, तो सबसे पहले डॉक्टर से मिलिए। यहाँ दी गई जानकारी सिर्फ़ सामान्य मदद के लिए है। बच्चे के टीके, गर्भावस्था, या कोई भी दवाई शुरू करने से पहले डॉक्टर की सलाह ज़रूर लें।',
+
+  'ref.statsTitle': 'कितनी जानकारी मौजूद है',
+
+  'support.howTitle': 'हमारी मदद कैसे करें',
+
+  'support.alwaysFreeTitle': 'यह सेवा हमेशा निःशुल्क रहेगी',
+
+  'support.alwaysFreeBody': 'जो भी मदद मिले, वह सेवा चलाने में लगेगी। किसी से कभी पैसा नहीं लिया जाएगा।',
+
+  'smriti.eyebrow': 'आदरांजलि',
+
+  'smriti.whyTitle': 'यह साइट क्यों है',
+
+  'smriti.ending': 'उनका संघर्ष यहीं आगे बढ़ता है।',
+
+  'article.askAny': 'कोई सवाल पूछिए',
+
+  'article.remember': 'याद रखिए',
+
+  'article.emergencyInfo': 'ज़रूरी जानकारी',
+
+  'article.medicalTitle': 'यह चिकित्सा सलाह नहीं है',
+
+  'article.medicalBody': 'यह जानकारी सामान्य मदद के लिए है। कोई भी दवाई शुरू या बंद न करें — पहले डॉक्टर से मिलें।',
+
+  'article.heading': '{category} के लेख',
+
+  'reviews.rateQuestion': 'कितने तारे देंगे?',
+
+  'reviews.starsShort': '{value} तारे',
+
+  'reviews.averageOutOf': '{value} में से 5 तारे',
+
+  'dhun.welcomeTitle': 'स्वागत है',
+
+  'dhun.consent': 'शंख, बांसुरी और नगाड़ा — साथ में सुनने के लिए छुएँ।',
+
+  'dhun.unsupported': 'यह ब्राउज़र ध्वनि नहीं चला पा रहा।',
+
+  'dhun.failedTry': 'ध्वनि चलाने में समस्या हुई।',
+
+  'sound.hintIdle': 'कोई बटन दबाकर ध्वनि सुनिए।',
+
+  'sound.hintPlaying': 'आवाज़ चल रही है। रोकने के लिए दोबारा उसी बटन को दबाएँ।',
+
+  'sound.preparing': 'ध्वनि तैयार हो रही है',
+
+  'nav.path': 'पथ',
 };
 
 /* -------------------------------------------------------------------------- */
@@ -632,6 +698,72 @@ const ENGLISH: Record<string, string> = {
   'language.articlesIn': 'This article is in Hindi.',
   'language.articlesInHint':
     'Each language needs its own translation. This one has not been made yet, so what is written here is complete and correct in Hindi.',
+
+  'ask.welcome': 'Welcome! Write your problem below, or choose a topic.',
+
+  'ref.notTitle': 'What it does not do',
+
+  'ref.not1': 'This is not a doctor. It never gives advice about medicines.',
+
+  'ref.not2': 'This is not a lawyer. It gives no legal advice.',
+
+  'ref.not3': 'It takes no money and shows no advertising.',
+
+  'ref.not4': 'It never asks for your name, address or phone number, and never stores them.',
+
+  'ref.not5': 'It never invents a scheme name, a helpline number or a price. If it does not know, it says so plainly.',
+
+  'ref.medicalTitle': 'Important: this is not medical advice',
+
+  'ref.medicalBody': 'For anything to do with illness, medicines or a poison, see a doctor first. The information here is general help only. Get medical advice before a child\'s vaccination, during pregnancy, or before starting any medicine.',
+
+  'ref.statsTitle': 'How much information there is',
+
+  'support.howTitle': 'How you can help us',
+
+  'support.alwaysFreeTitle': 'This service will always stay free',
+
+  'support.alwaysFreeBody': 'Whatever help comes in will go into keeping the service running. Nobody will ever be charged.',
+
+  'smriti.eyebrow': 'In tribute',
+
+  'smriti.whyTitle': 'Why this site exists',
+
+  'smriti.ending': 'Her struggle carries on here.',
+
+  'article.askAny': 'Ask a question',
+
+  'article.remember': 'Remember',
+
+  'article.emergencyInfo': 'Important information',
+
+  'article.medicalTitle': 'This is not medical advice',
+
+  'article.medicalBody': 'This information is general help. Never start or stop any medicine without a doctor.',
+
+  'article.heading': 'Articles on {category}',
+
+  'reviews.rateQuestion': 'How many stars would you give?',
+
+  'reviews.starsShort': '{value} stars',
+
+  'reviews.averageOutOf': '{value} out of 5 stars',
+
+  'dhun.welcomeTitle': 'Welcome',
+
+  'dhun.consent': 'Shell, flute and drum together. Tap to listen.',
+
+  'dhun.unsupported': 'This browser cannot play the sound.',
+
+  'dhun.failedTry': 'There was a problem playing the sound.',
+
+  'sound.hintIdle': 'Press any button to hear a sound.',
+
+  'sound.hintPlaying': 'It is playing. Press the same button again to stop.',
+
+  'sound.preparing': 'Getting the sound ready',
+
+  'nav.path': 'Breadcrumb',
 };
 
 /* -------------------------------------------------------------------------- */
@@ -670,6 +802,78 @@ const BENGALI: Record<string, string> = {
   'language.choose': 'আপনার ভাষা বেছে নিন', 'language.articlesIn': 'এই প্রবন্ধটি হিন্দিতে।',
   'home.freeTitle': 'এই সেবা সম্পূর্ণ বিনামূল্যে', 'home.freeBody': 'টাকা নেওয়া হয় না, ব্যক্তিগত তথ্য চাওয়া হয় না, বিজ্ঞাপন দেখানো হয় না।',
   'home.emergencyNote': 'এগুলো আগে পড়ুন। বাকি সব পরে।',
+
+  'ask.welcome': 'স্বাগতম! নিচে আপনার সমস্যা লিখুন বা একটি বিষয় বেছে নিন।',
+
+  'ref.notTitle': 'যা এটি করে না',
+
+  'ref.not1': 'এটি ডাক্তার নয়। কখনও ওষুধের পরামর্শ দেয় না।',
+
+  'ref.not2': 'এটি আইনজীবী নয়। কোনো আইনি পরামর্শ দেয় না।',
+
+  'ref.not3': 'এটি কোনো টাকা নেয় না এবং কোনো বিজ্ঞাপন দেখায় না।',
+
+  'ref.not4': 'এটি কখনও আপনার নাম, ঠিকানা বা ফোন নম্বর চায় না, আর রাখেও না।',
+
+  'ref.not5': 'এটি কোনো সরকারি প্রকল্পের নাম, হেল্পলাইন নম্বর বা দাম বানায় না — জানা না থাকলে স্পষ্ট করে বলে।',
+
+  'ref.medicalTitle': 'গুরুত্বপূর্ণ: এটি চিকিৎসা পরামর্শ নয়',
+
+  'ref.medicalBody': 'অসুস্থতা, ওষুধ বা বিষাক্ত কিছু নিয়ে কোনো কথা হলে আগে ডাক্তারের সাথে দেখা করুন। এখানে দেওয়া তথ্য শুধু সাধারণ সাহায্যের জন্য। শিশুর টিকা, গর্ভাবস্থা, বা যেকোনো ওষুধ শুরু করার আগে ডাক্তারের পরামর্শ নিন।',
+
+  'ref.statsTitle': 'কতটা তথ্য আছে',
+
+  'support.howTitle': 'আপনি কীভাবে সাহায্য করতে পারেন',
+
+  'support.alwaysFreeTitle': 'এই পরিষেবা সবসময় বিনামূল্যে থাকবে',
+
+  'support.alwaysFreeBody': 'যে সাহায্য আসবে, তা সেবা চালানোতেই ব্যয় হবে। কারও কাছ থেকে কখনও টাকা নেওয়া হবে না।',
+
+  'smriti.eyebrow': 'স্মরণে',
+
+  'smriti.whyTitle': 'এই সাইট কেন',
+
+  'smriti.ending': 'তাঁর সংগ্রাম এখানেই এগিয়ে চলে।',
+
+  'article.askAny': 'একটি প্রশ্ন করুন',
+
+  'article.remember': 'মনে রাখবেন',
+
+  'article.emergencyInfo': 'গুরুত্বপূর্ণ তথ্য',
+
+  'article.medicalTitle': 'এটি চিকিৎসা পরামর্শ নয়',
+
+  'article.medicalBody': 'এই তথ্য সাধারণ সাহায্যের জন্য। ডাক্তারের পরামর্শ ছাড়া কোনো ওষুধ শুরু বা বন্ধ করবেন না।',
+
+  'article.heading': '{category} নিয়ে লেখা',
+
+  'reviews.rateQuestion': 'কতগুলো তারা দেবেন?',
+
+  'reviews.starsShort': '{value} তারা',
+
+  'reviews.averageOutOf': '5 এর মধ্যে {value} তারা',
+
+  'dhun.welcomeTitle': 'স্বাগতম',
+
+  'dhun.consent': 'শঙ্খ, বাঁশি ও নাগাদা একসাথে। শুনতে ছুঁয়ে দিন।',
+
+  'dhun.failed': 'ধ্বনি বাজানো যায়নি।',
+
+  'dhun.unsupported': 'এই ব্রাউজ़ার ধ্বনি বাজাতে পারে না।',
+
+  'dhun.failedTry': 'ধ্বনি বাজাতে সমস্যা হয়েছে।',
+
+  'sound.hintIdle': 'কোনো বোতাম চেপে ধ্বনি শুনুন।',
+
+  'sound.hintPlaying': 'আওয়াজ বাজছে। থামাতে একই বোতামে আবার চাপুন।',
+
+  'sound.preparing': 'ধ্বনি প্রস্তুত হচ্ছে',
+
+  'nav.path': 'পথ',
+
+  'toast.dismiss': 'বন্ধ করুন',
+
+  'footer.free': 'এই পরিষেবা সম্পূর্ণ বিনামূল্যে। কারও কাছ থেকে পয়সা নেওয়া হয় না।',
 };
 
 const TAMIL: Record<string, string> = {
@@ -696,6 +900,78 @@ const TAMIL: Record<string, string> = {
   'footer.pages': 'பக்கங்கள்', 'footer.helplines': 'முக்கிய எண்கள்', 'footer.readStory': 'அவளுடைய முழுக் கதை படி',
   'reviews.title': 'உங்கள் கருத்து', 'reviews.submit': 'அனுப்பு', 'reviews.comment': 'நீங்கள் கூற்று',
   'language.choose': 'உங்கள் மொழியைத் தேர்வு செய்', 'language.articlesIn': 'இந்தக் கட்டுரை ஹிந்தியில் உள்ளது.',
+
+  'ask.welcome': 'வரவேற்கிறோம்! கீழே உங்கள் பிரச்சினையை எழுதுங்கள் அல்லது ஒரு விஷயத்தைத் தேர்ந்தெடுங்கள்.',
+
+  'ref.notTitle': 'இது என்ன செய்வதில்லை',
+
+  'ref.not1': 'இது மருத்துவர் அல்ல. மருந்துகள் பற்றிய ஆலோசனை ஒருபோதும் தரப்படுவதில்லை.',
+
+  'ref.not2': 'இது வழக்கமாற்றுபவர் அல்ல. சட்ட ஆலோசனை வழங்குவதில்லை.',
+
+  'ref.not3': 'இது பணம் ஏற்காது, விளம்பரமும் காட்டாது.',
+
+  'ref.not4': 'இது உங்கள் பெயர், முகவரி அல்லது தொலைபேசி எண்ணை ஒருபோதும் கேட்காது, சேமிப்பதுமில்லை.',
+
+  'ref.not5': 'அரசு திட்டத்தின் பெயர், உதவி எண் அல்லது விலையை இது உருவாக்காது — தெரியாவிட்டால் தெளிவாகச் சொல்லும்.',
+
+  'ref.medicalTitle': 'முக்கியம்: இது மருத்துவ ஆலோசனை அல்ல',
+
+  'ref.medicalBody': 'நோய், மருந்து அல்லது நஞ்சு தொடர்பான எதுவும் இருந்தால் முதலில் மருத்துவரைச் சந்தியுங்கள். இங்கு தரப்படும் தகவல் பொதுவான உதவிக்கு மட்டுமே. குழந்தையின் தடுப்பு உinject, கர்ப்ப காலம், அல்லது எந்த மருந்தையும் தொடங்குவத前的 மருத்துவர் ஆலோசனை பெறுங்கள்.',
+
+  'ref.statsTitle': 'எவ்வளவு தகவல் உள்ளது',
+
+  'support.howTitle': 'நீங்கள் எப்படி உதவ முடியும்',
+
+  'support.alwaysFreeTitle': 'இந்த சேவை எப்போதும் இலவசமாக இருக்கும்',
+
+  'support.alwaysFreeBody': 'கிடைக்கும் உதவி சேவையை இயக்குவதற்கே பயன்படும். யாரிடமிருந்தும் ஒருபோதும் பணம் வசிக்கப்படாது.',
+
+  'smriti.eyebrow': 'நினைவில்',
+
+  'smriti.whyTitle': 'இந்த தளம் ஏன் உள்ளது',
+
+  'smriti.ending': 'அவரது போராட்டம் இங்கே தொடர்கிறது.',
+
+  'article.askAny': 'ஒரு கேள்வி கேளுங்கள்',
+
+  'article.remember': 'நினைவில் கொள்ளுங்கள்',
+
+  'article.emergencyInfo': 'முக்கிய தகவல்',
+
+  'article.medicalTitle': 'இது மருத்துவ ஆலோசனை அல்ல',
+
+  'article.medicalBody': 'இந்தத் தகவல் பொதுவான உதவிக்கு மட்டும். டாக்டரிடம் கேட்காமல் எந்த மருந்தையும் தொடங்காதீர்கள் அல்லது நிறுத்தாதீர்கள்.',
+
+  'article.heading': '{category} பற்றிய கட்டுரைகள்',
+
+  'reviews.rateQuestion': 'எத்தனை நட்சத்திரங்கள் தருவீர்கள்?',
+
+  'reviews.starsShort': '{value} நட்சத்திரங்கள்',
+
+  'reviews.averageOutOf': '5 இல் {value} நட்சத்திரங்கள்',
+
+  'dhun.welcomeTitle': 'வரவேற்கிறோம்',
+
+  'dhun.consent': 'சங்க், புல்லி மற்றும் டொம் இணைந்து. கேட்கத் தட்டவும்.',
+
+  'dhun.failed': 'ஒலி இயக்க முடியவில்லை.',
+
+  'dhun.unsupported': 'இந்த உலாவியம் ஒலியை இயக்க முடியவில்லை.',
+
+  'dhun.failedTry': 'ஒலியை இயக்குவதில் சிக்கல் ஏற்பட்டது.',
+
+  'sound.hintIdle': 'எந்த பொத்தானை அழுத்தினாலும் ஒலியைக் கேட்கலாம்.',
+
+  'sound.hintPlaying': 'ஒலி இயங்குகிறது. நிறுத்த அந்தப் பொத்தானை மீண்டும் அழுத்தவும்.',
+
+  'sound.preparing': 'ஒலி தயாராகிறது',
+
+  'nav.path': 'பாதை',
+
+  'toast.dismiss': 'மூடு',
+
+  'footer.free': 'இந்த சேவை முற்றிலும் இலவசம். யாரிடமிருந்தும் பணம் வசிக்கப்படுவதில்லை.',
 };
 
 const TELUGU: Record<string, string> = {
@@ -722,6 +998,78 @@ const TELUGU: Record<string, string> = {
   'footer.pages': 'పేజీలు', 'footer.helplines': 'ముఖ్య నంబర్లు', 'footer.readStory': ' her పూర్తి కథ చదవండి',
   'reviews.title': 'మీ అభిప్రాయం', 'reviews.submit': 'పంపండి', 'reviews.comment': 'మీ మాటలు',
   'language.choose': 'మీ భాషను ఎంచుకోండి', 'language.articlesIn': 'ఈ వ్యాసం హిందీలో ఉంది.',
+
+  'ask.welcome': 'స్వాగతం! కింద మీ సమస్యను రాయండి లేదా ఒక అంశాన్ని ఎంచుకోండి.',
+
+  'ref.notTitle': 'ఇది ఏమి చేయదు',
+
+  'ref.not1': 'ఇది వైద్యుడు కాదు. మందుల గురించి ఎప్పుడూ సలహా ఇవ్వదు.',
+
+  'ref.not2': 'ఇది న్యాయవాది కాదు. చట్టపరచnameless సలహా ఇవ్వదు.',
+
+  'ref.not3': 'ఇది డబ్బు తీసుకోదు, ప్రకటనలు కూడా చూపదు.',
+
+  'ref.not4': 'ఇది మీ పేరు, చిరునామా ఫోన్ నంబర్‌ను ఎప్పుడూ అడగదు, భద్రపరచదు.',
+
+  'ref.not5': 'ఇది ప్రభుత్వ పథకం పేరు, సహాయక వర్గ్ సంఖ్య లేదా ధరను అ Invent చేయదు — తెలియకపోతే స్పష్టంగా చెబుతుంది.',
+
+  'ref.medicalTitle': 'ముఖ్యం: ఇది వైద్య సలహా కాదు',
+
+  'ref.medicalBody': 'అనారోగ్యం, మందులు లేదా విషం గురించి ఏదైనా అయితే మొదట వైద్యుడిని కలవండి. ఇక్కడ ఇవ్వబడిన సమాచారం సాధారణ సహాయం మాత్రమే. పిల్లల టీకా, గర్భధారణ, లేదా ఏ మందులను ప్రారంభించే ముందు వైద్య సలహా తీసుకోండి.',
+
+  'ref.statsTitle': 'ఎంత సమాచారం ఉంది',
+
+  'support.howTitle': 'మీరు ఎలా సహాయం చేయగలరు',
+
+  'support.alwaysFreeTitle': 'ఈ సేవ ఎప్పుడూ ఉచితంగా ఉంటుంది',
+
+  'support.alwaysFreeBody': 'వచ్చే సహాయం సేవను నడపడానికే వాడబడుతుంది. ఎవరి నుండీ ఎప్పుడూ డబ్బు తీసుకోబడ్డు.',
+
+  'smriti.eyebrow': 'స్మరణగా',
+
+  'smriti.whyTitle': 'ఈ సైట్ ఎందుకు ఉంది',
+
+  'smriti.ending': 'ఆమె పోరాటం ఇక్కడే కొనసాగుతుంది.',
+
+  'article.askAny': 'ఒక ప్రశ్న అడగండి',
+
+  'article.remember': 'గుర్తుంచుకోండి',
+
+  'article.emergencyInfo': 'ముఖ్య సమాచారం',
+
+  'article.medicalTitle': 'ఇది వైద్య సలహా కాదు',
+
+  'article.medicalBody': 'ఈ సమాచారం సాధారణ సహాయం మాత్రమే. వైద్యుడి సలహా లేకుండా ఏ మందులను ప్రారంభించవద్దు లేదా ఆపవద్దు.',
+
+  'article.heading': '{category} పై వ్యాసాలు',
+
+  'reviews.rateQuestion': 'ఎన్ని నక్షత్రాలు ఇస్తారు?',
+
+  'reviews.starsShort': '{value} నక్షత్రాలు',
+
+  'reviews.averageOutOf': '5 లో {value} నక్షత్రాలు',
+
+  'dhun.welcomeTitle': 'స్వాగతం',
+
+  'dhun.consent': 'శంఖం, బంగీ మరియు డ్రమ్ కలిపి. వినడానికి నొక్కండి.',
+
+  'dhun.failed': 'శబ్దం ప్లే చేయలేకపోయాము.',
+
+  'dhun.unsupported': 'ఈ బ్రౌజర్ శబ్దాన్ని ప్లే చేయలేదు.',
+
+  'dhun.failedTry': 'శబ్దం ప్లే చేయడంలో సమస్య వచ్చింది.',
+
+  'sound.hintIdle': 'ఏ బటన్ నొక్కినా శబ్దం వినండి.',
+
+  'sound.hintPlaying': 'శబ్దం ప్లే అవుతోంది. ఆపడానికి అదే బటన్ మళ్ళీ నొక్కండి.',
+
+  'sound.preparing': 'శబ్దం సిద్ధమవుతోంది',
+
+  'nav.path': 'మార్గం',
+
+  'toast.dismiss': 'మూసివేయి',
+
+  'footer.free': 'ఈ సేవ పూర్తిగా ఉచితం. ఎవరి నుండీ డబ్బు తీసుకోబడ్డు.',
 };
 
 const MARATHI: Record<string, string> = {
@@ -748,6 +1096,78 @@ const MARATHI: Record<string, string> = {
   'footer.pages': 'पाने', 'footer.helplines': 'महत्त्वाचे क्रमांक', 'footer.readStory': 'तिची संपूर्ण कथा वाचा',
   'reviews.title': 'तुमचा अभिप्राय', 'reviews.submit': 'पाठवा', 'reviews.comment': 'तुमचे म्हणणे',
   'language.choose': 'तुमची भाषा निवडा', 'language.articlesIn': 'हा लेख हिंदीत आहे.',
+
+  'ask.welcome': 'स्वागत आहे! खाली तुमची समस्या लिहा किंवा एक विषय निवडा.',
+
+  'ref.notTitle': 'हे काय करत नाही',
+
+  'ref.not1': 'हे डॉक्टर नाही. औषधांचा सल्ला कधीही दिला जात नाही.',
+
+  'ref.not2': 'हे वकील नाहीत. कायदेशीर सल्ला दिला जात नाही.',
+
+  'ref.not3': 'हे पैसे घेत नाही, जाहिरातही दाखवत नाही.',
+
+  'ref.not4': 'हे तुमचे नाव, पत्ता किंवा फोन नंबर कधीही विचारत नाही, ठेवतही नाही.',
+
+  'ref.not5': 'सरकारी योजनेचे नाव, मदतवाहिनी क्रमांक किंवा दाम हे कधीही बनवत नाही — माहीत नसेल्यास स्पष्ट सांगते.',
+
+  'ref.medicalTitle': 'महत्त्वाचे: हे डॉक्टरचा सल्ला नाही',
+
+  'ref.medicalBody': 'आजार, औषध किंवा विषारी पदार्थांच्या बाबतीत काही असेल तर आधी डॉक्टरांना भेटा. येथील माहिती फक्त सामान्य मदतीसाठी आहे. मुलांचा लस, गरोदरपण, किंवा कोणतेही औषध सुरू करण्यापूर्वी डॉक्टरांचा सल्ला घ्या.',
+
+  'ref.statsTitle': 'किती माहिती उपलब्ध आहे',
+
+  'support.howTitle': 'तुम्ही कसे मदत करू शकता',
+
+  'support.alwaysFreeTitle': 'ही सेवा नेहमी विनामूल्य राहील',
+
+  'support.alwaysFreeBody': 'जे मदत मिळेली ती सेवा चालवण्यात वापरली जाईल. कोणाच्याही जागून पैसे घेतले जाणार नाहीत.',
+
+  'smriti.eyebrow': 'स्मृतित',
+
+  'smriti.whyTitle': 'ही साइट का बाय',
+
+  'smriti.ending': 'त्यांचा संघर्ष येथूनच पुढे चालू आहे.',
+
+  'article.askAny': 'एक प्रश्न विचारा',
+
+  'article.remember': 'लक्षात ठेवा',
+
+  'article.emergencyInfo': 'महत्त्वाची माहिती',
+
+  'article.medicalTitle': 'हे चिकित्सा सल्ला नाही',
+
+  'article.medicalBody': 'ही माहिती सामान्य मदतीसाठी आहे. डॉक्टरांच्या सल्ल्याशिवाय कोणतेही औषध सुरू किंवा बंद करू नका.',
+
+  'article.heading': '{category} वरील लेख',
+
+  'reviews.rateQuestion': 'किती तारे द्याल?',
+
+  'reviews.starsShort': '{value} तारे',
+
+  'reviews.averageOutOf': '5 पैकी {value} तारे',
+
+  'dhun.welcomeTitle': 'स्वागत आहे',
+
+  'dhun.consent': 'शंख, बांसुरी आणि ढोल एकत्र. ऐकण्यासाठी स्पर्श करा.',
+
+  'dhun.failed': 'ध्वनी चालू होऊ शकली नाही.',
+
+  'dhun.unsupported': 'हा ब्राउझर ध्वनी चालू करू शकत नाही.',
+
+  'dhun.failedTry': 'ध्वनी चालू करण्यात समस्या आली.',
+
+  'sound.hintIdle': 'कोणतेही बटण दाबून ध्वनी ऐका.',
+
+  'sound.hintPlaying': 'आवाज चालू आहे. थांबवण्यासाठी तेच बटण पुन्हा दाबा.',
+
+  'sound.preparing': 'ध्वनी तयार होत आहे',
+
+  'nav.path': 'मार्ग',
+
+  'toast.dismiss': 'बंद करा',
+
+  'footer.free': 'ही सेवा पूर्णपणे निःशुल्क आहे. कोणाच्याही जागून पैसे घेतले जात नाहीत.',
 };
 
 const GUJARATI: Record<string, string> = {
@@ -774,6 +1194,78 @@ const GUJARATI: Record<string, string> = {
   'footer.pages': 'પાનાં', 'footer.helplines': 'મહત્વના નંબરો', 'footer.readStory': 'તેણીની સંપૂર્ણ વાત વાંચો',
   'reviews.title': 'તમારો અભિપ્રાય', 'reviews.submit': 'મોકલો', 'reviews.comment': 'તમારા શબ્દો',
   'language.choose': 'તમારી ભાષા પસંદ કરો', 'language.articlesIn': 'આ લેખ હિન્દીમાં છે.',
+
+  'ask.welcome': 'સ્વાગત છે! નીચે તમારી સમસ્યા લખો અથવા એક વિષય પસંદ કરો.',
+
+  'ref.notTitle': 'આ શું કરતું નથી',
+
+  'ref.not1': 'આ ડૉક્ટર નથી. દવાની સલાહ ક્યારેય આપવામાં આવતી નથી.',
+
+  'ref.not2': 'આ વકીલ નથી. કાનૂની સલાહ આપવામાં આવતી નથી.',
+
+  'ref.not3': 'આ પૈસા લેતું નથી અને જાહેરાત બતાવતું નથી.',
+
+  'ref.not4': 'આ તમારું નામ, સરનામું કે ફોન નંબર ક્યારેય પૂછતું નથી, કે રાખતું નથી.',
+
+  'ref.not5': 'સરકારી યોજનાનું નામ, મદદ નંબર કે ભાવ આ ક્યારેય બનાવતું નથી — માહિતી ન હોય તો સ્પષ્ટ કહે છે.',
+
+  'ref.medicalTitle': 'મહત્વનું: આ ડૉક્ટરની સલાહ નથી',
+
+  'ref.medicalBody': 'બીમારી, દવા કે ઝેરી વસ્તુ વિશે કોઈ વાત હોય તો પહેલાં ડૉક્ટરને મળો. અહીં આપેલ માહિતી ફક્ત સામાન્ય મદદ માટે છે. બાળનું રસીકરણ, સગર્ભાવસ્થા, કે કોઈપણ દવા શરૂ કરતાં પહેલાં ડૉક્ટરની સલાહ લો.',
+
+  'ref.statsTitle': 'કેટલી માહિતી ઉપલબ્ધ છે',
+
+  'support.howTitle': 'તમે કેવી રીતે મદદ કરી શકો',
+
+  'support.alwaysFreeTitle': 'આ સેવા હંમેશા મફત રહેશે',
+
+  'support.alwaysFreeBody': 'જે મદદ મળશે તે સેવા ચલાવવા માટે વાપરાશે. કોઈના પૈસા ક્યારેય લેવામાં આવશે નહીં.',
+
+  'smriti.eyebrow': 'સમરણમાં',
+
+  'smriti.whyTitle': 'આ સાઇટ કેમ છે',
+
+  'smriti.ending': 'તેમનો અસ્તિત્વ અહીં જ આગળ વધે છે.',
+
+  'article.askAny': 'એક પ્રશ્ન પૂછો',
+
+  'article.remember': 'યાદ રાખજો',
+
+  'article.emergencyInfo': 'મહત્વની માહિતી',
+
+  'article.medicalTitle': 'આ તબીબી સલાહ નથી',
+
+  'article.medicalBody': 'આ માહિતી સામાન્ય મદદ માટે છે. ડૉક્ટરની સલાહ વગર કોઈ દવા શરૂ કે બંધ ન કરો.',
+
+  'article.heading': '{category} વિશેના લેખ',
+
+  'reviews.rateQuestion': 'કેટલા તારા આપશો?',
+
+  'reviews.starsShort': '{value} તારા',
+
+  'reviews.averageOutOf': '5 માંથી {value} તારા',
+
+  'dhun.welcomeTitle': 'સ્વાગત છે',
+
+  'dhun.consent': 'શંખ, બાંસુરી અને ઢોલ સાથે. સાંભળવા છૂટો.',
+
+  'dhun.failed': 'ધ્વનિ વગાડી શકાઈ નથી.',
+
+  'dhun.unsupported': 'આ બ્રાઉઝર ધ્વનિ વગાડી શકતો નથી.',
+
+  'dhun.failedTry': 'ધ્વનિ વગાડવામાં સમસ્યા આવી.',
+
+  'sound.hintIdle': 'કોઈપણ બટન દબાવીને ધ્વનિ સાંભળો.',
+
+  'sound.hintPlaying': 'અવાજ વાગી રહ્યો છે. બંધ કરવા એ જ બટન ફરી દબાવો.',
+
+  'sound.preparing': 'ધ્વનિ તૈયાર થઈ રહી છે',
+
+  'nav.path': 'માર્ગ',
+
+  'toast.dismiss': 'બંધ કરો',
+
+  'footer.free': 'આ સેવા સંપૂર્ણ રીતે મફત છે. કોઈના પૈસા લેવામાં આવતા નથી.',
 };
 
 const KANNADA: Record<string, string> = {
@@ -796,6 +1288,78 @@ const KANNADA: Record<string, string> = {
   'footer.pages': 'ಪುಟಗಳು', 'footer.helplines': 'ಮುಖ್ಯ ಸಂಖ್ಯೆಗಳು',
   'reviews.title': 'ನಿಮ್ಮ ಅಭಿಪ್ರಾಯ', 'reviews.submit': 'ಕಳುಹಿಸಿ',
   'language.choose': 'ನಿಮ್ಮ ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ', 'language.articlesIn': 'ಈ ಲೇಖನ ಹಿಂದಿಯಲ್ಲಿದೆ.',
+
+  'ask.welcome': 'ಸ್ವಾಗತ! ಕೆಳಗೆ ನಿಮ್ಮ ಸಮಸ್ಯೆಯನ್ನು ಬರೆಯಿರಿ ಅಥವಾ ಒಂದು ವಿಷಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ.',
+
+  'ref.notTitle': 'ಇದು ಏನು ಮಾಡುವುದಿಲ್ಲ',
+
+  'ref.not1': 'ಇದು ವೈದ್ಯರು ಅಲ್ಲ. ಔಷಧಿಗೆ ಸಲಹೆ ಎಂದಿಗೂ ಕೊಡುವುದಿಲ್ಲ.',
+
+  'ref.not2': 'ಇದು ವಕೀಲ ಅಲ್ಲ. ಕಾನೂನು ಸಲಹೆ ನೀಡುವುದಿಲ್ಲ.',
+
+  'ref.not3': 'ಇದು ಹಣ ತೆಗೆಯುವುದಿಲ್ಲ, ಜಾಹೀರಾತು ತೋರಿಸುವುದಿಲ್ಲ.',
+
+  'ref.not4': 'ಇದು ನಿಮ್ಮ ಹೆಸರು, ವಿಳಾಸ ಅಥವಾ ದೂರವಾಣಿ ಸಂಖ್ಯೆಯನ್ನು ಎಂದಿಗೂ ಕೇಳುವುದಿಲ್ಲ, ಸಂಗ್ರಹಿಸುವುದಿಲ್ಲ.',
+
+  'ref.not5': 'ಸರ್ಕಾರಿ ಯೋಜನೆಯ ಹೆಸರು, ಸಹायಕ ಸಂಖ್ಯೆ ಅಥವಾ ಬೆಲೆಯನ್ನು ಇದು ಕಾಲ್ಪಡಿಸುವುದಿಲ್ಲ — ಗೊತ್ತಿಲ್ಲದಿದ್ದರೆ ಸ್ಪಷ್ಟವಾಗೆ ಹೇಳುತ್ತದೆ.',
+
+  'ref.medicalTitle': 'ಮುಖ್ಯ: ಇದು ವೈದ್ಯ ಸಲಹೆ ಅಲ್ಲ',
+
+  'ref.medicalBody': 'ಅನಾರೋಗ್ಯ, ಔಷಧ ಅಥವಾ ವಿಷದ ವಿಷಯವಾದಿದ್ದರೆ ಮೊದಲು ವೈದ್ಯರನ್ನು ಭೇಟಿಯಾಗಿ. ಇಲ್ಲಿ ನೀಡಿದ ಮಾಹಿತಿ ಕೇವಲ ಸಾಮಾನ್ಯ ಸಹಾಯಕ್ಕೆ. ಮಕುಗಳ ಲಸಿಕೆ, ಗರ್ಭಿಣಿ, ಅಥವಾ ಯಾವುದೇ ಔಷಧ ಪ್ರಾರಂಭಿಸುವ ಮೊದಲು ವೈದ್ಯರ ಸಲಹೆ ಪಡೆಯಿರಿ.',
+
+  'ref.statsTitle': 'ಎಷ್ಟು ಮಾಹಿತಿ ಇದೆ',
+
+  'support.howTitle': 'ನೀವು ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು',
+
+  'support.alwaysFreeTitle': 'ಈ ಸೇವೆಯು ಯಾವಾಗಲೂ ಉಚಿತವಾಗಿರುತ್ತದೆ',
+
+  'support.alwaysFreeBody': 'ಸಿಕ್ಕುವ ಸಹಾಯ ಸೇವೆಯನ್ನು ನಡೆಸಲು ಬಳಸಲಾಗುತ್ತದೆ. ಯಾರಿಂದೂ ಎಂದಿಗೂ ಹಣವನ್ನು ಪಡೆಯುವುದಿಲ್ಲ.',
+
+  'smriti.eyebrow': 'ಸ್ಮರಣದಲ್ಲಿ',
+
+  'smriti.whyTitle': 'ಈ ಸೈಟ್ ಏಕೆ ಇದೆ',
+
+  'smriti.ending': 'ಅವಳ ಹೋರಾಟ ಇಲ್ಲಿಯೇ ಮುಂದುವರೆದುಕೊಳ್ಳುತ್ತದೆ.',
+
+  'article.askAny': 'ಒಂದು ಪ್ರಶ್ನೆ ಕೇಳಿ',
+
+  'article.remember': 'ನೆನಪಿಡಿ',
+
+  'article.emergencyInfo': 'ಮುಖ್ಯ ಮಾಹಿತಿ',
+
+  'article.medicalTitle': 'ಇದು ವೈದ್ಯ ಸಲಹೆ ಅಲ್ಲ',
+
+  'article.medicalBody': 'ಈ ಮಾಹಿತಿ ಸಾಮಾನ್ಯ ಸಹಾಯಕ್ಕೆ. ವೈದ್ಯರ ಸಲಹೆ ಇಲ್ಲದೆ ಯಾವುದೇ ಔಷಧ ಪ್ರಾರಂಭಿಸಬೇಡಿ ಅಥವಾ ನಿಲ್ಲಿಸಬೇಡಿ.',
+
+  'article.heading': '{category} ಬಗ್ಗೆ ಲೇಖನಗಳು',
+
+  'reviews.rateQuestion': 'ಎಷ್ಟು ನಕ್ಷತ್ರಗಳನ್ನು ನೀಡುತ್ತೀರಿ?',
+
+  'reviews.starsShort': '{value} ನಕ್ಷತ್ರಗಳು',
+
+  'reviews.averageOutOf': '5 ರಲ್ಲಿ {value} ನಕ್ಷತ್ರಗಳು',
+
+  'dhun.welcomeTitle': 'ಸ್ವಾಗತ',
+
+  'dhun.consent': 'ಶಂಖ, ಬಾಂಸುರಿ ಮತ್ತು ಡೊಲ್ ಜೊತೆಗೆ. ಕೇಳಲು ಮುಟ್ಟಿ.',
+
+  'dhun.failed': 'ಧ್ವನಿ ಪ್ಲೇ ಆಗಲಿಲ್ಲ.',
+
+  'dhun.unsupported': 'ಈ ಬ್ರೌಸರ್ ಧ್ವನಿ ಪ್ಲೇ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ.',
+
+  'dhun.failedTry': 'ಧ್ವನಿ ಪ್ಲೇ ಮಾಡುವಲ್ಲಿ ಸಮಸ್ಯೆ ಆಗಿದೆ.',
+
+  'sound.hintIdle': 'ಯಾವುದೇ ಬಟನ್ ಒತ್ತಿ ಧ್ವನಿ ಕೇಳಿ.',
+
+  'sound.hintPlaying': 'ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ನಿಲ್ಲಿಸಲು ಅದೇ ಬಟನ್ ಮತ್ತೆ ಒತ್ತಿ.',
+
+  'sound.preparing': 'ಧ್ವನಿ ಸಿದ್ಧವಾಗುತ್ತಿದೆ',
+
+  'nav.path': 'ಮಾರ್ಗ',
+
+  'toast.dismiss': 'ಮುಚ್ಚಿ',
+
+  'footer.free': 'ಈ ಸೇವೆ ಸಂಪೂರ್ಣವಾಗಿ ಉಚಿತ. ಯಾರಿಂದೂ ಹಣ ಪಡೆಯುವುದಿಲ್ಲ.',
 };
 
 const MALAYALAM: Record<string, string> = {
@@ -818,6 +1382,78 @@ const MALAYALAM: Record<string, string> = {
   'footer.pages': 'പേജുകൾ', 'footer.helplines': 'പ്രധാന നമ്പർ',
   'reviews.title': 'നിങ്ങളുടെ അഭിപ്രായം', 'reviews.submit': 'അയയ്ക്കുക',
   'language.choose': 'നിങ്ങളുടെ ഭാഷ തിരഞ്ഞെടുക്കുക', 'language.articlesIn': 'ഈ ലേഖനം ഹിന്ദിയിലാണ്.',
+
+  'ask.welcome': 'സ്വാഗതം! താഴെ നിങ്ങളുടെ പ്രശ്നം എഴുതുക അല്ലെങ്കിൽ ഒരു വിഷയം തിരഞ്ഞെടുക്കുക.',
+
+  'ref.notTitle': 'ഇത് ചെയ്യാത്തത്',
+
+  'ref.not1': 'ഇത് ഡോക്ടറല്ല. മരുന്നുകളെക്കുറിച്ച് ഒരിക്കലും നിർദ്ദേശം നൽകില്ല.',
+
+  'ref.not2': 'ഇത് വകീലല്ല. നിയമപരിശോധനയുടെ നിർദ്ദേശങ്ങൾ നൽകില്ല.',
+
+  'ref.not3': 'ഇത് പണം എടുക്കുന്നില്ല, വിളംപരം കാണിക്കുന്നുമില്ല.',
+
+  'ref.not4': 'ഇത് നിങ്ങളുടെ പേരോ വിലാസമോ ഫോൺ നമ്പറോ ഒരിക്കലും ചോദിക്കില്ല, സൂക്ഷിക്കുന്നുമില്ല.',
+
+  'ref.not5': 'സർക്കാർ പദ്ധതിയുടെ പേരോ സഹായനമ്പർ നമ്പറോ വിലയോ ഇത് ഉണ്ടാക്കില്ല — അറിയാമെങ്കിൽ വ്യക്തമായി പറയും.',
+
+  'ref.medicalTitle': 'പ്രധാനം: ഇത് മെഡിക്കൽ നിർദ്ദേശമല്ല',
+
+  'ref.medicalBody': 'രോഗം, മരുന്ന് അല്ലെങ്കിൽ വിഷം എന്നിവയുമായി ബന്ധപ്പെട്ടതാണെങ്കിൽ ആദ്യം ഡോക്ടറെ കാണുക. ഇവിടെ നൽകിയ വിവരങ്ങൾ പൊതുവായ സഹായത്തിനായി മാത്രമാണ്. കുഞ്ഞിന്റെ വാക്സീൻ, ഗർഭകാലം, അല്ലെങ്കിൽ ഏതെങ്കിലും മരുന്ന് തുടങ്ങുന്നതിന് മുമ്പ് ഡോക്ടറുടെ നിർദ്ദേശം എടുക്കുക.',
+
+  'ref.statsTitle': 'എത്ര വിവരങ്ങളുണ്ട്',
+
+  'support.howTitle': 'നിങ്ങൾ എങ്ങനെ സഹായിക്കാം',
+
+  'support.alwaysFreeTitle': 'ഈ സേവനം എപ്പോഴും സൗജന്യമായിരിക്കും',
+
+  'support.alwaysFreeBody': 'ലഭിക്കുന്ന സഹായം സേവനം നടത്താൻ ഉപയോഗിക്കും. ആരോടും ഒരിക്കലും പണം ആവശ്യമാക്കില്ല.',
+
+  'smriti.eyebrow': 'സ്മരണാർഹത്തിന്',
+
+  'smriti.whyTitle': 'ഈ സൈറ്റ് എന്തുകൊണ്ട്',
+
+  'smriti.ending': 'അവളുടെ പോരാട്ടം ഇവിടെ തന്നെ തുടരുന്നു.',
+
+  'article.askAny': 'ഒരു ചോദ്യം ചോദിക്കുക',
+
+  'article.remember': 'ഓർമ്മിക്കുക',
+
+  'article.emergencyInfo': 'പ്രധാന വിവരങ്ങൾ',
+
+  'article.medicalTitle': 'ഇത് മെഡിക്കൽ നിർദ്ദേശമല്ല',
+
+  'article.medicalBody': 'ഈ വിവരങ്ങൾ പൊതുവായ സഹായത്തിനായി. ഡോക്ടറുടെ നിർദ്ദേശമില്ലാതെ ഏതെങ്കിലും മരുന്ന് തുടങ്ങുകയോ നിർത്തുകയോ ചെയ്യരുത്.',
+
+  'article.heading': '{category} സംബന്ധിച്ചുള്ള ലേഖനങ്ങൾ',
+
+  'reviews.rateQuestion': 'എന്ത് നക്ഷത്രങ്ങൾ നൽകും?',
+
+  'reviews.starsShort': '{value} നക്ഷത്രങ്ങൾ',
+
+  'reviews.averageOutOf': '5 ൽ {value} നക്ഷത്രങ്ങൾ',
+
+  'dhun.welcomeTitle': 'സ്വാഗതം',
+
+  'dhun.consent': 'ശംഖം, വിളംപം, മേല്. കേളാൻ തൊടുക.',
+
+  'dhun.failed': 'ശബ്ദം വില്ലാ.',
+
+  'dhun.unsupported': 'ഈ ബ്രൗസറിന് ശബ്ദം കളിക്കാം.',
+
+  'dhun.failedTry': 'ശബ്ദം കളിക്കുമ്പോൾ പ്രശ്നം ഉണ്ടായി.',
+
+  'sound.hintIdle': 'ഏത് ബട്ടണും അമർത്തി ശബ്ദം കേൾക്കുക.',
+
+  'sound.hintPlaying': 'ശബ്ദം കളിക്കുകയാണ്. നിർത്താൻ ആ അതേ ബട്ടൺ വീണ്ടും അമർത്തുക.',
+
+  'sound.preparing': 'ശബ്ദം തയ്യാറാകുകയാണ്',
+
+  'nav.path': 'വഴി',
+
+  'toast.dismiss': 'അടയ്ക്കുക',
+
+  'footer.free': 'ഈ സേവനം പൂർണ്ണമായും സൗജന്യം. ആരോടും പണം ആവശ്യമാക്കില്ല.',
 };
 
 const PUNJABI: Record<string, string> = {
@@ -839,6 +1475,78 @@ const PUNJABI: Record<string, string> = {
   'footer.pages': 'ਪੰਨੇ', 'footer.helplines': 'ਜ਼ਰੂਰੀ ਨੰਬਰ',
   'reviews.title': 'ਤੁਹਾਡੀ ਰਾਇ', 'reviews.submit': 'ਭੇਜੋ',
   'language.choose': 'ਆਪਣੀ ਭਾਸ਼ਾ ਚੁਣੋ', 'language.articlesIn': 'ਇਹ ਲੇਖ ਹਿੰਦੀ ਵਿੱਚ ਹੈ।',
+
+  'ask.welcome': 'ਜੀ ਆਇਆਂ ਨੂੰ ਸਵਾਗਤ ਹੈ! ਹੇਠ ਆਪਣੀ ਸਮੱਸਿਆ ਲਿਖੋ ਜਾਂ ਇੱਕ ਵਿਸ਼ਾ ਚੁਣੋ.',
+
+  'ref.notTitle': 'ਇਹ ਕੀ ਨਹੀਂ ਕਰਦੀ',
+
+  'ref.not1': 'ਇਹ ਡਾਕਟਰ ਨਹੀਂ। ਦਵਾ ਦੀ ਸਲਾਹ ਕਦੇ ਨਹੀਂ ਦਿੰਦੀ।',
+
+  'ref.not2': 'ਇਹ ਵਕੀਲ ਨਹੀਂ। ਕਾਨੂੰਨੀ ਸਲਾਹ ਨਹੀਂ ਦਿੰਦੀ।',
+
+  'ref.not3': 'ਇਹ ਪੈਸੇ ਨਹੀਂ ਲੈਂਦੀ ਅਤੇ ਇਸਤਿਹਾਨ ਨਹੀਂ ਦਿਖਾਉਂਦੀ।',
+
+  'ref.not4': 'ਇਹ ਤੁਹਾਡਾ ਨਾਮ, ਪਤਾ ਜਾਂ ਫ਼ੋਨ ਨੰਬਰ ਕਦੇ ਨਹੀਂ ਪੁੱਛਦੀ, ਅਤੇ ਨਹੀਂ ਰੱਖਦੀ।',
+
+  'ref.not5': 'ਸਰਕਾਰੀ ਯੋਜਨਾ ਦਾ ਨਾਮ, ਮਦਦ ਨੰਬਰ ਜਾਂ ਕੀਮਤ ਇਹ ਕਦੇ ਨਹੀਂ ਬਣਾਉਂਦੀ — ਪਤਾ ਨਾ ਲੱਗੇ ਤਾਂ ਸਾਫ਼ ਦੱਸਦੀ ਹੈ।',
+
+  'ref.medicalTitle': 'ਜ਼ਰੂਰੀ: ਇਹ ਡਾਕਟਰ ਦੀ ਸਲਾਹ ਨਹੀਂ',
+
+  'ref.medicalBody': 'ਬੀਮਾਰੀ, ਦਵਾ ਜਾਂ ਜ਼ਹਿਰਲੀ ਚੀਜ਼ ਬਾਰੇ ਕੋਈ ਗੱਲ ਹੋਵੇ ਤਾਂ ਪਹਿਲਾਂ ਡਾਕਟਰ ਨਾਲ ਮਿਲੋ। ਇੱਥੇ ਦਿੱਤੀ ਜਾਣਕਾਰੀ ਸਿਰਫ਼ ਆਮ ਮਦਦ ਲਈ ਹੈ। ਬੱਚੇ ਦੀ ਟੀਕਾ, ਗਰਭਾਵਸਥਾ, ਜਾਂ ਕੋਈ ਵੀ ਦਵਾ ਸ਼ੁਰੂ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਡਾਕਟਰ ਦੀ ਸਲਾਹ ਲਓ।',
+
+  'ref.statsTitle': 'ਕਿੰਨੀ ਜਾਣਕਾਰੀ ਉਪਲਬਧ ਹੈ',
+
+  'support.howTitle': 'ਤੁਸੀਂ ਕਿਵੇਂ ਮਦਦ ਕਰ ਸਕਦੇ ਹੋ',
+
+  'support.alwaysFreeTitle': 'ਇਹ ਸੇਵਾ ਹਮੇਸ਼ਾ ਮੁਫ਼ਤ ਰਹੇਗੀ',
+
+  'support.alwaysFreeBody': 'ਜੋ ਮਦਦ ਮਿਲੇ ਉਹ ਸੇਵਾ ਚਲਾਉਣ ਲਈ ਵਰਤੀ ਜਾਵੇਗੀ। ਕਿਸੇ ਤੋਂ ਕਦੇ ਪੈਸੇ ਨਹੀਂ ਲਏ ਜਾਣਗੇ।',
+
+  'smriti.eyebrow': 'ਯਾਦ ਵਿੱਚ',
+
+  'smriti.whyTitle': 'ਇਹ ਸਾਈਟ ਕਿਉਂ ਹੈ',
+
+  'smriti.ending': 'ਉਹਨਾਂ ਦੀ ਲੜਾਈ ਇੱਥੋਂ ਹੀ ਅੱਗੇ ਵਧਦੀ ਹੈ।',
+
+  'article.askAny': 'ਇੱਕ ਸਵਾਲ ਪੁੱਛੋ',
+
+  'article.remember': 'ਯਾਦ ਰੱਖੋ',
+
+  'article.emergencyInfo': 'ਜ਼ਰੂਰੀ ਜਾਣਕਾਰੀ',
+
+  'article.medicalTitle': 'ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ',
+
+  'article.medicalBody': 'ਇਹ ਜਾਣਕਾਰੀ ਆਮ ਮਦਦ ਲਈ ਹੈ। ਡਾਕਟਰ ਦੀ ਸਲਾਹ ਤੋਂ ਬਿਨਾਂ ਕੋਈ ਦਵਾ ਸ਼ੁਰੂ ਜਾਂ ਬੰਦ ਨਾ ਕਰੋ।',
+
+  'article.heading': '{category} ਬਾਰੇ ਲੇਖ',
+
+  'reviews.rateQuestion': 'ਕਿੰਨੇ ਤਾਰੇ ਦੇਣਗੇ?',
+
+  'reviews.starsShort': '{value} ਤਾਰੇ',
+
+  'reviews.averageOutOf': '5 ਵਿੱਚੋਂ {value} ਤਾਰੇ',
+
+  'dhun.welcomeTitle': 'ਜੀ ਆਇਆਂ ਨੂੰ ਸਵਾਗਤ ਹੈ',
+
+  'dhun.consent': 'ਸ਼ੰਖ, ਬਾਂਸੀ ਅਤੇ ਢੋਲ ਇਕੱਠੇ। ਸੁਣਣ ਲਈ ਛੂਹੋ।',
+
+  'dhun.failed': 'ਧੁਨ ਨਹੀਂ ਚੱਲੀ।',
+
+  'dhun.unsupported': 'ਇਹ ਬ੍ਰਾਊਜ਼ਰ ਧੁਨ ਨਹੀਂ ਚਲਾ ਸਕਦਾ।',
+
+  'dhun.failedTry': 'ਧੁਨ ਚਲਾਉਣ ਵਿੱਚ ਸਮੱਸਿਆ ਹੋਈ।',
+
+  'sound.hintIdle': 'ਕੋਈ ਵੀ ਬਟਨ ਦਬਾ ਕੇ ਧੁਨ ਸੁਣੋ।',
+
+  'sound.hintPlaying': 'ਆਵਾਜ਼ ਚੱਲ ਰਹੀ ਹੈ। ਰੋਕਣ ਲਈ ਉਸੇ ਹੀ ਬਟਨ ਦੁਬਾਰਾ ਦਬਾਓ।',
+
+  'sound.preparing': 'ਧੁਨ ਤਿਆਰ ਹੋ ਰਹੀ ਹੈ',
+
+  'nav.path': 'ਰਾਹ',
+
+  'toast.dismiss': 'ਬੰਦ ਕਰੋ',
+
+  'footer.free': 'ਇਹ ਸੇਵਾ ਪੂਰੀ ਤਰ੍ਹਾਂ ਮੁਫ਼ਤ ਹੈ। ਕਿਸੇ ਤੋਂ ਪੈਸੇ ਨਹੀਂ ਲਏ ਜਾਂਦੇ।',
 };
 
 const URDU: Record<string, string> = {
@@ -861,6 +1569,78 @@ const URDU: Record<string, string> = {
   'footer.pages': 'صفحات', 'footer.helplines': 'اہم نمبر', 'footer.readStory': 'ان کی مکمل کہانی پڑھیں',
   'reviews.title': 'آپ کی رائے', 'reviews.submit': 'بھیجیں', 'reviews.comment': 'آپ کی بات',
   'language.choose': 'اپنی زبان منتخب کریں', 'language.articlesIn': 'یہ مضمون ہندی میں ہے۔',
+
+  'ask.welcome': 'خوش آمدید! نیچے اپنا مسئلہ لکھیں یا کوئی موضوع منتخب کریں۔',
+
+  'ref.notTitle': 'یہ کیا نہیں کرتی',
+
+  'ref.not1': 'یہ ڈاکٹر نہیں ہے۔ دوا کے بارے میں کبھی مشورہ نہیں دیا جاتا۔',
+
+  'ref.not2': 'یہ وکیل نہیں ہے۔ قانونی مشورہ نہیں دیا جاتا۔',
+
+  'ref.not3': 'یہ پیسہ نہیں لیتی اور اشتہار نہیں دکھاتی۔',
+
+  'ref.not4': 'یہ کبھی آپ کا نام، پتہ یا فون نمبر نہیں پوچھتی اور نہ رکھتی۔',
+
+  'ref.not5': 'یہ کسی سرکاری منصوبے کا نام، ہیلپ لائن نمبر یا قیمت نہیں بناتی — معلوم نہ ہو تو صاف کہہ دیتی ہے۔',
+
+  'ref.medicalTitle': 'ضروری: یہ ڈاکٹر کی مشورہ نہیں',
+
+  'ref.medicalBody': 'بیماری، دوا یا کسی زہریلی چیز سے متعلق بات हो تو پہلے ڈاکٹر سے ملیں۔ یہاں دی گئی معلومات صرف عام مدد کے لیے ہے۔ بچے کی ویکسین، حاملگی، یا کوئی بھی دوا شروع کرنے سے پہلے ڈاکٹر کی مشورہ ضرور لیں۔',
+
+  'ref.statsTitle': 'کتنی معلومات موجود ہیں',
+
+  'support.howTitle': 'آپ کیسے مدد کر سکتے ہیں',
+
+  'support.alwaysFreeTitle': 'یہ خدمت ہمیشہ مفت رہے گی',
+
+  'support.alwaysFreeBody': 'جو مدد ملے گی وہ خدمت چلانے میں لگے گی۔ کسی سے کبھی پیسے نہیں لیے جائیں گے۔',
+
+  'smriti.eyebrow': 'یاد کے طور پر',
+
+  'smriti.whyTitle': 'یہ سائٹ کیوں ہے',
+
+  'smriti.ending': 'ان کی کوشش یہیں سے آگے بڑھ رہی ہے۔',
+
+  'article.askAny': 'ایک سوال پوچھیں',
+
+  'article.remember': 'یاد رکھیں',
+
+  'article.emergencyInfo': 'ضروری معلومات',
+
+  'article.medicalTitle': 'یہ طبی مشورہ نہیں',
+
+  'article.medicalBody': 'یہ معلومات صرف عام مدد کے لیے ہے۔ ڈاکٹر کے مشورے کے بغیر کوئی دوا شروع یا بند نہ کریں۔',
+
+  'article.heading': '{category} پر مضامین',
+
+  'reviews.rateQuestion': 'کتنے ستارے دیں گے؟',
+
+  'reviews.starsShort': '{value} ستارے',
+
+  'reviews.averageOutOf': '5 میں سے {value} ستارے',
+
+  'dhun.welcomeTitle': 'خوش آمدید',
+
+  'dhun.consent': 'شاخ، bansuri اور ڈھول مل کر۔ سننے کے لیے چھوئیں۔',
+
+  'dhun.failed': 'آواز نہیں چلی۔',
+
+  'dhun.unsupported': 'یہ براؤزر آواز نہیں چلا سکتا۔',
+
+  'dhun.failedTry': 'آواز چلانے میں مسئلہ پیش آیا۔',
+
+  'sound.hintIdle': 'کوئی بھی بٹن دبا کر آواز سنیں۔',
+
+  'sound.hintPlaying': 'آواز چل رہی ہے۔ روکنے کے لیے وہی بٹن دوبارہ دبائیں۔',
+
+  'sound.preparing': 'آواز تیار ہو رہی ہے',
+
+  'nav.path': 'راستہ',
+
+  'toast.dismiss': 'بند کریں',
+
+  'footer.free': 'یہ خدمت مکمل طور پر مفت ہے۔ کسی سے پیسے نہیں لیے جاتے۔',
 };
 
 const ARABIC: Record<string, string> = {
@@ -883,6 +1663,82 @@ const ARABIC: Record<string, string> = {
   'home.freeBody': 'لا يُطلب أي مقابل، ولا تُطلب بيانات شخصية، ولا تظهر إعلانات.',
   'reviews.title': 'رأيك', 'reviews.submit': 'إرسال', 'reviews.comment': 'ما تريد قوله',
   'language.choose': 'اختر لغتك', 'language.articlesIn': 'هذه المقالة بالهندية.',
+
+  'ask.welcome': 'مرحبًا! اكتب مشكلتك في الأسفل أو اختر موضوعًا.',
+
+  'ref.notTitle': 'ما لا تفعله',
+
+  'ref.not1': 'هذه ليست طبيبًا. لا تقدم نصيحة عن الأدوية أبدًا.',
+
+  'ref.not2': 'هذا ليس محاميًا. لا تقدم استشارة قانونية.',
+
+  'ref.not3': 'لا تأخذ مالًا ولا تعرض إعلانات.',
+
+  'ref.not4': 'لا تسأل عن اسمك أو عنوانك أو رقم هاتفك، ولا تحفظها.',
+
+  'ref.not5': 'لا تختلق اسم مشروع حكومي أو رقم خط مساعدة أو سعرًا. وإن لم تعرف فتقول ذلك بوضوح.',
+
+  'ref.medicalTitle': 'مهم: هذه ليست نصيحة طبية',
+
+  'ref.medicalBody': 'في أي أمر يتعلق بالمرض أو الأدوية أو السموم، راجع طبيبًا أولًا. المعلومات هنا مساعدة عامة فقط. خذ نصيحة طبية قبل تطعيم الطفل أو أثناء الحمل أو قبل بدء أي دواء.',
+
+  'ref.statsTitle': 'كم من المعلومات متاح',
+
+  'support.howTitle': 'كيف يمكنك المساعدة',
+
+  'support.alwaysFreeTitle': 'ستبقى هذه الخدمة مجانية دائمًا',
+
+  'support.alwaysFreeBody': 'كل مساعدة تأتي ستُنفق على تشغيل الخدمة. لن يُطلب المال من أحد أبدًا.',
+
+  'smriti.eyebrow': 'تذكارًا',
+
+  'smriti.whyTitle': 'لماذا هذا الموقع',
+
+  'smriti.ending': 'نضالها يستمر من هنا.',
+
+  'article.askAny': 'اطرح سؤالًا',
+
+  'article.remember': 'تذكّر',
+
+  'article.emergencyInfo': 'معلومات مهمة',
+
+  'article.medicalTitle': 'هذه ليست نصيحة طبية',
+
+  'article.medicalBody': 'هذه المعلومات مساعدة عامة. لا تبدأ دواء أو توقفه دون طبيب.',
+
+  'article.heading': 'مقالات عن {category}',
+
+  'reviews.rateQuestion': 'كم نجمة ستعطي؟',
+
+  'reviews.starsShort': '{value} نجوم',
+
+  'reviews.averageOutOf': '{value} من 5 نجوم',
+
+  'dhun.welcomeTitle': 'أهلًا وسهلًا',
+
+  'dhun.consent': 'صدفة وناي وطبلة معًا. المس للاستماع.',
+
+  'dhun.failed': 'تعذّر تشغيل الصوت.',
+
+  'dhun.unsupported': 'هذا المتصفح لا يستطيع تشغيل الصوت.',
+
+  'dhun.failedTry': 'حدثت مشكلة في تشغيل الصوت.',
+
+  'sound.hintIdle': 'اضغط أي زر للاستماع إلى الصوت.',
+
+  'sound.hintPlaying': 'الصوت يعمل. اضغط الزر نفسه لإيقافه.',
+
+  'sound.preparing': 'جارٍ تجهيز الصوت',
+
+  'nav.path': 'المسار',
+
+  'toast.dismiss': 'إغلاق',
+
+  'footer.free': 'هذه الخدمة مجانية تمامًا. لا يُطلب مال من أحد.',
+
+  'footer.pages': 'الصفحات',
+
+  'footer.helplines': 'أرقام مهمة',
 };
 
 const SPANISH: Record<string, string> = {
@@ -905,6 +1761,78 @@ const SPANISH: Record<string, string> = {
   'footer.pages': 'Páginas', 'footer.helplines': 'Números importantes', 'footer.readStory': 'Lea su historia completa',
   'reviews.title': 'Su opinión', 'reviews.submit': 'Enviar', 'reviews.comment': 'Lo que quiera decir',
   'language.choose': 'Elija su idioma', 'language.articlesIn': 'Este artículo está en hindi.',
+
+  'ask.welcome': '¡Bienvenido! Escribe tu problema abajo o elige un tema.',
+
+  'ref.notTitle': 'Lo que no hace',
+
+  'ref.not1': 'Esto no es un médico. Nunca da consejos sobre medicamentos.',
+
+  'ref.not2': 'Esto no es un abogado. No da asesoramiento legal.',
+
+  'ref.not3': 'No cobra dinero ni muestra publicidad.',
+
+  'ref.not4': 'Nunca pide tu nombre, dirección ni teléfono, ni los guarda.',
+
+  'ref.not5': 'No inventa nombres de programas, números de ayuda ni precios. Si no lo sabe, lo dice.',
+
+  'ref.medicalTitle': 'Importante: esto no es consejo médico',
+
+  'ref.medicalBody': 'Para cualquier cosa relacionada con enfermedad, medicamentos o veneno, consulta primero a un médico. Aquí solo hay ayuda general. Pide consejo médico antes de vaccinar a un niño, durante el embarazo o antes de empezar cualquier medicamento.',
+
+  'ref.statsTitle': 'Cuánta información hay',
+
+  'support.howTitle': 'Cómo puedes ayudar',
+
+  'support.alwaysFreeTitle': 'Este servicio siempre será gratuito',
+
+  'support.alwaysFreeBody': 'Toda la ayuda que llegue se usará para mantener el servicio en marcha. Nunca se le pedirá dinero a nadie.',
+
+  'smriti.eyebrow': 'En memoria',
+
+  'smriti.whyTitle': 'Por qué existe este sitio',
+
+  'smriti.ending': 'Su lucha continúa aquí.',
+
+  'article.askAny': 'Haz una pregunta',
+
+  'article.remember': 'Recuerda',
+
+  'article.emergencyInfo': 'Información importante',
+
+  'article.medicalTitle': 'Esto no es consejo médico',
+
+  'article.medicalBody': 'Esta información es ayuda general. No empieces ni dejes ninguna medicina sin un médico.',
+
+  'article.heading': 'Artículos sobre {category}',
+
+  'reviews.rateQuestion': '¿Cuántas estrellas daría?',
+
+  'reviews.starsShort': '{value} estrellas',
+
+  'reviews.averageOutOf': '{value} de 5 estrellas',
+
+  'dhun.welcomeTitle': 'Bienvenido',
+
+  'dhun.consent': 'Concha, flauta y tambor juntos. Toca para escuchar.',
+
+  'dhun.failed': 'No se pudo reproducir el sonido.',
+
+  'dhun.unsupported': 'Este navegador no puede reproducir el sonido.',
+
+  'dhun.failedTry': 'Hubo un problema al reproducir el sonido.',
+
+  'sound.hintIdle': 'Pulsa cualquier botón para escuchar un sonido.',
+
+  'sound.hintPlaying': 'Sonando. Pulsa el mismo botón para parar.',
+
+  'sound.preparing': 'Preparando el sonido',
+
+  'nav.path': 'Ruta',
+
+  'toast.dismiss': 'Cerrar',
+
+  'footer.free': 'Este servicio es totalmente gratuito. No se cobra a nadie.',
 };
 
 /* -------------------------------------------------------------------------- */
@@ -966,6 +1894,43 @@ export function isKnownLanguage(code: string): boolean {
 
 export function languageMeta(code: string): Language {
   return LANGUAGES.find((l) => l.code === code) ?? LANGUAGES[0];
+}
+
+/**
+ * A full BCP-47 tag for each language, for `Intl` and the Web Speech APIs.
+ *
+ * `Intl.DateTimeFormat` will not accept a bare two-letter code on its own and
+ * throws `RangeError` on some engines, so a caller that passes `ta` gets either
+ * an exception or an English month name. Every place that formats a date or
+ * picks a voice should go through this instead of building a tag by hand.
+ *
+ * Kept here rather than at each call site so the date on a review, the voice
+ * that reads an article, and the speech-recognition tag can never disagree about
+ * what "Tamil" means as a locale.
+ */
+const LOCALE_TAGS: Record<string, string> = {
+  hi: 'hi-IN',
+  en: 'en-IN',
+  bn: 'bn-IN',
+  ta: 'ta-IN',
+  te: 'te-IN',
+  mr: 'mr-IN',
+  gu: 'gu-IN',
+  kn: 'kn-IN',
+  ml: 'ml-IN',
+  pa: 'pa-IN',
+  ur: 'ur-PK',
+  ar: 'ar-SA',
+  es: 'es-ES',
+  fr: 'fr-FR',
+  de: 'de-DE',
+  pt: 'pt-PT',
+  ru: 'ru-RU',
+  zh: 'zh-CN',
+};
+
+export function localeTag(code: string): string {
+  return LOCALE_TAGS[code] ?? LOCALE_TAGS.hi;
 }
 
 export { HINDI, ENGLISH };
