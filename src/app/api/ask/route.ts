@@ -109,6 +109,32 @@ export async function POST(request: Request) {
     : null;
 
   /*
+   * When there is no answer at all, hand back the site's own subject list.
+   *
+   * Without this the visitor reads "we do not have a direct answer" and reaches
+   * the end of the page. That is a dead end, and a dead end on a help site is
+   * indistinguishable from the site being useless — which is exactly the
+   * complaint that prompted this.
+   *
+   * Nine links turn it into "not this one question, but here is everything we
+   * do cover", and most of the sixteen articles sit under one of these. It costs
+   * one small query and it only runs when there is genuinely nothing to say.
+   */
+  const topics =
+    result.ok || stored
+      ? []
+      : await safeRead(
+          'ask:topics',
+          () =>
+            prisma.category.findMany({
+              where: { isActive: true },
+              orderBy: { sortOrder: 'asc' },
+              select: { slug: true, title: true },
+            }),
+          [],
+        );
+
+  /*
    * The ledger is best-effort and deliberately never blocks the answer.
    *
    * `asked_questions` is both the owner's "what are people asking" list and the
@@ -134,6 +160,7 @@ export async function POST(request: Request) {
   return NextResponse.json({
     ...result,
     ...(stored ? { stored } : {}),
+    ...(topics.length > 0 ? { topics } : {}),
   });
 }
 

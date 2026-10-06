@@ -536,6 +536,8 @@ const HINDI: Record<string, string> = {
 
   'ask.notConfigured': 'यह सेवा अभी अपने पुराने जवाबों के बंद दराज़ से जवाब दे रही है। आपका सवाल उसमें नहीं मिला।',
 
+  'ask.browseTitle': 'यहाँ जो लेख हैं, वे देखिए',
+
 };
 
 /* -------------------------------------------------------------------------- */
@@ -956,6 +958,8 @@ const ENGLISH: Record<string, string> = {
 
   'ask.notConfigured': 'This service is answering from its saved library for now. Your question was not in it.',
 
+  'ask.browseTitle': 'Here is what this site does cover',
+
 };
 
 /* -------------------------------------------------------------------------- */
@@ -1147,6 +1151,8 @@ const BENGALI: Record<string, string> = {
 
   'ask.notConfigured': 'এই সেবাটি এখন সংরক্ষিত উত্তরের ভাণ্ডার থেকে উত্তর দিচ্ছে। আপনার প্রশ্ন সেখানে ছিল না।',
 
+  'ask.browseTitle': 'এখানে যা লেখা আছে, তা দেখুন',
+
 };
 
 const TAMIL: Record<string, string> = {
@@ -1325,6 +1331,8 @@ const TAMIL: Record<string, string> = {
   'voice.unsupported': 'இந்த உலாவியில் பேசி கேட்பது வேலை செய்யாது. எழுதி கேளுங்கள்.',
 
   'ask.notConfigured': 'இந்தச் சேவை இப்போது சேமித்த பதிவுகளிலிருந்து பதிலளிக்கிறது. உங்கள் கேள்வி அதில் இல்லை.',
+
+  'ask.browseTitle': 'இங்கு உள்ள கட்டுரைகளைப் பாருங்கள்',
 
 };
 
@@ -1505,6 +1513,8 @@ const TELUGU: Record<string, string> = {
 
   'ask.notConfigured': 'ఈ సేవ ఇప్పుడు సేవ్ చేసిన సమాధానాల కోస్తం నుండి సమాధానమిస్తోంది. మీ ప్రశ్న దానిలో లేదు.',
 
+  'ask.browseTitle': 'ఇక్కడ ఉన్న వ్యాసాలు చూడండి',
+
 };
 
 const MARATHI: Record<string, string> = {
@@ -1684,6 +1694,8 @@ const MARATHI: Record<string, string> = {
 
   'ask.notConfigured': 'ही सेवा सध्या जतन केलेल्या उत्तरांच्या संग्रहातून उत्तर देत आहे. तुमचा प्रश्न त्यात नाही.',
 
+  'ask.browseTitle': 'इथले असलेले लेख पहा',
+
 };
 
 const GUJARATI: Record<string, string> = {
@@ -1862,6 +1874,8 @@ const GUJARATI: Record<string, string> = {
   'voice.unsupported': 'આ બ્રાઉઝરમાં બોલીને પૂછવાનું કામ નહીં કરે. લખીને પૂછો.',
 
   'ask.notConfigured': 'આ સેવા હાલ સચવાયેલા જવાબોના ભંડોળમાંથી જવાબ આપી રહી છે. તમારો પ્રશ્ન તેમાં નથી.',
+
+  'ask.browseTitle': 'અહીં જે લેખ છે તે જુઓ',
 
 };
 
@@ -2047,6 +2061,8 @@ const KANNADA: Record<string, string> = {
   'voice.unsupported': 'ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಮಾತನಾಡಿ ಕೇಳುವುದು ಕೆಲಸ ಮಾಡುವುದಿಲ್ಲ. ಬರೆದು ಕೇಳಿ.',
 
   'ask.notConfigured': 'ಈ ಸೇವೆ ಈಗ ಉಳಿಸಿದ ಉತ್ತರಗಳ ದಾಸ್ತಾನದಿಂದ ಉತ್ತರಿಸುತ್ತಿದೆ. ನಿಮ್ಮ ಪ್ರಶ್ನೆ ಅದರಲ್ಲಿ ಇಲ್ಲ.',
+
+  'ask.browseTitle': 'ಇಲ್ಲಿರುವ ಲೇಖಗಳನ್ನು ನೋಡಿ',
 
 };
 
@@ -2236,6 +2252,8 @@ const MALAYALAM: Record<string, string> = {
   'voice.unsupported': 'ഈ ബ്രൗസറിൽ പറഞ്ഞ് ചോദിക്കിയാൽ പ്രവർത്തിക്കില്ല. എഴുതി ചോദിക്കുക.',
 
   'ask.notConfigured': 'ഈ സേവനം ഇപ്പോൾ സംരക്ഷിച്ച ഉത്തരങ്ങളുടെ ആക്കെയിൽ നിന്ന് ഉത്തരിക്കുന്നു. നിങ്ങളുടെ ചോദ്യം അതിൽ ഇല്ല.',
+
+  'ask.browseTitle': 'ഇവിടെയുള്ള ലേഖകൾ കാണുക',
 
 };
 
@@ -2429,6 +2447,8 @@ const PUNJABI: Record<string, string> = {
 
   'ask.notConfigured': 'ਇਹ ਸੇਵਾ ਹਾਲੇ ਸੰਭਾਲੀਆਂ ਜਵਾਬਾਂ ਦੇ ਭੰਡਾਰ ਤੋਂ ਜਵਾਬ ਦੇ ਰਹੀ ਹੈ। ਤੁਹਾਡਾ ਸਵਾਲ ਉਸਮੇਂ ਨਹੀਂ ਮਿਲਿਆ।',
 
+  'ask.browseTitle': 'ਇੱਥੇ ਜੋ ਲੇਖ ਹਨ ਉਹ ਵੇਖੋ',
+
 };
 
 const URDU: Record<string, string> = {
@@ -2613,6 +2633,8 @@ const URDU: Record<string, string> = {
   'voice.unsupported': 'اس براؤزر میں بول کر پوچھنا کام نہیں کرے گا۔ لکھ کر پوچھیں۔',
 
   'ask.notConfigured': 'یہ خدمت اِس وقت محفوظ جوابات کے ذخیرے سے جواب دے رہی ہے۔ آپ کا سوال اس میں نہیں ملا۔',
+
+  'ask.browseTitle': 'یہاں جو مضامین ہیں وہ دیکھیں',
 
 };
 
@@ -2805,6 +2827,8 @@ const ARABIC: Record<string, string> = {
 
   'ask.notConfigured': 'تخدم هذه الخدمة حالياً من مكتبتها المحفوظة. لم يظهر سؤالك فيها.',
 
+  'ask.browseTitle': 'هنا المقالات المتاحة',
+
 };
 
 const SPANISH: Record<string, string> = {
@@ -2989,6 +3013,8 @@ const SPANISH: Record<string, string> = {
   'voice.unsupported': 'Hablar para preguntar no funciona en este navegador. Escriba su pregunta.',
 
   'ask.notConfigured': 'Este servicio responde ahora desde su biblioteca guardada. Tu pregunta no estaba en ella.',
+
+  'ask.browseTitle': 'Esto es lo que cubre este sitio',
 
 };
 

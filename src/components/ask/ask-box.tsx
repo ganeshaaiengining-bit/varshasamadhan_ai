@@ -51,6 +51,7 @@ export function AskBox({
   const [stored, setStored] = React.useState<{ title: string; summary: string; href: string } | null>(
     null,
   );
+  const [topics, setTopics] = React.useState<{ title: string; slug: string }[]>([]);
   const [notice, setNotice] = React.useState<string | null>(null);
   const [speakError, setSpeakError] = React.useState<string | null>(null);
 
@@ -98,6 +99,7 @@ export function AskBox({
     setNotice(null);
     setSpeakError(null);
     setStored(null);
+    setTopics([]);
 
     try {
       const response = await fetch('/api/ask', {
@@ -115,6 +117,7 @@ export function AskBox({
         reason?: string;
         fallback: boolean;
         stored?: { title: string; summary: string; href: string } | null;
+        topics?: { title: string; slug: string }[] | null;
       };
 
       if (data.ok && data.answer) {
@@ -135,6 +138,19 @@ export function AskBox({
         setNotice(null);
         onAnswered?.();
         return;
+      }
+
+      /*
+       * Nothing matched, but the site has nine other subjects. Show them.
+       *
+       * A message with no way forward is what made this feel like a site that
+       * does not work. "We do not have a direct answer to this question"
+       * followed by nine links reads as "not this question, but here is what we
+       * cover" — and it is true. Set before the notice, because the notice is
+       * rendered above and the links are what the visitor does next.
+       */
+      if (data.topics && data.topics.length > 0) {
+        setTopics(data.topics);
       }
 
       // Prefer the key: it is the only version that can be in the visitor's
@@ -259,6 +275,33 @@ export function AskBox({
         <p role="status" className="mt-3 rounded-md border border-line bg-saffron-soft p-3">
           {notice}
         </p>
+      ) : null}
+
+      {/*
+        The way out of a dead end.
+
+        Shown only when there was no answer *and* no matching article. Without it
+        the box reports failure and stops, which on a help site reads as "this
+        website is useless" rather than "not this one question". With it, the
+        visitor gets the nine subjects the site actually covers, and most of them
+        are one tap from something that does answer.
+      */}
+      {topics.length > 0 ? (
+        <div className="mt-4 rounded-md border border-line bg-surface p-4">
+          <p className="text-sm font-bold">{t('ask.browseTitle')}</p>
+          <ul className="mt-3 flex flex-wrap gap-2">
+            {topics.map((topic) => (
+              <li key={topic.slug}>
+                <Link
+                  href={`/p/${topic.slug}`}
+                  className="inline-flex min-h-[2.75rem] items-center rounded-full border-2 border-line bg-surface px-4 py-2 font-semibold hover:border-saffron hover:text-saffron-deep"
+                >
+                  {topic.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       ) : null}
 
       {answer ? (
