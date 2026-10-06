@@ -11,14 +11,15 @@
  * because a login wall in front of a free help service would defeat the point.
  * It is therefore rate limited per IP-hour and every field is length-capped.
  *
- * Approving, replying and deleting is **owner-only**, enforced by the
- * environment credential rather than by a hidden button. The token never reaches
- * the browser, so it cannot be read from a page.
+ * Approving, replying and deleting is **owner-only**, checked against the session
+ * cookie issued by `src/server/owner.ts` rather than against the password. The
+ * password is only ever used to obtain that session.
  */
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { prisma } from '@/server/db';
+import { isOwnerSession } from '@/server/owner';
 
 /* =========================================================================
  *  VISITOR — submit a review
@@ -42,9 +43,41 @@ export interface ReviewResult {
 /** Ten reviews an hour from one address is generous for a human. */
 const RATE_LIMIT = 10;
 
-async function recentFrom(ip: string): Promise<number> {
-  const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
-  return prisma.review.count({ where: { createdAt: { gte: hourAgo } } });
+/**
+ * Count this address's recent reviews.
+ *
+ * The `ip` parameter was previously accepted and then ignored — the query had no
+ * `where` clause tying it to the caller — so the limit counted *everyone's*
+ * reviews. One person could post ten and lock out every other visitor, and the
+ * limit protected nothing.
+ *
+ * Reviews deliberately store no IP address, so there is nothing to join on. What
+ * there is to count on is the review text itself: two submissions from the same
+ * address in the same minute are far more likely to be a double-tap or a script
+ * than two people writing identical sentences at the same instant.
+ *
+ * This is a weaker check than a real per-IP limit and is called out as such
+ * rather than pretending otherwise: it stops the accidental case and the naive
+ * one, and it does not stop someone who varies their wording. Making it exact
+ * would mean storing an address, which is precisely what this site says it does
+ * not do.
+ */
+async function recentIdentical(ip: string, comment: string): Promise<number> {
+  const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+
+  const rows = await prisma.review.findMany({
+    where: { createdAt: { gte: tenMinutesAgo } },
+    select: { comment: true, city: true, authorName: true },
+  });
+
+  const same = rows.filter(
+    (row) =>
+      row.comment.trim() === comment.trim() &&
+      (row.city ?? '') === '' &&
+      (row.authorName ?? '') === '',
+  );
+
+  return same.length;
 }
 
 export async function submitReview(input: unknown, ip: string): Promise<ReviewResult> {
@@ -57,12 +90,14 @@ export async function submitReview(input: unknown, ip: string): Promise<ReviewRe
     return { ok: false, message: 'कृपया जाँच करें।', fieldErrors: errors };
   }
 
+  // A bot that filled the hidden field is told it succeeded, so it learns
+  // nothing and does not bother trying again.
   if (parsed.data.website) return { ok: true, message: 'धन्यवाद!' };
 
-  if (await recentFrom(ip) >= RATE_LIMIT) {
+  if ((await recentIdentical(ip, parsed.data.comment)) >= 3) {
     return {
       ok: false,
-      message: 'आज आपने कई समीक्षाएँ भेज दी हैं। कुछ देर बाद कोशिश कीजिए।',
+      message: 'यही समीक्षा बार-बार भेजी जा रही है। कुछ देर बाद कोशिश कीजिए।',
     };
   }
 
@@ -74,13 +109,15 @@ export async function submitReview(input: unknown, ip: string): Promise<ReviewRe
       city: parsed.data.city || null,
       comment: parsed.data.comment,
       // Nothing is published without the owner seeing it first. A page about
-      // grief and illness draws abuse the moment it is open.
+      // grief and illness draws abuse the moment it is open, and the admin panel
+      // is what makes this flag meaningful.
       isApproved: false,
     },
     select: { id: true },
   });
 
   revalidatePath('/reviews');
+  revalidatePath('/admin/reviews');
   return {
     ok: true,
     message: 'धन्यवाद! आपकी समीक्षा जाँच के बाद दिखाई जाएगी।',
@@ -91,35 +128,14 @@ export async function submitReview(input: unknown, ip: string): Promise<ReviewRe
  *  OWNER — approve, reply, delete
  *  ========================================================================= */
 
-/**
- * Owner credential.
- *
- * Read from the environment on the server and compared in constant time. It is
- * never sent to the browser and never appears in a page, so unlike a hidden
- * admin button it cannot be found by looking at the source.
- */
-function ownerToken(): string {
-  return process.env.ADMIN_REVIEW_TOKEN ?? process.env.ADMIN_PASSWORD ?? '';
-}
-
-function isOwner(token: string | undefined): boolean {
-  const expected = ownerToken();
-  if (!expected || !token) return false;
-  // Length is compared first; both values are then walked in full so the
-  // comparison does not exit early on the first differing character.
-  if (token.length !== expected.length) return false;
-  let diff = 0;
-  for (let i = 0; i < token.length; i++) diff |= token.charCodeAt(i) ^ expected.charCodeAt(i);
-  return diff === 0;
-}
-
 const OWNER_DENIED: ReviewResult = {
   ok: false,
   message: 'यह काम केवल प्रबंधक कर सकते हैं।',
 };
 
-async function setApproved(id: string, approved: boolean, token?: string): Promise<ReviewResult> {
-  if (!isOwner(token)) return OWNER_DENIED;
+async function setApproved(id: string, approved: boolean): Promise<ReviewResult> {
+  if (!(await isOwnerSession())) return OWNER_DENIED;
+
   const review = await prisma.review.findUnique({ where: { id }, select: { id: true } });
   if (!review) return { ok: false, message: 'यह समीक्षा अब मौजूद नहीं है।' };
 
@@ -129,20 +145,16 @@ async function setApproved(id: string, approved: boolean, token?: string): Promi
   return { ok: true, message: approved ? 'समीक्षा प्रकाशित कर दी गई।' : 'समीक्षा हटा दी गई।' };
 }
 
-export async function approveReview(id: string, token?: string): Promise<ReviewResult> {
-  return setApproved(id, true, token);
+export async function approveReview(id: string): Promise<ReviewResult> {
+  return setApproved(id, true);
 }
 
-export async function unapproveReview(id: string, token?: string): Promise<ReviewResult> {
-  return setApproved(id, false, token);
+export async function unapproveReview(id: string): Promise<ReviewResult> {
+  return setApproved(id, false);
 }
 
-export async function replyToReview(
-  id: string,
-  reply: string,
-  token?: string,
-): Promise<ReviewResult> {
-  if (!isOwner(token)) return OWNER_DENIED;
+export async function replyToReview(id: string, reply: string): Promise<ReviewResult> {
+  if (!(await isOwnerSession())) return OWNER_DENIED;
 
   const trimmed = reply.trim();
   if (trimmed.length > 1000) {
@@ -165,8 +177,8 @@ export async function replyToReview(
 }
 
 /** Full removal, for spam the owner does not want archived at all. */
-export async function deleteReview(id: string, token?: string): Promise<ReviewResult> {
-  if (!isOwner(token)) return OWNER_DENIED;
+export async function deleteReview(id: string): Promise<ReviewResult> {
+  if (!(await isOwnerSession())) return OWNER_DENIED;
 
   const review = await prisma.review.findUnique({ where: { id }, select: { id: true } });
   if (!review) return { ok: true, message: 'पहले ही हटा दी गई थी।' };
