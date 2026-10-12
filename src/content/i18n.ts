@@ -537,6 +537,30 @@ const HINDI: Record<string, string> = {
 
   'ask.browseTitle': 'यहाँ जो लेख हैं, वे देखिए',
 
+  /* ---- save / download ---- */
+
+  'download.pdf': 'PDF me lekh',
+  'download.text': 'Text me lekh',
+  'download.printNow': 'Print karein',
+  'download.preparing': 'Taiyar ho raha hai',
+  'download.blocked': 'Naya tab khul nahi paya. Pop-up block ho raha hai — apne browser me allow karein.',
+
+  /* ---- attach a document ---- */
+
+  'attach.button': 'Apna document ya photo lagayein',
+  'attach.formats': 'PDF, photo (JPG/PNG) ya text file — 12 MB tak',
+  'attach.reading': 'Padh raha hai…',
+  'attach.attached': 'Laga diya',
+  'attach.remove': 'Hataayein',
+  'attach.tooBigPdf': 'Yeh PDF 12 MB se badi hai. Chhoti file chuniye.',
+  'attach.tooBigImage': 'Yeh photo 3 MB se badi hai. Chhoti photo chuniye.',
+  'attach.scannedPdf': 'Yeh PDF scan ki hui hai — isme sirf tasveer hai, padhi nahi ja sakti. Iske bajaye iska photo bhej dijiye.',
+  'attach.pdfFailed': 'Yeh PDF padh nahi hui.',
+  'attach.imageFailed': 'Yeh photo load nahi hui.',
+  'attach.wrongType': 'Yeh file nahi chalegi. PDF, photo ya text file bhejiye.',
+  'attach.hint': 'Apna kagaz yahan laga kar sawal poochhiye — hum usi se jawab denge.',
+  'ask.sendWithFile': 'Jawab chahiye',
+
 };
 
 /* -------------------------------------------------------------------------- */
@@ -958,6 +982,30 @@ const ENGLISH: Record<string, string> = {
 
   'ask.browseTitle': 'Here is what this site does cover',
 
+  /* ---- save / download ---- */
+
+  'download.pdf': 'Save as PDF',
+  'download.text': 'Save as text',
+  'download.printNow': 'Print',
+  'download.preparing': 'Preparing',
+  'download.blocked': 'A new tab could not open. Your browser is blocking pop-ups — allow this site.',
+
+  /* ---- attach a document ---- */
+
+  'attach.button': 'Attach your document or photo',
+  'attach.formats': 'PDF, photo (JPG/PNG) or text file — up to 12 MB',
+  'attach.reading': 'Reading…',
+  'attach.attached': 'Attached',
+  'attach.remove': 'Remove',
+  'attach.tooBigPdf': 'This PDF is over 12 MB. Please pick a smaller file.',
+  'attach.tooBigImage': 'This photo is over 3 MB. Please pick a smaller one.',
+  'attach.scannedPdf': 'This PDF is a scan, so it contains only a picture of the page and cannot be read. Send a photograph of it instead.',
+  'attach.pdfFailed': 'This PDF could not be read.',
+  'attach.imageFailed': 'This photo could not be loaded.',
+  'attach.wrongType': 'This kind of file cannot be used. Send a PDF, a photo or a text file.',
+  'attach.hint': 'Attach your paper and ask your question — the answer will be about that paper.',
+  'ask.sendWithFile': 'Answer this',
+
 };
 
 /* -------------------------------------------------------------------------- */
@@ -1190,6 +1238,30 @@ const BENGALI: Record<string, string> = {
 
   'health.band.elder.label': '৭৬ – ১০০ বছর',
 
+  /* ---- save / download ---- */
+
+  'download.pdf': 'PDF হিসেবে নিন',
+  'download.text': 'লেখা হিসেবে নিন',
+  'download.printNow': 'প্রিন্ট করুন',
+  'download.preparing': 'তৈরি হচ্ছে',
+  'download.blocked': 'নতুন ট্যাব খোলা যায়নি। ব্রাউজার পপ-আপ আটকে দিচ্ছে — অনুমতি দিন।',
+
+  /* ---- attach a document ---- */
+
+  'attach.button': 'আপনার নথি বা ছবি যুক্ত করুন',
+  'attach.formats': 'PDF, ছবি (JPG/PNG) বা টেক্সট ফাইল — ১২ MB পর্যন্ত',
+  'attach.reading': 'পড়া হচ্ছে…',
+  'attach.attached': 'যুক্ত হয়েছে',
+  'attach.remove': 'সরান',
+  'attach.tooBigPdf': 'এই PDF ১২ MB-এর বেশি। ছোট ফাইল বেছে নিন।',
+  'attach.tooBigImage': 'এই ছবি ৩ MB-এর বেশি। ছোট ছবি বেছে নিন।',
+  'attach.scannedPdf': 'এই PDF স্ক্যান করা — এতে শুধু ছবি আছে, পড়া যায় না। বদলে এর একটি ছবি পাঠান।',
+  'attach.pdfFailed': 'এই PDF পড়া গেল না।',
+  'attach.imageFailed': 'এই ছবি লোড হলো না।',
+  'attach.wrongType': 'এই ধরনের ফাইল কাজ করবে না। PDF, ছবি বা টেক্সট ফাইল পাঠান।',
+  'attach.hint': 'আপনার কাগজ এখানে যুক্ত করে প্রশ্ন করুন — উত্তর সেই কাগজ সম্পর্কেই হবে।',
+  'ask.sendWithFile': 'এর উত্তর দিন',
+
 };
 
 const TAMIL: Record<string, string> = {
@@ -1409,6 +1481,30 @@ const TAMIL: Record<string, string> = {
   'health.band.senior.label': '61 – 75 வருடம்',
 
   'health.band.elder.label': '76 – 100 வருடம்',
+
+  /* ---- save / download ---- */
+
+  'download.pdf': 'PDF ஆகச் சேமி',
+  'download.text': 'உரையாகச் சேமி',
+  'download.printNow': 'அச்சிடுக',
+  'download.preparing': 'தயாராகிறது',
+  'download.blocked': 'புதிய தாவலைத் திறக்க முடியவில்லை. உலாவி பாப்-அப் தடுக்கிறது — அனுமதிக்கவும்.',
+
+  /* ---- attach a document ---- */
+
+  'attach.button': 'உங்கள் ஆவணம் அல்லது படத்தை இணைக்கவும்',
+  'attach.formats': 'PDF, படம் (JPG/PNG) அல்லது உரைக் கோப்பு — 12 MB வரை',
+  'attach.reading': 'படிக்கிறது…',
+  'attach.attached': 'இணைக்கப்பட்டது',
+  'attach.remove': 'அகற்று',
+  'attach.tooBigPdf': 'இந்த PDF 12 MB-ஐ விட பெரியது. சிறிய கோப்பைத் தேர்ந்தெடுக்கவும்.',
+  'attach.tooBigImage': 'இந்த படம் 3 MB-ஐ விட பெரியது. சிறிய படத்தைத் தேர்ந்தெடுக்கவும்.',
+  'attach.scannedPdf': 'இந்த PDF ஒரு ஸ்கேன் — அதில் படமே உள்ளது, படிக்க முடியாது. அதற்கு பதிலாக அதன் படத்தை அனுப்புங்கள்.',
+  'attach.pdfFailed': 'இந்த PDF-ஐப் படிக்க முடியவில்லை.',
+  'attach.imageFailed': 'இந்த படம் ஏற்கப்படவில்லை.',
+  'attach.wrongType': 'இந்த வகைக் கோப்பு பயன்படாது. PDF, படம் அல்லது உரைக் கோப்பு அனுப்புங்கள்.',
+  'attach.hint': 'உங்கள் பத்தை இங்கே இணைத்து கேள்வியைக் கேளுங்கள் — பதில் அந்தப் பத்தைப் பற்றியதாக இருக்கும்.',
+  'ask.sendWithFile': 'இதற்கு பதில்',
 
 };
 
@@ -1630,6 +1726,30 @@ const TELUGU: Record<string, string> = {
 
   'health.band.elder.label': '76 – 100 సంవత్సరాలు',
 
+  /* ---- save / download ---- */
+
+  'download.pdf': 'PDFగా సేవ్ చేయి',
+  'download.text': 'పాఠ్యంగా సేవ్ చేయి',
+  'download.printNow': 'ముద్రించు',
+  'download.preparing': 'సిద్ధమవుతోంది',
+  'download.blocked': 'కొత్త ట్యాబ్ తెరవలేకపోయాము. బ్రౌజర్ పాప్-అప్ నిరోధిస్తోంది — అనుమతించండి.',
+
+  /* ---- attach a document ---- */
+
+  'attach.button': 'మీ పత్రం లేదా ఫోటో జోడించండి',
+  'attach.formats': 'PDF, ఫోటో (JPG/PNG) లేదా పాఠ్య ఫైల్ — 12 MB వరకు',
+  'attach.reading': 'చదువుతోంది…',
+  'attach.attached': 'జోడించారు',
+  'attach.remove': 'తీసివేయి',
+  'attach.tooBigPdf': 'ఈ PDF 12 MB కంటే పెద్దది. చిన్న ఫైల్ ఎంచుకోండి.',
+  'attach.tooBigImage': 'ఈ ఫోటో 3 MB కంటే పెద్దది. చిన్న ఫోటో ఎంచుకోండి.',
+  'attach.scannedPdf': 'ఈ PDF స్కాన్ — దీనిలో ఫోటో మాత్రమే ఉంది, చదవలేము. దాని ఫోటో పంపండి.',
+  'attach.pdfFailed': 'ఈ PDF చదవలేకపోయాము.',
+  'attach.imageFailed': 'ఈ ఫోటో లోడ్ కాలేదు.',
+  'attach.wrongType': 'ఈ రకమైన ఫైల్ పనిచేయదు. PDF, ఫోటో లేదా పాఠ్య ఫైల్ పంపండి.',
+  'attach.hint': 'మీ పత్రాన్ని ఇక్కడ జోడించి ప్రశ్న అడగండి — సమాధానం ఆ పత్రం గురించే వస్తుంది.',
+  'ask.sendWithFile': 'దీనికి సమాధానం',
+
 };
 
 const MARATHI: Record<string, string> = {
@@ -1850,6 +1970,30 @@ const MARATHI: Record<string, string> = {
 
   'health.band.elder.label': '७६ – १०० वर्षे',
 
+  /* ---- save / download ---- */
+
+  'download.pdf': 'PDF मध्ये लेख',
+  'download.text': 'मजकूर मध्ये लेख',
+  'download.printNow': 'प्रिंट करा',
+  'download.preparing': 'तयार होत आहे',
+  'download.blocked': 'नवीन टॅब उघडता आला नाही. पॉप-अप ब्लॉक होत आहे — परवानगी द्या.',
+
+  /* ---- attach a document ---- */
+
+  'attach.button': 'तुमचा दस्तऐवज किंवा फोटो जोडा',
+  'attach.formats': 'PDF, फोटो (JPG/PNG) किंवा मजकूर फाइल — 12 MB पर्यंत',
+  'attach.reading': 'वाचत आहे…',
+  'attach.attached': 'जोडले',
+  'attach.remove': 'काढा',
+  'attach.tooBigPdf': 'हा PDF 12 MB पेक्षा मोठा आहे. लहान फाइल निवडा.',
+  'attach.tooBigImage': 'हा फोटो 3 MB पेक्षा मोठा आहे. लहान फोटो निवडा.',
+  'attach.scannedPdf': 'हा PDF स्कॅन केलेला आहे — त्यात फक्त चित्र आहे, वाचता येत नाही. त्याऐवजी त्याचा फोटो पाठवा.',
+  'attach.pdfFailed': 'हा PDF वाचता आला नाही.',
+  'attach.imageFailed': 'हा फोटो लोड झाला नाही.',
+  'attach.wrongType': 'हा फाइल चालणार नाही. PDF, फोटो किंवा मजकूर फाइल पाठवा.',
+  'attach.hint': 'तुमचा कागद इथे जोडून प्रश्न विचारा — उत्तर त्याच कागदाबद्दल येईल.',
+  'ask.sendWithFile': 'उत्तर द्या',
+
 };
 
 const GUJARATI: Record<string, string> = {
@@ -2069,6 +2213,30 @@ const GUJARATI: Record<string, string> = {
   'health.band.senior.label': '61 – 75 વર્ષ',
 
   'health.band.elder.label': '76 – 100 વર્ષ',
+
+  /* ---- save / download ---- */
+
+  'download.pdf': 'PDF માં સાચો',
+  'download.text': 'લખાણ માં સાચો',
+  'download.printNow': 'છાપો',
+  'download.preparing': 'તૈયાર થઈ રહ્યું છે',
+  'download.blocked': 'નવું ટૅબ ખૂલી શકાયું નથી. પોપ-અપ બ્લોક થઈ રહ્યું છે — પરવાનગી આપો.',
+
+  /* ---- attach a document ---- */
+
+  'attach.button': 'તમારો દસ્તાવેજ કે ફોટો ઉમેરો',
+  'attach.formats': 'PDF, ફોટો (JPG/PNG) કે ટેક્સ્ટ ફાઇલ — 12 MB સુધી',
+  'attach.reading': 'વાંચી રહ્યું છે…',
+  'attach.attached': 'ઉમેરાયું',
+  'attach.remove': 'કાઢી નાખો',
+  'attach.tooBigPdf': 'આ PDF 12 MB થી મોટું છે. નાની ફાઇલ પસંદ કરો.',
+  'attach.tooBigImage': 'આ ફોટો 3 MB થી મોટો છે. નાનો ફોટો પસંદ કરો.',
+  'attach.scannedPdf': 'આ PDF સ્કેન કરેલી છે — તેમાં ફક્ત ચિત્ર છે, વાંચી શકાતું નથી. તેને ફોટો મોકલો.',
+  'attach.pdfFailed': 'આ PDF વાંચી શકાયું નથી.',
+  'attach.imageFailed': 'આ ફોટો લોડ થયો નથી.',
+  'attach.wrongType': 'આ પ્રકારની ફાઇલ ચાલશે નહીં. PDF, ફોટો કે ટેક્સ્ટ ફાઇલ મોકલો.',
+  'attach.hint': 'તમારો કાગળ અહીં ઉમેરીને પ્રશ્ન પૂછો — જવાબ એ જ કાગળ વિશે મળશે.',
+  'ask.sendWithFile': 'આનો જવાબ આપો',
 
 };
 
@@ -2295,6 +2463,30 @@ const KANNADA: Record<string, string> = {
   'health.band.senior.label': '61 – 75 ವರ್ಷ',
 
   'health.band.elder.label': '76 – 100 ವರ್ಷ',
+
+  /* ---- save / download ---- */
+
+  'download.pdf': 'PDF ಆಗಿ ಉಳಿಸಿ',
+  'download.text': 'ಪಠ್ಯವಾಗಿ ಉಳಿಸಿ',
+  'download.printNow': 'ಮುದ್ರಿಸಿ',
+  'download.preparing': 'ಸಿದ್ಧವಾಗುತ್ತಿದೆ',
+  'download.blocked': 'ಹೊಸ ಟ್ಯಾಬ್ ತೆರೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಪಾಪ್-ಅಪ್ ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ — ಅನುಮತಿಸಿ.',
+
+  /* ---- attach a document ---- */
+
+  'attach.button': 'ನಿಮ್ಮ ದಾಖಲೆ ಅಥವಾ ಫೋಟೋ ಸೇರಿಸಿ',
+  'attach.formats': 'PDF, ಫೋಟೋ (JPG/PNG) ಅಥವಾ ಪಠ್ಯ ಕಡತ — 12 MB ವರೆಗೆ',
+  'attach.reading': 'ಓದುತ್ತಿದೆ…',
+  'attach.attached': 'ಸೇರಿಸಲಾಗಿದೆ',
+  'attach.remove': 'ತೆಗೆದುಹಾಕಿ',
+  'attach.tooBigPdf': 'ಈ PDF 12 MBಕ್ಕಿಂತ ದೊಡ್ಡದು. ಚಿಕ್ಕ ಕಡತ ಆಯ್ಕೆಮಾಡಿ.',
+  'attach.tooBigImage': 'ಈ ಫೋಟೋ 3 MBಕ್ಕಿಂತ ದೊಡ್ಡದು. ಚಿಕ್ಕ ಫೋಟೋ ಆಯ್ಕೆಮಾಡಿ.',
+  'attach.scannedPdf': 'ಈ PDF ಸ್ಕ್ಯಾನ್ ಆಗಿದೆ — ಇದರಲ್ಲಿ ಕೇವಲ ಚಿತ್ರವಿದೆ, ಓದಲು ಸಾಧ್ಯವಿಲ್ಲ. ಅದರ ಫೋಟೋ ಕಳುಹಿಸಿ.',
+  'attach.pdfFailed': 'ಈ PDF ಓದಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.',
+  'attach.imageFailed': 'ಈ ಫೋಟೋ ಲೋಡ್ ಆಗಲಿಲ್ಲ.',
+  'attach.wrongType': 'ಈ ಬಗೆಯ ಕಡತ ಕೆಲಸ ಮಾಡುವುದಿಲ್ಲ. PDF, ಫೋಟೋ ಅಥವಾ ಪಠ್ಯ ಕಡತ ಕಳುಹಿಸಿ.',
+  'attach.hint': 'ನಿಮ್ಮ ದಾಖಲೆಯನ್ನು ಇಲ್ಲಿ ಸೇರಿಸಿ ಪ್ರಶ್ನೆ ಕೇಳಿ — ಉತ್ತರ ಆ ದಾಖಲೆಯ ಬಗ್ಗೆಯೇ ಬರುತ್ತದೆ.',
+  'ask.sendWithFile': 'ಇದರ ಉತ್ತರ ಕೊಡಿ',
 
 };
 
@@ -2525,6 +2717,30 @@ const MALAYALAM: Record<string, string> = {
   'health.band.senior.label': '61 – 75 വർഷം',
 
   'health.band.elder.label': '76 – 100 വർഷം',
+
+  /* ---- save / download ---- */
+
+  'download.pdf': 'PDF ആയി സംരക്ഷിക്കുക',
+  'download.text': 'ടെക്സ്റ്റായി സംരക്ഷിക്കുക',
+  'download.printNow': 'അച്ചടിക്കുക',
+  'download.preparing': 'തയ്യാറാകുന്നു',
+  'download.blocked': 'പുതിയ ടാബ് തുറക്കാതിരുന്നു. ബ്രൗസർ പോപ്പ്-അപ്പ് തടയുന്നു — അനുവദിക്കുക.',
+
+  /* ---- attach a document ---- */
+
+  'attach.button': 'നിങ്ങളുടെ രേഖ അല്ലെങ്കിൽ ഫോട്ടോ ചേർക്കുക',
+  'attach.formats': 'PDF, ഫോട്ടോ (JPG/PNG) അല്ലെങ്കിൽ ടെക്സ്റ്റ് ഫൈൽ — 12 MB വരെ',
+  'attach.reading': 'വായിക്കുന്നു…',
+  'attach.attached': 'ചേർത്തു',
+  'attach.remove': 'നീക്കുക',
+  'attach.tooBigPdf': 'ഈ PDF 12 MB-ൽ കൂടുതലാണ്. ചെറിയ ഫൈൽ തിരഞ്ഞെടുക്കുക.',
+  'attach.tooBigImage': 'ഈ ഫോട്ടോ 3 MB-ൽ കൂടുതലാണ്. ചെറിയ ഫോട്ടോ തിരഞ്ഞെടുക്കുക.',
+  'attach.scannedPdf': 'ഈ PDF ഒരു സ്കാൻ ആണ് — അതിൽ വെറും ചിത്രമേ ഉണ്ട്, വായിക്കാൻ കഴിയില്ല. അതിന്റെ ഫോട്ടോ അയയ്ക്കുക.',
+  'attach.pdfFailed': 'ഈ PDF വായിക്കാത്തു.',
+  'attach.imageFailed': 'ഈ ഫോട്ടോ ലോഡ് ആയില്ല.',
+  'attach.wrongType': 'ഈ തരം ഫൈൽ പ്രവർത്തിക്കില്ല. PDF, ഫോട്ടോ അല്ലെങ്കിൽ ടെക്സ്റ്റ് ഫൈൽ അയയ്ക്കുക.',
+  'attach.hint': 'നിങ്ങളുടെ രേഖ ഇവിടെ ചേർത്ത് ചോദിക്കുക — ഉത്തരം ആ രേഖയെക്കുറിച്ചാണ് വരുക.',
+  'ask.sendWithFile': 'ഇതിന് ഉത്തരം',
 
 };
 
@@ -2759,6 +2975,30 @@ const PUNJABI: Record<string, string> = {
 
   'health.band.elder.label': '76 – 100 ਸਾਲ',
 
+  /* ---- save / download ---- */
+
+  'download.pdf': 'PDF ਵਜੋਂ ਸੰਭਾਲੋ',
+  'download.text': 'ਲਿਖਤ ਵਜੋਂ ਸੰਭਾਲੋ',
+  'download.printNow': 'ਛਾਪੋ',
+  'download.preparing': 'ਤਿਆਰ ਹੋ ਰਿਹਾ ਹੈ',
+  'download.blocked': 'ਨਵਾਂ ਟੈਬ ਨਹੀਂ ਖੁੱਲ ਸਕਿਆ। ਪਾਪ-ਅੱਪ ਬਲਾਕ ਹੈ — ਇਜਾਜ਼ਤ ਦਿਓ।',
+
+  /* ---- attach a document ---- */
+
+  'attach.button': 'ਆਪਣਾ ਦਸਤਾਵੇਜ ਜਾਂ ਫੋਟੋ ਜੋੜੋ',
+  'attach.formats': 'PDF, ਫੋਟੋ (JPG/PNG) ਜਾਂ ਲਿਖਤ ਫਾਈਲ — 12 MB ਤੱਕ',
+  'attach.reading': 'ਪੜ੍ਹ ਰਿਹਾ ਹੈ…',
+  'attach.attached': 'ਜੋੜਿਆ ਗਿਆ',
+  'attach.remove': 'ਹਟਾਓ',
+  'attach.tooBigPdf': 'ਇਹ PDF 12 MB ਤੋਂ ਵੱਡੀ ਹੈ. ਛੋਟੀ ਫਾਈਲ ਚੁਣੋ.',
+  'attach.tooBigImage': 'ਇਹ ਫੋਟੋ 3 MB ਤੋਂ ਵੱਡਾ ਹੈ. ਛੋਟਾ ਫੋਟੋ ਚੁਣੋ.',
+  'attach.scannedPdf': 'ਇਹ PDF ਸਕੈਨ ਹੈ — ਇਸ ਵਿੱਚ ਸਿਰਫ਼ ਤਸਵੀਰ ਹੈ, ਪੜ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ. ਇਸ ਦੀ ਫੋਟੋ ਭੇਜੋ.',
+  'attach.pdfFailed': 'ਇਹ PDF ਪੜ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ.',
+  'attach.imageFailed': 'ਇਹ ਫੋਟੋ ਲੋਡ ਨਹੀਂ ਹੋਇਆ.',
+  'attach.wrongType': 'ਇਸ ਕਿਸਮ ਦੀ ਫਾਈਲ ਨਹੀਂ ਚੱਲੇਗੀ. PDF, ਫੋਟੋ ਜਾਂ ਲਿਖਤ ਫਾਈਲ ਭੇਜੋ.',
+  'attach.hint': 'ਆਪਣਾ ਕਾਗਜ਼ ਇੱਥੇ ਜੋੜ ਕੇ ਸਵਾਲ ਪੁੱਛੋ — ਜਵਾਬ ਉਸੇ ਕਾਗਜ਼ ਬਾਰੇ ਮਿਲੇਗਾ.',
+  'ask.sendWithFile': 'ਇਸ ਦਾ ਜਵਾਬ ਦਿਓ',
+
 };
 
 const URDU: Record<string, string> = {
@@ -2984,6 +3224,30 @@ const URDU: Record<string, string> = {
   'health.band.senior.label': '61 – 75 سال',
 
   'health.band.elder.label': '76 – 100 سال',
+
+  /* ---- save / download ---- */
+
+  'download.pdf': 'PDF میں محفوظ کریں',
+  'download.text': 'متن میں محفوظ کریں',
+  'download.printNow': 'پرنٹ کریں',
+  'download.preparing': 'تیار ہو رہا ہے',
+  'download.blocked': 'نیا ٹیب نہیں کھل سکا۔ براؤزر پاپ اپ بلاک کر رہا ہے — اجازت دیں۔',
+
+  /* ---- attach a document ---- */
+
+  'attach.button': 'اپنا دستاویز یا تصویر منسلک کریں',
+  'attach.formats': 'PDF، تصویر (JPG/PNG) یا ٹیکسٹ فائل — 12 MB تک',
+  'attach.reading': 'پڑھ رہا ہے…',
+  'attach.attached': 'منسلک ہو گیا',
+  'attach.remove': 'ہٹائیں',
+  'attach.tooBigPdf': 'یہ PDF 12 MB سے بڑی ہے۔ چھوٹی فائل منتخب کریں۔',
+  'attach.tooBigImage': 'یہ تصویر 3 MB سے بڑی ہے۔ چھوٹی تصویر منتخب کریں۔',
+  'attach.scannedPdf': 'یہ PDF اسکین شدہ ہے — اس میں صرف تصویر ہے، پڑھا نہیں جا سکتا۔ اس کی تصویر بھیجیں۔',
+  'attach.pdfFailed': 'یہ PDF نہیں پڑھی جا سکی۔',
+  'attach.imageFailed': 'یہ تصویر لوڈ نہیں ہوئی۔',
+  'attach.wrongType': 'اس قسم کی فائل کام نہیں کرے گی۔ PDF، تصویر یا ٹیکسٹ فائل بھیجیں۔',
+  'attach.hint': 'اپنا کاغذ یہاں منسلک کر کے سوال پوچھیں — جواب اسی کاغذ کے بارے میں آئے گا۔',
+  'ask.sendWithFile': 'اس کا جواب دیں',
 
 };
 
@@ -3217,6 +3481,30 @@ const ARABIC: Record<string, string> = {
 
   'health.band.elder.label': '76 – 100 سنة',
 
+  /* ---- save / download ---- */
+
+  'download.pdf': 'حفظ كملف PDF',
+  'download.text': 'حفظ كنص',
+  'download.printNow': 'طباعة',
+  'download.preparing': 'جارٍ التحضير',
+  'download.blocked': 'تعذر فتح تبويب جديد. المتصفح يحجب النوافذ المنبثقة — اسمح له.',
+
+  /* ---- attach a document ---- */
+
+  'attach.button': 'أرفق مستندك أو صورتك',
+  'attach.formats': 'PDF أو صورة (JPG/PNG) أو ملف نصي — حتى 12 ميجابايت',
+  'attach.reading': 'جارٍ القراءة…',
+  'attach.attached': 'تم الإرفاق',
+  'attach.remove': 'إزالة',
+  'attach.tooBigPdf': 'هذا الملف أكبر من 12 ميجابايت. اختر ملفًا أصغر.',
+  'attach.tooBigImage': 'هذه الصورة أكبر من 3 ميجابايت. اختر صورة أصغر.',
+  'attach.scannedPdf': 'هذا PDF مسحوب ضوئيًا — يحتوي على صورة الصفحة فقط ولا يمكن قراءته. أرسل صورة فوتوغرافية له بدلًا من ذلك.',
+  'attach.pdfFailed': 'تعذّرت قراءة هذا الملف.',
+  'attach.imageFailed': 'تعذّر تحميل هذه الصورة.',
+  'attach.wrongType': 'هذا النوع من الملفات غير صالح. أرسل PDF أو صورة أو ملفًا نصيًا.',
+  'attach.hint': 'أرفق ورقتك هنا واطرح سؤالك — سيكون الجواب عن تلك الورقة.',
+  'ask.sendWithFile': 'أجب عن هذا',
+
 };
 
 const SPANISH: Record<string, string> = {
@@ -3442,6 +3730,30 @@ const SPANISH: Record<string, string> = {
   'health.band.senior.label': '61 – 75 años',
 
   'health.band.elder.label': '76 – 100 años',
+
+  /* ---- save / download ---- */
+
+  'download.pdf': 'Guardar como PDF',
+  'download.text': 'Guardar como texto',
+  'download.printNow': 'Imprimir',
+  'download.preparing': 'Preparando',
+  'download.blocked': 'No se pudo abrir una pestaña nueva. El navegador está bloqueando las ventanas emergentes: permítelas.',
+
+  /* ---- attach a document ---- */
+
+  'attach.button': 'Adjunta tu documento o foto',
+  'attach.formats': 'PDF, foto (JPG/PNG) o archivo de texto — hasta 12 MB',
+  'attach.reading': 'Leyendo…',
+  'attach.attached': 'Adjunto',
+  'attach.remove': 'Quitar',
+  'attach.tooBigPdf': 'Este PDF supera los 12 MB. Elige un archivo más pequeño.',
+  'attach.tooBigImage': 'Esta foto supera los 3 MB. Elige una más pequeña.',
+  'attach.scannedPdf': 'Este PDF es un escaneo: solo contiene la imagen de la página y no se puede leer. Envía una fotografía suya.',
+  'attach.pdfFailed': 'No se pudo leer este PDF.',
+  'attach.imageFailed': 'No se pudo cargar esta foto.',
+  'attach.wrongType': 'Este tipo de archivo no sirve. Envía un PDF, una foto o un archivo de texto.',
+  'attach.hint': 'Adjunta tu papel y haz tu pregunta: la respuesta será sobre ese papel.',
+  'ask.sendWithFile': 'Responder esto',
 
 };
 

@@ -6,6 +6,12 @@ import { Icon } from '@/components/ui/icon';
 import { useVoiceInput, speak, speechTag } from '@/components/voice/use-voice';
 import { useLanguage } from '@/components/language/language';
 import { restoreDraft } from '@/components/language/draft';
+import {
+  AttachFile,
+  describeSize,
+  type Attachment,
+  type ExtractState,
+} from '@/components/ask/attach-file';
 
 /**
  * ===========================================================================
@@ -61,6 +67,18 @@ export function AskBox({
   const [notice, setNotice] = React.useState<string | null>(null);
   const [speakError, setSpeakError] = React.useState<string | null>(null);
 
+  /*
+   * The visitor's own document or photograph.
+   *
+   * Kept here rather than inside AttachFile so that asking the question is one
+   * action: the file is attached, the question is typed, and pressing the button
+   * sends both. A separate upload button followed by a separate ask button
+   * is two things to remember, and the audience here remembers neither.
+   */
+  const [attachment, setAttachment] = React.useState<Attachment | null>(null);
+  const [extract, setExtract] = React.useState<ExtractState>({ kind: 'idle' });
+  const [showAttach, setShowAttach] = React.useState(false);
+
   const { language, t } = useLanguage();
 
   const voice = useVoiceInput({
@@ -113,7 +131,32 @@ export function AskBox({
         // Sent as well as living in the cookie: the cookie is what the server
         // trusts, but sending it makes the request self-describing when it is
         // replayed or logged.
-        body: JSON.stringify({ question: text, category, lang: language.code }),
+        body: JSON.stringify({
+          question: text,
+          category,
+          lang: language.code,
+          /*
+           * The extracted text, not the file.
+           *
+           * The file itself is never sent to this server — see the note in
+           * attach-file.tsx. A bank letter carries an account number and a
+           * signature, and the site's front page promises that nothing personal
+           * is collected. Sending the text keeps that promise honest in the one
+           * place where breaking it would be most damaging.
+           */
+          ...(attachment?.kind === 'text' && attachment.text
+            ? { document: { name: attachment.name, text: attachment.text } }
+            : {}),
+          /*
+           * A photograph is the exception, and it is a deliberate one: an image
+           * cannot be turned into text without a model that can read one, so it
+           * has to reach the model as an image. The server logs the filename and
+           * never the content.
+           */
+          ...(attachment?.kind === 'image' && attachment.dataUrl
+            ? { image: attachment.dataUrl }
+            : {}),
+        }),
       });
       const data = (await response.json()) as {
         ok: boolean;
@@ -313,6 +356,64 @@ export function AskBox({
           {speakError}
         </p>
       ) : null}
+
+      {/*
+        Bring your own document.
+
+        Every article on this site is general advice. The question people
+        actually arrive with is specific — *this* bank letter, *this* hospital
+        slip, *this* photograph of a prescription — and no amount of general
+        writing answers it. Attaching the paper is the one feature that does.
+
+        Collapsed by default and one tap to open, because a visible upload
+        button on a help form makes it read as a file-sharing service rather
+        than somewhere to ask a question, and most visitors have nothing to
+        attach. The privacy line sits directly under it, not on a separate page,
+        because the person deciding whether to hand over a bank letter is the one
+        who most needs to know it is never stored.
+      */}
+      <div className="mt-6 border-t border-line pt-5">
+        {showAttach ? (
+          <div>
+            <p className="mb-2 text-sm font-bold text-ink-soft">{t('attach.hint')}</p>
+
+            <AttachFile onAttach={setAttachment} state={extract} setState={setExtract} />
+
+            {attachment ? (
+              <div className="mt-3 flex items-center justify-between gap-3 rounded-md border border-leaf/40 bg-leaf-soft px-3 py-2">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-ink">
+                    {attachment.name}
+                  </p>
+                  <p className="text-xs text-ink-muted">
+                    {describeSize(attachment.size)} · {t('attach.attached')}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAttachment(null);
+                    setExtract({ kind: 'idle' });
+                  }}
+                  className="shrink-0 rounded-md p-2 text-ink-muted hover:bg-line/20 hover:text-danger"
+                  aria-label={t('attach.remove')}
+                >
+                  <Icon name="close" size={18} />
+                </button>
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setShowAttach(true)}
+            className="flex min-h-[2.75rem] w-full items-center justify-center gap-2 rounded-md border border-dashed border-line text-sm font-semibold text-ink-muted hover:border-saffron hover:text-saffron-deep"
+          >
+            <Icon name="plus" size={16} />
+            {t('attach.button')}
+          </button>
+        )}
+      </div>
 
       {suggested.length > 0 ? (
         <div className="mt-6">

@@ -8,6 +8,7 @@ import { Icon } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs';
 import { ReadAloud } from '@/components/ask/read-aloud';
+import { SaveArticle } from '@/components/article/save-article';
 
 export const dynamic = 'force-dynamic';
 
@@ -136,6 +137,21 @@ export default async function ArticlePage({
             <ReadAloud
               text={row.voiceSummary || `${row.title}। ${row.summary}`}
               label={t('article.readAloud')}
+            />
+
+            {/*
+              Save, next to listen.
+
+              Both exist for the same visitor: someone who cannot read the
+              screen easily, and someone who cannot come back to it later. An
+              article they cannot keep is an article they have to find twice, and
+              finding it a second time on a phone is the part that goes wrong.
+            */}
+            <SaveArticle
+              title={row.title}
+              summary={row.summary}
+              body={row.body}
+              categoryTitle={row.category?.title ?? ''}
             />
           </div>
 
