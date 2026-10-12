@@ -65,6 +65,7 @@ export function SiteChrome({
     { href: '/sahayata', labelKey: 'nav.help', icon: 'search' },
     { href: '/samaroh', labelKey: 'nav.reference', icon: 'scroll' },
     { href: '/reviews', labelKey: 'nav.reviews', icon: 'star' },
+    { href: '/pustakalay', labelKey: 'nav.library', icon: 'book' },
     { href: '/madad', labelKey: 'nav.support', icon: 'heart' },
   ];
 

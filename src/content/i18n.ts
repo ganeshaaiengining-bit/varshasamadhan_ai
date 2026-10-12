@@ -561,6 +561,32 @@ const HINDI: Record<string, string> = {
   'attach.hint': 'Apna kagaz yahan laga kar sawal poochhiye — hum usi se jawab denge.',
   'ask.sendWithFile': 'Jawab chahiye',
 
+  /* ---- free library ---- */
+
+  'lib.title': 'मुफ़्त पुस्तकालय',
+  'lib.intro': 'पढ़ाई की किताबें, किताबें, तस्वीरें और ऑडियो — सब मुफ़्त और कानूनी रूप से।',
+  'lib.legalTitle': 'कॉपीराइट का कोई झंझट नहीं।',
+  'lib.legal': 'यहाँ जो कुछ दिया गया है, वह बिल्कुल मुफ़्त है और आप इसे आगे भी बाँट सकते हैं। जो किताब अभी कॉपीराइट में है, वह यहाँ नहीं होगी — उसे आप कॉपी नहीं कर सकते, यह साफ़ कहना ज़रूरी है।',
+  'lib.openBadge': 'खुला',
+  'lib.openBadgeNote': 'इसे copy कर सकते हैं',
+  'lib.freeBadge': 'मुफ़्त',
+  'lib.freeBadgeNote': 'पढ़ सकते हैं, copy नहीं',
+  'lib.govt': 'सरकारी',
+  'lib.noSignup': 'बिना अकाउंट',
+  'lib.open': 'यहाँ खोलिए',
+  'lib.group.padhai': 'पढ़ाई की किताबें',
+  'lib.group.padhai.note': 'स्कूल, कॉलेज और सरकारी शिक्षा सामग्री',
+  'lib.group.kitab': 'किताबें',
+  'lib.group.kitab.note': 'जिन पर कॉपीराइट नहीं है या जिन्हें कॉपी करने की इजाज़त है',
+  'lib.group.tasveer': 'तस्वीरें और चित्र',
+  'lib.group.tasveer.note': 'नक्शे, तस्वीरें, चिन्ह — सब कुछ',
+  'lib.group.audio': 'आवाज़ में सुनने वाली सामग्री',
+  'lib.group.audio.note': 'किताबें सुनकर, बड़े अक्षर से नहीं',
+  'lib.warnTitle': 'हर किताब यहाँ नहीं है',
+  'lib.warn': 'कुछ किताबें अभी कॉपीराइट में हैं और वे कानून से मुफ़्त नहीं दी जा सकतीं। हम जानबूझकर वहाँ नहीं दिखाते। अगर कोई किताब चाहिए तो नीचे से सवाल पूछिए — जो जवाब मिल सकता है, वह मिल जाएगा।',
+  'lib.askInstead': 'सवाल पूछिए',
+  'nav.library': 'पुस्तकालय',
+
 };
 
 /* -------------------------------------------------------------------------- */
@@ -1006,6 +1032,32 @@ const ENGLISH: Record<string, string> = {
   'attach.hint': 'Attach your paper and ask your question — the answer will be about that paper.',
   'ask.sendWithFile': 'Answer this',
 
+  /* ---- free library ---- */
+
+  'lib.title': 'Free library',
+  'lib.intro': 'School books, books, pictures and audio — all free and all legal.',
+  'lib.legalTitle': 'No copyright trouble.',
+  'lib.legal': 'Everything here is free to keep and free to pass on. A book still under copyright is not on this page — copying it is not allowed, and saying so plainly is better than pretending.',
+  'lib.openBadge': 'Open',
+  'lib.openBadgeNote': 'you may copy it',
+  'lib.freeBadge': 'Free',
+  'lib.freeBadgeNote': 'free to read, not to copy',
+  'lib.govt': 'Government',
+  'lib.noSignup': 'No sign-up',
+  'lib.open': 'Open it',
+  'lib.group.padhai': 'School and study books',
+  'lib.group.padhai.note': 'Textbooks, college material and government education sites',
+  'lib.group.kitab': 'Books',
+  'lib.group.kitab.note': 'Either out of copyright, or explicitly free to copy',
+  'lib.group.tasveer': 'Pictures and diagrams',
+  'lib.group.tasveer.note': 'Maps, photographs, illustrations',
+  'lib.group.audio': 'Things to listen to',
+  'lib.group.audio.note': 'Books as audio, for not wanting to read small print',
+  'lib.warnTitle': 'Not every book is here',
+  'lib.warn': 'Some books are still under copyright and cannot legally be given away free. They are deliberately not listed. If you need one of those, ask below — whatever can be answered will be.',
+  'lib.askInstead': 'Ask instead',
+  'nav.library': 'Library',
+
 };
 
 /* -------------------------------------------------------------------------- */
@@ -1262,6 +1314,32 @@ const BENGALI: Record<string, string> = {
   'attach.hint': 'আপনার কাগজ এখানে যুক্ত করে প্রশ্ন করুন — উত্তর সেই কাগজ সম্পর্কেই হবে।',
   'ask.sendWithFile': 'এর উত্তর দিন',
 
+  /* ---- free library ---- */
+
+  'lib.title': 'বিনামূল্যে গ্রন্থাগার',
+  'lib.intro': 'পাঠ্যবই, বই, ছবি ও অডিও — সবই বিনামূল্যে এবং বৈধভাবে।',
+  'lib.legalTitle': 'কপিরাইটের কোনো সমস্যা নেই।',
+  'lib.legal': 'যা এখানে দেওয়া আছে তা সম্পূর্ণ বিনামূল্যে এবং আপনি সেটি ছড়াতে পারেন। যে বই এখনও কপিরাইটের অধীন, সেটি এখানে নেই — সেটি কপি করা অনুমোদিত নয়, সরাসরি বলাই ভালো।',
+  'lib.openBadge': 'উন্মুক্ত',
+  'lib.openBadgeNote': 'অনুলিপি করা যায়',
+  'lib.freeBadge': 'বিনামূল্যে',
+  'lib.freeBadgeNote': 'পড়া যায়, কপি করা যায় না',
+  'lib.govt': 'সরকারি',
+  'lib.noSignup': 'অ্যাকাউন্ট ছাড়াই',
+  'lib.open': 'এখানে খুলুন',
+  'lib.group.padhai': 'পাঠ্যবই ও পড়াশোনা',
+  'lib.group.padhai.note': 'পাঠ্যপত্র, মহাবিদ্যালয় ও সরকারি শিক্ষা উপকরণ',
+  'lib.group.kitab': 'বই',
+  'lib.group.kitab.note': 'যেগুলি কপিরাইটমুক্ত, অথবা কপি করার অনুমতি আছে',
+  'lib.group.tasveer': 'ছবি ও মানচিত্র',
+  'lib.group.tasveer.note': 'মানচিত্র, ছবি, চিত্র — সবকিছু',
+  'lib.group.audio': 'শোনার উপকরণ',
+  'lib.group.audio.note': 'বই অডিওতে, ছোট হরফ না পড়ে',
+  'lib.warnTitle': 'প্রতিটি বই এখানে নেই',
+  'lib.warn': 'কিছু বই এখনও কপিরাইটের অধীন, তাই আইন অনুযায়ী সেগুলি বিনামূল্যে দেওয়া যায় না। সেগুলি ইচ্ছাকৃতভাবে দেখানো হয়নি। কোনো বই লাগলে নিচে জিজ্ঞাসা করুন — যা বলা সম্ভব তা বলা হবে।',
+  'lib.askInstead': 'জিজ্ঞাসা করুন',
+  'nav.library': 'গ্রন্থাগার',
+
 };
 
 const TAMIL: Record<string, string> = {
@@ -1505,6 +1583,32 @@ const TAMIL: Record<string, string> = {
   'attach.wrongType': 'இந்த வகைக் கோப்பு பயன்படாது. PDF, படம் அல்லது உரைக் கோப்பு அனுப்புங்கள்.',
   'attach.hint': 'உங்கள் பத்தை இங்கே இணைத்து கேள்வியைக் கேளுங்கள் — பதில் அந்தப் பத்தைப் பற்றியதாக இருக்கும்.',
   'ask.sendWithFile': 'இதற்கு பதில்',
+
+  /* ---- free library ---- */
+
+  'lib.title': 'இலவச நூலகம்',
+  'lib.intro': 'பாடநூல்கள், நூல்கள், படங்கள், ஒலி — அனைத்தும் இலவசமும் சட்டப்படியும்.',
+  'lib.legalTitle': 'பதிப்புரிமை பிரச்சினை இல்லை.',
+  'lib.legal': 'இங்கு கொடுக்கப்பட்ட அனைத்தும் முற்றிலும் இலவசம், அதை நீங்கள் பிறருக்கும் கொடுக்கலாம். இன்னும் பதிப்புரிமையில் உள்ள புத்தகம் இங்கு இல்லை — அதை நகலெடுப்பது அனுமதிக்கப்படாது, அதை நேரடியாகச் சொல்வதே சிறந்தது.',
+  'lib.openBadge': 'திறந்த',
+  'lib.openBadgeNote': 'நகலெடுக்கலாம்',
+  'lib.freeBadge': 'இலவசம்',
+  'lib.freeBadgeNote': 'படிக்கலாம், நகலெடுக்க முடியாது',
+  'lib.govt': 'அரசு',
+  'lib.noSignup': 'கணக்கு வேண்டாம்',
+  'lib.open': 'இங்கே திற',
+  'lib.group.padhai': 'பாடநூல்கள்',
+  'lib.group.padhai.note': 'பாடநூல்கள், கல்லூரி மற்றும் அரசு கல்வி ஆக்கங்கள்',
+  'lib.group.kitab': 'நூல்கள்',
+  'lib.group.kitab.note': 'பதிப்புரிமையற்றவை அல்லது நகலெடுக்க அனுமதி உள்ளவை',
+  'lib.group.tasveer': 'படங்கள்',
+  'lib.group.tasveer.note': 'வரைபடங்கள், படங்கள் — அனைத்தும்',
+  'lib.group.audio': 'கேட்கக்கூடியவை',
+  'lib.group.audio.note': 'நூல்களை ஒலியாக, சிறிய எழுத்துகள் படிக்க விரும்பாதவருக்கு',
+  'lib.warnTitle': 'ஒவ்வொரு நூலும் இங்கு இல்லை',
+  'lib.warn': 'சில நூல்கள் இன்னும் பதிப்புரிமையில் உள்ளதால் சட்டப்படி இலவசமாக வழங்க முடியாது. அவை வேண்டுமென்றே காட்டப்படவில்லை. நூல் தேவைப்பட்டால் கீழே கேளுங்கள் — சொல்லக்கூடியதை சொல்லப்படும்.',
+  'lib.askInstead': 'கேளுங்கள்',
+  'nav.library': 'நூலகம்',
 
 };
 
@@ -1750,6 +1854,32 @@ const TELUGU: Record<string, string> = {
   'attach.hint': 'మీ పత్రాన్ని ఇక్కడ జోడించి ప్రశ్న అడగండి — సమాధానం ఆ పత్రం గురించే వస్తుంది.',
   'ask.sendWithFile': 'దీనికి సమాధానం',
 
+  /* ---- free library ---- */
+
+  'lib.title': 'ఉచిత గ్రంథాలయం',
+  'lib.intro': 'పాఠ్యపుస్తకాలు, పుస్తకాలు, చిత్రాలు, ఆడియో — అన్నీ ఉచితంగా, చట్టపరంగా.',
+  'lib.legalTitle': 'కాపీరైట్ ఇబ్బంది లేదు.',
+  'lib.legal': 'ఇక్కడ ఇవ్వబడినవన్నీ పూర్తిగా ఉచితమే, వాటిని మీరు ఇతరులకు పంచుకోవచ్చు. ఇంకా కాపీరైట్‌లో ఉన్న పుస్తకం ఇక్కడ లేదు — దానిని కాపీ చేయడం అనుమతి లేదు, దాన్ని స్పష్టంగా చెప్పడమే సరైనది.',
+  'lib.openBadge': 'తెరిచిన',
+  'lib.openBadgeNote': 'కాపీ చేయొచ్చు',
+  'lib.freeBadge': 'ఉచితం',
+  'lib.freeBadgeNote': 'చదవొచ్చు, కాపీ చేయలేరు',
+  'lib.govt': 'ప్రభుత్వం',
+  'lib.noSignup': 'ఖాతా అవసరం లేదు',
+  'lib.open': 'ఇక్కడ తెరవండి',
+  'lib.group.padhai': 'పాఠ్యపుస్తకాలు',
+  'lib.group.padhai.note': 'పాఠ్యపుత్రాలు, కాలేజీ, ప్రభుత్వ విద్యా సామగ్రి',
+  'lib.group.kitab': 'పుస్తకాలు',
+  'lib.group.kitab.note': 'కాపీరైట్ లేనివి లేదా కాపీ చేయడానికి అనుమతి ఉన్నవి',
+  'lib.group.tasveer': 'చిత్రాలు',
+  'lib.group.tasveer.note': 'మ్యాప్స్, ఫోటోలు — అన్నీ',
+  'lib.group.audio': 'వినడానికి',
+  'lib.group.audio.note': 'పుస్తకాలు ఆడియోలో, చిన్న అక్షరాలు చదవకుండా',
+  'lib.warnTitle': 'ప్రతి పుస్తకం ఇక్కడ లేదు',
+  'lib.warn': 'కొన్ని పుస్తకాలు ఇంకా కాపీరైట్‌లో ఉన్నాయి, కాబట్టి చట్టం ప్రకారం ఉచితంగా ఇవ్వలేం. అవి ఉద్దేశించి చూపించలేదు. పుస్తకం కావాలంటే కింద అడగండి — చెప్పగలిగినది చెప్పబడుతుంది.',
+  'lib.askInstead': 'అడగండి',
+  'nav.library': 'గ్రంథాలయం',
+
 };
 
 const MARATHI: Record<string, string> = {
@@ -1994,6 +2124,32 @@ const MARATHI: Record<string, string> = {
   'attach.hint': 'तुमचा कागद इथे जोडून प्रश्न विचारा — उत्तर त्याच कागदाबद्दल येईल.',
   'ask.sendWithFile': 'उत्तर द्या',
 
+  /* ---- free library ---- */
+
+  'lib.title': 'मोफत ग्रंथालय',
+  'lib.intro': 'शाळेची पुस्तके, पुस्तके, चित्रे आणि ऑडिओ — सर्व मोफत आणि कायदेशीर.',
+  'lib.legalTitle': 'कॉपीराइटचा कोणताही त्रुटी नाही.',
+  'lib.legal': 'इथे जे काही दिले आहे ते पूर्णपणे मोफत आहे आणि आपण ते पुढेही पाठवू शकता. जे पुस्तक अजून कॉपीराइटमध्ये आहे ते येथे नाही — ते कॉपी करणे परवानगी नाही, हे स्पष्ट सांगणेच बरोबेर.',
+  'lib.openBadge': 'उघडे',
+  'lib.openBadgeNote': 'कॉपी करता येईल',
+  'lib.freeBadge': 'मोफत',
+  'lib.freeBadgeNote': 'वाचता येईल, कॉपी करता येणार नाही',
+  'lib.govt': 'सरकारी',
+  'lib.noSignup': 'खाते नाही',
+  'lib.open': 'इथे उघडा',
+  'lib.group.padhai': 'शाळेच्या पुस्तकांसह अभ्यास',
+  'lib.group.padhai.note': 'पाठ्यपुस्तके, महाविद्यालयीन आणि सरकारी शैक्षणिक साहित्य',
+  'lib.group.kitab': 'पुस्तके',
+  'lib.group.kitab.note': 'जी कॉपीराइटमुक्त आहेत किंवा ज्यांची कॉपी करण्यास परवानगी आहे',
+  'lib.group.tasveer': 'चित्रे आणि नकाशे',
+  'lib.group.tasveer.note': 'नकाशे, छायाचित्रे, आकडे — सर्व काही',
+  'lib.group.audio': 'ऐकण्याचे साहित्य',
+  'lib.group.audio.note': 'पुस्तके ऐकून, लहान अक्षरांत न वाचता',
+  'lib.warnTitle': 'प्रत्येक पुस्तक येथे नाही',
+  'lib.warn': 'काही पुस्तके अजून कॉपीराइटमध्ये आहेत आणि कायद्याने ती मोफत देता येत नाहीत. ती जाणून करून दाखवत नाही. एखादे पुस्तक हवे असल्यास खाली विचारा — जे उत्तर देता येईल ते मिळेल.',
+  'lib.askInstead': 'विचारा',
+  'nav.library': 'ग्रंथालय',
+
 };
 
 const GUJARATI: Record<string, string> = {
@@ -2237,6 +2393,32 @@ const GUJARATI: Record<string, string> = {
   'attach.wrongType': 'આ પ્રકારની ફાઇલ ચાલશે નહીં. PDF, ફોટો કે ટેક્સ્ટ ફાઇલ મોકલો.',
   'attach.hint': 'તમારો કાગળ અહીં ઉમેરીને પ્રશ્ન પૂછો — જવાબ એ જ કાગળ વિશે મળશે.',
   'ask.sendWithFile': 'આનો જવાબ આપો',
+
+  /* ---- free library ---- */
+
+  'lib.title': 'મફત ગ્રંથાલય',
+  'lib.intro': 'પાઠકપુસ્તકો, પુસ્તકો, તસવીરો, ઓડિયો — બધું મફત અને કાયેદાર.',
+  'lib.legalTitle': 'કોપીરાઇટની કોઈ મુશ્કેલી નથી.',
+  'lib.legal': 'અહીં જે આપ્યું છે તે સંપૂર્ણ મફત છે અને તમે તે આગળ શેર કરી શકો. જે પુસ્તક હજી કોપીરાઇટમાં છે તે અહીં નથી — તેને કોપી કરવાની પરવानગી નથી, તે સ્પષ્ટ કહેવું જ યોગ્ય છે.',
+  'lib.openBadge': 'ખુલ્લું',
+  'lib.openBadgeNote': 'કોપી કરી શકાય',
+  'lib.freeBadge': 'મફત',
+  'lib.freeBadgeNote': 'વાંચી શકાય, કોપી નહીં',
+  'lib.govt': 'સરકારી',
+  'lib.noSignup': 'ખાતું જરૂર નથી',
+  'lib.open': 'અહીં ખોલો',
+  'lib.group.padhai': 'શાળા અને અભ્યાસની પુસ્તકો',
+  'lib.group.padhai.note': 'પાઠ્યપુસ્તકો, કિલ્લો અને સરકારી શિક્ષણ સામગ્રી',
+  'lib.group.kitab': 'પુસ્તકો',
+  'lib.group.kitab.note': 'જે કોપીરાઇટમાં નથી અથવા જેનું કોપી કરવાની પરવાનગી છે',
+  'lib.group.tasveer': 'તસવીરો',
+  'lib.group.tasveer.note': 'નકશા, તસવીરો — બધું',
+  'lib.group.audio': 'સાંભળવાનું સામગ્રી',
+  'lib.group.audio.note': 'પુસ્તકો ઓડિયોમાં, નાના અક્ષર વાંચવા ન ઇચ્છા હોય તો',
+  'lib.warnTitle': 'દરેક પુસ્તક અહીં નથી',
+  'lib.warn': 'કેટલાક પુસ્તકો હજી કોપીરાઇટમાં છે અને કાયેદારને મુજબ મફત આપી શકાતાં નથી. તે ઇરાદાપૂર્વક દર્શાવ્યા નથી. પુસ્તક જોઈતું હોય તો નીચે પૂછો — શું કહી શકાય તે કહેવામાં આવશે.',
+  'lib.askInstead': 'પૂછો',
+  'nav.library': 'ગ્રંથાલય',
 
 };
 
@@ -2487,6 +2669,32 @@ const KANNADA: Record<string, string> = {
   'attach.wrongType': 'ಈ ಬಗೆಯ ಕಡತ ಕೆಲಸ ಮಾಡುವುದಿಲ್ಲ. PDF, ಫೋಟೋ ಅಥವಾ ಪಠ್ಯ ಕಡತ ಕಳುಹಿಸಿ.',
   'attach.hint': 'ನಿಮ್ಮ ದಾಖಲೆಯನ್ನು ಇಲ್ಲಿ ಸೇರಿಸಿ ಪ್ರಶ್ನೆ ಕೇಳಿ — ಉತ್ತರ ಆ ದಾಖಲೆಯ ಬಗ್ಗೆಯೇ ಬರುತ್ತದೆ.',
   'ask.sendWithFile': 'ಇದರ ಉತ್ತರ ಕೊಡಿ',
+
+  /* ---- free library ---- */
+
+  'lib.title': 'ಉಚಿತ ಗ್ರಂಥಾಲಯ',
+  'lib.intro': 'ಪಠ್ಯಪುಸ್ತಕಗಳು, ಪುಸ್ತಕಗಳು, ಚಿತ್ರಗಳು, ಧ್ವನಿ — ಎಲ್ಲಾ ಉಚಿತ ಮತ್ತು ಕಾನೂನುಬದ್ಧ.',
+  'lib.legalTitle': 'ಕಾಪಿರೈಟ್ ತೊಂದರೆ ಇಲ್ಲ.',
+  'lib.legal': 'ಇಲ್ಲಿ ನೀಡಿದದ್ದು ಸಂಪೂರ್ಣ ಉಚಿತ ಮತ್ತು ನೀವು ಅದನ್ನು ಮುಂದೆ ಹಂಚಬಹುದು. ಇನ್ನೂ ಕಾಪಿರೈಟ್‌ನಲ್ಲಿರುವ ಪುಸ್ತಕ ಇಲ್ಲಿ ಇಲ್ಲ — ಅದನ್ನು ನಕಲು ಮಾಡಲು ಅನುಮತಿ ಇಲ್ಲ, ಅದನ್ನು ನೇರವಾಗಿ ಹೇಳುವುದೇ ಸರಿ.',
+  'lib.openBadge': 'ತೆರೆದ',
+  'lib.openBadgeNote': 'ನಕಲು ಮಾಡಬಹುದು',
+  'lib.freeBadge': 'ಉಚಿತ',
+  'lib.freeBadgeNote': 'ಓದಬಹುದು, ನಕಲು ಮಾಡಲು ಆಗುವುದಿಲ್ಲ',
+  'lib.govt': 'ಸರ್ಕಾರಿ',
+  'lib.noSignup': 'ಖಾತೆ ಬೇಡ',
+  'lib.open': 'ಇಲ್ಲಿ ತೆರೆಯಿರಿ',
+  'lib.group.padhai': 'ಪಠ್ಯಪುಸ್ತಕಗಳು',
+  'lib.group.padhai.note': 'ಪಠ್ಯಪತ್ರ, ಮಹಾವಿದ್ಯಾಲಯ ಮತ್ತು ಸರ್ಕಾರಿ ಶಿಕ್ಷಣ ಸಾಮಗ್ರಿ',
+  'lib.group.kitab': 'ಪುಸ್ತಕಗಳು',
+  'lib.group.kitab.note': 'ಕಾಪಿರೈಟ್ ಇಲ್ಲದವು ಅಥವಾ ನಕಲು ಮಾಡಲು ಅನುಮತಿ ಇರುವವು',
+  'lib.group.tasveer': 'ಚಿತ್ರಗಳು',
+  'lib.group.tasveer.note': 'ನಕ್ಷೆ, ಚಿತ್ರ — ಎಲ್ಲಾ',
+  'lib.group.audio': 'ಕೇಳಲು ಸಾಮಗ್ರಿ',
+  'lib.group.audio.note': 'ಪುಸ್ತಕಗಳನ್ನು ಧ್ವನಿಯಾಗಿ, ಚಿಕ್ಕ ಅಕ್ಷರ ಓದಲು ಇಚ್ಛೆ ಇಲ್ಲದವರಿಗೆ',
+  'lib.warnTitle': 'ಪ್ರತಿ ಪುಸ್ತಕವೂ ಇಲ್ಲಿ ಇಲ್ಲ',
+  'lib.warn': 'ಕೆಲವು ಪುಸ್ತಕಗಳು ಇನ್ನೂ ಕಾಪಿರೈಟ್‌ನಲ್ಲಿವೆ, ಹಾಗಾಗಿ ಕಾನೂನಿನಂತೆ ಉಚಿತವಾಗಿ ಕೊಡಲು ಆಗುವುದಿಲ್ಲ. ಅವನ್ನು ಇರಬಹುದಾಗದೆ ತೋರಿಸಲಾಗಿಲ್ಲ. ಪುಸ್ತಕ ಬೇಕಿದ್ದರೆ ಕೆಳಗೆ ಕೇಳಿ — ಹೇಳಬಹುದಾದದ್ದನ್ನು ಹೇಳಲಾಗುತ್ತದೆ.',
+  'lib.askInstead': 'ಕೇಳಿ',
+  'nav.library': 'ಗ್ರಂಥಾಲಯ',
 
 };
 
@@ -2741,6 +2949,32 @@ const MALAYALAM: Record<string, string> = {
   'attach.wrongType': 'ഈ തരം ഫൈൽ പ്രവർത്തിക്കില്ല. PDF, ഫോട്ടോ അല്ലെങ്കിൽ ടെക്സ്റ്റ് ഫൈൽ അയയ്ക്കുക.',
   'attach.hint': 'നിങ്ങളുടെ രേഖ ഇവിടെ ചേർത്ത് ചോദിക്കുക — ഉത്തരം ആ രേഖയെക്കുറിച്ചാണ് വരുക.',
   'ask.sendWithFile': 'ഇതിന് ഉത്തരം',
+
+  /* ---- free library ---- */
+
+  'lib.title': 'സൗജന്യ ഗ്രന്ഥാലയം',
+  'lib.intro': 'പാഠപുസ്തകങ്ങൾ, പുസ്തകങ്ങൾ, ചിത്രങ്ങൾ, ഓഡിയോ — എല്ലാം സൗജന്യവും നിയമപരിശോധിതവും.',
+  'lib.legalTitle': 'പകർപ്പാട് പ്രശ്നമില്ല.',
+  'lib.legal': 'ഇവിടെ നൽകിയവ എല്ലാം പൂർണ്ണമായും സൗജന്യമാണ്, നിങ്ങൾ അത് മുകളിലേക്ക് പങ്കിടാം. ഇതുവരെ പകർപ്പാടിൽ നിൽക്കുന്ന പുസ്തകം ഇവിടെ ഇല്ല — അത് പകർത്തുന്നതിന് അനുമതിയില്ല, അത് നേരിട്ട് പറയുന്നതാണ് ശരി.',
+  'lib.openBadge': 'തുറന്ന',
+  'lib.openBadgeNote': 'പകർത്താം',
+  'lib.freeBadge': 'സൗജന്യ',
+  'lib.freeBadgeNote': 'വായിക്കാം, പകർത്താൻ ആവശ്യമില്ല',
+  'lib.govt': 'സർക്കാർ',
+  'lib.noSignup': 'അക്കൗണ്ട് വേണ്ട',
+  'lib.open': 'ഇവിടെ തുറക്കുക',
+  'lib.group.padhai': 'പാഠ പുസ്തകങ്ങൾ',
+  'lib.group.padhai.note': 'പാഠപുസ്തകങ്ങൾ, കോളേജ്, സർക്കാർ വിദ്യാഭ्यास सामग्री',
+  'lib.group.kitab': 'പുസ്തകങ്ങൾ',
+  'lib.group.kitab.note': 'പകർപ്പാടില്ലാത്തവ അല്ലെങ്കിൽ പകർത്താൻ അനുമതിയുള്ളവ',
+  'lib.group.tasveer': 'ചിത്രങ്ങൾ',
+  'lib.group.tasveer.note': 'മാപ്പുകൾ, ഫോട്ടോ — എല്ലാം',
+  'lib.group.audio': 'കേട്ടതിന്',
+  'lib.group.audio.note': 'പുസ്തകങ്ങൾ ഓഡിയോയായി, ചെറിയ അക്ഷരം വായിക്കാത്തവർക്ക്',
+  'lib.warnTitle': 'എല്ലാ പുസ്തകവും ഇവിടെയില്ല',
+  'lib.warn': 'ചില പുസ്തകങ്ങൾ ഇതുവരെ പകർപ്പാടിൽ ഉള്ളതിനാൽ നിയമപ്രകാരം സൗജന്യമായി നൽകാൻ കഴിയില്ല. അവ മനഃപൂർവം കാണിച്ചിട്ടില്ല. പുസ്തകം വേണമെങ്കിൽ താഴെ ചോദിക്കൂ — പറയാവുന്നത് പറയപ്പെടും.',
+  'lib.askInstead': 'ചോദിക്കൂ',
+  'nav.library': 'ഗ്രന്ഥാലയം',
 
 };
 
@@ -2999,6 +3233,32 @@ const PUNJABI: Record<string, string> = {
   'attach.hint': 'ਆਪਣਾ ਕਾਗਜ਼ ਇੱਥੇ ਜੋੜ ਕੇ ਸਵਾਲ ਪੁੱਛੋ — ਜਵਾਬ ਉਸੇ ਕਾਗਜ਼ ਬਾਰੇ ਮਿਲੇਗਾ.',
   'ask.sendWithFile': 'ਇਸ ਦਾ ਜਵਾਬ ਦਿਓ',
 
+  /* ---- free library ---- */
+
+  'lib.title': 'ਮੁਫ਼ਤ ਗ੍ਰੰਥਾਲਾ',
+  'lib.intro': 'ਪਾਠ ਕਿਤਾਬਾਂ, ਕਿਤਾਬਾਂ, ਤਸਵੀਰਾਂ, ਆਡੀਓ — ਸਭ ਮੁਫ਼ਤ ਅਤੇ ਕਾਨੂੰਨੀ।',
+  'lib.legalTitle': 'ਕਾਪੀਰਾਈਟ ਦੀ ਕੋਈ ਸਮੱਸਿਆ ਨਹੀਂ।',
+  'lib.legal': 'ਇੱਥੇ ਜੋ ਕੁਝ ਦਿੱਤਾ ਗਿਆ ਹੈ ਉਹ ਪੂਰੀ ਤਰ੍ਹਾਂ ਮੁਫ਼ਤ ਹੈ ਅਤੇ ਤੁਸੀਂ ਇਸ ਨੂੰ ਅੱਗੇ ਵੀ ਸਾਂਝਾ ਸਕਦੇ ਹੋ। ਜੋ ਕਿਤਾਬ ਅਜੇ ਵੀ ਕਾਪੀਰਾਈਟ ਵਿੱਚ ਹੈ ਉਹ ਇੱਥੇ ਨਹੀਂ — ਉਸ ਨੂੰ ਕਾਪੀ ਕਰਨ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ, ਇਹ ਸਾਫ਼ ਦੱਸਣਾ ਹੀ ਸਹੀ ਹੈ।',
+  'lib.openBadge': 'ਖੁੱਲ੍ਹਾ',
+  'lib.openBadgeNote': 'ਕਾਪੀ ਕਰ ਸਕਦੇ ਹਾਂ',
+  'lib.freeBadge': 'ਮੁਫ਼ਤ',
+  'lib.freeBadgeNote': 'ਪੜ੍ਹ ਸਕਦੇ ਹਾਂ, ਕਾਪੀ ਨਹੀਂ',
+  'lib.govt': 'ਸਰਕਾਰੀ',
+  'lib.noSignup': 'ਖਾਤਾ ਨਹੀਂ',
+  'lib.open': 'ਇੱਥੇ ਖੋਲ੍ਹੋ',
+  'lib.group.padhai': 'ਪਾਠ ਕਿਤਾਬਾਂ',
+  'lib.group.padhai.note': 'ਪਾਠ-ਪੁਸਤਕਾਂ, ਕਾਲਜ ਅਤੇ ਸਰਕਾਰੀ ਸਿੱਖਿਆ ਸਾਮਗਰੀ',
+  'lib.group.kitab': 'ਕਿਤਾਬਾਂ',
+  'lib.group.kitab.note': 'ਜੋ ਕਾਪੀਰਾਈਟ ਤੋਂ ਬਾਹਰ ਹਨ ਜਾਂ ਜਿਨ੍ਹਾਂ ਕਾਪੀ ਕਰਨ ਦੀ ਇਜਾਜ਼ਤ ਹੈ',
+  'lib.group.tasveer': 'ਤਸਵੀਰਾਂ',
+  'lib.group.tasveer.note': 'ਨਕਸ਼ੇ, ਤਸਵੀਰਾਂ — ਸਭ ਕੁਝ',
+  'lib.group.audio': 'ਸੁਣਨ ਵਾਲੀ ਸਾਮਗਰੀ',
+  'lib.group.audio.note': 'ਕਿਤਾਬਾਂ ਆਡੀਓ ਰੂਪ ਵਿੱਚ, ਛੋਟੇ ਅੱਖਰ ਨਾ ਪੜ੍ਹਨ ਵਾਲਿਆਂ ਲਈ',
+  'lib.warnTitle': 'ਹਰ ਕਿਤਾਬ ਇੱਥੇ ਨਹੀਂ',
+  'lib.warn': 'ਕੁਝ ਕਿਤਾਬਾਂ ਅਜੇ ਵੀ ਕਾਪੀਰਾਈਟ ਵਿੱਚ ਹਨ ਅਤੇ ਕਾਨੂੰਨ ਅਨੁਸਾਰ ਮੁਫ਼ਤ ਦਿੱਤੀਆਂ ਨਹੀਂ ਜਾ ਸਕਦੀਆਂ। ਉਹ ਜਾਣਬੁੱਝ ਕੇ ਨਹੀਂ ਦਿਖਾਈ। ਕਿਤਾਬ ਚਾਹੀਦੀ ਹੋ ਤਾਂ ਹੇਠੇ ਪੁੱਛੋ — ਜੋ ਕਹਿਣਯੋਗ ਹੈ ਉਹ ਕਹਿ ਦਿੱਤਾ ਜਾਵੇਗਾ।',
+  'lib.askInstead': 'ਪੁੱਛੋ',
+  'nav.library': 'ਗ੍ਰੰਥਾਲਾ',
+
 };
 
 const URDU: Record<string, string> = {
@@ -3248,6 +3508,32 @@ const URDU: Record<string, string> = {
   'attach.wrongType': 'اس قسم کی فائل کام نہیں کرے گی۔ PDF، تصویر یا ٹیکسٹ فائل بھیجیں۔',
   'attach.hint': 'اپنا کاغذ یہاں منسلک کر کے سوال پوچھیں — جواب اسی کاغذ کے بارے میں آئے گا۔',
   'ask.sendWithFile': 'اس کا جواب دیں',
+
+  /* ---- free library ---- */
+
+  'lib.title': 'مفت کتب خانہ',
+  'lib.intro': 'اسباق کی کتابیں، کتابیں، تصاویر، آڈیو — سب مفت اور قانونی۔',
+  'lib.legalTitle': 'کاپی رائٹ کا کوئی مسئلہ نہیں۔',
+  'lib.legal': 'جو کچھ یہاں دیا گیا ہے وہ مکمل طور پر مفت ہے اور آپ اسے آگے بھی سکتا ہیں۔ جو کتاب ابھی کاپی رائٹ میں ہے وہ یہاں نہیں — اسے نقل کرنے کی اجازت نہیں، یہ صاف بتانا ہی بہتر ہے۔',
+  'lib.openBadge': 'کھلا',
+  'lib.openBadgeNote': 'نقل کر سکتے ہیں',
+  'lib.freeBadge': 'مفت',
+  'lib.freeBadgeNote': 'پڑھ سکتے ہیں، نقل نہیں',
+  'lib.govt': 'سرکاری',
+  'lib.noSignup': 'اکاؤنٹ نہیں',
+  'lib.open': 'یہاں کھولیں',
+  'lib.group.padhai': 'اسباق کی کتابیں',
+  'lib.group.padhai.note': 'متن، کالج اور سرکاری تعلیمی مواد',
+  'lib.group.kitab': 'کتابیں',
+  'lib.group.kitab.note': 'جن کا کاپی رائٹ ختم ہو چکا ہے یا جن کی نقل کی اجازت ہے',
+  'lib.group.tasveer': 'تصاویر',
+  'lib.group.tasveer.note': 'نقشے، تصاویر — سب کچھ',
+  'lib.group.audio': 'سننے کا مواد',
+  'lib.group.audio.note': 'کتابیں آڈیو میں، چھوٹے حروف نہیں پڑھنے والوں کے لیے',
+  'lib.warnTitle': 'ہر کتاب یہاں نہیں',
+  'lib.warn': 'کچھ کتابیں ابھی کاپی رائٹ میں ہیں اور قانون کے مطابق مفت دی نہیں جا سکتیں۔ وہ جان بوجھ کر نہیں دکھائی گئیں۔ کتاب چاہیے تو نیچے پوچھیں — جو بتایا جا سکتا ہے وہ بتا دیا جائے گا۔',
+  'lib.askInstead': 'پوچھیں',
+  'nav.library': 'کتب خانہ',
 
 };
 
@@ -3505,6 +3791,32 @@ const ARABIC: Record<string, string> = {
   'attach.hint': 'أرفق ورقتك هنا واطرح سؤالك — سيكون الجواب عن تلك الورقة.',
   'ask.sendWithFile': 'أجب عن هذا',
 
+  /* ---- free library ---- */
+
+  'lib.title': 'مكتبة مجانية',
+  'lib.intro': 'كتب مدرسية وكتب وصور وصوت — كلها مجانية وقانونية.',
+  'lib.legalTitle': 'لا مشكلة في حقوق النشر.',
+  'lib.legal': 'كل ما هنا مجاني تماماً ويمكنك مشاركته. الكتاب الذي ما زال محمياً بحقوق النشر ليس هنا — فنسخه غير مسموح، والقول ذلك بصراحة أفضل.',
+  'lib.openBadge': 'مفتوح',
+  'lib.openBadgeNote': 'يمكنك نسخه',
+  'lib.freeBadge': 'مجاني',
+  'lib.freeBadgeNote': 'للقراءة، لا للنسخ',
+  'lib.govt': 'حكومي',
+  'lib.noSignup': 'بلا حساب',
+  'lib.open': 'افتحه',
+  'lib.group.padhai': 'الكتب الدراسية',
+  'lib.group.padhai.note': 'كتب مدرسية ومواد جامعية وتعليمية حكومية',
+  'lib.group.kitab': 'الكتب',
+  'lib.group.kitab.note': 'ما انتهت حقوقها، أو ما يُسمح بنسخه',
+  'lib.group.tasveer': 'الصور والرسوم',
+  'lib.group.tasveer.note': 'خرائط وصور ورسوم — كل شيء',
+  'lib.group.audio': 'ما يُسمع',
+  'lib.group.audio.note': 'كتب صوتية لمن لا يريد قراءة الحروف الصغيرة',
+  'lib.warnTitle': 'ليست كل الكتب هنا',
+  'lib.warn': 'بعض الكتب ما زالت محمية بحقوق النشر ولا يمكن تقديمها مجاناً قانوناً. لذلك لم ندرجها عن قصد. إن كنت تحتاج أحدها فاسأل بالأسفل — وما يمكن الإجابة عنه سيُجاب عنه.',
+  'lib.askInstead': 'اسأل بدلاً من ذلك',
+  'nav.library': 'المكتبة',
+
 };
 
 const SPANISH: Record<string, string> = {
@@ -3754,6 +4066,32 @@ const SPANISH: Record<string, string> = {
   'attach.wrongType': 'Este tipo de archivo no sirve. Envía un PDF, una foto o un archivo de texto.',
   'attach.hint': 'Adjunta tu papel y haz tu pregunta: la respuesta será sobre ese papel.',
   'ask.sendWithFile': 'Responder esto',
+
+  /* ---- free library ---- */
+
+  'lib.title': 'Biblioteca gratuita',
+  'lib.intro': 'Libros de texto, libros, imágenes y audio — todo gratis y todo legal.',
+  'lib.legalTitle': 'Sin problemas de derechos de autor.',
+  'lib.legal': 'Todo lo de aquí es totalmente gratis y puedes compartirlo. Un libro que sigue bajo derechos de autor no está en esta página — copiarlo no está permitido, y decirlo claro es mejor.',
+  'lib.openBadge': 'Abierto',
+  'lib.openBadgeNote': 'puedes copiarlo',
+  'lib.freeBadge': 'Gratis',
+  'lib.freeBadgeNote': 'para leer, no para copiar',
+  'lib.govt': 'Gobierno',
+  'lib.noSignup': 'Sin cuenta',
+  'lib.open': 'Abrir',
+  'lib.group.padhai': 'Libros de estudio',
+  'lib.group.padhai.note': 'Textos escolares, material universitario y sitios educativos del gobierno',
+  'lib.group.kitab': 'Libros',
+  'lib.group.kitab.note': 'Los que ya no tienen derechos de autor, o los que sí permiten copiarse',
+  'lib.group.tasveer': 'Imágenes y dibujos',
+  'lib.group.tasveer.note': 'Mapas, fotos, ilustraciones — de todo',
+  'lib.group.audio': 'Cosas para escuchar',
+  'lib.group.audio.note': 'Libros en audio, para quien no quiere leer letra pequeña',
+  'lib.warnTitle': 'No están todos los libros',
+  'lib.warn': 'Algunos libros siguen bajo derechos de autor y no se pueden dar gratis legalmente. No los incluimos a propósito. Si necesitas uno, pregunta abajo: se responderá todo lo que se pueda.',
+  'lib.askInstead': 'Preguntar mejor',
+  'nav.library': 'Biblioteca',
 
 };
 

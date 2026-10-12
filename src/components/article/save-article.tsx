@@ -124,6 +124,20 @@ export function SaveArticle({
        * stays saffron; without it every browser strips colour and the one thing
        * that separates the emergency line from the rest disappears on paper.
        */
+      /*
+       * The heading, not just the <title>.
+       *
+       * The first version of this window set <title> and then went straight to
+       * the summary, so every PDF came out as an unlabelled page with the
+       * article's name missing from the visible content entirely — it existed
+       * only in the file's properties, which nobody reads. A page handed to a
+       * relative to keep has to say what it is on the page itself.
+       *
+       * Written outside the template below on purpose: a bare `${/* ... *\/}`
+       * is an empty expression, which is a syntax error, not a comment.
+       */
+      const heading = `<h1>${escapeHtml(title)}</h1>`;
+
       printWindow.document.write(`<!doctype html>
 <html lang="hi">
 <head>
@@ -148,8 +162,17 @@ export function SaveArticle({
   }
   h2 { font-size: 15pt; margin: 18pt 0 6pt; border-top: 1px solid #ddd; padding-top: 10pt; }
   h3 { font-size: 13pt; margin: 12pt 0 4pt; }
-  li { margin: 5pt 0; }
+  p { margin: 0 0 9pt; }
+  ol, ul { margin: 0 0 10pt; padding-left: 1.5em; }
+  li { margin: 4pt 0; }
+  blockquote {
+    margin: 10pt 0; padding: 8pt 12pt;
+    border-left: 3pt solid #d9a441; background: #fdfaf3;
+  }
+  blockquote p { margin: 0 0 5pt; }
+  blockquote p:last-child { margin: 0; }
   strong { font-weight: 700; }
+  em { font-style: italic; }
   .help {
     border: 1.5pt solid #b91c1c; background: #fef2f2; color: #7f1d1d;
     padding: 10pt; margin: 16pt 0; font-weight: 700; font-size: 13pt;
@@ -170,6 +193,7 @@ export function SaveArticle({
 </head>
 <body>
 <button class="no-print" onclick="window.print()">${escapeHtml(t('download.printNow'))}</button>
+${heading}
 ${renderPrintable(summary, body, categoryTitle)}
 <footer>${escapeHtml(t('footer.rights'))}</footer>
 </body>
@@ -226,44 +250,132 @@ function escapeHtml(text: string): string {
 }
 
 /**
- * The same block parser the page uses, turned into printable HTML.
+ * The stored body, turned into printable HTML.
  *
  * Duplicated rather than imported because the page's version returns JSX and this
  * one returns a string for a `document.write`. The rules are identical and are
  * commented at both ends; if one is changed the other must be.
+ *
+ * ── The shape of what is stored ────────────────────────────────────────────
+ *
+ * Plain paragraphs separated by a blank line, with markdown-style markers. But a
+ * block is not one line. Measured on the nineteen articles, blocks look like
+ * this:
+ *
+ *     1. **जगह** — दीपक के लिए साफ़-सुथरी जगह, एक थाली।
+ *     2. **दीपक** — घी का दीपक बढ़िया रहता है।
+ *     3. **अंगूठी** — हाथ में रखें।      <- five lines, one block
+ *
+ *     > जय अम्बे गौरी, मैया जय श्यामा गौरी   <- seven lines, one block,
+ *     > ...                                   every line a quotation
+ *
+ * The first version treated a block as one line, matched a marker at the start
+ * of it, and printed the remaining lines raw. So the PDF showed "1." on its own
+ * line followed by four unnumbered paragraphs, and the aarti came out as one
+ * run-on line with its `>` signs visible. On a printed page that is not untidy
+ * layout — it reads as a site that is broken.
+ *
+ * So this walks the block line by line and judges each line on its own.
  */
 function renderPrintable(summary: string, body: string, categoryTitle: string): string {
-  const parts: string[] = [
-    `<p class="category">${escapeHtml(categoryTitle)}</p>`,
-  ];
+  const parts: string[] = [`<p class="category">${escapeHtml(categoryTitle)}</p>`];
 
   if (summary) parts.push(`<p class="summary">${escapeHtml(summary)}</p>`);
 
+  // A list being built, so consecutive markers join into one list. Held as a
+  // string rather than a union because a blockquote is opened and closed the
+  // same way a list is.
+  let open: string | null = null;
+
+  const closeList = () => {
+    if (open) {
+      parts.push(`</${open}>`);
+      open = null;
+    }
+  };
+
   for (const block of body.split(/\n{2,}/)) {
-    const text = block.trim();
-    if (!text) continue;
+    if (!block.trim()) continue;
 
-    // A line that is only a number followed by a dot is a numbered item.
-    const numbered = text.match(/^(\d+)[.)]\s+(.*)$/s);
-    if (numbered) {
-      parts.push(
-        `<p><strong>${escapeHtml(numbered[1])}.</strong> ${inline(text.slice(numbered[0].indexOf(numbered[1]) + numbered[1].length).trim())}</p>`,
-      );
-      continue;
+    for (const raw of block.split('\n')) {
+      const line = raw.trim();
+      if (!line) continue;
+
+      /* ------------------------------------------------------------ headings */
+      const heading = line.match(/^(#{1,6})\s+(.*)$/);
+      if (heading) {
+        closeList();
+        const level = Math.min(heading[1].length, 3);
+        parts.push(`<h${level}>${inline(heading[2].trim())}</h${level}>`);
+        continue;
+      }
+
+      /* --------------------------------------------------- block quotation */
+      /*
+       * The aarti text and a spoken sankalpa are stored as quote blocks, every
+       * line beginning with ">". Rendered as a quotation rather than stripped,
+       * because this is the one place in an article where the exact words matter
+       * and the reader needs to see they are being recited, not read as advice.
+       */
+      const quote = line.match(/^>\s?(.*)$/);
+      if (quote) {
+        if (open !== 'blockquote') {
+          closeList();
+          parts.push('<blockquote>');
+          open = 'blockquote';
+        }
+        parts.push(`<p>${inline(quote[1].trim())}</p>`);
+        continue;
+      }
+
+      /* -------------------------------------------------------- bullet item */
+      const bullet = line.match(/^[-*]\s+(.*)$/);
+      if (bullet) {
+        if (open !== 'ul') {
+          closeList();
+          parts.push('<ul>');
+          open = 'ul';
+        }
+        parts.push(`<li>${inline(bullet[1].trim())}</li>`);
+        continue;
+      }
+
+      /* ------------------------------------------------------ numbered item */
+      /*
+       * A real <ol>, not the number written out. The stored numbers are already
+       * correct and consecutive, and a printed page whose list restarts at 1
+       * three times looks like a mistake.
+       */
+      const numbered = line.match(/^\d{1,2}[.)]\s+(.*)$/);
+      if (numbered) {
+        if (open !== 'ol') {
+          closeList();
+          parts.push('<ol>');
+          open = 'ol';
+        }
+        parts.push(`<li>${inline(numbered[1].trim())}</li>`);
+        continue;
+      }
+
+      /* ------------------------------------------------------ plain paragraph */
+      closeList();
+      parts.push(`<p>${inline(line)}</p>`);
     }
-
-    if (text.startsWith('**') && text.endsWith('**') && text.indexOf('\n') === -1) {
-      parts.push(`<p><strong>${escapeHtml(text.replace(/\*\*/g, ''))}</strong></p>`);
-      continue;
-    }
-
-    parts.push(`<p>${inline(text)}</p>`);
   }
 
+  closeList();
   return parts.join('\n');
 }
 
-/** Paragraph-internal markdown: **bold** only. Nothing else is honoured. */
+/**
+ * Paragraph-internal markdown.
+ *
+ * Bold only. Anything else is left as literal text on purpose — a help article
+ * has no tables, no links and no code, so honouring more markers would be
+ * guessing at what the owner meant.
+ */
 function inline(text: string): string {
-  return escapeHtml(text).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  return escapeHtml(text)
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '<em>$1</em>');
 }

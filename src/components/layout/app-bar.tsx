@@ -44,6 +44,7 @@ const NAV: NavItem[] = [
   { href: '/smriti', labelKey: 'nav.tribute', icon: 'sun' },
   { href: '/sahayata', labelKey: 'nav.help', icon: 'mic' },
   { href: '/reviews', labelKey: 'nav.reviews', icon: 'star' },
+    { href: '/pustakalay', labelKey: 'nav.library', icon: 'book' },
   { href: '/samaroh', labelKey: 'nav.reference', icon: 'scroll' },
   { href: '/madad', labelKey: 'nav.support', icon: 'heart' },
 ];
