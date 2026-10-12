@@ -92,6 +92,19 @@ def check_value(code: str, key: str, value: str) -> list[str]:
             problems.append(f"{key}: unpaired '{brace}' — a placeholder was broken, not left whole")
 
     for char in value:
+        # U+FFFD REPLACEMENT CHARACTER is what a decoder leaves behind when it
+        # cannot read a byte. It belongs to no script, so the range test below
+        # waves it through — it is neither inside the expected range nor outside
+        # it in any way this check noticed. To a visitor it renders as a black
+        # diamond in the middle of a word.
+        #
+        # It has got through twice: a Malayalam "എന്തോ" written "എ��്തോ", and a
+        # Gujarati "કમરમાં દુખાવો" written "�મરમાં દુખાવો". Both times the rest of
+        # the word was intact, so both times every other check passed it.
+        if char == "�":
+            problems.append(f"{key}: U+FFFD replacement character — a byte here did not decode")
+            continue
+
         for low, high in allowed:
             if low <= ord(char) <= high:
                 break
