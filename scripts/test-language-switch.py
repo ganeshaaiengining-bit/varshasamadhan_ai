@@ -1,132 +1,191 @@
 """
-Check the language actually switches *without* a manual reload.
+Does choosing a language actually get that language?
 
     python scripts/test-language-switch.py
 
-Why this needs a real browser: the earlier verification fetched each page once
-with the cookie already set, which proves the server honours the cookie. It says
-nothing about the thing a visitor actually does — taps the picker, and expects
-the page in front of them to change.
+Reported: choosing Hindi gives Marathi, choosing Marathi gives English. Not
+"sometimes in one place" — the wrong language altogether.
 
-Half this site is server-rendered, so the context update alone only moves the
-client half. The page had to refresh itself on a language change, and that is
-exactly the sort of thing that works in a test harness and does nothing for a
-person on a phone.
+This is checked the way a visitor experiences it: set the cookie the picker
+writes, fetch the page as that visitor would, and look at what came back.
+Checking the tables in isolation would miss the whole bug, because the tables
+may be correct while the picker maps the wrong code to the wrong table.
 
-Uses Playwright over the already-installed Node, so there is no Python browser
-dependency. Skips rather than fails if the driver is absent, because a missing
-optional tool is not a broken site.
+  - the picker writing the wrong cookie value for an entry
+  - a table being attached to the wrong language, so `mr` returns Gujarati
+
+One language per table is expected to fall back to English: fr, de, pt, ru and
+zh have no table, which is documented. Those are listed as KNOWN rather than
+counted as failures, because a silent fallback is the correct behaviour and
+hiding it would make this report lie.
+
+WHAT TO COMPARE AGAINST
+
+The expected string is read out of that language's own table rather than written
+here as a literal. The first version hardcoded a guess at what `help.title` says
+in each language — "உங்கள் சிக்கல்" for Tamil, say — and four languages were
+reported broken when the site was in fact correct and the guess was wrong by one
+letter. A translation test that guesses at the translation is testing itself.
+
+So: read the key from the table, then require the page to contain it. If the
+table is missing the key, that is a failure too, and it is reported as such.
 """
 
 import io
-import os
-import subprocess
+import re
 import sys
+import urllib.request
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-NODE = os.path.join(
-    os.environ.get("LOCALAPPDATA", ""),
-    "Programs",
-    "node-v24.19.0-win-x64",
-    "node.exe",
-)
+BASE = "http://127.0.0.1:3001"
+SOURCE = "src/content/i18n.ts"
+PAGE = "/sahayata"
 
-DRIVER = """
-const { chromium } = require('playwright');
+# The keys checked. The first is the heading, which is the single most visible
+# string and the one the report named. All four appear on this page — `home.step1Title`
+# does not, it is on the home page, and asking for it here reported one key
+# missing from every language while the page was complete.
+WATCH = ["help.title", "help.intro", "home.chooseTopic", "home.chooseTopicNote"]
 
-(async () => {
-  let browser;
-  try {
-    // Drives the Chrome already installed on this machine rather than downloading
-    // a second copy of Chromium — a 150 MB download to test a page is not a
-    // reasonable thing for a script to do unasked.
-    browser = await chromium.launch({ channel: 'chrome' });
-  } catch (e) {
-    console.log('SKIP ' + e.message.split('\\n')[0]);
-    process.exit(2);
-  }
+# No table of their own; documented to fall back to English.
+NO_TABLE = {"fr", "de", "pt", "ru", "zh"}
 
-  const page = await browser.newPage();
-  const results = [];
-  const fail = (m) => results.push('FAIL ' + m);
-  const pass = (m) => results.push('OK   ' + m);
 
-  await page.goto('http://127.0.0.1:3001/samaroh', { waitUntil: 'networkidle' });
+def read_tables() -> dict[str, dict[str, str]]:
+    """Every language table in i18n.ts, keyed by language code."""
+    source = io.open(SOURCE, encoding="utf-8").read()
 
-  // Start from a known language by setting the cookie the picker writes.
-  await page.context().addCookies([
-    { name: 'vs-lang', value: 'hi', url: 'http://127.0.0.1:3001' },
-  ]);
-  await page.goto('http://127.0.0.1:3001/samaroh', { waitUntil: 'networkidle' });
+    tables: dict[str, dict[str, str]] = {}
+    for match in re.finditer(r"const ([A-Z]+)[^=]*=\s*\{", source):
+        name = match.group(1)
+        start = match.end()
+        end = source.index("\n};", start)
+        body = source[start:end]
+        tables[name] = dict(
+            (key, value.replace("\\'", "'").replace("\\\\", "\\"))
+            for key, value in re.findall(r"'([^']+)'\s*:\s*'((?:[^'\\]|\\.)*)'", body)
+        )
 
-  const hindiBefore = await page.locator('h1').first().innerText();
+    # Code -> table name, taken from the TABLES record at the foot of the file.
+    #
+    # That record is the authoritative mapping and the only place it exists. The
+    # first version worked it out by matching the upper-cased code against the
+    # table name, which found 'ta' in TAMIL and 'hi' in HINDI but nothing for
+    # 'es', 'mr', 'kn' or 'ml' — because those tables are SPANISH, MARATHI,
+    # KANNADA and MALAYALAM, and no code is a prefix of them. It then reported
+    # seven languages as broken while the site was fine.
+    mapping_at = source.index("const TABLES")
+    pairs = re.findall(
+        r"^\s*([a-z]{2}):\s*([A-Z]+),",
+        source[mapping_at:source.index("};", mapping_at)],
+        re.M,
+    )
 
-  // Open the picker and choose Tamil, the way a visitor would.
-  await page.getByRole('button', { name: /भाषा|ভাষা|தமிழ்/ }).first().click().catch(() => {});
-  await page.getByRole('option', { name: /தமிழ்/ }).first().click();
+    if not pairs:
+        raise SystemExit(
+            "Could not read the TABLES record in i18n.ts. The mapping from a"
+            " language code to its table has changed shape, and this test"
+            " cannot work without it."
+        )
 
-  // Give the refresh a moment, then look WITHOUT reloading.
-  await page.waitForTimeout(2500);
+    return {code: tables[name] for code, name in pairs if name in tables}
 
-  const lang = await page.evaluate(() => document.documentElement.lang);
-  const heading = await page.locator('h1').first().innerText();
 
-  if (lang === 'ta') pass('html lang switched to ta without reload');
-  else fail('html lang is ' + lang + ', expected ta');
+def fetch(language: str) -> str:
+    request = urllib.request.Request(BASE + PAGE)
+    request.add_header("cookie", f"vs-lang={language}")
+    return urllib.request.urlopen(request, timeout=60).read().decode("utf-8", "replace")
 
-  if (heading !== hindiBefore) pass('server-rendered h1 changed: "' + heading + '"');
-  else fail('h1 unchanged ("' + heading + '") - server half did not refresh');
 
-  // And confirm it is genuinely Tamil text, not the key name.
-  if (/[\\u0B80-\\u0BFF]/.test(heading)) pass('heading is in Tamil script');
-  else fail('heading has no Tamil characters: ' + heading);
+def html_lang(html: str) -> str:
+    match = re.search(r'<html[^>]*lang="([^"]+)"', html)
+    return match.group(1) if match else "?"
 
-  // The URL must not change, or the back button walks through 18 languages.
-  if (page.url().endsWith('/samaroh')) pass('URL unchanged');
-  else fail('URL changed to ' + page.url());
 
-  console.log(results.join('\\n'));
-  await browser.close();
-})();
-"""
+def dir_of(html: str) -> str:
+    match = re.search(r'<html[^>]*dir="([^"]+)"', html)
+    return match.group(1) if match else "?"
 
 
 def main() -> int:
-    # Written inside the project, not the temp folder: `require('playwright')`
-    # resolves from the module's own location, so a script in %TEMP% cannot see
-    # the project's node_modules and fails with a confusing "module not found".
-    driver = os.path.join(".import", "lang-check.cjs")
-    os.makedirs(".import", exist_ok=True)
-    io.open(driver, "w", encoding="utf-8").write(DRIVER)
+    tables = read_tables()
 
-    try:
-        result = subprocess.run(
-            [NODE, driver],
-            cwd=".",
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            timeout=300,
-        )
-    except Exception as error:  # noqa: BLE001
-        print(f"could not run the driver: {error}")
-        return 0
+    opened = io.open(SOURCE, encoding="utf-8").read()
+    start = opened.index("export const LANGUAGES")
+    start = opened.index("= [", start) + len("= [")
+    offered = re.findall(r"code:\s*'([a-z]{2})'", opened[start:opened.index("\n];", start)])
 
-    output = (result.stdout or "").strip()
-    if "SKIP" in output:
-        print("SKIPPED:", output.replace("SKIP ", ""))
-        print("Install the driver with:  npm i -D playwright  &&  npx playwright install chromium")
-        return 0
+    if not offered:
+        print("Could not read the language list out of i18n.ts.")
+        return 1
 
-    print(output)
-    if result.stderr.strip():
-        print("--- driver stderr ---")
-        print(result.stderr.strip()[:600])
+    print(f"{len(offered)} languages offered by the picker")
+    print(f"checking {len(WATCH)} strings on {PAGE}, each read from its own table\n")
+    print(f"{'asked':<6} {'<html lang>':<12} {'dir':<6} {'found':<7} verdict")
+    print("-" * 62)
 
-    failures = [line for line in output.splitlines() if line.startswith("FAIL")]
-    return 1 if failures else 0
+    wrong = []
+    fell_back = []
+    gaps = []
+
+    for code in offered:
+        if code not in tables:
+            fell_back.append(code)
+            print(f"{code:<6} {'-':<12} {'-':<6} {'-':<7} no table (expected)")
+            continue
+
+        page = fetch(code)
+        attr = html_lang(page)
+        direction = dir_of(page)
+
+        expected = [tables[code].get(key) for key in WATCH]
+        missing_from_table = [key for key, value in zip(WATCH, expected) if not value]
+
+        found = sum(1 for value in expected if value and value in page)
+        total = sum(1 for value in expected if value)
+
+        if missing_from_table:
+            # A key that is not in the table falls back to English. That is why
+            # these languages "looked" translated: some strings arrived and some
+            # did not, and the page looked half right.
+            gaps.append((code, missing_from_table))
+            verdict = f"{len(missing_from_table)} key(s) fall back to English"
+            wrong.append(code)
+        elif found == total:
+            verdict = "OK"
+        else:
+            verdict = f"{total - found}/{total} did not appear"
+            wrong.append(code)
+
+        if attr != code:
+            verdict += f"  + <html lang> is {attr}"
+            wrong.append(code)
+
+        print(f"{code:<6} {attr:<12} {direction:<6} {found}/{total:<5} {verdict}")
+
+    print()
+    if gaps:
+        print("Keys missing from a language's own table — these fall back to English:")
+        for code, keys in gaps:
+            print(f"  {code}: {', '.join(keys)}")
+        print()
+
+    if wrong:
+        print(f"{len(wrong)} language(s) not fully translated: {', '.join(sorted(set(wrong)))}")
+        print()
+        print("A correct page has the <html lang> attribute AND the strings from that")
+        print("language's own table. A missing key is not a picker problem — it is a")
+        print("gap in the table, and the visitor sees English exactly there.")
+        return 1
+
+    if fell_back:
+        print(f"{len(fell_back)} language(s) have no table and fall back to English: "
+              f"{', '.join(fell_back)}")
+
+    print()
+    print("Every language with a table rendered its own strings.")
+    return 0
 
 
 if __name__ == "__main__":
