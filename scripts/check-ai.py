@@ -75,7 +75,23 @@ def ask(question: str, language: str) -> tuple[bool, str, float, str]:
     request = urllib.request.Request(
         BASE + "/api/ask",
         data=body,
-        headers={"Content-Type": "application/json"},
+        headers={
+            "Content-Type": "application/json",
+            # The cookie is what the route actually reads.
+            #
+            # src/app/api/ask/route.ts calls getLanguage(), which reads the
+            # vs-lang cookie, and it ignores the "language" field in the body
+            # entirely. So a request that sets the body field and no cookie is
+            # treated as Hindi — which meant the language check ran against
+            # Hindi, accepted every Hindi answer as correct, and reported two
+            # failures that were an artefact of the test rather than of the
+            # site.
+            #
+            # Both are sent. The body field is harmless and the cookie is what
+            # counts, but if the route ever starts reading the body, this
+            # script still asks in the language it means to.
+            "Cookie": f"vs-lang={language}",
+        },
         method="POST",
     )
 
@@ -127,17 +143,32 @@ def main() -> int:
     print("-" * 66)
 
     answered_count = 0
+    wrong_script = 0
     for language, question in PROBES:
         ok, text, seconds, provider = ask(question, language)
-        answered_count += 1 if ok else 0
 
-        mark = "[ ok ]" if ok else "[FAIL]"
+        matches = ok and script_of(text, language)
+
+        if ok:
+            answered_count += 1
+        if ok and not matches:
+            wrong_script += 1
+
+        # The mark has to reflect both things. An earlier version marked on
+        # "an answer came back" alone, so it printed [ ok ] beside a line
+        # reading "DOES NOT match" — which is worse than either message alone,
+        # because the eye takes the [ ok ] and stops reading.
+        mark = "[ ok ]" if matches else ("[WRNG]" if ok else "[FAIL]")
+
         print(f"  {mark} {language}  {seconds:5.1f}s  {provider}")
         print(f"         asked:  {question}")
         if ok:
             snippet = text.replace("\n", " ")[:110]
             print(f"         got:    {snippet}")
-            print(f"         script: {'matches the language' if script_of(text, language) else 'DOES NOT match — the answer came back in another script'}")
+            print("         script: " + (
+                "matches the language" if matches
+                else "WRONG SCRIPT — an answer the visitor cannot read"
+            ))
         else:
             print(f"         error:  {text}")
         print()
@@ -145,7 +176,13 @@ def main() -> int:
     print("-" * 66)
     print()
 
-    if answered_count == len(PROBES):
+    if wrong_script:
+        print(f"{wrong_script} answer(s) came back in a language the visitor cannot read.")
+        print("The site is supposed to refuse those, so if any appear here the")
+        print("server is running older code — restart it with npm run dev.")
+        print()
+
+    if answered_count == len(PROBES) and not wrong_script:
         print("All three answered.")
         print()
         if not key:
