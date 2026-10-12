@@ -25,6 +25,17 @@ export interface Tribute {
   /** Appears on the memorial page. */
   name: string;
   honorific: string;
+  /**
+   * The family photograph, and the plate engraved under it.
+   *
+   * Both live here rather than in the page markup, for the same reason the prose
+   * does: they are facts about her, not presentation. The frame component reads
+   * them, so changing the picture or the plate is a one-line edit and cannot
+   * leave the header and the footer disagreeing about her name.
+   */
+  photo: string;
+  photoAlt: string;
+  nameplate: string;
   /** One line for the footer. */
   shortLine: string;
   /** The memorial page, in order. */
@@ -36,6 +47,10 @@ export interface Tribute {
 export const VARSHA: Tribute = {
   name: 'वर्षा',
   honorific: 'श्रीमती',
+
+  photo: '/art/varsha.jpg',
+  photoAlt: 'कै. सौ. वर्षा जी — कार्यालयात बसलेल्या आपल्या फोटोत',
+  nameplate: 'कै. सौ. वर्षा · उपसचिव',
 
   shortLine:
     'जिन्होंने समाज के लिए ज़िंदगी भर लड़ाई लड़ी, और जिन्हें आख़िर में अपने हिस्से का हिसाब नहीं मिला।',

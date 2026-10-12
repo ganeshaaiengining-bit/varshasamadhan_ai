@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getT } from '@/server/i18n';
 import { Icon } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
+import { ContactForm, SupportFaq } from '@/components/contact/contact-section';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,12 +13,23 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * A static "how you can help" page.
+ * A "how you can help" page, with somewhere to actually help.
  *
- * No donation form and no payment gateway on purpose. Both cost money to run
- * (or cost trust, if a stranger's payment page sits on a service for people who
- * cannot afford anything), and the owner has not asked for one. When that
- * changes, this is where it goes.
+ * ── What changed, and why ─────────────────────────────────────────────────
+ * The four cards have always asked the visitor to write their experience, to
+ * tell us about their city, to tell someone else, and to come and look. All
+ * four ask for something the page gave no way to do. The strings were already
+ * written in all twelve languages — support.contactTitle, support.contactBody,
+ * support.faqTitle, support.faqBody — and were never called, because there was
+ * no form and no FAQ to call them from.
+ *
+ * So the page asked for reports it could not receive. That is the kind of gap a
+ * translation audit hides: the strings existed, check-translations.py was
+ * satisfied, and nobody looked at what the page actually did with them.
+ *
+ * No donation form and no payment gateway, still. Both cost money to run, or
+ * cost trust if a stranger's payment page sits on a service for people who
+ * cannot afford anything, and the owner has not asked for one.
  */
 export default async function MadadPage() {
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'वर्षा समाधान AI';
@@ -63,6 +75,14 @@ export default async function MadadPage() {
           </h2>
           <p className="mx-auto mt-2 max-w-xl">{t('support.alwaysFreeBody')}</p>
         </div>
+
+        {/* ---------------------------------------------------------- contact
+            Placed after the four ways and before the ask button, so the page
+            reads in the order it asks: here is how you can help, here is where
+            you can tell us, and here is where to get an answer. */}
+        <ContactForm />
+
+        <SupportFaq />
 
         <div className="mt-10 text-center">
           <Link href="/sahayata" className="btn-primary">

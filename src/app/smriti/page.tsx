@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Sunrise } from '@/components/visual/sunrise';
+import { MemoryFrame } from '@/components/visual/memory-frame';
 import { getT } from '@/server/i18n';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { VARSHA } from '@/content/tribute';
@@ -36,7 +37,7 @@ export default async function SmritiPage() {
 
   return (
     <SiteChrome siteName={siteName}>
-      <div className="wrap-narrow py-10 sm:py-16">
+      <div className="wrap py-10 sm:py-16">
         {/* ------------------------------------------------------- heading */}
         <header className="text-center">
           <Sunrise size={96} />
@@ -61,34 +62,62 @@ export default async function SmritiPage() {
           ) : null}
         </header>
 
-        {/* --------------------------------------------------------- story */}
-        <article className="mt-12 space-y-7">
-          {VARSHA.paragraphs.map((para, i) => (
-            <section key={i}>
-              {para.heading ? (
-                <h2 className="border-t border-line pt-6 text-2xl">{para.heading}</h2>
-              ) : null}
-              <p className="mt-3 text-lg leading-relaxed sm:text-xl">{para.text}</p>
+        {/*
+          ─────────────────────────────────────────────────────────────────
+           The portrait and the story, side by side.
+          ─────────────────────────────────────────────────────────────────
+          The frame sits in a left column and the account in a right one, which
+          is the arrangement a memorial book uses and the one the family asked
+          for: the face is established before the reading begins, and it stays
+          in view while the story runs down the page.
+
+          Below `lg` this collapses to a single column with the frame first, so
+          on a phone she is seen before a word is read — not scrolled past.
+
+          The column is capped at 20rem on purpose. A portrait that grows with
+          the viewport ends up larger than the text beside it and pulls the eye
+          away from the account, which is the thing the page is actually for.
+        */}
+        <div className="mt-12 grid items-start gap-10 lg:grid-cols-[20rem_minmax(0,1fr)] lg:gap-14">
+          <div className="mx-auto w-full max-w-sm lg:sticky lg:top-8 lg:mx-0">
+            <MemoryFrame
+              src={VARSHA.photo}
+              alt={VARSHA.photoAlt}
+              nameplate={VARSHA.nameplate}
+            />
+          </div>
+
+          <div>
+            {/* --------------------------------------------------------- story */}
+            <article className="space-y-7">
+              {VARSHA.paragraphs.map((para, i) => (
+                <section key={i}>
+                  {para.heading ? (
+                    <h2 className="border-t border-line pt-6 text-2xl">{para.heading}</h2>
+                  ) : null}
+                  <p className="mt-3 text-lg leading-relaxed sm:text-xl">{para.text}</p>
+                </section>
+              ))}
+            </article>
+
+            {/* -------------------------------------------------- purpose */}
+            <section className="card mt-12 border-saffron bg-saffron-soft/40 p-6 text-center sm:p-8">
+              <h2 className="text-saffron-deep">{t('smriti.whyTitle')}</h2>
+              <p className="mx-auto mt-3 max-w-2xl text-lg leading-relaxed">{VARSHA.purpose}</p>
             </section>
-          ))}
-        </article>
 
-        {/* ------------------------------------------------------- purpose */}
-        <section className="card mt-12 border-saffron bg-saffron-soft/40 p-6 text-center sm:p-8">
-          <h2 className="text-saffron-deep">{t('smriti.whyTitle')}</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-lg leading-relaxed">{VARSHA.purpose}</p>
-        </section>
+            {/* --------------------------------------------------- ending */}
+            <p className="mt-12 text-center text-2xl text-ink-muted">{t('smriti.ending')}</p>
 
-        {/* -------------------------------------------------------- ending */}
-        <p className="mt-12 text-center text-2xl text-ink-muted">{t('smriti.ending')}</p>
-
-        <div className="mt-10 flex flex-wrap justify-center gap-3 border-t border-line pt-8">
-          <Link href="/sahayata" className="btn-primary">
-            {t('article.askAny')}
-          </Link>
-          <Link href="/" className="btn-outline">
-            {t('nav.home')}
-          </Link>
+            <div className="mt-10 flex flex-wrap justify-center gap-3 border-t border-line pt-8">
+              <Link href="/sahayata" className="btn-primary">
+                {t('article.askAny')}
+              </Link>
+              <Link href="/" className="btn-outline">
+                {t('nav.home')}
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </SiteChrome>

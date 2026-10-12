@@ -135,6 +135,41 @@ model Review {
   @@map("reviews")
 }
 
+// ---------------------------------------------------------------------------
+// CONTACT MESSAGES
+//
+// A visitor writes to the owner from /madad: an error they found, something
+// this service got wrong, a place they are that is not here yet. The four
+// cards on that page ask for exactly these, and until now it asked in one
+// direction only — "write your experience", with nowhere to write it.
+//
+// Nothing here is ever public. A message does not appear on a page, does not
+// become an article, and is not sent anywhere. It sits here for the owner to
+// read. `isRead` exists because a list of everything ever sent is a list
+// nobody reads; the point is the unread ones.
+//
+// `isPublished` is deliberately absent. There is no column that could be set
+// to make a message visible, so "the owner will publish it" is not something
+// this schema can do by accident. If a message turns out to be worth a page,
+// the owner writes an article — which is a decision, made on purpose, with a
+// title and a body and someone accountable for it.
+// ---------------------------------------------------------------------------
+
+model ContactMessage {
+  id      String @id @default(uuid())
+  // Both optional and nullable. The site collects no personal information
+  // anywhere, and a contact form that required a name would contradict every
+  // other page on it. Blank is normal.
+  name    String? @map("name")
+  city    String?
+  message String
+  isRead  Boolean @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([isRead, createdAt])
+  @@map("contact_messages")
+}
+
 model AskedQuestion {
   id         String   @id @default(uuid())
   question   String

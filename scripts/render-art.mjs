@@ -1,24 +1,24 @@
 /**
  * ===========================================================================
- *  RAY TRACER â€” the 4K imagery
+ *  RAY TRACER — the 4K imagery
  * ===========================================================================
  *
  * Renders the homepage artwork as genuine ray-traced images: a sky dome, a sun
  * disc with atmospheric bloom, volumetric ground haze, and soft shadows.
  *
- * â”€â”€ Why a renderer instead of clip art â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ * ── Why a renderer instead of clip art ────────────────────────────────────
  * The request was 3D-looking original imagery with no copyright question. Two
  * alternatives were rejected:
  *
- *   â€¢ Stock photography â€” exactly the copyright problem to avoid, and it would
+ *   • Stock photography — exactly the copyright problem to avoid, and it would
  *     not match the palette.
- *   â€¢ SVG gradients â€” looks flat at 4K, and a large decorative illustration is
+ *   • SVG gradients — looks flat at 4K, and a large decorative illustration is
  *     the one place vector art falls down: it has no lighting model, so it
  *     reads as a diagram rather than a photograph.
  *
  * A tracer gives real light: the sun's colour falls off toward the horizon, the
  * disc blooms where it is brightest, and the haze thickens with distance. It
- * runs in plain Node â€” `zlib` is the only dependency, there is no native
+ * runs in plain Node — `zlib` is the only dependency, there is no native
  * extension and nothing binary in the repository.
  *
  * Render at 4K and let the browser downscale. Downscaling a high-resolution
@@ -156,7 +156,7 @@ function mulberry32(seed) {
  * Tiling value noise, 2D, with fBm on top.
  *
  * The first version indexed a 1D band table by projected position, which
- * produced flat quadrilateral slabs rather than clouds â€” a one-dimensional
+ * produced flat quadrilateral slabs rather than clouds — a one-dimensional
  * lookup cannot have a silhouette. This samples a genuine 2D lattice with
  * bilinear interpolation, so density varies in both directions and the
  * threshold cuts an organic shape.
@@ -189,7 +189,7 @@ function makeNoise(seed, size = 256) {
     return mix(mix(a, b, u), mix(c, d, u), v);
   };
 
-  /** Fractional Brownian motion â€” octaves at doubling frequency, halving weight. */
+  /** Fractional Brownian motion — octaves at doubling frequency, halving weight. */
   return (x, y, octaves = 4) => {
     let sum = 0;
     let amp = 1;
@@ -254,7 +254,7 @@ function skyColour(dir, sunDir) {
     base[2] + glow[2] * halo * 0.62,
   ];
 
-  // Below the horizon the ground haze takes over â€” warm, and desaturated.
+  // Below the horizon the ground haze takes over — warm, and desaturated.
   if (dir[1] < 0) {
     const below = smoothstep(0, -0.35, dir[1]);
     const haze = [0.96, 0.84, 0.70];
@@ -334,7 +334,7 @@ function render(scene) {
   /*
    * Tone curve with a saturation restore.
    *
-   * A straight clamp desaturates as it clips â€” every channel saturates at a
+   * A straight clamp desaturates as it clips — every channel saturates at a
    * different point, so the highlight shifts hue and the sky goes milky. The
    * standard fix is to blend the clipped result back toward its own luminance
    * by `1 - saturation`, which returns the colour that the lost separation
@@ -345,7 +345,7 @@ function render(scene) {
   const tone = (r, g, b) => {
     const apply = (v) => {
       const x = clamp(v * exposure, 0, 4);
-      // ACES filmic approximation â€” rolls highlights off instead of clipping.
+      // ACES filmic approximation — rolls highlights off instead of clipping.
       return clamp((x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14), 0, 1);
     };
     const nr = apply(r);
@@ -372,7 +372,7 @@ function render(scene) {
       const cosSun = dot(dir, sun);
 
       /* ------------------------------------------------------------ sun */
-      // The disc is small â€” about half a degree across, as in life. Nearly all
+      // The disc is small — about half a degree across, as in life. Nearly all
       // of the visual warmth comes from the bloom, not the disc.
       const disc = smoothstep(0.99965, 0.99992, cosSun);
       if (disc > 0) {
@@ -516,7 +516,7 @@ function main() {
 
   for (const scene of scenes) {
     const started = Date.now();
-    process.stdout.write(`  ${scene.name} (${scene.width}Ã—${scene.height}) â€¦ `);
+    process.stdout.write(`  ${scene.name} (${scene.width}×${scene.height}) … `);
     const pixels = render(scene);
     const png = encodePng(scene.width, scene.height, pixels);
     writeFileSync(join(dir, `${scene.name}.png`), png);
@@ -525,8 +525,8 @@ function main() {
     );
   }
 
-  console.log(`\n  à¤¤à¥ˆà¤¯à¤¾à¤°: ${OUT_DIR}/`);
-  for (const s of scenes) console.log(`    ${s.name}.png  ${s.width}Ã—${s.height}`);
+  console.log(`\n  तैयार: ${OUT_DIR}/`);
+  for (const s of scenes) console.log(`    ${s.name}.png  ${s.width}×${s.height}`);
 }
 
 main();
