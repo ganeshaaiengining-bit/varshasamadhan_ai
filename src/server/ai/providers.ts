@@ -1,5 +1,12 @@
 import 'server-only';
 
+import { isKnownLanguage, languageMeta } from '@/content/i18n';
+import { answersInLanguage } from './language';
+
+// Re-exported so importers of this module keep working; the logic lives in
+// language.ts because providers.ts cannot be imported outside a request.
+export { answersInLanguage };
+
 /**
  * ===========================================================================
  *  PROVIDERS — anything that can answer a question
@@ -106,6 +113,9 @@ export function geminiModel(): string {
 export async function askGemini(
   system: string,
   question: string,
+  // Unused here, but part of the one signature every provider shares so
+  // ask.ts can call them interchangeably.
+  _languageCode?: string,
 ): Promise<ProviderResult> {
   const started = Date.now();
   const key = geminiKey();
@@ -219,6 +229,9 @@ export async function ollamaReady(): Promise<boolean> {
 export async function askOllama(
   system: string,
   question: string,
+  // Unused here, but part of the one signature every provider shares so
+  // ask.ts can call them interchangeably.
+  _languageCode?: string,
 ): Promise<ProviderResult> {
   const started = Date.now();
 
@@ -428,16 +441,58 @@ export function extractAnswer(raw: string): string {
  * did not. Given two better options above, this exists so that the site is never
  * completely silent — not because it can be trusted.
  */
+/**
+ * Name the target language, in English and in its own script.
+ *
+ * Used as the last line of the prompt for the providers that need a nudge of
+ * their own. Returns the vague wording when the language is unknown, because a
+ * guess at the wrong language is worse than admitting the information is not
+ * there.
+ */
+function languageInstruction(languageCode?: string): string {
+  if (!languageCode || !isKnownLanguage(languageCode)) {
+    return 'Answer only in the language of the question, in that language\'s own script.';
+  }
+
+  const language = languageMeta(languageCode);
+  return `Write the entire answer in ${language.english} (${language.native}), using that language's own script and no other.`;
+}
+
 export async function askPollinations(
   system: string,
   question: string,
+  /**
+   * The visitor's language code, used to name the target language again at the
+   * very end of the prompt.
+   *
+   * Optional, and the reason it is optional is worth recording: it was not a
+   * parameter at all until scripts/check-ai.py asked a Bengali question and got
+   * Hindi back. The system prompt already named the language twice — once in
+   * English, once in its own script — and this function then appended
+   *
+   *     "Answer only in the language of the question, in that language's own
+   *      script."
+   *
+   * which is vaguer than what came before it, in English, and appears last.
+   * The model on this endpoint is not the one Gemini uses, and it settles for
+   * the most recent instruction rather than the most emphatic. So a good prompt
+   * followed by a vague one produced a Bengali visitor reading a Hindi answer —
+   * which is exactly the complaint this site started with.
+   *
+   * When the code is known the language is named again, explicitly, in the same
+   * English-plus-native form the system prompt uses. When it is not, the vague
+   * wording is kept rather than guessed at.
+   */
+  languageCode?: string,
 ): Promise<ProviderResult> {
   const started = Date.now();
 
   try {
     // The URL carries the whole prompt, so it is encoded. Pollinations takes the
     // prompt as a path segment and has no request body for this.
-    const prompt = `${system}\n\nQuestion: ${question}\n\nAnswer only in the language of the question, in that language's own script. Give the answer, not your working-out.`;
+    const closing = languageInstruction(languageCode);
+
+    const prompt = `${system}\n\nQuestion: ${question}\n\n${closing} Give the answer, not your working-out.`;
     const url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai`;
 
     const response = await timedFetch(url, {

@@ -139,6 +139,25 @@ export async function askQuestion(
 ): Promise<AskResult> {
   const system = systemInstruction(languageCode);
 
+  /*
+   * The language reaches the providers, and for a long time it did not.
+   *
+   * systemInstruction(languageCode) above names the target language twice — once
+   * in English, once in its own script — and that was thought to be enough. But
+   * the call into ask.ts passed only the instruction and the question, so the
+   * chain never learned which language the visitor had chosen, and:
+   *
+   *   - askPollinations fell back to "answer in the language of the question",
+   *     which is vaguer than what preceded it and appears last, so a Bengali
+   *     question came back in Hindi
+   *   - nothing downstream could check the answer, because the check needs the
+   *     language and it was not there
+   *
+   * Both are fixed by passing languageCode, which is this line. The system
+   * prompt was never the problem; it was being built correctly and then thrown
+   * away one function later.
+   */
+
   // A cap of zero switches the paid provider off without deleting the key.
   if (dailyLimit() > 0 && geminiKey().length > 10) {
     const today = await callsToday().catch(() => 0);
@@ -157,5 +176,5 @@ export async function askQuestion(
     ? `${question}\n\n(Context: the visitor is on the page for ${category.trim().slice(0, 60)}.)`
     : question;
 
-  return ask(system, withContext);
+  return ask(system, withContext, languageCode);
 }

@@ -5,6 +5,7 @@ import {
   askOllama,
   askPollinations,
   ollamaReady,
+  answersInLanguage,
   type ProviderName,
   type ProviderResult,
 } from './providers';
@@ -79,7 +80,28 @@ const ORDER: Array<{ name: ProviderName; run: typeof askGemini }> = [
   { name: 'pollinations', run: askPollinations },
 ];
 
-export async function askQuestion(system: string, question: string): Promise<AskResult> {
+export async function askQuestion(
+  system: string,
+  question: string,
+  /**
+   * The visitor's language code.
+   *
+   * Threaded through to the providers because the site knows exactly which
+   * language was chosen and the providers were not being told. Two consequences
+   * of that, both of them real:
+   *
+   *   - the fallback providers name the language at the end of their own prompt,
+   *     because the vaguer wording they used before was overriding the good
+   *     system instruction and a Bengali question came back in Hindi
+   *   - an answer in the wrong script is refused, so a visitor is never shown
+   *     text they cannot read
+   *
+   * Optional, so nothing that called this before has to change, but every call
+   * site should pass it. Without it the language check is skipped rather than
+   * guessed.
+   */
+  languageCode?: string,
+): Promise<AskResult> {
   const started = Date.now();
 
   /*
@@ -94,9 +116,31 @@ export async function askQuestion(system: string, question: string): Promise<Ask
   for (const provider of ORDER) {
     if (provider.name === 'ollama' && !local) continue;
 
-    const result: ProviderResult = await provider.run(system, question);
+    const result: ProviderResult = await provider.run(system, question, languageCode);
 
     if (result.ok) {
+      /*
+       * An answer in the wrong script is not an answer.
+       *
+       * This is the one failure a visitor cannot do anything with, and the one
+       * that looks the most like success: the page renders, the button
+       * responds, text appears. The only clue is that none of it can be read.
+       * So it is treated exactly like an empty response — the provider did not
+       * produce a real answer, and the next one is tried.
+       *
+       * Found by scripts/check-ai.py asking a Bengali question and receiving
+       * Hindi, which is the complaint that started this whole exercise. Nothing
+       * else in the chain would have caught it: the response was well formed,
+       * non-empty, on-topic, and plausible.
+       */
+      if (!answersInLanguage(result.text, languageCode)) {
+        console.log(
+          `[ask] ${result.provider} answered in the wrong script for ` +
+            `${languageCode} — refusing it and trying the next provider`,
+        );
+        continue;
+      }
+
       console.log(
         `[ask] answered by ${result.provider} in ${result.ms}ms ` +
           `(total ${Date.now() - started}ms)`,
