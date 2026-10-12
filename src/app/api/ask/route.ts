@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/server/db';
 import { safeRead } from '@/server/db-guard';
-import { askGemini, isConfigured } from '@/server/ai/gemini';
+import { askQuestion, isConfigured } from '@/server/ai/gemini';
 import { getLanguage } from '@/server/i18n';
 
 /**
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
     });
   }
 
-  const result = await askGemini({ question, category, lang: languageCode });
+  const result = await askQuestion(languageCode, question, category);
 
   /*
    * No database lookup, deliberately.

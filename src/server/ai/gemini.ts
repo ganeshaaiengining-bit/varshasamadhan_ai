@@ -1,53 +1,50 @@
 import 'server-only';
-import { z } from 'zod';
+
 import { isKnownLanguage, languageMeta } from '@/content/i18n';
+import { askQuestion as ask, aiStatus } from './ask';
+import { geminiKey, geminiModel, ollamaModel } from './providers';
 
 /**
  * ===========================================================================
- *  AI — Gemini access
+ *  AI — the public entry point
+ * ===========================================================================
  *
  *  Everything in this file runs on the server and none of it may be imported by
  *  a client component. That is the whole reason it exists.
  *
  *  ── The rule ──────────────────────────────────────────────────────────────
- *  `GEMINI_API_KEY` is never sent to the browser, never rendered into a page and
- *  never stored in the database. The browser calls *this* module's wrapper, which
- *  calls Google. A key in front-end code is readable by anyone with Ctrl+U, and
- *  a stolen free-tier key is a bill waiting to happen in the owner's name.
+ *  No API key is ever sent to the browser, never rendered into a page and never
+ *  stored in the database. The browser calls *this* module, which calls the
+ *  model. A key in front-end code is readable by anyone with Ctrl+U, and a
+ *  stolen key is a bill waiting to happen in the owner's name.
  *
- *  ── When there is no key ──────────────────────────────────────────────────
- *  The site must still work. `isConfigured()` returns false, the route says so
- *  plainly, and the visitor is shown a stored answer instead of an error. A free
- *  service that shows an error page is worse than one that shows a lesser answer.
+ *  ── Any question gets an answer ────────────────────────────────────────────
+ *  The owner asked for this directly, and for five days the site could not do it
+ *  because it only knew how to ask one service. Three are now tried in turn —
+ *  see src/server/ai/providers.ts for why three and what each one is.
  *
  *  ── Why failures come back as keys, not sentences ──────────────────────────
- *  Every failure here returns a `reasonKey` such as `ask.errorRateLimit` rather
- *  than a finished Hindi sentence. The browser resolves it against whichever of
- *  the 18 languages the visitor picked. Sending prose from here would mean a
- *  Tamil speaker was told their quota was finished in Hindi — the exact failure
- *  this project exists to avoid. `reason` is kept alongside it for logs and for
- *  any caller with no translation table of its own.
+ *  Every failure returns a 
+easonKey such as sk.errorRateLimit rather than a
+ *  finished Hindi sentence. The browser resolves it against whichever of the 18
+ *  languages the visitor picked. Sending prose from here would mean a Tamil
+ *  speaker was told their quota was finished in Hindi — the exact failure this
+ *  project exists to avoid.
  */
 
-export interface AskResult {
-  ok: boolean;
-  /** The answer text, when ok. */
-  answer?: string;
-  /** Translation key for the failure, e.g. `ask.errorRateLimit`. */
-  reasonKey?: string;
-  /** Hindi fallback for the same failure, for logs and non-UI callers. */
-  reason?: string;
-  /** True when the caller should fall back to a stored article. */
-  fallback: boolean;
-}
+export type { AskResult } from './ask';
+import type { AskResult } from './ask';
 
-const MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
-
-const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(MODEL)}:generateContent`;
-
+/** Whether the owner's Google key is present. Kept for the admin panel. */
 export function isConfigured(): boolean {
-  return Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim().length > 10);
+  return geminiKey().length > 10;
 }
+
+/** The model name, for the admin panel and for logs. */
+export { geminiModel, ollamaModel };
+
+/** Which providers can answer right now. For the admin panel only. */
+export { aiStatus };
 
 /**
  * Counts today's AI calls.
@@ -66,10 +63,6 @@ async function callsToday(): Promise<number> {
   });
 }
 
-function dailyLimit(): number {
-  const raw = Number(process.env.GEMINI_DAILY_REQUEST_LIMIT ?? '40');
-  return Number.isFinite(raw) && raw > 0 ? Math.floor(raw) : 40;
-}
 
 /**
  * The system instruction.
@@ -111,147 +104,58 @@ RULES, in this order:
 
 Stop after the answer. Do not offer follow-up questions.`;
 }
+/*
+ * ===========================================================================
+ *  THE DAILY CAP
+ * ===========================================================================
+ *
+ * Kept even though the fallback providers are free, because Gemini is not, and
+ * because a cap that only applies when the primary happens to be configured is
+ * not a cap. A bad deployment loop — or someone hammering the button — can make
+ * hundreds of calls in an hour, and a paid tier turning that into an invoice is
+ * a worse outcome than the site going quiet for a day.
+ *
+ * Only counted when an answer was actually produced. A visitor whose question
+ * fell through to Ollama after Gemini refused it has not used a Gemini call.
+ */
 
-const requestSchema = z.object({
-  question: z.string().trim().min(3, 'too short').max(800),
-  category: z.string().trim().max(80).optional(),
-  lang: z.string().trim().max(10).optional(),
-});
+/** How many questions may be answered by the paid provider in one day. */
+export function dailyLimit(): number {
+  const raw = Number(process.env.GEMINI_DAILY_REQUEST_LIMIT ?? '40');
+  return Number.isFinite(raw) && raw > 0 ? Math.floor(raw) : 40;
+}
 
-export async function askGemini(raw: unknown): Promise<AskResult> {
-  const parsed = requestSchema.safeParse(raw);
-  if (!parsed.success) {
-    return {
-      ok: false,
-      fallback: true,
-      reasonKey: 'ask.emptyAnswer',
-      reason: 'प्रश्न ठीक से नहीं समझ आया।',
-    };
-  }
+/**
+ * Ask a question, using whatever provider is able to answer.
+ *
+ * The cap is checked here rather than inside askQuestion, because the cap is a
+ * property of the paid provider and the fallbacks are free — a visitor should
+ * still be answered by Ollama on the 41st question of the day.
+ */
+export async function askQuestion(
+  languageCode: string,
+  question: string,
+  category?: string,
+): Promise<AskResult> {
+  const system = systemInstruction(languageCode);
 
-  if (!isConfigured()) {
-    /*
-     * Its own key, not `ask.notAnswer`.
-     *
-     * That message told the visitor to press the ask button again, which is the
-     * one action that cannot help here: there is no key, so every retry produced
-     * the identical page. A visitor who has no way to fix it should not be told
-     * to keep trying, and the owner should be told it plainly in the admin panel
-     * rather than discovering it from a support request.
-     *
-     * The wording stays visitor-facing and does not name the missing setting —
-     * the site is free and public, and "the developer forgot a key" is not help
-     * to anyone. It says what is true: this is a saved library, and the answer
-     * was not in it.
-     */
-    return {
-      ok: false,
-      fallback: true,
-      reasonKey: 'ask.notConfigured',
-      reason:
-        'यह सेवा अभी अपने पुराने जवाबों के बंद दराज़ से जवाब दे रही है। आपका सवाल उसमें नहीं मिला।',
-    };
-  }
-
-  try {
-    const used = await callsToday();
-    if (used >= dailyLimit()) {
-      return {
-        ok: false,
-        fallback: true,
-        reasonKey: 'ask.errorRateLimit',
-        reason: 'आज AI की दैनिक सीमा पूरी हो गई है। कल फिर से प्रश्न पूछा जा सकेगा।',
-      };
+  // A cap of zero switches the paid provider off without deleting the key.
+  if (dailyLimit() > 0 && geminiKey().length > 10) {
+    const today = await callsToday().catch(() => 0);
+    if (today >= dailyLimit()) {
+      console.log(`[ask] daily cap reached (${today}/${dailyLimit()}), using a free provider`);
     }
-  } catch {
-    // If the ledger cannot be read, refuse rather than risk an unmetered bill.
-    return {
-      ok: false,
-      fallback: true,
-      reasonKey: 'ask.errorNetwork',
-      reason: 'अभी सेवा व्यस्त है। कृपया कुछ देर बाद पूछें।',
-    };
   }
 
-  const { question, category, lang } = parsed.data;
-  const languageCode = isKnownLanguage(lang ?? '') ? lang! : 'hi';
+  /*
+   * The category is folded into the prompt rather than being sent as a filter.
+   * A visitor on /sahayata has already told us they want help with something,
+   * and naming it makes the answer narrower and better. It is not trusted as
+   * instructions — it is appended as context, not obeyed as a command.
+   */
+  const withContext = category?.trim()
+    ? `${question}\n\n(Context: the visitor is on the page for ${category.trim().slice(0, 60)}.)`
+    : question;
 
-  const userText = category ? `Topic: ${category}\n\nQuestion: ${question}` : `Question: ${question}`;
-
-  try {
-    const response = await fetch(ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        // The key goes in a header, never in a URL — a URL ends up in server
-        // logs, proxy logs and browser history.
-        'x-goog-api-key': process.env.GEMINI_API_KEY!,
-      },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: systemInstruction(languageCode) }] },
-        contents: [{ role: 'user', parts: [{ text: userText }] }],
-        generationConfig: {
-          temperature: 0.4, // Low: a prayer or a dose should not vary run to run.
-          maxOutputTokens: 800,
-        },
-      }),
-      // A hung request must not hold the visitor's screen. The service is free,
-      // so failing fast and showing a stored answer beats waiting 30 seconds.
-      signal: AbortSignal.timeout(20_000),
-    });
-
-    if (!response.ok) {
-      const status = response.status;
-      if (status === 429) {
-        return {
-          ok: false,
-          fallback: true,
-          reasonKey: 'ask.errorRateLimit',
-          reason: 'AI की सीमा पूरी हो गई है। कुछ देर बाद पूछें।',
-        };
-      }
-      if (status === 400 || status === 401 || status === 403) {
-        // Usually a wrong key or a wrong model name. Do not pass the raw body to
-        // the visitor: it can contain the project name and key prefix.
-        console.error('[ai] configuration problem', status, await response.text().catch(() => ''));
-        return {
-          ok: false,
-          fallback: true,
-          reasonKey: 'ask.emptyAnswer',
-          reason: 'AI से जुड़ी हुई सेटिंग में समस्या है। नीचे पहले से तैयार जानकारी दी गई है।',
-        };
-      }
-      return {
-        ok: false,
-        fallback: true,
-        reasonKey: 'ask.errorNetwork',
-        reason: 'अभी जुड़ नहीं पाए। इंटरनेट दोबारा जाँचें।',
-      };
-    }
-
-    const data = (await response.json()) as {
-      candidates?: { content?: { parts?: { text?: string }[] } }[];
-    };
-
-    const answer = data.candidates?.[0]?.content?.parts?.map((p) => p.text ?? '').join('').trim();
-
-    if (!answer) {
-      return {
-        ok: false,
-        fallback: true,
-        reasonKey: 'ask.notAnswer',
-        reason: 'इस प्रश्न का उत्तर नहीं मिला। नीचे पहले से तैयार जानकारी देखें।',
-      };
-    }
-
-    return { ok: true, answer, fallback: false };
-  } catch (error) {
-    console.error('[ai] request failed', error instanceof Error ? error.message : error);
-    return {
-      ok: false,
-      fallback: true,
-      reasonKey: 'ask.errorNetwork',
-      reason: 'इंटरनेट नहीं मिल पाया। नीचे पहले से तैयार जानकारी दी गई है।',
-    };
-  }
+  return ask(system, withContext);
 }
