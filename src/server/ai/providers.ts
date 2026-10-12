@@ -139,10 +139,24 @@ export async function askGemini(
     }
 
     const data = (await response.json()) as {
-      candidates?: { content?: { parts?: { text?: string }[] } }[];
+      candidates?: {
+        content?: { parts?: { text?: string; thought?: boolean }[] };
+      }[];
     };
-    const text = data.candidates?.[0]?.content?.parts
-      ?.map((part) => part.text ?? '')
+
+    /*
+     * Only the parts that are not the thinking.
+     *
+     * A reasoning model streams its working-out in `parts` alongside the answer,
+     * marked `thought: true`. Taking every part concatenates the two, so the
+     * visitor reads the model's private deliberation before the answer — the same
+     * failure as the JSON envelope on the free provider, reached a different way.
+     * Gemini 3.8 Flash is a thinking model, so this is a live path and not a
+     * hypothetical.
+     */
+    const text = (data.candidates?.[0]?.content?.parts ?? [])
+      .filter((part) => part.thought !== true)
+      .map((part) => part.text ?? '')
       .join('')
       .trim();
 
@@ -244,6 +258,169 @@ export async function askOllama(
 /* ========================================================================== */
 
 /**
+ * Pull a usable answer out of whatever came back.
+ *
+ * ── Why this exists, and what it was showing visitors ──────────────────────
+ *
+ * Asked "गणपती ची मराठी आरती सांगा" in Marathi, the free provider replied with:
+ *
+ *     {"role":"assistant","reasoning":"User wants: \"गणपती ची मराठी आरती...\"
+ *      They want a Marathi aarti... We nee", "tool_calls":[]}
+ *
+ * That was rendered to the visitor verbatim. Not a bad answer — the model's
+ * private working-out, mid-sentence, wrapped in JSON, on a help site meant for
+ * elderly people. It also contained no answer at all: that response has a
+ * `reasoning` key and a `tool_calls` key and nothing else.
+ *
+ * Two separate failures, and the second is the serious one:
+ *
+ *   - the raw text was shown instead of being parsed;
+ *   - a response with no answer in it was accepted as an answer, so the site
+ *     reported success and the visitor got nothing useful.
+ *
+ * So this parses first, extracts only a real answer field, and returns an empty
+ * string when there is none — which the caller already treats as a failure and
+ * moves to the next provider. An empty string is the honest signal. Returning
+ * the thinking is not, and neither is reporting success.
+ *
+ * ── Why the model was reasoning out loud ───────────────────────────────────
+ *
+ * A reasoning model asked for a hymn it does not reliably know will deliberate
+ * at length and then stop. That is the model behaving correctly; the fault is
+ * entirely in answering it with its scratchpad.
+ */
+
+/** Keys a response might hide the actual answer under, in order of preference. */
+const ANSWER_KEYS = [
+  'content',
+  'text',
+  'answer',
+  'output',
+  'message',
+  'response',
+  'completion',
+];
+
+/**
+ * Fields that are the model thinking rather than answering.
+ *
+ * Listed by name so they can be stripped even from a response that also carries
+ * a real answer, rather than only detected when the whole thing is JSON.
+ */
+const REASONING_KEYS = new Set([
+  'reasoning',
+  'reasoning_content',
+  'thought',
+  'thinking',
+  'thoughts',
+  'analysis',
+  'tool_calls',
+  'tool_calls_reasoning',
+]);
+
+/** Deep search for a plausible answer inside a parsed structure. */
+function findAnswer(value: unknown, depth = 0): string | null {
+  // Bounded. A model can nest arbitrarily; a response this deep is not a
+  // response, it is a model having a breakdown.
+  if (depth > 8 || value === null || typeof value !== 'object') return null;
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const found = findAnswer(item, depth + 1);
+      if (found) return found;
+    }
+    return null;
+  }
+
+  const record = value as Record<string, unknown>;
+
+  /*
+   * A thought part carries its own "text" — the thinking — and Gemini marks it
+   * `thought: true`. Stepping into it is how a visitor ends up reading a model's
+   * deliberation instead of its answer, so the part is skipped whole.
+   */
+  if (record.thought === true) return null;
+
+  for (const key of ANSWER_KEYS) {
+    const candidate = record[key];
+    if (typeof candidate === 'string' && candidate.trim().length > 0) {
+      // Never hand back a field that is the reasoning under another name.
+      if (REASONING_KEYS.has(key)) continue;
+      return candidate.trim();
+    }
+  }
+
+  /*
+   * Then into every key, including ones not on the list above.
+   *
+   * The first version only recursed through keys it already recognised, so
+   * `{choices: [{message: {content}}]}` and
+   * `{candidates: [{content: {parts: [...]}}]}` both came back empty — and those
+   * are the two shapes that actually arrive, one from every provider here. The
+   * unrecognised keys are the wrappers, not the answer.
+   */
+  for (const key of Object.keys(record)) {
+    if (REASONING_KEYS.has(key)) continue;
+
+    const child = record[key];
+    if (child && typeof child === 'object') {
+      const found = findAnswer(child, depth + 1);
+      if (found) return found;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Turn a provider response into an answer, or into nothing.
+ *
+ * Returns an empty string when nothing usable is present. Callers treat that as
+ * a failure and try the next provider, which is what should happen when a model
+ * produces only its own reasoning.
+ */
+export function extractAnswer(raw: string): string {
+  const trimmed = raw.trim();
+  if (!trimmed) return '';
+
+  /* ------------------------------------------------------------- JSON path */
+  if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+    try {
+      const parsed: unknown = JSON.parse(trimmed);
+      const found = findAnswer(parsed);
+      if (found) return found;
+      // Parsed fine, genuinely no answer in it. Nothing to show.
+      return '';
+    } catch {
+      // Not actually JSON despite looking like it — fall through to the text
+      // path rather than discarding a real answer that starts with a brace.
+    }
+  }
+
+  /* ------------------------------------------------------------- text path */
+  /*
+   * A whole response wrapped in a fenced block, or a stray JSON object embedded
+   * in prose. Both are things a model does and neither is worth showing raw.
+   *
+   * The check is deliberately narrow: only a line that *is* a reasoning field is
+   * removed, so an article that legitimately discusses "tool_calls" — plausible
+   * on a site about work — is not silently gutted.
+   */
+  const fenced = trimmed.match(/^```(?:json)?\s*\n([\s\S]*?)\n?```$/);
+  if (fenced) return extractAnswer(fenced[1]);
+
+  const looksLikeRawEnvelope =
+    /"role"\s*:\s*"assistant"/.test(trimmed) && /"(reasoning|tool_calls)"\s*:/.test(trimmed);
+
+  if (looksLikeRawEnvelope) {
+    const found = findAnswer(JSON.parse(trimmed.replace(/^[^({]+/, '')));
+    return found ?? '';
+  }
+
+  return trimmed;
+}
+
+/**
  * Tried last, and expected to fail often.
  *
  * Measured on this machine over ten questions: five answered, five refused with
@@ -260,7 +437,7 @@ export async function askPollinations(
   try {
     // The URL carries the whole prompt, so it is encoded. Pollinations takes the
     // prompt as a path segment and has no request body for this.
-    const prompt = `${system}\n\nQuestion: ${question}\n\nAnswer only in the language of the question, in that language's own script.`;
+    const prompt = `${system}\n\nQuestion: ${question}\n\nAnswer only in the language of the question, in that language's own script. Give the answer, not your working-out.`;
     const url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai`;
 
     const response = await timedFetch(url, {
@@ -274,8 +451,13 @@ export async function askPollinations(
       return { ok: false, provider: 'pollinations', reason: 'network', ms: Date.now() - started };
     }
 
-    const text = (await response.text()).trim();
+    const text = extractAnswer(await response.text());
+
     if (!text) {
+      /*
+       * Reasoning with no answer is the specific failure this service produces
+       * most often, and it used to be reported as a success.
+       */
       return { ok: false, provider: 'pollinations', reason: 'empty', ms: Date.now() - started };
     }
 
