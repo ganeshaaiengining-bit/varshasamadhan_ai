@@ -2,8 +2,9 @@
     "name": "varsha-samadhan",
     "version": "1.0.0",
     "private": true,
-    "description": "à¤µà¤°à¥à¤·à¤¾ à¤¸à¤®à¤¾à¤§à¤¾à¤¨ AI â€” à¤¶à¥à¤°à¥€à¤®à¤¤à¥€ à¤µà¤°à¥à¤·à¤¾ à¤œà¥€ à¤•à¥€ à¤¸à¥à¤®à¥ƒà¤¤à¤¿ à¤®à¥‡à¤‚, à¤¨à¤¿à¤ƒà¤¶à¥à¤²à¥à¤• à¤¸à¤®à¤¾à¤§à¤¾à¤¨ à¤¸à¥‡à¤µà¤¾",
+    "description": "वर्षा समाधान AI — श्रीमती वर्षा जी की स्मृति में, निःशुल्क समाधान सेवा",
     "scripts": {
+        "postinstall": "prisma generate",
         "dev": "next dev -p 3001",
         "serve": "node scripts/serve.mjs",
         "serve:app": "node scripts/serve.mjs 3002",
