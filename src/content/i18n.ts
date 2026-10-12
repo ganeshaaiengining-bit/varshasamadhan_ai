@@ -568,9 +568,9 @@ const HINDI: Record<string, string> = {
   'lib.legalTitle': 'कॉपीराइट का कोई झंझट नहीं।',
   'lib.legal': 'यहाँ जो कुछ दिया गया है, वह बिल्कुल मुफ़्त है और आप इसे आगे भी बाँट सकते हैं। जो किताब अभी कॉपीराइट में है, वह यहाँ नहीं होगी — उसे आप कॉपी नहीं कर सकते, यह साफ़ कहना ज़रूरी है।',
   'lib.openBadge': 'खुला',
-  'lib.openBadgeNote': 'इसे copy कर सकते हैं',
+  'lib.openBadgeNote': 'इसे कॉपी कर सकते हैं',
   'lib.freeBadge': 'मुफ़्त',
-  'lib.freeBadgeNote': 'पढ़ सकते हैं, copy नहीं',
+  'lib.freeBadgeNote': 'पढ़ सकते हैं, कॉपी नहीं',
   'lib.govt': 'सरकारी',
   'lib.noSignup': 'बिना अकाउंट',
   'lib.open': 'यहाँ खोलिए',
@@ -1252,7 +1252,7 @@ const BENGALI: Record<string, string> = {
 
   'health.heading': 'আপনার বয়স বলুন',
 
-  'health.intro': 'প্রতিটি বয়সের মানুষ সবচেয়ে বেশি যে প্রশ্নগুলো করেন। যেকোনো একটিতে চাপ দিলে সেটি নিচের ঘরে বসবে, তারপর জিজ্ঞাসা করুন।',
+  'health.intro': 'বয়স অনুযায়ী যে প্রশ্নগুলি নিয়মিত জিজ্ঞাসা করা হয়, সেগুলি এখানে দেখা যাবে। কোনো বাটন চাপবেন না — প্রশ্ন নিচে পূরণ হবে, তারপর জিজ্ঞাসা করুন।',
 
   'health.ageLabel': 'বয়স (বছর)',
 
@@ -1262,7 +1262,7 @@ const BENGALI: Record<string, string> = {
 
   'health.notAdviceStrong': 'এটি চিকিৎসা পরামর্শ নয়।',
 
-  'health.notAdvice': 'কোনো ওষুধ শুরু বা বন্ধ করবেন না — আগে ডাক্তারের পরামর্শ নিন।',
+  'health.notAdvice': 'কোনো ঔষধ শুরু বা বন্ধ করবেন না — আগে ডাক্তারের সাথে দেখা করুন।',
 
   'health.emergencyStrong': 'জরুরি অবস্থায় ফোন করুন:',
 
@@ -1270,25 +1270,25 @@ const BENGALI: Record<string, string> = {
 
   'health.emergencyAmbulance': '(অ্যাম্বুলেন্স)',
 
-  'health.emergencyWomen': '(নারী সহায়তা নম্বর)',
+  'health.emergencyWomen': '(নারী সহায়তা)',
 
   'health.privacy': 'নাম বা ঠিকানা লিখতে হবে না।',
 
-  'health.band.infant.label': '০ – ২ বছর',
+  'health.band.infant.label': '0 – 2 বছর',
 
-  'health.band.child.label': '৩ – ১২ বছর',
+  'health.band.child.label': '3 – 12 বছর',
 
-  'health.band.teen.label': '১৩ – ১৭ বছর',
+  'health.band.teen.label': '13 – 17 বছর',
 
-  'health.band.young.label': '১৮ – ৩০ বছর',
+  'health.band.young.label': '18 – 30 বছর',
 
-  'health.band.middle.label': '৩১ – ৪৫ বছর',
+  'health.band.middle.label': '31 – 45 বছর',
 
-  'health.band.later.label': '৪৬ – ৬০ বছর',
+  'health.band.later.label': '46 – 60 বছর',
 
-  'health.band.senior.label': '৬১ – ৭৫ বছর',
+  'health.band.senior.label': '61 – 75 বছর',
 
-  'health.band.elder.label': '৭৬ – ১০০ বছর',
+  'health.band.elder.label': '76 – 100 বছর',
 
   /* ---- save / download ---- */
 
@@ -1508,6 +1508,22 @@ const BENGALI: Record<string, string> = {
 
   'reviews.toastFailed': 'মতামত পাঠানো যায়নি',
 
+  'health.band.infant.note': 'খুব ছোট শিশু, যারা এখনও নিজের কথা বলতে পারে না',
+
+  'health.band.child.note': 'যে শিশুরা কথা বলতে পারে, কিন্তু প্রশ্ন করতে ভয় পায়',
+
+  'health.band.teen.note': 'কিশোর, যাদের প্রায়ই এমন কাউকে পান না যে শুনে নেয়',
+
+  'health.band.young.note': 'চাকরি, টাকা আর ঘুম — তিনটের একসাথে ভার',
+
+  'health.band.middle.note': 'বাড়ি, সন্তান আর নিজের স্বাস্থ্য — সবার দায়িত্ব একসাথে',
+
+  'health.band.later.note': 'শরীরের বয়স আর তার যত্ন — দুটো একসাথে',
+
+  'health.band.senior.note': 'ওষুধ, ভারসাম্য আর একাকিত্ব — তিনটাই একসাথে',
+
+  'health.band.elder.note': 'প্রতিটি ঔষধ পরীক্ষা করা জরুরি, প্রতিটি পড়া গুরুতর',
+
 };
 
 const TAMIL: Record<string, string> = {
@@ -1690,43 +1706,43 @@ const TAMIL: Record<string, string> = {
 
   'health.heading': 'உங்கள் வயதைச் சொல்லுங்கள்',
 
-  'health.intro': 'ஒவ்வொரு வயதினரும் அதிகம் கேட்பது கேள்விகள். ஏதொன்றைத் தட்டினால் அது கீழே இடத்தில் நிரம்பி, பின்னர் கேளுங்கள்.',
+  'health.intro': 'வயதின் அடிப்படையில் அடிக்கடி கேட்கப்படும் கேள்விகள் இங்கே தெரியும். எந்த பொத்தானையும் அழுத்த வேண்டாம் — கேள்வி கீழே நிரப்பப்படும், பின்னர் கேளுங்கள்.',
 
-  'health.ageLabel': 'வயது (வருடம்)',
+  'health.ageLabel': 'வயது (ஆண்டுகள்)',
 
-  'health.years': 'வருடம்',
+  'health.years': 'ஆண்டுகள்',
 
-  'health.bandsLabel': 'வயதால் தேர்வு செய்யுங்கள்',
+  'health.bandsLabel': 'வயதின் அடிப்படையில் தேர்வு செய்யுங்கள்',
 
   'health.notAdviceStrong': 'இது மருத்துவ ஆலோசனை அல்ல.',
 
-  'health.notAdvice': 'எந்த மருந்தையும் தொடங்கவோ நிறுத்தவோ மாட்டீர்கள் — முதலில் மருத்துவரைப் பாருங்கள்.',
+  'health.notAdvice': 'எந்த மருந்தையும் தொடங்கவும் நிறுத்தவும் — முதலில் மருத்துவரைச் சந்தியுங்கள்.',
 
-  'health.emergencyStrong': 'அவசர நிலையில் அழைக்கவும்:',
+  'health.emergencyStrong': 'அவசரத்தில் அழைக்கவும்:',
 
   'health.emergencyCall': '(அவசரம்)',
 
   'health.emergencyAmbulance': '(ஆம்புலன்ஸ்)',
 
-  'health.emergencyWomen': '(பெண்கள் உதவி எண்)',
+  'health.emergencyWomen': '(பெண் உதவி)',
 
-  'health.privacy': 'பெயர் அல்லது முகவரி எழுதத் தேவையில்லை.',
+  'health.privacy': 'பெயர் அல்லது முகவரி எழுத வேண்டியதில்லை.',
 
-  'health.band.infant.label': '0 – 2 வருடம்',
+  'health.band.infant.label': '0 – 2 வயது',
 
-  'health.band.child.label': '3 – 12 வருடம்',
+  'health.band.child.label': '3 – 12 வயது',
 
-  'health.band.teen.label': '13 – 17 வருடம்',
+  'health.band.teen.label': '13 – 17 வயது',
 
-  'health.band.young.label': '18 – 30 வருடம்',
+  'health.band.young.label': '18 – 30 வயது',
 
-  'health.band.middle.label': '31 – 45 வருடம்',
+  'health.band.middle.label': '31 – 45 வயது',
 
-  'health.band.later.label': '46 – 60 வருடம்',
+  'health.band.later.label': '46 – 60 வயது',
 
-  'health.band.senior.label': '61 – 75 வருடம்',
+  'health.band.senior.label': '61 – 75 வயது',
 
-  'health.band.elder.label': '76 – 100 வருடம்',
+  'health.band.elder.label': '76 – 100 வயது',
 
   /* ---- save / download ---- */
 
@@ -1946,6 +1962,22 @@ const TAMIL: Record<string, string> = {
 
   'reviews.toastFailed': 'கருத்து அனுப்பப்படவில்லை',
 
+  'health.band.infant.note': 'சிறிய குழந்தைகள், இன்னும் தமது காரியத்தை சொல்ல முடியாதவர்கள்',
+
+  'health.band.child.note': 'பேசக்கூடிய குழந்தைகள், ஆனால் கேள்வி கேட்பதற்கு பயப்படுபவர்கள்',
+
+  'health.band.teen.note': 'இளம் பிரதமர்கள், அவர்களுக்குப் பொதுவாக கேட்டுக் கொள்ளும் ஒருவர் கிடைப்பதில்லை',
+
+  'health.band.young.note': 'வேலை, பணம், தூக்கம் — மூன்றின் சேர்ந்த பாரம்',
+
+  'health.band.middle.note': 'வீடு, குழந்தைகள், தனது உடல்நலம் — அனைத்து பொறுப்பும் ஒரே சேர்வு',
+
+  'health.band.later.note': 'உடலின் வயதும் அதன் பராமரிப்பும் — இரண்டும் ஒரே நேரத்தில்',
+
+  'health.band.senior.note': 'மருந்து, சமநிலை, தனிமை — மூன்றும் சேர்ந்தே',
+
+  'health.band.elder.note': 'ஒவ்வொரு மருந்தையும் பரிசோதிக்க வேண்டும், ஒவ்வொரு விழுவும் கடுமையானது',
+
 };
 
 const TELUGU: Record<string, string> = {
@@ -1969,7 +2001,7 @@ const TELUGU: Record<string, string> = {
   'home.askHere': 'ఈ విషయంలో అడగండి', 'home.howTitle': 'ఈ సేవ ఎలా పనిచేస్తుంది',
   'home.soundTitle': 'శాంతికి ధ్వని', 'home.freeTitle': 'ఈ సేవ పూర్తిగా ఉచితం',
   'home.freeBody': 'డబ్బు తీసుకోవటం లేదు, వ్యక్తిగత వివరాలు అడగడం లేదు, ప్రకటన లేదు.',
-  'footer.pages': 'పేజీలు', 'footer.helplines': 'ముఖ్య నంబర్లు', 'footer.readStory': ' her పూర్తి కథ చదవండి',
+  'footer.pages': 'పేజీలు', 'footer.helplines': 'ముఖ్య నంబర్లు', 'footer.readStory': 'ఇక్కడ పూర్తి కథ చదవండి',
   'reviews.title': 'మీ అభిప్రాయం, మీ మాట', 'reviews.submit': 'పంపండి', 'reviews.comment': 'మీ మాట',
   'language.choose': 'మీ భాషను ఎంచుకోండి', 'language.articlesIn': 'ఈ వ్యాసం హిందీలో ఉంది.',
 
@@ -2128,7 +2160,7 @@ const TELUGU: Record<string, string> = {
 
   'health.heading': 'మీ వయస్సు చెప్పండి',
 
-  'health.intro': 'ఏ వయస్సుల వారు అత్యధికంగా అడిగే ప్రశ్నలు ఇవి. ఏదైనా నొక్కండి అది దిగువ బాక్స్‌లో నింపుతుంది, తర్వాత అడగండి.',
+  'health.intro': 'వయస్సు ప్రకారం తరచుగా అడిగే ప్రశ్నలు ఇక్కడ కనిపిస్తాయి. ఏ బటన్‌నూ నొక్కవద్దు — ప్రశ్న కింద నింపబడుతుంది, తర్వాత అడగండి.',
 
   'health.ageLabel': 'వయస్సు (సంవత్సరాలు)',
 
@@ -2138,9 +2170,9 @@ const TELUGU: Record<string, string> = {
 
   'health.notAdviceStrong': 'ఇది వైద్య సలహా కాదు.',
 
-  'health.notAdvice': 'ఏ మందులను మొదలు పెట్టవద్దు లేదా ఆపవద్దు — ముందుగా వైద్యుడిని సంప్రదించండి.',
+  'health.notAdvice': 'ఏ మందులైనా ప్రారంభించవద్దు లేదా ఆపవద్దు — ముందుగా వైద్యుడిని కలవండి.',
 
-  'health.emergencyStrong': 'అత్యవసరంలో ఫోన్ చేయండి:',
+  'health.emergencyStrong': 'అత్యవసరంలో కాల్ చేయండి:',
 
   'health.emergencyCall': '(అత్యవసరం)',
 
@@ -2384,6 +2416,22 @@ const TELUGU: Record<string, string> = {
 
   'reviews.toastFailed': 'అభిప్రాయం పంపబడలేదు',
 
+  'health.band.infant.note': 'పుట్టుక పిల్లలు, ఇంకా తమ మాట చెప్పలేని వారు',
+
+  'health.band.child.note': 'మాట్లాడగల పిల్లలు, కానీ ప్రశ్నించడానికి భయపడే వారు',
+
+  'health.band.teen.note': 'కౌమారులు, వారికి సాధారణంగా విని అవుకునే వ్యక్తి దొరకడం లేదు',
+
+  'health.band.young.note': 'పని, డబ్బు, నిద్ర — మూడు ఒకేసారి భారం',
+
+  'health.band.middle.note': 'ఇల్లు, పిల్లలు, మీ స్వంత ఆరోగ్యం — అన్నీ ఒకే బాధ్యత',
+
+  'health.band.later.note': 'శరీర వయస్సు, దాని సంరక్షణ — రెండూ ఒకేసారి',
+
+  'health.band.senior.note': 'మందులు, సమతుల్యత, ఒంటరితనం — మూడూ కలిపి',
+
+  'health.band.elder.note': 'ప్రతి మందుల పరీక్ష అవసరం, ప్రతి పడకపోవడం తీవ్రం',
+
 };
 
 const MARATHI: Record<string, string> = {
@@ -2566,7 +2614,7 @@ const MARATHI: Record<string, string> = {
 
   'health.heading': 'तुमचे वय सांगा',
 
-  'health.intro': 'या वयातील लोकांचे सर्वाधिक विचारले जाणारे प्रश्न. एखादा वर क्लिक केल्यावर तो खालील डब्यात भरला जातो, मग विचारा.',
+  'health.intro': 'वयानुसार जे प्रश्न नेहमी विचारले जातात ते येथे दिसतील. कोणतेही बटण दाबू नका — प्रश्न खाली भरला जाईल, मग विचारा.',
 
   'health.ageLabel': 'वय (वर्षे)',
 
@@ -2576,11 +2624,11 @@ const MARATHI: Record<string, string> = {
 
   'health.notAdviceStrong': 'हे वैद्यकीय सल्ला नाही.',
 
-  'health.notAdvice': 'कोणतेही औषध सुरू करू नका किंवा बंद करू नका — आधी डॉक्टरांचा सल्ला घ्या.',
+  'health.notAdvice': 'कोणतेही औषध सुरू किंवा बंद करू नका — आधी डॉक्टरांचा सल्ला घ्या.',
 
-  'health.emergencyStrong': 'आणीबाणीत फोन करा:',
+  'health.emergencyStrong': 'आपत्काली फोन करा:',
 
-  'health.emergencyCall': '(आणीबाणी)',
+  'health.emergencyCall': '(आपत्काल)',
 
   'health.emergencyAmbulance': '(रुग्णवाहिका)',
 
@@ -2588,21 +2636,21 @@ const MARATHI: Record<string, string> = {
 
   'health.privacy': 'नाव किंवा पत्ता लिहिण्याची गरज नाही.',
 
-  'health.band.infant.label': '० – २ वर्षे',
+  'health.band.infant.label': '0 – 2 वर्षे',
 
-  'health.band.child.label': '३ – १२ वर्षे',
+  'health.band.child.label': '3 – 12 वर्षे',
 
-  'health.band.teen.label': '१३ – १७ वर्षे',
+  'health.band.teen.label': '13 – 17 वर्षे',
 
-  'health.band.young.label': '१८ – ३० वर्षे',
+  'health.band.young.label': '18 – 30 वर्षे',
 
-  'health.band.middle.label': '३१ – ४५ वर्षे',
+  'health.band.middle.label': '31 – 45 वर्षे',
 
-  'health.band.later.label': '४६ – ६० वर्षे',
+  'health.band.later.label': '46 – 60 वर्षे',
 
-  'health.band.senior.label': '६१ – ७५ वर्षे',
+  'health.band.senior.label': '61 – 75 वर्षे',
 
-  'health.band.elder.label': '७६ – १०० वर्षे',
+  'health.band.elder.label': '76 – 100 वर्षे',
 
   /* ---- save / download ---- */
 
@@ -2822,6 +2870,22 @@ const MARATHI: Record<string, string> = {
 
   'reviews.toastFailed': 'राय पाठवता आली नाही',
 
+  'health.band.infant.note': 'अगदी लहान बाळे, जी अद्याप आपले म्हणणे सांगू शकत नाहीत',
+
+  'health.band.child.note': 'बाळे जी बोलू शकतात, परंतु प्रश्न विचारायला घाबरतात',
+
+  'health.band.teen.note': 'किशोर, ज्यांना नेहमी अशा व्यक्तीचा भेट होत नाही जी ऐकून घेईल',
+
+  'health.band.young.note': 'नोकरी, पैसा आणि झोप — तिन्हींचा एकत्र भार',
+
+  'health.band.middle.note': 'घर, मुले आणि स्वतःचे आरोग्य — सर्वांची जबाबदारी एकत्र',
+
+  'health.band.later.note': 'शरीराचे वय आणि त्याची काळजी — दोन्ही एकत्र',
+
+  'health.band.senior.note': 'औषध, संतुलन आणि एकटेपणा — तिन्ही सोबत',
+
+  'health.band.elder.note': 'प्रत्येक औषधाची तपासणी आवश्यक, प्रत्येक पडणे गंभीर',
+
 };
 
 const GUJARATI: Record<string, string> = {
@@ -3004,7 +3068,7 @@ const GUJARATI: Record<string, string> = {
 
   'health.heading': 'તમારી ઉંમર કહો',
 
-  'health.intro': 'આ ઉંમરના લોકો સૌથી વધુ પૂછતા હોય એવા પ્રશ્નો. કોઈપણ એક પર ક્લિક કરો, તે નીચે બોક્સમાં ભરાઈ જશે, પછી પૂછો.',
+  'health.intro': 'ઉંમર પ્રમાણે જે પ્રશ્નો વારંવાર પૂછાય છે તે અહીં દેખાશે. કોઈ બટન દબાવવું નહીં — પ્રશ્ન નીચે ભરાશે, પછી પૂછો.',
 
   'health.ageLabel': 'ઉંમર (વર્ષ)',
 
@@ -3014,7 +3078,7 @@ const GUJARATI: Record<string, string> = {
 
   'health.notAdviceStrong': 'આ તબીબી સલાહ નથી.',
 
-  'health.notAdvice': 'કોઈ દવા શરૂ કરો કે બંધ કરો નહીં — પહેલા ડૉક્ટરને મળો.',
+  'health.notAdvice': 'કોઈ દવા શરૂ કે બંધ ન કરો — પહેલાં ડૉક્ટરની સલાહ લો.',
 
   'health.emergencyStrong': 'કટોકટીમાં ફોન કરો:',
 
@@ -3022,7 +3086,7 @@ const GUJARATI: Record<string, string> = {
 
   'health.emergencyAmbulance': '(એમ્બ્યુલન્સ)',
 
-  'health.emergencyWomen': '(મહિલા મદદ નંબર)',
+  'health.emergencyWomen': '(મહિલા મદદ)',
 
   'health.privacy': 'નામ કે સરનામું લખવાની જરૂર નથી.',
 
@@ -3260,6 +3324,22 @@ const GUJARATI: Record<string, string> = {
 
   'reviews.toastFailed': 'રાય મોકલી ન શકાઈ',
 
+  'health.band.infant.note': 'નાનાં બાળકો, જે હજી પોતાનું કહી શકતાં નથી',
+
+  'health.band.child.note': 'બાળકો જે બોલી શકે, પણ પ્રશ્ન પૂછતાં ડરે છે',
+
+  'health.band.teen.note': 'કિશોરો, જેમને ઘણીવાર એવું કોઈ મળતું નથી જે સાંભળે',
+
+  'health.band.young.note': 'નોકરી, પૈસા અને ઊંઘ — ત્રણેય સાથે બોજ',
+
+  'health.band.middle.note': 'ઘર, બાળકો અને પોતાની તબિયત — બધાની જવાબદારી સાથે',
+
+  'health.band.later.note': 'શરીરની ઉંમર અને તેની સંભાળ — બંને સાથે',
+
+  'health.band.senior.note': 'દવા, સંતુલન અને એકલપણ — ત્રણેય સાથે',
+
+  'health.band.elder.note': 'દરેક દવાની ચકાસણી જરૂરી, દરેક પડવું ગંભીર',
+
 };
 
 const KANNADA: Record<string, string> = {
@@ -3446,29 +3526,29 @@ const KANNADA: Record<string, string> = {
 
   'ask.browseTitle': 'ಇಲ್ಲಿರುವ ಲೇಖಗಳನ್ನು ನೋಡಿ',
 
-  'health.heading': 'ನಿಮ್ಮ ವಯಸ್ಸು ಹೇಳಿ',
+  'health.heading': 'ನಿಮ್ಮ ವಯಸ್ಸು ತಿಳಿಸಿ',
 
-  'health.intro': 'ಈ ವಯಸ್ಸಿನ ಜನರು ಹೆಚ್ಚು ಕೇಳುವ ಪ್ರಶ್ನೆಗಳು ಇವೆ. ಯಾವುದನ್ನಾದರೂ ಒತ್ತಿದರೆ ಅದು ಕೆಳಗಿನ ಪೆಟ್ಟಿಗೆಗೆ ಹೋಗುತ್ತದೆ, ನಂತರ ಕೇಳಿ.',
+  'health.intro': 'ವಯಸ್ಸಿಗೆ ತಕ್ಕಂತೆ ಪದೇ ಪದೇ ಕೇಳುವ ಪ್ರಶ್ನೆಗಳು ಇಲ್ಲಿ ಕಾಣುತ್ತವೆ. ಯಾವುದೇ ಬಟನ್ ಒತ್ತಬೇಡಿ — ಪ್ರಶ್ನೆ ಕೆಳಗೆ ತುಂಬಲಾಗುತ್ತದೆ, ನಂತರ ಕೇಳಿ.',
 
   'health.ageLabel': 'ವಯಸ್ಸು (ವರ್ಷ)',
 
   'health.years': 'ವರ್ಷ',
 
-  'health.bandsLabel': 'ವಯಸ್ಸಿನ ಪ್ರಕಾರ ಆಯ್ಕೆಮಾಡಿ',
+  'health.bandsLabel': 'ವಯಸ್ಸಿಗೆ ತಕ್ಕಂತೆ ಆಯ್ಕೆಮಾಡಿ',
 
-  'health.notAdviceStrong': 'ಇದು ವೈದ್ಯ ಸಲಹೆ ಅಲ್ಲ.',
+  'health.notAdviceStrong': 'ಇದು ವೈದ್ಯಕೀಯ ಸಲಹೆ ಅಲ್ಲ.',
 
-  'health.notAdvice': 'ಯಾವುದೇ ಔಷಧಿ ಪ್ರಾರಂಭಿಸಬೇಡಿ ಅಥವಾ ನಿಲ್ಲಿಸಬೇಡಿ — ಮೊದಲು ವೈದ್ಯರನ್ನು ಭೇಟಿಯಾಗಿ.',
+  'health.notAdvice': 'ಯಾವುದೇ ಔಷಧಿ ಆರಂಭಿಸಬೇಡಿ ಅಥವಾ ನಿಲ್ಲಿಸಬೇಡಿ — ಮೊದಲು ವೈದ್ಯರ ಸಲಹೆ ಪಡೆಯಿರಿ.',
 
-  'health.emergencyStrong': 'ತುರ್ತು ಸಂಭವದಲ್ಲಿ ಫೋನ್ ಮಾಡಿ:',
+  'health.emergencyStrong': 'ಅಪಾಯಕಾರಿ ಸ್ಥಿತಿಯಲ್ಲಿ ಫೋನ್ ಮಾಡಿ:',
 
-  'health.emergencyCall': '(ತುರ್ತು ಸಂಭವ)',
+  'health.emergencyCall': '(ಅಪಾಯ)',
 
-  'health.emergencyAmbulance': '(ಅಂಬ್ಯುಲೆನ್ಸ್)',
+  'health.emergencyAmbulance': '(ಆಂಬ್ಯುಲೆನ್ಸ್)',
 
-  'health.emergencyWomen': '(ಮಹಿಳಾ ಸಹಾಯ ಸಂಖ್ಯೆ)',
+  'health.emergencyWomen': '(ಮಹಿಳಾ ಸಹಾಯ)',
 
-  'health.privacy': 'ಹೆಸರು ಅಥವಾ ವಿಳಾಸ ಬರೆಯುವ ಅಗತ್ಯವಿಲ್ಲ.',
+  'health.privacy': 'ಹೆಸರು ಅಥವಾ ವಿಳಾಸ ಬರೆಯುವುದು ಅಗತ್ಯವಿಲ್ಲ.',
 
   'health.band.infant.label': '0 – 2 ವರ್ಷ',
 
@@ -3706,6 +3786,22 @@ const KANNADA: Record<string, string> = {
 
   'reviews.toastFailed': 'ಅಭಿಪ್ರಾಯ ಕಳುಹಿಸಲಾಗಲಿಲ್ಲ',
 
+  'health.band.infant.note': 'ತುಗ್ಗ ಮಕ್ಕಳು, ಇನ್ನೂ ತಮ್ಮ ವಾತನೆ ಹೇಳಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ',
+
+  'health.band.child.note': 'ಮಾತನಾಡಬಹುದಾದ ಮಕ್ಕಳು, ಆದರೆ ಪ್ರಶ್ನೆ ಕೇಳಲು ಹೆಚ್ಚಿಕೆ ಹೆದುವರುತ್ತಾರೆ',
+
+  'health.band.teen.note': 'ಕಿಶೋರರು, ಅವರಿಗೆ ಸಾಮಾನ್ಯವಾಗಿ ಕೇಳಿ ಕೊಳ್ಳುವ ವ್ಯಕ್ತಿ ಸಿಗುವುದಿಲ್ಲ',
+
+  'health.band.young.note': 'ಕೆಲಸ, ಹಣ ಮತ್ತು ನಿದ್ದೆ — ಮೂರರ ಒಟ್ಟಿಗೆ ಭಾರ',
+
+  'health.band.middle.note': 'ಮನೆ, ಮಕ್ಕಳು ಮತ್ತು ನಿಮ್ಮ ಆರೋಗ್ಯ — ಎಲ್ಲರ ಜವಾಬದಾರಿ ಒಟ್ಟಿಗೆ',
+
+  'health.band.later.note': 'ದೇಹದ ವಯಸ್ಸು ಮತ್ತು ಅದರ ಆರೈಕೆ — ಎರಡೂ ಒಟ್ಟಿಗೆ',
+
+  'health.band.senior.note': 'ಔಷಧಿ, ಸಮತೋಲನ ಮತ್ತು ಒಂಟಿಗೆ — ಮೂರೂ ಒಟ್ಟಿಗೆ',
+
+  'health.band.elder.note': 'ಪ್ರತಿ ಔಷಧಿಯ ಪರಿಶೀಲನೆ ಅಗತ್ಯ, ಪ್ರತಿ ಉದುರುವಿಕೆ ಗಂಭೀರ',
+
 };
 
 const MALAYALAM: Record<string, string> = {
@@ -3898,7 +3994,7 @@ const MALAYALAM: Record<string, string> = {
 
   'health.heading': 'നിങ്ങളുടെ പ്രായം പറയൂ',
 
-  'health.intro': 'ഈ പ്രായത്തിലുള്ളവർ ഏറ്റവും കൂടുതൽ ചോദിക്കുന്ന ചോദ്യങ്ങൾ. ഏതെങ്കിലും അമർത്തിയാൽ അത് താഴെയുള്ള ബോക്സിൽ നിറയും, ശേഷം ചോദിക്കൂ.',
+  'health.intro': 'പ്രായം അനുസരിച്ച് പതിററാം ചോദിക്കുന്ന ചോദ്യങ്ങൾ ഇവിടെ കാണും. ഏതെങ്കിലും ബട്ടൺ അമർത്തരുത് — ചോദ്യം താഴെ പൂരിപ്പിക്കും, ശേഷം ചോദിക്കൂ.',
 
   'health.ageLabel': 'പ്രായം (വർഷം)',
 
@@ -3908,7 +4004,7 @@ const MALAYALAM: Record<string, string> = {
 
   'health.notAdviceStrong': 'ഇത് വൈദ്യ ഉപദേശമല്ല.',
 
-  'health.notAdvice': 'ഏത് മരുന്നും തുടങ്ങുകയോ നിർത്തുകയോ ചെയ്യരുത് — ആദ്യം ഡോക്ടറെ കാണുക.',
+  'health.notAdvice': 'ഏതെങ്കിലും മരുന്ന് തുടങ്ങാതേ നിർത്താതേ — ആദ്യം ഡോക്ടറെ കാണുക.',
 
   'health.emergencyStrong': 'അടിയന്തരത്തിൽ വിളിക്കുക:',
 
@@ -3916,7 +4012,7 @@ const MALAYALAM: Record<string, string> = {
 
   'health.emergencyAmbulance': '(ആംബുലൻസ്)',
 
-  'health.emergencyWomen': '(വനിതാ സഹായ നമ്പർ)',
+  'health.emergencyWomen': '(വനിതാ സഹായം)',
 
   'health.privacy': 'പേരോ വിലാസമോ എഴുതേണ്ടതില്ല.',
 
@@ -4156,6 +4252,22 @@ const MALAYALAM: Record<string, string> = {
 
   'reviews.toastFailed': 'അഭിപ്രായം അയയ്ക്കാനായില്ല',
 
+  'health.band.infant.note': 'കുഞ്ഞികൾ, ഇനിപ്പോഴും സ്വന്തം കാര്യം പറയാനാകില്ലാത്തവർ',
+
+  'health.band.child.note': 'സംസാരിക്കാനാകുന്ന കുട്ടികൾ, പക്ഷേ ചോദിക്കാൻ ഭയപ്പെടുന്നവർ',
+
+  'health.band.teen.note': 'ഇവലാവർ, അവർക്ക് സാധാരണമായി കേൾക്കുന്ന ഒരാൾ കിട്ടുമെങ്കിൽ അല്ല',
+
+  'health.band.young.note': 'ജോലി, പണം, ഉറക്ക് — മൂന്നിന്റെയും ഒന്നിച്ചുള്ള ഭാരം',
+
+  'health.band.middle.note': 'വീട്, കുട്ടികൾ, സ്വന്തം ആരോഗ്യം — എല്ലാവരുടെയും ഉത്തരാധികാരിതതം ഒരുപാടി',
+
+  'health.band.later.note': 'ശരീരത്തിന്റെ പ്രായവും അതിന്റെ പരിചരണവും — രണ്ടും ഒരുപാടി',
+
+  'health.band.senior.note': 'മരുന്ന്, സന്തുലനം, ഒറ്റയാകല — മൂന്നും ഒരുപാടി',
+
+  'health.band.elder.note': 'ഓരോ മരുന്നിന്റെയും പരിശോധന ആവശ്യം, ഓരോ വീഴ്ചയും ഗുരുതം',
+
 };
 
 const PUNJABI: Record<string, string> = {
@@ -4351,7 +4463,7 @@ const PUNJABI: Record<string, string> = {
 
   'health.heading': 'ਆਪਣੀ ਉਮਰ ਦੱਸੋ',
 
-  'health.intro': 'ਇਸ ਉਮਰ ਦੇ ਲੋਕਾਂ ਦੁਆਰਾਂ ਸਭ ਤੋਂ ਵੱਧ ਪੁੱਛੇ ਜਾਂਦੇ ਸਵਾਲ ਇਹ ਹਨ। ਕੋਈ ਵੀ ਦਬਾਓ, ਇਹ ਹੇਠਾਂ ਖਾਲੇ ਵਿੱਚ ਭਰ ਜਾਵੇਗਾ, ਫਿਰ ਪੁੱਛੋ।',
+  'health.intro': 'ਉਮਰ ਅਨੁਸਾਰ ਜੋ ਸਵਾਲ ਵਾਰ-ਵਾਰ ਪੁੱਛੇ ਜਾਂਦੇ ਹਨ, ਉਹ ਇੱਥੇ ਦਿਸਣਗੇ। ਕੋਈ ਬਟਨ ਨਾ ਦਬਾਓ — ਸਵਾਲ ਹੇਠਾਂ ਭਰਿਆ ਜਾਵੇਗਾ, ਫਿਰ ਪੁੱਛੋ।',
 
   'health.ageLabel': 'ਉਮਰ (ਸਾਲ)',
 
@@ -4361,13 +4473,13 @@ const PUNJABI: Record<string, string> = {
 
   'health.notAdviceStrong': 'ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।',
 
-  'health.notAdvice': 'ਕੋਈ ਦਵਾ ਸ਼ੁਰੂ ਜਾਂ ਬੰਦ ਨਾ ਕਰੋ — ਪਹਿਲਾਂ ਡਾਕਟਰ ਨਾਲ ਮਿਲੋ।',
+  'health.notAdvice': 'ਕੋਈ ਵੀ ਦਵਾ ਸ਼ੁਰੂ ਜਾਂ ਬੰਦ ਨਾ ਕਰੋ — ਪਹਿਲਾਂ ਡਾਕਟਰ ਨਾਲ ਮਿਲੋ।',
 
   'health.emergencyStrong': 'ਐਮਰਜੈਂਸੀ ਹਾਲਤ ਵਿੱਚ ਫ਼ੋਨ ਕਰੋ:',
 
   'health.emergencyCall': '(ਐਮਰਜੈਂਸੀ)',
 
-  'health.emergencyAmbulance': '(ਐਂਬੂਲੰਸ)',
+  'health.emergencyAmbulance': '(ਐਂਬੂਲੈਂਸ)',
 
   'health.emergencyWomen': '(ਔਰਤ ਹੈਲਪਲਾਈਨ)',
 
@@ -4609,6 +4721,22 @@ const PUNJABI: Record<string, string> = {
 
   'reviews.toastFailed': 'ਰਾਏ ਨਹੀਂ ਭੇਜੀ ਜਾ ਸਕੀ',
 
+  'health.band.infant.note': 'ਨ੹ਟੇ ਬੱਚੇ, ਜੋ ਹਾਲੇ ਆਪਣੀ ਗੱਲ ਨਹੀਂ ਕਰ ਸਕਦੇ',
+
+  'health.band.child.note': 'ਬੱਚੇ ਜੋ ਬੋਲ ਸਕਦੇ ਹਨ, ਪਰ ਸਵਾਲ ਪੁੱਛਣ ਤੋਂ ਡਰਦੇ ਹਨ',
+
+  'health.band.teen.note': 'ਕਿਸਾਨ, ਜਿਨ੍ਹਾਂ ਨੂੰ ਆਮ ਤੌਰ \'ਤੇ ਇਹਨਾਂ ਦੀ ਗੱਲ ਕੋਈ ਨਹੀਂ ਮਿਲਦਾ ਜੋ ਸੁਣੇ',
+
+  'health.band.young.note': 'ਨੌਕਰੀ, ਪੈਸਾ ਅਤੇ ਨੀਂਦ — ਤਿੰਨਾਂ ਦਾ ਇਕੱਠਾ ਬੋਝ',
+
+  'health.band.middle.note': 'ਘਰ, ਬੱਚੇ ਅਤੇ ਆਪਣੀ ਸਿਹਤ — ਸਭ ਦੀ ਜ਼ਿੰਮੇਵਾਰੀ ਇਕੱਠੇ',
+
+  'health.band.later.note': 'ਸਰੀਰ ਦੀ ਉਮਰ ਅਤੇ ਉਸਦੀ ਸੰਭਾਲ — ਦੋਵੇਂ ਇਕੱਠੇ',
+
+  'health.band.senior.note': 'ਦਵਾ, ਸੰਤੁਲਨ ਅਤੇ ਤਨਹਾਰੀ — ਤਿੰਨਾਂ ਇਕੱਠੇ',
+
+  'health.band.elder.note': 'ਹਰ ਦਵਾ ਦੀ ਜਾਂਚ ਜ਼ਰੂਰੀ, ਹਰ ਡਿਗੱਗਣਾ ਗੰਭੀਰ',
+
 };
 
 const URDU: Record<string, string> = {
@@ -4684,7 +4812,7 @@ const URDU: Record<string, string> = {
 
   'dhun.welcomeTitle': 'خوش آمدید',
 
-  'dhun.consent': 'شاخ، bansuri اور ڈھول مل کر۔ سننے کے لیے چھوئیں۔',
+  'dhun.consent': 'شاخ، بنسوری اور ڈھول مل کر۔ سننے کے لیے چھوئیں۔',
 
   'dhun.failed': 'آواز نہیں چلی۔',
 
@@ -4797,25 +4925,25 @@ const URDU: Record<string, string> = {
 
   'health.heading': 'اپنی عمر بتائیے',
 
-  'health.intro': 'اس عمر کے لوگوں کے سب سے زیادہ پوچھے جانے والے سوالات یہ ہیں۔ کوئی بھی ایک دبائیں، وہ نیچے خانے میں بھر جائے گا، پھر پوچھ لیں۔',
+  'health.intro': 'عمر کے مطابق جو سوال بار بار پوچھے جاتے ہیں وہ یہاں دکھائی دیں گے۔ کوئی بٹن نہ دبائیں — سوال نیچے بھر جائے گا، پھر پوچھ لیجیے۔',
 
   'health.ageLabel': 'عمر (سال)',
 
   'health.years': 'سال',
 
-  'health.bandsLabel': 'عمر کے مطابق منتخب کریں',
+  'health.bandsLabel': 'عمر کے مطابق منتخب کریے',
 
   'health.notAdviceStrong': 'یہ طبی مشورہ نہیں ہے۔',
 
   'health.notAdvice': 'کوئی دوا شروع یا بند نہ کریں — پہلے ڈاکٹر سے ملیں۔',
 
-  'health.emergencyStrong': 'ہنگامی صورتحال میں فون کریں:',
+  'health.emergencyStrong': 'ہنگامی صورتحال میں فون کریے:',
 
   'health.emergencyCall': '(ہنگامی)',
 
   'health.emergencyAmbulance': '(ایمبولینس)',
 
-  'health.emergencyWomen': '(خواتین کی مدد کا نمبر)',
+  'health.emergencyWomen': '(خواتین ہیلپ لائن)',
 
   'health.privacy': 'نام یا پتہ لکھنے کی ضرورت نہیں۔',
 
@@ -5053,6 +5181,22 @@ const URDU: Record<string, string> = {
 
   'reviews.toastFailed': 'رائے نہیں بھیجی جا سکی',
 
+  'health.band.infant.note': 'نوم بچے، جو ابھی اپنی بات نہیں کہہ سکتے',
+
+  'health.band.child.note': 'بچے جو بول سکتے ہیں، مگر سوال پوچھنے سے ڈرتے ہیں',
+
+  'health.band.teen.note': 'نوجوان، جن کے لیے اکثر ایسا کوئی فرد نہیں ملتا جو سنے',
+
+  'health.band.young.note': 'نوکری، پیسے اور نیند — تینوں کا ایک ساتھ بوجھ',
+
+  'health.band.middle.note': 'گھر، بچے اور اپنی صحت — سب کی ذمہ داری ایک ساتھ',
+
+  'health.band.later.note': 'جسم کی عمر اور اس کی نگہداشت — دونوں ایک ساتھ',
+
+  'health.band.senior.note': 'دوا، توازن اور تنہائی — تینوں ساتھ',
+
+  'health.band.elder.note': 'ہر دوا کی جانچ ضروری، ہر گرنے کا معاملہ سنگین',
+
 };
 
 const ARABIC: Record<string, string> = {
@@ -5245,11 +5389,11 @@ const ARABIC: Record<string, string> = {
 
   'ask.browseTitle': 'هنا المقالات المتاحة',
 
-  'health.heading': 'اذكر عمرك',
+  'health.heading': 'أخبر عن عمرك',
 
-  'health.intro': 'هذه أكثر الأسئلة التي يطرحها الناس في هذا العمر. اضغط على أي سؤال فيملأ الخانة بالأسفل، ثم اسأل.',
+  'health.intro': 'الأسئلة التي تُطرح كثيراً بحسب العمر ستظهر هنا. لا تضغط أي زر — يُكتب السؤال بالأسفل ثم اسأل.',
 
-  'health.ageLabel': 'العمر (بالسنوات)',
+  'health.ageLabel': 'العمر (سنوات)',
 
   'health.years': 'سنوات',
 
@@ -5257,17 +5401,17 @@ const ARABIC: Record<string, string> = {
 
   'health.notAdviceStrong': 'هذه ليست نصيحة طبية.',
 
-  'health.notAdvice': 'لا تبدأ أي دواء ولا توقفه — راجع الطبيب أولاً.',
+  'health.notAdvice': 'لا تبدأ أي دواء ولا توقفه — اذهب إلى الطبيب أولاً.',
 
-  'health.emergencyStrong': 'في الحالات الطارئة اتصل على:',
+  'health.emergencyStrong': 'اتصل في الطوارئ:',
 
-  'health.emergencyCall': '(الطوارئ)',
+  'health.emergencyCall': '(طوارئ)',
 
-  'health.emergencyAmbulance': '(الإسعاف)',
+  'health.emergencyAmbulance': '(إسعاف)',
 
-  'health.emergencyWomen': '(خط مساعدة المرأة)',
+  'health.emergencyWomen': '(خط دعم المرأة)',
 
-  'health.privacy': 'لا حاجة لكتابة الاسم أو العنوان.',
+  'health.privacy': 'لا حاجة لكتابة اسمك أو عنوانك.',
 
   'health.band.infant.label': '0 – 2 سنة',
 
@@ -5503,6 +5647,22 @@ const ARABIC: Record<string, string> = {
 
   'reviews.toastFailed': 'تعذّر إرسال الرأي',
 
+  'health.band.infant.note': 'أطفال صغار، لا يزالون لا يستطيعون قول ما يريدون',
+
+  'health.band.child.note': 'أطفال يتحدثون، لكنهم يخافون من السؤال',
+
+  'health.band.teen.note': 'مراهقون، لا يجدون غالباً من يستمع إليهم',
+
+  'health.band.young.note': 'العمل والمال والنوم — عبء الثلاثة معاً',
+
+  'health.band.middle.note': 'البيت والأطفال وصحة النفس — مسؤولية الجميع دفعة واحدة',
+
+  'health.band.later.note': 'سنّ الجسد والعناية به — معاً',
+
+  'health.band.senior.note': 'الدواء والتوازن والعزلة — الثلاثة معاً',
+
+  'health.band.elder.note': 'فحص كل دواء ضروري، وكل سقطة أمر جاد',
+
 };
 
 const SPANISH: Record<string, string> = {
@@ -5691,7 +5851,7 @@ const SPANISH: Record<string, string> = {
 
   'health.heading': 'Dinos tu edad',
 
-  'health.intro': 'Estas son las preguntas que más hacen las personas de esta edad. Toca cualquiera y se rellenará el recuadro de abajo; luego pregunta.',
+  'health.intro': 'Aquí aparecerán las preguntas que más se hacen según la edad. No pulses ningún botón: la pregunta se rellena abajo y luego preguntas.',
 
   'health.ageLabel': 'Edad (años)',
 
@@ -5701,11 +5861,11 @@ const SPANISH: Record<string, string> = {
 
   'health.notAdviceStrong': 'Esto no es consejo médico.',
 
-  'health.notAdvice': 'No empieces ni dejes ninguna medicina; consulta antes con un médico.',
+  'health.notAdvice': 'No empieces ni dejes ninguna medicina — ve antes al médico.',
 
-  'health.emergencyStrong': 'En una emergencia, llama al:',
+  'health.emergencyStrong': 'Llama en una emergencia:',
 
-  'health.emergencyCall': '(emergencias)',
+  'health.emergencyCall': '(emergencia)',
 
   'health.emergencyAmbulance': '(ambulancia)',
 
@@ -5946,6 +6106,22 @@ const SPANISH: Record<string, string> = {
   'reviews.toastSent': 'Gracias',
 
   'reviews.toastFailed': 'No se pudo enviar la opinión',
+
+  'health.band.infant.note': 'Bebés pequeños, que todavía no saben decir lo que quieren',
+
+  'health.band.child.note': 'Niños que ya hablan, pero les da miedo preguntar',
+
+  'health.band.teen.note': 'Adolescentes, que rara vez encuentran a alguien que los escuche',
+
+  'health.band.young.note': 'Trabajo, dinero y sueño: las tres cargas a la vez',
+
+  'health.band.middle.note': 'Casa, hijos y tu propia salud: toda la responsabilidad junta',
+
+  'health.band.later.note': 'La edad del cuerpo y su cuidado, los dos a la vez',
+
+  'health.band.senior.note': 'Medicina, equilibrio y soledad: las tres juntas',
+
+  'health.band.elder.note': 'Revisar cada medicina es necesario, cada caída es grave',
 
 };
 
