@@ -249,6 +249,27 @@ export function AppBar({ siteName }: { siteName: string }) {
             </nav>
 
             <p className="border-t border-line p-4 text-sm text-ink-subtle">{t('footer.free')}</p>
+
+            {/*
+              The owner's own door, in the menu rather than only in the footer.
+
+              It was in the footer, which is at the very bottom of every page and
+              on a phone is roughly a full screen of scrolling away. The owner
+              said the login had gone missing; it had not, it was just somewhere
+              nobody looks twice. An owner-only link that is hard to find is
+              the same as no link at all.
+
+              Kept out of NAV, which is the public navigation, because a visitor
+              should not see a login prompt for something they cannot use.
+            */}
+            <div className="border-t border-line p-4">
+              <Link
+                href="/admin"
+                className="text-sm font-medium text-ink-subtle hover:text-saffron-deep"
+              >
+                {t('footer.admin')}
+              </Link>
+            </div>
           </div>
         </div>
       ) : null}

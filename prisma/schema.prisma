@@ -196,3 +196,156 @@ model AskedQuestion {
   @@index([provider, createdAt])
   @@map("asked_questions")
 }
+
+/* ==========================================================================
+   VISITOR ACCOUNTS
+   ========================================================================== */
+
+/**
+ * A person who came back.
+ *
+ * ── What an account is for here, and what it is not ───────────────────────
+ *
+ * Not for saving questions. The audience is elderly, often low-literacy, and
+ * frequently using a shared or borrowed phone, so a password prompt in front of
+ * the one thing they came to do is the single most effective way to lose them.
+ * Every question works with no account at all, and always will.
+ *
+ * It is for two things that genuinely need continuity: keeping the language
+ * they chose and the answers they saved, across visits and devices. A person
+ * who has asked about their father's medicines on one phone and wants it again
+ * on another is the case this exists for.
+ *
+ * ── Why there is no name, no email requirement, no phone ───────────────────
+ *
+ * Because the service's promise is that it collects nothing it does not need.
+ * A phone number is a name and an address together in this country. Making it
+ * optional rather than asking for it is the difference between collecting
+ * contacts and not.
+ *
+ * A visitor picks a handle of their own; there is no "real name" field at all.
+ * `handle` is unique and case-insensitive, so two people cannot be confused for
+ * each other, and it is the only identifier shown anywhere.
+ */
+model User {
+  id String @id @default(uuid())
+
+  /**
+   * The name the visitor chose. Unique, case-insensitive.
+   *
+   * Not an email address. An address would be the easiest identifier to assume
+   * everyone has, and it is also the identifier nobody in this audience wants to
+   * hand to a website that cannot tell them what it does with it.
+   */
+  handle String @unique
+
+  /**
+   * A scrypt hash, never a password.
+   *
+   * Generated in the application rather than by the database, because the
+   * database is the thing being protected and should not be handing out
+   * anything about how it is protected.
+   */
+  passwordHash String @map("password_hash")
+
+  /**
+   * Salt, stored beside the hash rather than inside it.
+   *
+   * Kept separate so a partial dump of this column is not enough to attack, and
+   * so the two can be compared in tests without being equal for the wrong
+   * reason.
+   */
+  passwordSalt String @map("password_salt")
+
+  // Optional by design. See the note above.
+  phone String?
+
+  // The language this person chose. An account exists to carry things across
+  // visits, and re-choosing a language on every visit is one of the things it
+  // is for.
+  language String @default("hi")
+
+  /**
+   * Bumped whenever the password changes, so a session opened before the change
+   * stops working rather than continuing for the rest of its life.
+   */
+  passwordChangedAt DateTime @default(now()) @map("password_changed_at")
+
+  lastSeenAt DateTime? @map("last_seen_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  sessions   Session[]
+  savedNotes SavedNote[]
+
+  @@index([createdAt])
+  @@map("users")
+}
+
+/**
+ * One browser, one signed-in device.
+ *
+ * A table rather than a signed cookie alone, for one reason: signing someone
+ * out has to actually end the session. A stateless cookie cannot be revoked, so
+ * "log out" would be a request to please stop trusting it — which is not the
+ * same thing, and matters most on a shared phone where the next person is not
+ * the one who logged in.
+ *
+ * The token is stored hashed for the same reason the password is: a stolen
+ * database should not hand over live sessions.
+ */
+model Session {
+  id String @id @default(uuid())
+
+  // sha256 of the token, not the token. See the note above.
+  tokenHash String @unique @map("token_hash")
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /**
+   * When this session stops being honoured even if the token is presented.
+   *
+   * Checked on every use rather than only at login, which is what makes a
+   * changed password end existing sessions instead of only preventing new ones.
+   */
+  expiresAt DateTime @map("expires_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+/**
+ * An answer the visitor kept.
+ *
+ * The one thing here that makes an account worth having: a person asking about
+ * a relative's medicines can save the answer and come back to it, and read it
+ * aloud again later when they have forgotten what was said.
+ */
+model SavedNote {
+  id String @id @default(uuid())
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // The question as asked. Kept with the answer, because an answer without its
+  // question is a paragraph nobody can place later.
+  question String
+
+  answer String
+
+  // Which language it came back in, so it is read back in the same one.
+  language String @default("hi")
+
+  // Empty rather than null for "this is a general note". A note typed by hand
+  // and one saved from an answer are different things and are shown differently.
+  category String @default("")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId, createdAt])
+  @@map("saved_notes")
+}
