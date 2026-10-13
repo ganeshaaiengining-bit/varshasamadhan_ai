@@ -142,7 +142,18 @@ export default async function LibraryPage() {
                       on it and end up not sharing, which defeats the point.
                     */}
                     <p className="mt-3 rounded-md bg-surface p-3 text-sm">
-                      <strong>{entry.licence.name}</strong> — {entry.licence.shares}
+                      {/*
+                        The licence sentence is translated, not a literal.
+
+                        It was a hardcoded Roman-Hindi string in free-library.ts,
+                        so a Bengali or Tamil visitor saw their own language in
+                        the title above and "Padhna free hai. Copy karke aage
+                        dena..." directly underneath — on every card. This is
+                        the text the page exists to replace, so it had to be in
+                        the reader's language before anything else on the page
+                        did.
+                      */}
+                      <strong>{entry.licence.name}</strong> — {t(entry.licence.shareKey)}
                     </p>
 
                     {/*

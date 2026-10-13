@@ -60,8 +60,15 @@ export interface Licence {
    *
    * "Can I share this?" is the question nobody asks a Creative Commons page and
    * everybody needs answered, so the answer is here rather than behind a link.
+   *
+   * A key into the language tables rather than the sentence itself. It was a
+   * Roman-Hindi literal, which put that one line under every card in every
+   * language: a Bengali reader saw their own title above it and
+   * "Padhna free hai. Copy karke aage dena kisi aur ke condition par hai."
+   * directly below, on all thirty cards. The names stay as they are — CC BY 4.0
+   * is not translated anywhere.
    */
-  shares: string;
+  shareKey: string;
 }
 
 /** How free it is. See the note at the top of this file. */
@@ -98,24 +105,24 @@ export const GROUPS: LibraryGroup[] = [
 ];
 
 export const LICENCES = {
-  ccBy: { freeness: 'open', name: 'CC BY 4.0', shares: 'Aap ise copy, share aur chhapwa sakte ho — sirf credit dena hoga.' },
-  ccBySa: { freeness: 'open', name: 'CC BY-SA 4.0', shares: 'Aap ise copy aur chhapwa sakte ho. Jo badlav karein, wahi bhi khul kar dena hoga.' },
-  ccZero: { freeness: 'open', name: 'CC0 / Public domain', shares: 'Bilkul free. Credit bhi zaroori nahi.' },
-  pd: { freeness: 'open', name: 'Public domain', shares: 'Kisi ka copyright nahi — jo chahein copy kar sakte ho.' },
+  ccBy: { freeness: 'open', name: 'CC BY 4.0', shareKey: 'lib.licence.ccBy' },
+  ccBySa: { freeness: 'open', name: 'CC BY-SA 4.0', shareKey: 'lib.licence.ccBySa' },
+  ccZero: { freeness: 'open', name: 'CC0 / Public domain', shareKey: 'lib.licence.ccZero' },
+  pd: { freeness: 'open', name: 'Public domain', shareKey: 'lib.licence.pd' },
   govtIndia: {
     freeness: 'open',
     name: 'Government of India',
-    shares: 'Bharat sarkar ki website par. Padhna aur chhapwana dono free.',
+    shareKey: 'lib.licence.govtIndia',
   },
   creativeCommons: {
     freeness: 'open',
     name: 'Creative Commons (mixed)',
-    shares: 'Har file ka apna licence hai — file par dekhiye.',
+    shareKey: 'lib.licence.creativeCommons',
   },
   freeToRead: {
     freeness: 'free',
     name: 'Free to read',
-    shares: 'Padhna free hai. Copy karke aage dena kisi aur ke condition par hai.',
+    shareKey: 'lib.licence.freeToRead',
   },
 } satisfies Record<string, Licence>;
 

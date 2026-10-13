@@ -90,20 +90,21 @@ export default async function HomePage() {
   );
 
   /*
-   * No categories means there is no list to show, and rendering nine empty
-   * placeholders reads as a broken site rather than an honest one. The question
-   * box does not come from the database, so saying so and inviting the question
-   * is better than showing an empty grid.
+   * The question box does not come from the database. The AI endpoint, the
+   * language, the prompt — none of it touches Prisma. So an empty category list
+   * must not cost the visitor the only thing they came for.
+   *
+   * This branch used to return the outage notice on its own, which meant that a
+   * deployment with no database yet showed a polite page explaining that the
+   * service was unavailable, on a service whose entire purpose is answering a
+   * question. It was deployed that way on the first attempt and the live site
+   * showed only this message and no way to ask anything.
+   *
+   * So the hero and the question box now render either way. Only the subject
+   * grid below them is conditional, because there is nothing honest to put in
+   * an empty grid.
    */
-  if (categories.length === 0) {
-    return (
-      <SiteChrome siteName={process.env.NEXT_PUBLIC_SITE_NAME || 'वर्षा समाधान AI'}>
-        <div className="wrap-narrow py-12">
-          <DatabaseUnavailable language={lang} />
-        </div>
-      </SiteChrome>
-    );
-  }
+  const noCategories = categories.length === 0;
 
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'वर्षा समाधान AI';
 
@@ -197,6 +198,21 @@ export default async function HomePage() {
       ) : null}
 
       {/* ================================================ categories */}
+      {noCategories ? (
+        /*
+         * No subjects to list, but there is still a service to use.
+         *
+         * The outage notice is shown, and the question box above it is still
+         * live. Saying "come back later" on a page whose whole purpose is
+         * answering now is the wrong sentence — the honest one is that the
+         * subject list is unavailable and the answer is not.
+         */
+        <section className="py-14 sm:py-16">
+          <div className="wrap">
+            <DatabaseUnavailable language={lang} />
+          </div>
+        </section>
+      ) : (
       <section aria-labelledby="categories-heading" className="py-14 sm:py-16">
         <div className="wrap">
           <h2 id="categories-heading" className="text-center">
@@ -240,6 +256,7 @@ export default async function HomePage() {
           </ul>
         </div>
       </section>
+      )}
 
       {/* ================================================== sound pad */}
       <section aria-labelledby="sound-heading" className="border-y border-line bg-surface py-14">

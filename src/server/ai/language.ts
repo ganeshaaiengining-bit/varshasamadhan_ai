@@ -158,12 +158,33 @@ export function answersInLanguage(text: string, languageCode?: string): boolean 
    */
   const ownIsLatin = own[0] <= 0x024f;
 
+  let latinCount = 0;
+
   for (const character of text) {
     const code = character.codePointAt(0) ?? 0;
 
-    // Latin, digits, punctuation and spaces are not evidence either way —
-    // unless this language is written in them.
-    if (code < 0x0250 && !ownIsLatin) continue;
+    /*
+     * Roman letters are counted rather than skipped, and only because of what
+     * came back in testing.
+     *
+     * A visitor asked in Roman Hindi — "Sardi bukhar ka ghar par ilaaj" — and
+     * got an answer that opened "Doctor ke jaane se pehle ek chhota" in Roman
+     * and then continued "नोट लिखो, जिसके नीचे" in Devanagari. Both scripts
+     * present, so every check here passed it, and a visitor who cannot read
+     * Roman was handed a sentence they could not finish.
+     *
+     * The rule is a ratio rather than a ban, because models legitimately write
+     * "OK", "SMS" and a brand name inside an otherwise correct answer. It is
+     * Roman *dominant* that is the fault: more Roman letters than the
+     * language's own, which is what a model falls back to when it has partly
+     * ignored the instruction rather than when it is quoting a word.
+     */
+    if (code < 0x0250) {
+      // Letters only. Spaces, digits and punctuation would inflate every
+      // answer, since a normal sentence is mostly those.
+      if (code >= 0x0041 && code <= 0x024f) latinCount += 1;
+      if (!ownIsLatin) continue;
+    }
     if (SHARED_MARKS.has(code)) continue;
 
     if (code >= own[0] && code <= own[1]) {
@@ -173,5 +194,5 @@ export function answersInLanguage(text: string, languageCode?: string): boolean 
     }
   }
 
-  return ownCount > 0 && foreignCount === 0;
+  return ownCount > 0 && foreignCount === 0 && latinCount <= ownCount;
 }
