@@ -47,19 +47,31 @@ export { geminiModel, ollamaModel };
 export { aiStatus };
 
 /**
- * Counts today's AI calls.
+ * Counts today's Gemini calls.
  *
- * `asked_questions` doubles as the ledger: a request is written before the API is
- * called, so a crash between the call and the response still counts. That
- * makes the cap slightly conservative rather than slightly leaky, which is the
- * right direction for a cost limit.
+ * Counts only the questions Gemini actually answered, not every answered
+ * question. Both numbers were once the same count, and the difference is not
+ * academic: the keyless providers answer most questions, and each of those was
+ * consuming an allowance that belongs to the keyed provider. A live run showed
+ * the cap at 83 of 50 with Gemini skipped for every request after the fortieth,
+ * while Google's own limit is 20 per model per day and had barely been touched.
+ *
+ * The row is written after the provider answers, so this is a record of what
+ * happened rather than a record of what was attempted. A call that was made and
+ * then refused for the wrong script is not counted, which is correct: it cost
+ * nothing that a retry would not also cost, and counting it would make the cap
+ * stricter without making it safer.
  */
 async function callsToday(): Promise<number> {
   const { prisma } = await import('@/server/db');
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
+
   return prisma.askedQuestion.count({
-    where: { createdAt: { gte: startOfDay }, wasAnswered: true },
+    where: {
+      createdAt: { gte: startOfDay },
+      provider: 'gemini',
+    },
   });
 }
 
@@ -158,12 +170,36 @@ export async function askQuestion(
    * away one function later.
    */
 
-  // A cap of zero switches the paid provider off without deleting the key.
-  if (dailyLimit() > 0 && geminiKey().length > 10) {
-    const today = await callsToday().catch(() => 0);
-    if (today >= dailyLimit()) {
-      console.log(`[ask] daily cap reached (${today}/${dailyLimit()}), using a free provider`);
+  /*
+   * The cap, enforced.
+   *
+   * This used to test the count, log that the cap had been reached, and then
+   * call the provider anyway — so the message "daily cap reached (52/40),
+   * using a free provider" was printed immediately above a line reading
+   * "answered by gemini", over and over. The cap was a log line, not a cap.
+   *
+   * The budget is now passed into ask.ts, which is where the provider order
+   * lives, so the decision to skip the keyed provider is made in the same place
+   * that decides the order. Nothing is called and then discarded.
+   *
+   * A cap of zero switches the keyed provider off without deleting the key,
+   * which is the emergency setting if the key ever leaks.
+   */
+  let remaining = Infinity;
+
+  if (geminiKey().length > 10) {
+    const limit = dailyLimit();
+
+    if (limit > 0) {
+      const today = await callsToday().catch(() => 0);
+      remaining = Math.max(0, limit - today);
+
+      if (remaining <= 0) {
+        console.log(`[ask] daily cap reached (${today}/${limit}), skipping gemini`);
+      }
     }
+  } else {
+    remaining = 0;
   }
 
   /*
@@ -176,5 +212,5 @@ export async function askQuestion(
     ? `${question}\n\n(Context: the visitor is on the page for ${category.trim().slice(0, 60)}.)`
     : question;
 
-  return ask(system, withContext, languageCode);
+  return ask(system, withContext, languageCode, remaining);
 }

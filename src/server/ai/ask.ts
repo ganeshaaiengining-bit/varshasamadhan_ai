@@ -101,6 +101,12 @@ export async function askQuestion(
    * guessed.
    */
   languageCode?: string,
+  /*
+   * How many calls the keyed provider has left today, or Infinity when the cap
+   * is off. Zero means do not call it at all — not call it and discard the
+   * answer, which is what the cap used to do.
+   */
+  geminiBudget = Infinity,
 ): Promise<AskResult> {
   const started = Date.now();
 
@@ -113,50 +119,94 @@ export async function askQuestion(
    */
   const local = await ollamaReady();
 
-  for (const provider of ORDER) {
-    if (provider.name === 'ollama' && !local) continue;
+  /*
+   * One extra attempt at the provider that owns the key.
+   *
+   * Providers are tried in order and the first real answer wins, so a retry
+   * costs nothing when the first attempt succeeds. It matters because the
+   * measured failure rate of the free providers is high: a live run of all
+   * eighteen languages lost four of them entirely, each because the primary
+   * timed out and the fallback also failed.
+   *
+   * Those four failures were not evenly spread. They clustered, which is what a
+   * poor connection looks like rather than a bad key — Gemini answered seven of
+   * twelve in the first burst and then, once the daily allowance for one model
+   * was spent, refused everything for ten hours. The retry covers the first kind
+   * and cannot help the second, and the reason is logged either way so the two
+   * are not confused again.
+   *
+   * Only the primary is retried. The fallbacks are free and unreliable, and
+   * asking them twice doubles the waiting for a visitor who is already waiting.
+   */
+  const attempts = geminiBudget > 0 ? 2 : 1;
 
-    const result: ProviderResult = await provider.run(system, question, languageCode);
+  for (let pass = 0; pass < attempts; pass++) {
+    for (const provider of ORDER) {
+      if (provider.name === 'ollama' && !local) continue;
 
-    if (result.ok) {
       /*
-       * An answer in the wrong script is not an answer.
-       *
-       * This is the one failure a visitor cannot do anything with, and the one
-       * that looks the most like success: the page renders, the button
-       * responds, text appears. The only clue is that none of it can be read.
-       * So it is treated exactly like an empty response — the provider did not
-       * produce a real answer, and the next one is tried.
-       *
-       * Found by scripts/check-ai.py asking a Bengali question and receiving
-       * Hindi, which is the complaint that started this whole exercise. Nothing
-       * else in the chain would have caught it: the response was well formed,
-       * non-empty, on-topic, and plausible.
+       * The keyed provider is skipped, not failed, once today's allowance is
+       * gone. Skipping is what makes the cap a cap: the call is never made, so
+       * it cannot be paid for. The retry pass below is skipped at the same time,
+       * because a second attempt would spend a second call.
        */
-      if (!answersInLanguage(result.text, languageCode)) {
-        console.log(
-          `[ask] ${result.provider} answered in the wrong script for ` +
-            `${languageCode} — refusing it and trying the next provider`,
-        );
+      if (provider.name === 'gemini' && geminiBudget <= 0) continue;
+
+      // The primary is the one retried, and only when there is another pass left.
+      const isLastPass = pass === attempts - 1;
+      const retryable = provider.name === 'gemini' && !isLastPass;
+      if (isLastPass && provider.name === 'gemini' && pass > 0) {
+        // Already had its turn on the previous pass.
         continue;
       }
 
-      console.log(
-        `[ask] answered by ${result.provider} in ${result.ms}ms ` +
-          `(total ${Date.now() - started}ms)`,
-      );
-      return {
-        ok: true,
-        answer: result.text,
-        fallback: false,
-        provider: result.provider,
-        ms: Date.now() - started,
-      };
-    }
+      const result: ProviderResult = await provider.run(system, question, languageCode);
 
-    console.log(
-      `[ask] ${result.provider} gave nothing: ${result.reason} in ${result.ms}ms`,
-    );
+      if (result.ok) {
+        /*
+         * An answer in the wrong script is not an answer.
+         *
+         * This is the one failure a visitor cannot do anything with, and the one
+         * that looks the most like success: the page renders, the button
+         * responds, text appears. The only clue is that none of it can be read.
+         * So it is treated exactly like an empty response — the provider did not
+         * produce a real answer, and the next one is tried.
+         *
+         * Found by scripts/check-ai.py asking a Bengali question and receiving
+         * Hindi, which is the complaint that started this whole exercise. Nothing
+         * else in the chain would have caught it: the response was well formed,
+         * non-empty, on-topic, and plausible.
+         */
+        if (!answersInLanguage(result.text, languageCode)) {
+          console.log(
+            `[ask] ${result.provider} answered in the wrong script for ` +
+              `${languageCode} — refusing it and trying the next provider`,
+          );
+          continue;
+        }
+
+        console.log(
+          `[ask] answered by ${result.provider} in ${result.ms}ms ` +
+            `(total ${Date.now() - started}ms, pass ${pass + 1})`,
+        );
+        return {
+          ok: true,
+          answer: result.text,
+          fallback: false,
+          provider: result.provider,
+          ms: Date.now() - started,
+        };
+      }
+
+      console.log(
+        `[ask] ${result.provider} gave nothing: ${result.reason} in ${result.ms}ms` +
+          (retryable ? ' — will try once more' : ''),
+      );
+
+      // A rate-limited key will not recover in the time a retry could wait for.
+      // Retrying it only spends the visitor's time to reach the same answer.
+      if (result.reason === 'rate-limit') break;
+    }
   }
 
   console.log(`[ask] no provider answered after ${Date.now() - started}ms`);

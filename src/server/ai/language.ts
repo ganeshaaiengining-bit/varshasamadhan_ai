@@ -44,6 +44,19 @@
  * in Hindi passes every check here. Nothing in the text distinguishes them;
  * deciding it needs a dictionary of each language, not a script range. Said
  * here rather than left to be discovered.
+ *
+ * ── Why the table must list every offered language ──────────────────────────
+ *
+ * A language with no entry returns true — nothing to check against, so the
+ * answer is allowed — and that is correct for a code the site does not offer.
+ * It is not correct for one it does. scripts/test-answer-language.ts walks the
+ * offered languages and fails if any of them is missing here, so a language
+ * added to the switcher cannot go unchecked by silence.
+ *
+ * Note that the offered set is smaller than the set of scripts a visitor could
+ * want. Assamese and Odia were tested as though they were offered, which
+ * reported two failures that were the test being wrong rather than the site.
+ * The list below matches LANGUAGES in src/content/i18n.ts.
  */
 
 import { isKnownLanguage } from '@/content/i18n';
@@ -128,11 +141,29 @@ export function answersInLanguage(text: string, languageCode?: string): boolean 
   let ownCount = 0;
   let foreignCount = 0;
 
+  /*
+   * Whether Latin counts as evidence.
+   *
+   * For every other language it must not. Models write "OK", "SMS" and "ATM"
+   * inside Bengali sentences, and treating those as the answer's script would
+   * have a mixed answer refused for containing a single Latin letter.
+   *
+   * For a language whose own script IS Latin the rule inverts, and getting it
+   * wrong is not a rare edge case: skipping Latin unconditionally left ownCount
+   * at zero for every English, Spanish, French, German and Portuguese answer,
+   * so answersInLanguage returned false for all of them and the five Western
+   * languages could never pass this check no matter how correct the answer was.
+   * The language switched to, the answer was in that language, and it was
+   * refused.
+   */
+  const ownIsLatin = own[0] <= 0x024f;
+
   for (const character of text) {
     const code = character.codePointAt(0) ?? 0;
 
-    // Latin, digits, punctuation and spaces are not evidence either way.
-    if (code < 0x0250) continue;
+    // Latin, digits, punctuation and spaces are not evidence either way —
+    // unless this language is written in them.
+    if (code < 0x0250 && !ownIsLatin) continue;
     if (SHARED_MARKS.has(code)) continue;
 
     if (code >= own[0] && code <= own[1]) {

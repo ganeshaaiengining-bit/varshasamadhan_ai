@@ -148,6 +148,15 @@ export async function POST(request: Request) {
         category,
         wasAnswered: result.ok,
         wasFailed: !result.ok,
+        /*
+         * Which provider actually answered, not which one was tried first.
+         *
+         * The daily cap counts rows where this is "gemini", so writing it here
+         * is what stops the keyless providers from spending the keyed one's
+         * allowance. Without the column every answered question counted, and
+         * Gemini was being skipped for the day while it still had quota.
+         */
+        provider: result.ok ? (result.provider ?? '') : '',
       },
       select: { id: true },
     });

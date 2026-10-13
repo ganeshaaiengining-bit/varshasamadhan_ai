@@ -72,14 +72,41 @@ export type ProviderResult =
   | ({ ok: true } & ProviderAnswer)
   | ({ ok: false } & ProviderFailure);
 
+/*
+ * Per-provider deadlines, not one for all of them.
+ *
+ * A single 90-second deadline was shared, and it was the wrong number twice
+ * over. It was too long for the fallback chain: when the free provider was
+ * unlucky, a visitor waited a minute and a half for nothing. It was also not
+ * long enough for the primary, which is measured answering in 21, 30, 57 and 71
+ * seconds — one live run saw 71.6 seconds — so a correct answer arriving at
+ * seventy seconds was thrown away and the visitor was shown nothing.
+ *
+ * What is left is not a race. The providers are tried in order and the first
+ * real answer wins, so a slow primary costs time only when it fails, and a fast
+ * fallback costs nothing at all when the primary succeeds.
+ *
+ * The primary's budget is generous because it is the only one with a key, and
+ * the only one that produces a consistent answer in the visitor's language. The
+ * free provider's is short because it is unreliable anyway — the wrong-language
+ * guard rejects most of what it returns, so waiting longer on it mostly waits
+ * longer for something that will be discarded.
+ */
+const GEMINI_TIMEOUT_MS = Number(process.env.GEMINI_TIMEOUT_MS ?? 150_000);
+const OLLAMA_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS ?? 90_000);
+const POLLINATIONS_TIMEOUT_MS = Number(process.env.POLLINATIONS_TIMEOUT_MS ?? 45_000);
+
+/** The default for any provider that does not pass its own deadline. */
 const TIMEOUT_MS = 90_000;
 
 /**
  * Fetch with a hard deadline.
  *
  * A help request from someone in pain cannot hang. Without this the site waits
- * out Pollinations' worst case and then tries the next provider, and the visitor
- * has already gone.
+ * out a provider's worst case and then tries the next one, and the visitor has
+ * already gone. The reason a failure happened is now reported rather than
+ * flattened into one word, because a bare "network" sent the diagnosis after a
+ * timeout for several days.
  */
 async function timedFetch(
   url: string,
@@ -105,10 +132,49 @@ export function geminiKey(): string {
 }
 
 export function geminiModel(): string {
-  // Verified to exist and to be stable, not guessed. "gemini-3.8-flash" is the
-  // current Flash model on the free tier.
-  return process.env.GEMINI_MODEL?.trim() || 'gemini-3.8-flash';
+  // Chosen by measuring the account's own quota, not by picking the newest
+  // name. Listing the models proves a model exists; it does not prove it can be
+  // called. Two independent limits bite here, and they are not the same thing:
+  //
+  //   429, "limit: 20", retry in 10h  a daily per-model allowance. Counted
+  //                               separately for each model, so one model's
+  //                               exhaustion never touches another's.
+  //   503, "high demand"              the model is listed, callable, and
+  //                               currently saturated. No header explains it
+  //                               and no amount of waiting within a request
+  //                               helps; a different model answers at once.
+  //
+  // What this account actually did, in order of asking:
+  //
+  //   gemini-flash-lite-latest  answered all afternoon, then 503 for everyone
+  //   gemini-3.1-flash-lite     503 for most of an afternoon, then answered
+  //   gemini-3.5 / 3.6-flash    answered, then spent their 20 for the day
+  //   gemini-3.8-flash          never answered once, always 503
+  //   gemini-flash-latest       never answered once, always 503
+  //   gemini-2.5-flash-lite     404, no longer available
+  //   gemini-pro variants       429 with a limit of 0, not on the free tier
+  //
+  // There is no model that is reliably free and reliably uncrowded, so the
+  // answer is a rotation rather than a single name: FALLBACK_MODELS is walked
+  // when the first one is refused, and a 503 costs nothing but the check.
+  // GEMINI_MODEL pins the first choice, which is how this is overridden.
+  return process.env.GEMINI_MODEL?.trim() || FALLBACK_MODELS[0];
 }
+
+/**
+ * Tried in order when the first model is refused.
+ *
+ * Only models measured to answer on this account are listed. A model that has
+ * only ever returned 404 or 503 is not here, because including it would add a
+ * request's worth of delay to every failure for the chance of an answer that
+ * has not been observed even once.
+ */
+export const FALLBACK_MODELS = [
+  'gemini-3.1-flash-lite',
+  'gemini-flash-lite-latest',
+  'gemini-3.5-flash',
+  'gemini-3.6-flash',
+];
 
 export async function askGemini(
   system: string,
@@ -124,60 +190,125 @@ export async function askGemini(
     return { ok: false, provider: 'gemini', reason: 'no-key', ms: 0 };
   }
 
-  try {
-    const response = await timedFetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel()}:generateContent`,
-      {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          'x-goog-api-key': key,
+  /*
+   * Walk the model list rather than asking one and giving up.
+   *
+   * The free tier has two ways of refusing, and only one of them is obvious
+   * from the outside. A 429 means this model is out of its daily allowance, and
+   * every model has its own allowance, so the next one usually answers. A 503
+   * means the model is saturated right now, which is the same situation with
+   * less information in it.
+   *
+   * Both are answered the same way here, and the order matters more than it
+   * looks: the daily cap is counted per model, so walking the list is also the
+   * way to spend an allowance without then refusing every visitor for the rest
+   * of the day. Measured on this account, model one was saturated and model two
+   * answered in 2.7 seconds.
+   *
+   * A 400 is not retried. That is a malformed request and every model would
+   * reject it identically, so trying the next one would spend three requests
+   * to produce the same failure.
+   */
+  const models = [geminiModel(), ...FALLBACK_MODELS.filter((m) => m !== geminiModel())];
+
+  for (const model of models) {
+    try {
+      const response = await timedFetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+        {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'x-goog-api-key': key,
+          },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: system }] },
+            contents: [{ role: 'user', parts: [{ text: question }] }],
+            generationConfig: { temperature: 0.4, maxOutputTokens: 700 },
+          }),
         },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: system }] },
-          contents: [{ role: 'user', parts: [{ text: question }] }],
-          generationConfig: { temperature: 0.4, maxOutputTokens: 700 },
-        }),
-      },
-    );
+        GEMINI_TIMEOUT_MS,
+      );
 
-    if (response.status === 429) {
-      return { ok: false, provider: 'gemini', reason: 'rate-limit', ms: Date.now() - started };
+      if (response.status === 429 || response.status === 503) {
+        console.warn(
+          `[gemini] ${model} is unavailable (HTTP ${response.status}), trying the next model`,
+        );
+        continue;
+      }
+
+      if (response.status === 400) {
+        // Malformed. No model will accept it.
+        return { ok: false, provider: 'gemini', reason: 'network', ms: Date.now() - started };
+      }
+
+      if (!response.ok) {
+        return { ok: false, provider: 'gemini', reason: 'network', ms: Date.now() - started };
+      }
+
+      const data = (await response.json()) as {
+        candidates?: {
+          content?: { parts?: { text?: string; thought?: boolean }[] };
+        }[];
+      };
+
+      /*
+       * Only the parts that are not the thinking.
+       *
+       * A reasoning model streams its working-out in `parts` alongside the
+       * answer, marked `thought: true`. Taking every part concatenates the two,
+       * so the visitor reads the model's private deliberation before the answer
+       * — the same failure as the JSON envelope on the free provider, reached a
+       * different way. A thinking model is a live path here and not a
+       * hypothetical.
+       */
+      const text = (data.candidates?.[0]?.content?.parts ?? [])
+        .filter((part) => part.thought !== true)
+        .map((part) => part.text ?? '')
+        .join('')
+        .trim();
+
+      if (!text) {
+        // A refusal or a safety block arrives as a 200 with no text. Not a
+        // model problem, so trying a different model would refuse the same way.
+        return { ok: false, provider: 'gemini', reason: 'empty', ms: Date.now() - started };
+      }
+
+      return { ok: true, text, provider: 'gemini', ms: Date.now() - started };
+  } catch (error) {
+      /*
+       * The cause is logged, not just swallowed.
+       *
+       * A bare catch returned the reason "network" for everything — a refused
+       * connection, a DNS failure and a sixty-second abort all look identical in
+       * the log, which is how four languages came back with no answer and the
+       * only thing to go on was the word "network". Node hides the real reason
+       * one level down in `cause`, and that is the part worth reading.
+       *
+       * Only the cause is logged, never the key: the request is built above and
+       * the error carries the URL and the message, not the headers.
+       */
+      const cause = error as { cause?: { code?: string; message?: string }; message?: string };
+      const detail = cause.cause
+        ? `${cause.cause.code ?? ''} ${cause.cause.message ?? ''}`
+        : (cause.message ?? 'unknown');
+      console.warn(
+        `[gemini] ${detail.trim().slice(0, 120)} (${Date.now() - started}ms)`,
+      );
+
+      // A dropped connection is not the model's fault, so the next model is
+      // still worth asking rather than writing the provider off for the request.
+      continue;
     }
-    if (!response.ok) {
-      return { ok: false, provider: 'gemini', reason: 'network', ms: Date.now() - started };
-    }
-
-    const data = (await response.json()) as {
-      candidates?: {
-        content?: { parts?: { text?: string; thought?: boolean }[] };
-      }[];
-    };
-
-    /*
-     * Only the parts that are not the thinking.
-     *
-     * A reasoning model streams its working-out in `parts` alongside the answer,
-     * marked `thought: true`. Taking every part concatenates the two, so the
-     * visitor reads the model's private deliberation before the answer — the same
-     * failure as the JSON envelope on the free provider, reached a different way.
-     * Gemini 3.8 Flash is a thinking model, so this is a live path and not a
-     * hypothetical.
-     */
-    const text = (data.candidates?.[0]?.content?.parts ?? [])
-      .filter((part) => part.thought !== true)
-      .map((part) => part.text ?? '')
-      .join('')
-      .trim();
-
-    if (!text) {
-      return { ok: false, provider: 'gemini', reason: 'empty', ms: Date.now() - started };
-    }
-
-    return { ok: true, text, provider: 'gemini', ms: Date.now() - started };
-  } catch {
-    return { ok: false, provider: 'gemini', reason: 'network', ms: Date.now() - started };
   }
+
+  console.warn(`[gemini] all ${models.length} models refused (${Date.now() - started}ms)`);
+  return {
+    ok: false,
+    provider: 'gemini',
+    reason: 'rate-limit',
+    ms: Date.now() - started,
+  };
 }
 
 /* ========================================================================== */
@@ -247,7 +378,7 @@ export async function askOllama(
         // closer to a minute per answer here.
         options: { temperature: 0.4, num_predict: 500 },
       }),
-    });
+    }, OLLAMA_TIMEOUT_MS);
 
     if (!response.ok) {
       return { ok: false, provider: 'ollama', reason: 'network', ms: Date.now() - started };
@@ -497,7 +628,7 @@ export async function askPollinations(
 
     const response = await timedFetch(url, {
       headers: { 'User-Agent': 'VarshaSamadhan/1.0', Accept: 'text/plain' },
-    });
+    }, POLLINATIONS_TIMEOUT_MS);
 
     if (response.status === 402 || response.status === 429) {
       return { ok: false, provider: 'pollinations', reason: 'rate-limit', ms: Date.now() - started };

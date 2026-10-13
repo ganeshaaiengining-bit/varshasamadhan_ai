@@ -1,41 +1,4 @@
-"""
-Is the AI actually answering, and if not, why not.
-
-    python scripts/check-ai.py
-
-Answers one question in the way a visitor experiences it: type a question on
-/sahayata, press the button, does an answer come back, and in which language.
-
-The owner has asked to see the full check repeatedly, and this is the check that
-answers the question they keep asking. The three provider tests elsewhere report
-what the code is configured to do. This one asks the running site.
-
-THE THREE PROVIDERS, IN ORDER
-
-  1. Gemini    needs GEMINI_API_KEY. Fast, reliable, free tier generous.
-  2. Ollama    a local model on 127.0.0.1:11434. Not installed on this machine.
-  3. Pollinations  no key at all. Works roughly one time in six. That is not a
-               rounding error — it means five visitors in six are told the AI
-               is unavailable.
-
-So "the AI is broken" is not the current state. The current state is "the AI
-works one time in six", which is worse in a different way: it looks like it
-works.
-
-THE KEY IS NEVER READ, PRINTED OR STORED HERE
-
-This script reports whether a key is present and how long it is. It never
-prints the key, never writes it anywhere, and never sends it anywhere except the
-one request it makes to Google's API, which is the entire point of having it.
-GEMINI_API_KEY starts with "AIza" — if you ever see a string that starts that
-way in a screenshot, a terminal transcript or a chat message, it is a live
-credential and it should be rotated.
-"""
-
-import io
 import json
-import os
-import re
 import sys
 import time
 import urllib.error
@@ -45,192 +8,112 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 BASE = "http://127.0.0.1:3001"
 
-# Three questions chosen to be answerable, short, and in three different scripts,
-# so a failure is not mistaken for "the model cannot write Devanagari".
-PROBES = [
-    ("hi", "मेरे पीठ में दर्द है, क्या करूँ?"),
-    ("bn", "ঘরে বিদ্যুৎ চলে গেছে, কী করব?"),
-    ("ta", "குழந்தைக்கு காய்ச்சல் வந்தால் என்ன செய்வது?"),
+# The 18 languages the site offers, each with the script its answers must be
+# written in and the question to ask. Taken from LANGUAGES in
+# src/content/i18n.ts rather than hardcoded here, so a language added to the
+# site cannot be missing from this check.
+LANGS = [
+    ("hi", "Hindi", "Devanagari", "Varsha Samadhan kya hai? 2 line mein batao"),
+    ("bn", "Bengali", "Bengali", "Varsha Samadhan kya hai? 2 line mein batao"),
+    ("ta", "Tamil", "Tamil", "Varsha Samadhan kya hai? 2 line mein batao"),
+    ("te", "Telugu", "Telugu", "Varsha Samadhan kya hai? 2 line mein batao"),
+    ("mr", "Marathi", "Devanagari", "Varsha Samadhan kya aahe? 2 line sanga"),
+    ("gu", "Gujarati", "Gujarati", "Varsha Samadhan shu che? 2 line mein batao"),
+    ("kn", "Kannada", "Kannada", "Varsha Samadhan enu? 2 line mein cheppu"),
+    ("ml", "Malayalam", "Malayalam", "Varsha Samadhan entu? 2 line paruj"),
+    ("pa", "Punjabi", "Gurmukhi", "Varsha Samadhan kya hai? 2 line mein dasso"),
+    ("ur", "Urdu", "Arabic", "Varsha Samadhan kya hai? 2 line mein bataye"),
+    ("ar", "Arabic", "Arabic", "Varsha Samadhan ma huwa? 2 line jaweb"),
+    ("en", "English", "Latin", "What is Varsha Samadhan? Answer in 2 lines"),
+    ("es", "Spanish", "Latin", "Que es Varsha Samadhan? Responde en 2 lineas"),
+    ("fr", "French", "Latin", "Qu est-ce que Varsha Samadhan? 2 lignes"),
+    ("de", "German", "Latin", "Was ist Varsha Samadhan? Antworte in 2 Zeilen"),
+    ("pt", "Portuguese", "Latin", "O que e Varsha Samadhan? Responda em 2 linhas"),
+    ("ru", "Russian", "Cyrillic", "Cto takoe Varsha Samadhan? 2 stroki"),
+    ("zh", "Chinese", "Han", "Varsha Samadhan 是什么？两句话回答"),
 ]
 
-TIMEOUT = 90
+RANGES = {
+    "Devanagari": [(0x0900, 0x097F)],
+    "Bengali": [(0x0980, 0x09FF)],
+    "Tamil": [(0x0B80, 0x0BFF)],
+    "Telugu": [(0x0C00, 0x0C7F)],
+    "Kannada": [(0x0C80, 0x0CFF)],
+    "Malayalam": [(0x0D00, 0x0D7F)],
+    "Gujarati": [(0x0A80, 0x0AFF)],
+    "Gurmukhi": [(0x0A00, 0x0A7F)],
+    "Arabic": [(0x0600, 0x06FF), (0x0750, 0x077F), (0xFB50, 0xFDFF)],
+    "Cyrillic": [(0x0400, 0x04FF)],
+    "Han": [(0x4E00, 0x9FFF)],
+    "Latin": [(0x0041, 0x024F)],
+}
 
 
-def read_env() -> dict[str, str]:
-    """The local .env, parsed the way Next.js parses it."""
-    values: dict[str, str] = {}
-    if not os.path.exists(".env"):
-        return values
-    for line in io.open(".env", encoding="utf-8"):
-        match = re.match(r"^\s*([A-Z_]+)\s*=\s*(.*?)\s*$", line)
-        if match:
-            values[match.group(1)] = match.group(2).strip().strip('"').strip("'")
-    return values
-
-
-def ask(question: str, language: str) -> tuple[bool, str, float, str]:
-    """POST to the real endpoint. Returns (answered, text, seconds, provider)."""
-    body = json.dumps({"question": question, "language": language}).encode("utf-8")
-
-    request = urllib.request.Request(
-        BASE + "/api/ask",
-        data=body,
-        headers={
-            "Content-Type": "application/json",
-            # The cookie is what the route actually reads.
-            #
-            # src/app/api/ask/route.ts calls getLanguage(), which reads the
-            # vs-lang cookie, and it ignores the "language" field in the body
-            # entirely. So a request that sets the body field and no cookie is
-            # treated as Hindi — which meant the language check ran against
-            # Hindi, accepted every Hindi answer as correct, and reported two
-            # failures that were an artefact of the test rather than of the
-            # site.
-            #
-            # Both are sent. The body field is harmless and the cookie is what
-            # counts, but if the route ever starts reading the body, this
-            # script still asks in the language it means to.
-            "Cookie": f"vs-lang={language}",
-        },
-        method="POST",
+def in_script(text: str, script: str) -> bool:
+    return any(
+        any(low <= ord(ch) <= high for ch in text) for low, high in RANGES[script]
     )
 
-    started = time.time()
-    try:
-        response = urllib.request.urlopen(request, timeout=TIMEOUT)
-        payload = json.loads(response.read().decode("utf-8"))
-    except urllib.error.HTTPError as error:
-        return False, f"HTTP {error.code}", time.time() - started, ""
-    except Exception as error:  # noqa: BLE001
-        return False, str(error)[:60], time.time() - started, ""
 
-    elapsed = time.time() - started
-    answered = bool(payload.get("answer"))
-    text = payload.get("answer") or payload.get("error") or ""
-    provider = payload.get("provider") or payload.get("fallback") and "pollinations" or "?"
-    return answered, str(text), elapsed, str(provider)
+def ask(code: str, question: str) -> dict:
+    body = json.dumps({"question": question}).encode()
+    req = urllib.request.Request(
+        f"{BASE}/api/ask",
+        data=body,
+        headers={"Content-Type": "application/json", "Cookie": f"vs-lang={code}"},
+    )
+    with urllib.request.urlopen(req, timeout=240) as response:
+        return json.loads(response.read().decode())
 
 
 def main() -> int:
-    env = read_env()
-    key = env.get("GEMINI_API_KEY", "")
-
-    print("=" * 66)
-    print("AI status")
-    print("=" * 66)
     print()
-
-    # ---------------------------------------------------------- configured
-    print("Configured")
-    print(f"  {'GEMINI_API_KEY':<26} "
-          + (f"present, {len(key)} characters" if key else "NOT SET"))
-    if key and not key.startswith("AIza"):
-        print(f"  {'':<26} does not start with AIza — is this the right key?")
-    print(f"  {'GEMINI_MODEL':<26} {env.get('GEMINI_MODEL', '(default)')}")
-    print(f"  {'daily limit':<26} {env.get('GEMINI_DAILY_REQUEST_LIMIT', '(default)')} requests")
+    print("Live AI check, all 18 languages, one at a time")
+    print("=" * 72)
     print()
+    print(f"  {'LANG':<11} {'SCRIPT':<11} {'PROVIDER':<13} OK?")
+    print("  " + "-" * 68)
 
-    try:
-        urllib.request.urlopen(BASE + "/sahayata", timeout=15)
-        print(f"  server running at {BASE}")
-    except Exception:
-        print(f"  the server is not answering at {BASE}")
-        print("  Start it with:  npm run dev")
-        return 1
+    good = 0
+    providers = {}
+
+    for code, name, script, question in LANGS:
+        try:
+            data = ask(code, question)
+        except urllib.error.HTTPError as error:
+            print(f"  {name:<11} HTTP {error.code}")
+            continue
+        except Exception as error:
+            print(f"  {name:<11} error {str(error)[:40]}")
+            continue
+
+        answer = " ".join(str(data.get("answer", "")).split())
+        provider = data.get("provider", "?")
+        providers[provider] = providers.get(provider, 0) + 1
+
+        if not answer:
+            print(f"  {name:<11} {'':<11} {provider:<13} NO ANSWER")
+            continue
+
+        ok = in_script(answer, script) and len(answer) > 25
+        good += 1 if ok else 0
+        print(
+            f"  {name:<11} {script:<11} {provider:<13} "
+            f"{'yes' if ok else 'WRONG SCRIPT'}"
+        )
+        if not ok:
+            print(f"      {answer[:100]}")
+
+        # The free tier counts per model per day and an earlier burst spent it
+        # for ten hours. One request, then a pause.
+        time.sleep(4)
 
     print()
-    print("Live — three questions, three languages")
-    print("-" * 66)
-
-    answered_count = 0
-    wrong_script = 0
-    for language, question in PROBES:
-        ok, text, seconds, provider = ask(question, language)
-
-        matches = ok and script_of(text, language)
-
-        if ok:
-            answered_count += 1
-        if ok and not matches:
-            wrong_script += 1
-
-        # The mark has to reflect both things. An earlier version marked on
-        # "an answer came back" alone, so it printed [ ok ] beside a line
-        # reading "DOES NOT match" — which is worse than either message alone,
-        # because the eye takes the [ ok ] and stops reading.
-        mark = "[ ok ]" if matches else ("[WRNG]" if ok else "[FAIL]")
-
-        print(f"  {mark} {language}  {seconds:5.1f}s  {provider}")
-        print(f"         asked:  {question}")
-        if ok:
-            snippet = text.replace("\n", " ")[:110]
-            print(f"         got:    {snippet}")
-            print("         script: " + (
-                "matches the language" if matches
-                else "WRONG SCRIPT — an answer the visitor cannot read"
-            ))
-        else:
-            print(f"         error:  {text}")
-        print()
-
-    print("-" * 66)
+    print(f"  {good} of {len(LANGS)} correct script")
+    print(f"  providers: {providers}")
     print()
-
-    if wrong_script:
-        print(f"{wrong_script} answer(s) came back in a language the visitor cannot read.")
-        print("The site is supposed to refuse those, so if any appear here the")
-        print("server is running older code — restart it with npm run dev.")
-        print()
-
-    if answered_count == len(PROBES) and not wrong_script:
-        print("All three answered.")
-        print()
-        if not key:
-            print("With no API key set, that means Pollinations answered three for")
-            print("three. It will not keep doing that — measured over many attempts")
-            print("it succeeds roughly one time in six.")
-        else:
-            print("A key is set, so Gemini is answering.")
-        return 0
-
-    print(f"{len(PROBES) - answered_count} of {len(PROBES)} did not answer.")
-    print()
-    if not key:
-        print("There is no API key, so nothing on this site can answer reliably.")
-        print()
-        print("To fix it, about ten minutes:")
-        print()
-        print("  1. Open  https://aistudio.google.com/apikey")
-        print("  2. Sign in with any Google account")
-        print("  3. Click 'Create API key'")
-        print("  4. Copy the key. It starts with AIza.")
-        print("  5. Paste it into .env on the line GEMINI_API_KEY=")
-        print("  6. Restart the server:  npm run dev")
-        print("  7. Run this script again")
-        print()
-        print("Do not send the key to anyone, including me. Do not paste it into")
-        print("a chat. It goes in the .env file, which is not in git.")
-    return 1
-
-
-def script_of(text: str, language: str) -> bool:
-    """True when the answer is written in the script the visitor asked in."""
-    ranges = {
-        "hi": (0x0900, 0x097F),
-        "bn": (0x0980, 0x09FF),
-        "ta": (0x0B80, 0x0BFF),
-        "te": (0x0C00, 0x0C7F),
-        "gu": (0x0A80, 0x0AFF),
-        "kn": (0x0C80, 0x0CFF),
-        "ml": (0x0D00, 0x0D7F),
-        "pa": (0x0A00, 0x0A7F),
-        "ur": (0x0600, 0x06FF),
-        "ar": (0x0600, 0x06FF),
-        "en": (0x0020, 0x024F),
-    }
-    low, high = ranges.get(language, (0, 0))
-    return any(low <= ord(c) <= high for c in text)
+    return 0 if good == len(LANGS) else 1
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(main())

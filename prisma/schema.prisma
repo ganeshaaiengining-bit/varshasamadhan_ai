@@ -181,8 +181,18 @@ model AskedQuestion {
   // Set only when the AI is unavailable, so the owner can see demand for a
   // capability that is missing rather than a site that is simply idle.
   wasFailed  Boolean   @default(false) @map("was_failed")
+  // Which provider produced the answer: gemini, ollama or pollinations.
+  //
+  // This is not only for reporting. The daily cap counts Gemini calls, and it
+  // used to count every answered question because there was nothing to count
+  // more precisely — so a morning answered entirely by the keyless provider
+  // used up a budget that belongs to the keyed one, and Gemini was skipped for
+  // the rest of the day while it still had quota. The traffic that was meant to
+  // be free was spending the moneyed provider's allowance.
+  provider   String   @default("")
   createdAt  DateTime  @default(now()) @map("created_at")
 
   @@index([createdAt])
+  @@index([provider, createdAt])
   @@map("asked_questions")
 }
