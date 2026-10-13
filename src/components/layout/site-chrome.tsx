@@ -97,6 +97,33 @@ export function SiteChrome({
             */}
             <LanguageSelect />
 
+            {/*
+              The account button sits beside the language picker, which is the
+              argument for putting it here at all: both are per-visitor state,
+              both are in the same place on every page, and somebody who has
+              changed their language once already knows where to look.
+
+              Signed out it reads "My account" and opens the sign-in page.
+              Signed in it reads their handle and opens the account page, so the
+              same tap does the useful thing either way rather than becoming a
+              menu to choose from.
+
+              Icon on a narrow screen, text on a wide one. An icon with no label
+              is a mystery to somebody who does not already know what it means,
+              and this audience is the reason the rest of the site has words on
+              its buttons.
+            */}
+            <Link
+              href="/login"
+              className="flex min-h-[2.5rem] items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-ink-soft hover:bg-surface hover:text-saffron-deep sm:px-3"
+              aria-label={t('account.title')}
+            >
+              {/* `name`, not `user`: the icon set has no person glyph, and `name` is the
+                  one that already draws a head above a nameplate. */}
+              <Icon name="name" size={18} />
+              <span className="hidden sm:inline">{t('account.title')}</span>
+            </Link>
+
             <ThemeToggle />
           </div>
         </div>
