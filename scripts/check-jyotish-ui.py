@@ -57,6 +57,20 @@ with sync_playwright() as p:
     page.goto(f"{BASE}/janam-ghathe", wait_until="domcontentloaded", timeout=45000)
     page.wait_for_selector("#jgd-name", timeout=45000)
 
+    # Wait for hydration before touching anything.
+    #
+    # Every control on this form is a React component with no behaviour in the
+    # server-rendered HTML. `wait_for_selector` returns as soon as the markup
+    # exists, which on a cold production server is well before the JavaScript
+    # arrives — so every interaction below would land on an inert page and the
+    # run would report a combobox that does not open and a sheet that never
+    # renders, on a page that works perfectly in a browser.
+    #
+    # The symptom was unmistakable: this failed against the live site every time
+    # and passed against the dev server every time, and only against the live
+    # site, which is the only place that is ever cold.
+    page.wait_for_timeout(2500)
+
     print()
     print("Jyotish sheet, in a real browser")
     print("=" * 60)
@@ -75,11 +89,32 @@ with sync_playwright() as p:
         browser.close()
         sys.exit(1)
 
-    city.click()
-    page.keyboard.type("Mum")
-    page.wait_for_timeout(400)
+    # Ask the component's own flag rather than watching for an element.
+    #
+    # The input publishes `aria-expanded`, which is the one thing that is true
+    # when — and only when — the list is open. Polling it also tolerates a slow
+    # cold start without a fixed guess at how slow that is, and clicking again is
+    # harmless because a second click on an already-focused box cannot close it.
+    opened = False
+    for _ in range(30):
+        city.click()
+        page.wait_for_timeout(400)
+        if city.get_attribute("aria-expanded") == "true":
+            opened = True
+            break
 
-    options = page.query_selector_all('[role="option"], button')
+    check("the city box opens when tapped", opened)
+
+    city.fill("Mum")
+    page.wait_for_timeout(900)
+
+    # Match on role, not on a text scan of every button on the page.
+    #
+    # Scanning all buttons found the state header first — its text contains
+    # "Mumbai" because it lists the cities under it — and clicked that instead.
+    # The click collapsed the group and the city was never chosen, so the run
+    # reported a broken combobox on a combobox that works.
+    options = page.query_selector_all('[role="option"]')
     picked = False
     for opt in options:
         text = (opt.inner_text() or "").strip()
@@ -88,24 +123,40 @@ with sync_playwright() as p:
             picked = True
             break
 
-    check("a city can be chosen from the list", picked)
+    check("a city can be chosen from the list", picked, f"{len(options)} options were offered")
 
-    page.click('button[type="submit"]')
-    page.wait_for_timeout(1500)
+    # Scoped to the form. A bare `button[type="submit"]` also matches the
+    # language switcher, which sits earlier in the document, so the click went to
+    # the switcher and the chart was never asked for.
+    page.click('form button[type="submit"]')
 
+    # Wait for the sheet rather than for a fixed number of milliseconds: on the
+    # live site a fixed wait was sometimes short enough to read the page before
+    # the chart was drawn, and the run then failed on a page that had in fact
+    # worked.
+    try:
+        page.wait_for_selector('[role="tab"]', timeout=30000)
+        rendered = True
+    except Exception:  # noqa: BLE001
+        rendered = False
+
+    page.wait_for_timeout(600)
     body = page.inner_text("body")
 
     # ── the sheet is there at all ─────────────────────────────────────────
     check(
         "the full sheet is rendered",
-        "पूरी ज्योतिश कुंडली" in body,
+        rendered and "पूरी ज्योतिश कुंडली" in body,
         "the sheet heading never appeared",
     )
 
     # ── every tab opens and has content ───────────────────────────────────
     empty_tabs = []
     for label in TABS:
-        btn = page.query_selector(f'button:has-text("{label}")')
+        # By role, not by text: `button:has-text("योग")` also matches the
+        # "योग" inside the rail's link titles, and clicking that navigates away
+        # from the page entirely.
+        btn = page.query_selector(f'[role="tab"]:has-text("{label}")')
         if btn is None:
             empty_tabs.append(f"{label} (tab button missing)")
             continue
@@ -122,7 +173,7 @@ with sync_playwright() as p:
     check("all eight tabs open with content", not empty_tabs, "; ".join(empty_tabs))
 
     # ── the chart has nine grahas and a real lagna ────────────────────────
-    page.click('button:has-text("कुंडली")')
+    page.click('[role="tab"]:has-text("कुंडली")')
     page.wait_for_timeout(300)
 
     for graha in ["सूर्य", "चंद्र", "मंगल", "बुध", "बृहस्पति", "शुक्र", "शनि", "राहु", "केतु"]:
@@ -144,7 +195,7 @@ with sync_playwright() as p:
     )
 
     # ── dasha runs to 120 years ───────────────────────────────────────────
-    page.click('button:has-text("विमशोत्तरी दशा")')
+    page.click('[role="tab"]:has-text("विमशोत्तरी दशा")')
     page.wait_for_timeout(300)
     dasha_text = page.inner_text("body")
 
