@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { numerology, type BirthInput, type NumerologyResult } from '@/content/numerology';
 import { vedic, gunMilan, RASHIS, type AstroResult, type GunResult } from '@/content/astrology';
+import { JyotishSheet } from './jyotish-sheet';
 import { useLanguage } from '@/components/language/language';
 
 /**
@@ -60,6 +61,22 @@ interface Result {
   num: NumerologyResult;
   astro: AstroResult | null;
   gun: GunResult | null;
+  /**
+   * The parts the full sheet needs, which the old two-field engines do not have.
+   *
+   * `vedic()` takes a date and an optional time and answers one question about
+   * the Moon. The eight systems on the sheet all read the whole chart, and the
+   * lagna needs a latitude and a longitude that `BirthInput` only carries when a
+   * city was picked. So the parts are parsed here, once, and the sheet is given
+   * numbers rather than strings — no second parse, no second set of defaults to
+   * keep in step with the first.
+   */
+  jyotish: {
+    year: number; month: number; day: number;
+    hour: number; minute: number;
+    latitude: number; longitude: number;
+    name: string;
+  } | null;
 }
 
 /** Rough centre of a named place, for the visitor who knows the city but not the coordinates. */
@@ -432,7 +449,34 @@ export function JanamGhathe() {
       }
     }
 
-    setResult({ input, num, astro: vedic(input), gun });
+    /*
+     * The eight systems need the full chart, which means a latitude and a
+     * longitude for the lagna. Without a city there is none to be had, and a
+     * guessed one would put the lagna a whole sign out for anybody who was not
+     * born near the middle of the country — so the sheet is simply not offered.
+     *
+     * It used to fall back to a rough centre of India, which produced a
+     * confident-looking chart for people born in Chennai and Kashmir alike.
+     */
+    let jyotish: Result['jyotish'] = null;
+    if (coords) {
+      const [hour, minute] = /^\d{2}:\d{2}$/.test(time)
+        ? time.split(':').map(Number)
+        : [12, 0];
+
+      jyotish = {
+        year: Number(date.slice(0, 4)),
+        month: Number(date.slice(5, 7)),
+        day: Number(date.slice(8, 10)),
+        hour,
+        minute,
+        latitude: coords.lat,
+        longitude: coords.lon,
+        name: name.trim(),
+      };
+    }
+
+    setResult({ input, num, astro: vedic(input), gun, jyotish });
   };
 
   const reset = () => {
@@ -692,6 +736,15 @@ export function JanamGhathe() {
 
               <p className="mt-4 border-t border-line pt-3 text-sm text-ink-subtle">{result.gun.limit}</p>
             </section>
+          )}
+
+          {result.jyotish && <JyotishSheet input={result.jyotish} />}
+
+          {!result.jyotish && (
+            <p className="mt-6 rounded-lg bg-sun/10 p-4 text-sm text-ink-subtle">
+              पूरी ज्योतिश कुंडली के लिए जन्म स्थान ज़रूरी है — लग्न सिर्फ समय और स्थान से निकलता है।
+              ऊपर से शहर चुनिए और पूरी कुंडली खुल जाएगी।
+            </p>
           )}
 
           <p className="mt-8 rounded-lg bg-sun/10 p-4 text-sm text-ink-subtle">{t('jgd.disclaimer')}</p>

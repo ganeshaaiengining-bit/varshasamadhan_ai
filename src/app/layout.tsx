@@ -109,8 +109,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </a>
         <LanguageProvider initialLanguage={lang}>
           <ToastProvider>
-            <AppBar siteName={siteName()} />
-            {children}
+            {/*
+              The rail is `fixed`, so it takes no space and the page would run
+              underneath it. The AppBar renders a spacer beside it, and this flex
+              row is what makes that spacer reserve anything at all — the row is
+              what gives the spacer something to be a sibling of.
+            */}
+            <div className="flex min-h-screen">
+              <AppBar siteName={siteName()} />
+              <div className="min-w-0 flex-1">{children}</div>
+            </div>
             <WelcomeDhun />
           </ToastProvider>
         </LanguageProvider>

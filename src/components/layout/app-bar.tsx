@@ -110,7 +110,16 @@ export function AppBar({ siteName }: { siteName: string }) {
   const label = t('nav.menu');
 
   return (
-    <>
+    /*
+     * `display: contents`, so the rail, the spacer and the panel take part in
+     * the parent's flex row without this element being a box of its own.
+     *
+     * Without it the spacer is an ordinary block: it sits on its own line with
+     * no height, so nothing is pushed to the right and the page runs underneath
+     * the fixed rail from top to bottom. On a phone that is four and a half
+     * centimetres of every page hidden behind an opaque bar.
+     */
+    <div className="contents">
       {/* ====================================================== the rail */}
       {/*
         `position: fixed` and full height, so it stays put while the page
@@ -177,8 +186,24 @@ export function AppBar({ siteName }: { siteName: string }) {
         </button>
       </div>
 
-      {/* Push the page clear of the rail on wide screens. */}
-      {rail ? <div className="hidden w-[13rem] shrink-0 lg:block" aria-hidden="true" /> : null}
+      {/*
+        Push the page clear of the rail.
+
+        This spacer was `hidden ... lg:block`, so it reserved room only on wide
+        screens. But the rail is `max-lg:flex` — it is *always* visible, and on
+        a phone it is 4.5rem wide sitting on top of the left edge of the page.
+        Every page on a phone therefore started with its first four-and-a-half
+        centimetres underneath an opaque bar: the start of a heading, the left
+        edge of an input, the left of a button. Nothing warned of it, because on
+        a desktop browser the layout is correct.
+
+        A fixed element does not take space. Something has to give it space at
+        every width the fixed element is shown at, and that is this.
+      */}
+      <div
+        className={rail ? 'w-[4.5rem] shrink-0 lg:w-[13rem]' : 'w-[4.5rem] shrink-0'}
+        aria-hidden="true"
+      />
 
       {/* ===================================================== the panel */}
       {open ? (
@@ -273,6 +298,6 @@ export function AppBar({ siteName }: { siteName: string }) {
           </div>
         </div>
       ) : null}
-    </>
+    </div>
   );
 }
