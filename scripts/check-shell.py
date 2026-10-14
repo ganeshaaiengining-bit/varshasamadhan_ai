@@ -60,7 +60,18 @@ def check(name, ok, detail=""):
 
 
 def audit(page, route, width, label):
-    page.goto(f"{BASE}{route}", wait_until="domcontentloaded", timeout=45000)
+    # Twice, because the first visit to a route on a cold development server
+    # compiles it, and that compile can take longer than the navigation timeout.
+    # The failure it produces looks exactly like a broken route, which is the
+    # worst kind of false alarm: it says the home page is down.
+    for attempt in range(2):
+        try:
+            page.goto(f"{BASE}{route}", wait_until="domcontentloaded", timeout=60000)
+            break
+        except Exception:  # noqa: BLE001
+            if attempt == 1:
+                raise
+            page.wait_for_timeout(3000)
     page.wait_for_timeout(900)
 
     # Nothing may extend past the right edge of the screen — except inside a

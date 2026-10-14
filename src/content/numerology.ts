@@ -176,18 +176,69 @@ function reduce(value: number): number {
 }
 
 /**
- * Parse YYYY-MM-DD into its parts, strictly.
+ * Parse a birth date into its parts.
+ *
+ * ── Why three formats, not one ─────────────────────────────────────────────
+ *
+ * `<input type="date">` is specified to hand back `YYYY-MM-DD`, and on most
+ * browsers it does. It is not universal: a form that is not a date input — or a
+ * date typed in by hand, or a browser with the date entry overridden — can hand
+ * back `DD/MM/YYYY` or `MM/DD/YYYY` instead, and a parser that accepts only one
+ * of them either refuses outright or, worse, reads `03/04/1975` as the fourth of
+ * March when it was written as the third of April.
+ *
+ * The difference is a month of somebody's chart, silently.
+ *
+ * So all three are accepted, and the two-orders form is resolved by which
+ * reading is a real date. `03/04/1975` is genuinely ambiguous — it is the fourth
+ * of March in Britain and the third of April in America — so it is refused
+ * rather than guessed at. A date that cannot be read without a coin toss should
+ * be typed again, not guessed.
+ *
+ * ── Why the round trip ─────────────────────────────────────────────────────
  *
  * `new Date('2024-02-30')` silently becomes March 1st, which would give
  * somebody a chart for a day they were not born. Rejected instead.
  */
-export function parseDate(iso: string): { year: number; month: number; day: number } | null {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso.trim());
-  if (!match) return null;
+export function parseDate(raw: string): { year: number; month: number; day: number } | null {
+  const text = raw.trim();
 
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const day = Number(match[3]);
+  const iso = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(text);
+  const slashed = /^(\d{1,2})[/.](\d{1,2})[/.](\d{4})$/.exec(text);
+
+  let year: number;
+  let month: number;
+  let day: number;
+
+  if (iso) {
+    year = Number(iso[1]);
+    month = Number(iso[2]);
+    day = Number(iso[3]);
+  } else if (slashed) {
+    const first = Number(slashed[1]);
+    const second = Number(slashed[2]);
+    year = Number(slashed[3]);
+
+    // One of the two must be a month. Exactly one being a month settles it.
+    // Both, or neither, means the date is ambiguous or wrong.
+    const firstIsMonth = first <= 12;
+    const secondIsMonth = second <= 12;
+
+    if (firstIsMonth === secondIsMonth) {
+      // Both under 13 (03/04), or one of them impossible as a day (25/12).
+      return null;
+    }
+
+    if (firstIsMonth) {
+      month = first;
+      day = second;
+    } else {
+      day = first;
+      month = second;
+    }
+  } else {
+    return null;
+  }
 
   if (month < 1 || month > 12) return null;
   if (day < 1 || day > 31) return null;
@@ -208,6 +259,11 @@ export function parseDate(iso: string): { year: number; month: number; day: numb
   }
 
   return { year, month, day };
+}
+
+/** The date back in the one format the page writes, for showing to the visitor. */
+export function formatDate(parts: { year: number; month: number; day: number }): string {
+  return `${parts.year}-${String(parts.month).padStart(2, '0')}-${String(parts.day).padStart(2, '0')}`;
 }
 
 /**

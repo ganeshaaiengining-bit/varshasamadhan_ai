@@ -12,6 +12,8 @@ import {
   type Planet,
   type GrahaPosition,
 } from '@/content/grahas';
+import type { Gender } from '@/content/kp';
+import { formatDate } from '@/content/numerology';
 import { RASHIS, NAKSHATRAS } from '@/content/astrology';
 import { julianDayFromParts } from '@/content/julian';
 import { vimshottari, antardashas, DASHA_ORDER } from '@/content/dasha';
@@ -59,6 +61,7 @@ export interface JyotishInput {
   latitude: number;
   longitude: number;
   name: string;
+  gender: Gender;
 }
 
 type TabKey =
@@ -110,6 +113,25 @@ export function JyotishSheet({ input }: { input: JyotishInput }) {
       <p className="mt-2 text-sm text-ink-subtle">
         एक ही जन्म-कुंडली पर आठ पद्धतियाँ। जहाँ कोई दो अलग कहें, वहाँ दोनों दिखाई गई हैं — किसी
         एक को सही बताने का कोई कारण नहीं है।
+      </p>
+
+      {/*
+        The date, written out.
+
+        Not decoration. A chart that reads the wrong day is a chart that looks
+        entirely correct — right shape, right signs, wrong answer — and the one
+        way to tell at a glance is to show the day that was actually used. It
+        was asked for after somebody reported that the numbers were coming out
+        for a different date, and it is the check that would have shown it.
+      */}
+      <p className="mt-3 rounded-lg bg-sun/10 px-4 py-2 text-sm">
+        <span className="text-ink-subtle">जन्म-कुंडली में लिया गया दिन:</span>{' '}
+        <strong className="tabular-nums">
+          {formatDate({ year: input.year, month: input.month, day: input.day })}
+        </strong>{' '}
+        <span className="text-ink-subtle">
+          · {String(input.day).padStart(2, '0')}/{String(input.month).padStart(2, '0')}/{input.year}
+        </span>
       </p>
 
       <div className="mt-5 flex flex-wrap gap-2 print:hidden" role="tablist">
@@ -185,7 +207,7 @@ function buildChart(input: JyotishInput): Chart {
     lagnaRashi,
     houses,
     yogas: findYogas(jd, lagnaRashi),
-    kp: kpSystem(jd, lagnaDeg),
+    kp: kpSystem(jd, lagnaDeg, input.gender),
     varga: shodasvarga(grahas),
     lal: lalKitab(jd),
     lalNotes: lalKitabDisagreements(grahas),
@@ -516,6 +538,13 @@ function KpPanel({ chart }: { chart: Chart }) {
           देखा जाता है, राशि के स्वामी से भी पहले।
         </p>
       </div>
+
+      {kp.marriage && (
+        <div className="rounded-lg border border-line p-4">
+          <h3 className="font-medium">सप्तम भाव — शादी का कराका</h3>
+          <p className="mt-2">{kp.marriage.verdict}</p>
+        </div>
+      )}
 
       <div className="overflow-x-auto">
         <table className="w-full min-w-[760px] border-collapse text-sm">

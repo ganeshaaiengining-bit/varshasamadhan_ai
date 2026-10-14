@@ -92,7 +92,35 @@ export interface KpResult {
   planets: KpPlanet[];
   /** The eight karakas, strongest first. */
   karakas: KpPlanet[];
+  /**
+   * Whose marriage this chart describes, and which karaka carries it.
+   *
+   * The seventh house is read from the seventh, and which graha owns the result
+   * of that house depends on who is asking about whom: a husband's chart is read
+   * through Venus, a wife's through Jupiter. That is the one place in the whole
+   * sheet where the visitor's gender changes an answer rather than only a
+   * sentence, which is why it is asked for rather than assumed.
+   *
+   * `null` when the visitor would rather not say, in which case both are given
+   * and neither is singled out. Assuming is worse than asking here: a chart read
+   * on the wrong karaka gives a confident answer about the wrong thing.
+   */
+  marriage: {
+    seventhKaraka: Planet;
+    /** The other one, shown so that a reader can see what was set aside. */
+    otherKaraka: Planet;
+    strength: string;
+    verdict: string;
+  } | null;
 }
+
+/** Which karaka carries the seventh house, for each. */
+const MARRIAGE_KARAKA = {
+  female: { seventh: 'venus' as Planet, other: 'jupiter' as Planet },
+  male: { seventh: 'jupiter' as Planet, other: 'venus' as Planet },
+};
+
+export type Gender = 'female' | 'male' | 'undisclosed';
 
 /** How strongly a karaka asserts, 0 to 10. */
 function karakaStrength(p: KpPlanet): number {
@@ -136,7 +164,7 @@ const RESULT_TEXT: Record<string, string> = {
  * the Moon's nakshatra and the planet's sub-signlord in degrees, and reducing
  * the lagna to a sign index would throw away the quarter degree it needs.
  */
-export function kpSystem(jd: number, lagnaDeg: number): KpResult {
+export function kpSystem(jd: number, lagnaDeg: number, gender: Gender = 'undisclosed'): KpResult {
   const grahas = allGrahas(jd);
   const lagnaRashi = Math.floor(lagnaDeg / 30) % 12;
 
@@ -237,9 +265,53 @@ export function kpSystem(jd: number, lagnaDeg: number): KpResult {
     .filter((p) => p.isKaraka)
     .sort((a, b) => karakaStrength(b) - karakaStrength(a));
 
+  /*
+   * The seventh house, read through the karaka that owns it.
+   *
+   * A husband's chart is read for its marriage through Jupiter, a wife's
+   * through Venus. Not a convention about wording — it changes which karaka is
+   * looked at, and a karaka that gives its own bhava gives the result.
+   *
+   * With no gender given, both are reported side by side and neither is put
+   * first. Guessing would be worse than asking: it produces a confident answer
+   * about the wrong thing, which is the failure this whole sheet is trying to
+   * avoid.
+   */
+  const marriage = (() => {
+    const seventh = karakas.find((p) => p.bhava === 7);
+
+    if (gender === 'undisclosed') {
+      const venus = karakas.find((p) => p.graha === 'venus')!;
+      const jupiter = karakas.find((p) => p.graha === 'jupiter')!;
+      return {
+        seventhKaraka: venus.graha,
+        otherKaraka: jupiter.graha,
+        strength: `${karakaStrength(venus)} / ${karakaStrength(jupiter)}`,
+        verdict:
+          `सप्तम भाव का स्वामी ${GRAHA_NAMES[seventh?.pakad1 ?? 'sun'].hindi} है। ` +
+          `शुक्र की शक्ति ${karakaStrength(venus)} और बृहस्पति की ${karakaStrength(jupiter)} — ` +
+          `दोनों दिखाई गई हैं, क्योंकि कौन सा कराका पढ़ा जाए यह लिंग से तय होता है।`,
+      };
+    }
+
+    const which = MARRIAGE_KARAKA[gender];
+    const main = karakas.find((p) => p.graha === which.seventh)!;
+    const other = karakas.find((p) => p.graha === which.other)!;
+
+    return {
+      seventhKaraka: which.seventh,
+      otherKaraka: which.other,
+      strength: String(karakaStrength(main)),
+      verdict:
+        `${gender === 'female' ? 'स्त्री' : 'पुरुष'} की कुंडली में सप्तम भाव का कराका ` +
+        `${GRAHA_NAMES[which.seventh].hindi} है। वह ${main.verdict} ` +
+        `दूसरा कराका ${GRAHA_NAMES[which.other].hindi} है, उसकी शक्ति ${karakaStrength(other)}।`,
+    };
+  })();
+
   void moonSubNak;
 
-  return { lagnaRashi, rashiLord, subLord: moonSubLord, planets, karakas };
+  return { lagnaRashi, rashiLord, subLord: moonSubLord, planets, karakas, marriage };
 }
 
 /** What the chart's ruler carries, for the line at the top of the KP section. */

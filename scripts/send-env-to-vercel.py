@@ -152,6 +152,16 @@ def main() -> int:
     for name in WANTED:
         value = values[name]
 
+        # `vercel env add` refuses to touch a name that already exists:
+        # branch_not_found, and a message that reads like the project is
+        # misconfigured rather than like the variable being already there.
+        #
+        # So the name is removed first. That is safe here because the value is
+        # about to be written back from .env in the same run, and unsafe
+        # anywhere else — which is why it is inside this loop rather than left
+        # to the caller to remember.
+        removed = run(["env", "rm", name, "production", "--yes"])
+
         # `vercel env add NAME production` then the value on stdin.
         result = run(["env", "add", name, "production"], value=value)
 
@@ -167,6 +177,9 @@ def main() -> int:
                 if value and value in line:
                     line = line.replace(value, "<hidden>")
                 print("      " + line[:110])
+        elif removed.returncode != 0:
+            # Not a problem: it just means there was nothing there to remove.
+            print("      (pehle se nahi tha)")
 
     print()
 

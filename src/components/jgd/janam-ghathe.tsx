@@ -76,6 +76,7 @@ interface Result {
     hour: number; minute: number;
     latitude: number; longitude: number;
     name: string;
+    gender: 'female' | 'male' | 'undisclosed';
   } | null;
 }
 
@@ -365,6 +366,7 @@ export function JanamGhathe() {
   const [name, setName] = React.useState('');
   const [date, setDate] = React.useState('');
   const [time, setTime] = React.useState('');
+  const [gender, setGender] = React.useState<'female' | 'male' | 'undisclosed'>('undisclosed');
   const [place, setPlace] = React.useState('');
   const [placeQuery, setPlaceQuery] = React.useState('');
   const [placeOpen, setPlaceOpen] = React.useState(false);
@@ -473,6 +475,7 @@ export function JanamGhathe() {
         latitude: coords.lat,
         longitude: coords.lon,
         name: name.trim(),
+        gender,
       };
     }
 
@@ -533,6 +536,40 @@ export function JanamGhathe() {
               <p className="text-sm text-ink-subtle">{t('jgd.timeHint')}</p>
             </div>
 
+            <div className="grid gap-2">
+              {/*
+                Gender, asked rather than assumed.
+
+                It is here because one reading genuinely turns on it: in KP the
+                seventh house is read through Jupiter for a husband and through
+                Venus for a wife. That is not a difference in wording — it is a
+                different karaka being consulted, and a karaka that gives its own
+                house gives the result.
+
+                So the third option is not a shrug. With nothing selected the
+                page reports both karakas side by side rather than picking one,
+                because guessing produces a confident answer about the wrong
+                thing, and somebody who would rather not say should not be made
+                to.
+              */}
+              <label htmlFor="jgd-gender" className="font-medium">लिंग</label>
+              <select
+                id="jgd-gender"
+                value={gender}
+                onChange={(e) => setGender(e.target.value as 'female' | 'male' | 'undisclosed')}
+                className="rounded-lg border border-line bg-paper px-4 py-3 text-lg"
+              >
+                <option value="undisclosed">बताना नहीं चाहते — दोनों दिखेंगे</option>
+                <option value="female">स्त्री</option>
+                <option value="male">पुरुष</option>
+              </select>
+              <p className="text-sm text-ink-subtle">
+                केपी में सप्तम भाव लिंग के अनुसार पढ़ा जाता है। न बताएँ तो दोनों कराका दिखाई जाएँगे।
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-5">
             <div className="grid gap-2">
               <label htmlFor="jgd-place" className="font-medium">{t('jgd.placeLabel')}</label>
               {/*

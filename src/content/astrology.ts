@@ -7,6 +7,9 @@
  * moon's position is found by counting days from a fixed epoch, which is what
  * nakshatra and rashi *are* — they are not opinions about them.
  *
+ * The date itself is read by numerology.ts's parser rather than by a second one
+ * here. See the note in `vedic()` for why there is only one.
+ *
  * ── Why it needs no AI, and why that is the point ─────────────────────────
  *
  * The nakshatra of a birth is a function of one number: how many days have
@@ -80,9 +83,16 @@ export interface NakshatraInfo {
 
 /*
  * The range a birth may fall in. See the note at the check below.
+ *
+ * The engine reaches 1850 because its own arithmetic — a Julian day from a
+ * calendar date — holds that far back. Numerology stops at 1900, which is its
+ * own convention and its own business; the two differing is fine, the two
+ * parsing the date differently is not.
  */
-const MIN_YEAR = 1900;
+const MIN_YEAR = 1850;
 const CURRENT_YEAR = new Date().getFullYear();
+
+import { parseDate } from './numerology';
 
 /** Days from the reference epoch to 1 January 1900. */
 const EPOCH = 2415020.5;
@@ -190,26 +200,33 @@ function ascendant(jd: number, latitude: number, longitude: number): number {
 }
 
 export function vedic(input: BirthInput): AstroResult | null {
-  const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(input.date.trim());
-  if (!dateMatch) return null;
+  /*
+   * The one parser, not a second copy of it.
+   *
+   * This had its own `/^(\d{4})-(\d{2})-(\d{2})$/` with its own range check and
+   * its own idea of what a year can be, next to an identical one in
+   * numerology.ts. Two copies of a date parser is how a site ends up with a
+   * numerology that reads a date the chart refuses, or the other way round —
+   * which is exactly the report that the anka figures and the chart disagreed.
+   *
+   * The astrology range is wider at the bottom than the numerology one, and that
+   * difference is kept here rather than by parsing twice.
+   */
+  const parts = parseDate(input.date);
+  if (!parts) return null;
 
-  const year = Number(dateMatch[1]);
-  const month = Number(dateMatch[2]);
-  const day = Number(dateMatch[3]);
-
-  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+  const { year, month, day } = parts;
 
   /*
    * A birth has to be somebody's birth.
    *
-   * 1850 parses as a date, so the round-trip check in the other parser passes
-   * it and the engine answers with a full chart and a confident verdict. It is
-   * not a wrong calculation, it is a calculation about nobody.
+   * 1850 parses as a date, so the round-trip check in the parser passes it and
+   * the engine answers with a full chart and a confident verdict. It is not a
+   * wrong calculation, it is a calculation about nobody.
    *
-   * 1900 at the low end and the current year at the high one. The upper bound
-   * is the useful half: a year typed as 20245 or 2100 is a typing slip, and
-   * giving a rashi and a nakshatra for it looks like knowledge rather than an
-   * error.
+   * The upper bound is the useful half: a year typed as 20245 or 2100 is a
+   * typing slip, and giving a rashi and a nakshatra for it looks like knowledge
+   * rather than an error.
    */
   if (year < MIN_YEAR || year > CURRENT_YEAR) return null;
 

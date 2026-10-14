@@ -122,19 +122,34 @@ export function toSidereal(tropical: number, jd: number): number {
 /**
  * The Sun's tropical longitude.
  *
- * The simplest of the nine and the most accurate: a low-order series in the
- * mean anomaly that is good to about a hundredth of a degree over the range of
- * human births, which is smaller than a pada.
+ * ── Why this one is in centuries and the Moon is not ───────────────────────
+ *
+ * The two series look alike and are not. The Moon's coefficients are per day,
+ * because the Moon covers a thirteenth of the zodiac every day and its series
+ * is built from the daily rate. The Sun's equation-of-centre coefficients are
+ * per *Julian century*: −0.004817·T and −0.000014·T².
+ *
+ * Feeding days in where centuries belong puts the squared term alone at
+ * −0.000014 × 9059² = −1149°, which is more than three whole revolutions, and
+ * the Sun comes out fifty degrees from where it should be. It is the worst kind
+ * of wrong: a sign that exists, degrees that look plausible, a chart that
+ * renders, a nakshatra that exists. On 14 March 1975 it put the Sun in Mesha
+ * when it belongs in Meena, and it moved the Moon's dasha, the phaladesh and
+ * every yoga built on them.
+ *
+ * The check that catches it needs no ephemeris: at the March equinox the Sun's
+ * tropical longitude is 0° by definition, so casting that instant and finding 0
+ * is a check against the calendar itself.
  */
 export function sunLongitude(jd: number): number {
-  const n = d(jd);
+  const T = d(jd) / JULIAN_CENTURY_DAYS;
 
-  const meanLongitude = norm360(280.46646 + 0.9856474 * n);
-  const meanAnomaly = (357.52911 + 0.9856003 * n) * DEG;
+  const meanLongitude = norm360(280.46646 + 36000.76983 * T + 0.0003032 * T * T);
+  const meanAnomaly = (357.52911 + 35999.05029 * T - 0.0001537 * T * T) * DEG;
 
   const centre =
-    (1.914602 - 0.004817 * n - 0.000014 * n * n) * Math.sin(meanAnomaly) +
-    (0.019993 - 0.000101 * n) * Math.sin(2 * meanAnomaly) +
+    (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(meanAnomaly) +
+    (0.019993 - 0.000101 * T) * Math.sin(2 * meanAnomaly) +
     0.000289 * Math.sin(3 * meanAnomaly);
 
   return norm360(meanLongitude + centre);
@@ -207,14 +222,30 @@ export function moonLongitude(jd: number): number {
  * Rahu is this and Ketu is it plus 180 degrees. The node regresses through the
  * zodiac in about 18.6 years, which is why its position depends so heavily on
  * the exact year of a birth.
+ *
+ * ── Why the powers of d are so small here ───────────────────────────────────
+ *
+ * The series is written in Julian centuries — `Ω = 125.0445479 − 1934.1362891·T
+ * + 0.0020708·T²` — and only the linear term converts to days by dividing.
+ * The quadratic does not convert that way: 0.0020708·(d/36525)² is
+ * 1.5523·10⁻¹²·d², not 5.63·10⁻⁵·d².
+ *
+ * The coefficient used was the second number instead of the first, which is
+ * thirty-six million times too large. Over twenty years the quadratic term then
+ * contributes about 3000° — eighty-five whole circuits — so the node was not
+ * slowly wrong, it was unrelated to where the node is. The daily rate came out
+ * at anything between minus five and two hundred and sixty degrees depending on
+ * the year asked about, instead of a steady nineteen.
+ *
+ * The linear term was right, which is why a chart still rendered: a Rahu and a
+ * Ketu in a real sign, a hundred and eighty degrees apart, a nakshatra that
+ * exists. Only asking for the year-over-year drift showed that it was not moving
+ * backwards nineteen degrees a year, and that it was not moving backwards at all.
  */
 export function meanNode(jd: number): number {
-  const n = d(jd);
+  const T = d(jd) / JULIAN_CENTURY_DAYS;
   return norm360(
-    125.0445479 -
-      0.0529539 * n -
-      0.0000563 * n * n -
-      0.0000011 * n * n * n
+    125.0445479 - 1934.1362891 * T + 0.0020708 * T * T + (T * T * T) / 450000
   );
 }
 
@@ -238,6 +269,31 @@ export function meanNode(jd: number): number {
 interface Elements {
   a: number; e: number; i: number; L: number; peri: number; node: number;
   da: number; de: number; di: number; dL: number; dPeri: number; dNode: number;
+  /**
+   * Whether `dL` is in degrees per day rather than per Julian century.
+   *
+   * It is, for three of the six, and it is the single most misleading thing
+   * about this table.
+   *
+   * The rates for the semi-major axis, the eccentricity, the inclination, the
+   * longitude of perihelion and the node are all per century for every planet.
+   * The rate of the mean longitude alone is per century for Mercury, Venus and
+   * the Earth-Moon barycentre, and per *day* for Mars, Jupiter and Saturn — so
+   * that Jupiter's row reads 0.0830853001, which is its daily motion, and
+   * Mercury's reads 26087.90314157, which is its per-century motion.
+   *
+   * Reading all six as per century leaves Mars, Jupiter and Saturn moving at a
+   * thirty-thousandth of their real rate. Jupiter then advances 0.1° between
+   * 1900 and 2050 instead of four thousand, which is a planet frozen outside
+   * the zodiac's worth of anybody's attention: the longitude is a real angle,
+   * the sign is a real sign, and Jupiter is in the same house for every chart on
+   * the site.
+   *
+   * The numbers are left exactly as published so that they can be checked
+   * against the source, and the units are carried in the flag rather than
+   * quietly folded into the digits.
+   */
+  dLPerDay?: boolean;
 }
 
 const J2000 = 2451545.0;
@@ -262,22 +318,25 @@ const ELEMENTS: Record<string, Elements> = {
     dL: 58517.81538729, dPeri: 0.00268329, dNode: -0.27769418,
   },
   mars: {
-    a: 1.523710, e: 0.093394, i: 1.849691, L: -4.553432,
-    peri: -23.943629, node: 49.559538,
-    da: 0.000018, de: 0.000078, di: -0.008131,
+    a: 1.52371034, e: 0.0933941, i: 1.84969142, L: -4.55343205,
+    peri: -23.94362959, node: 49.55953891,
+    da: 0.00001847, de: 0.00007882, di: -0.00813131,
     dL: 0.5240207766, dPeri: 0.44441088, dNode: -0.29257343,
+    dLPerDay: true,
   },
   jupiter: {
-    a: 5.202887, e: 0.048386, i: 1.304396, L: 34.396440,
-    peri: 14.728479, node: 100.473909,
-    da: -0.000116, de: -0.000132, di: -0.001837,
+    a: 5.202887, e: 0.04838624, i: 1.30439695, L: 34.39644051,
+    peri: 14.72847983, node: 100.47390909,
+    da: -0.00011607, de: -0.00013257, di: -0.00183714,
     dL: 0.0830853001, dPeri: 0.21252668, dNode: 0.20469106,
+    dLPerDay: true,
   },
   saturn: {
-    a: 9.536675, e: 0.053862, i: 2.485991, L: 49.954244,
-    peri: 92.598878, node: 113.662424,
-    da: -0.001250, de: -0.000509, di: 0.001936,
+    a: 9.53667594, e: 0.05386179, i: 2.48599187, L: 49.95424423,
+    peri: 92.59887831, node: 113.66242448,
+    da: -0.0012506, de: -0.00050991, di: 0.00193609,
     dL: 0.0334442282, dPeri: -0.41897216, dNode: -0.28867794,
+    dLPerDay: true,
   },
 };
 
@@ -297,25 +356,48 @@ function eccentricAnomaly(M: number, e: number): number {
 /**
  * Heliocentric position of one body, in the tropical frame.
  *
- * The three rotations are applied in the order they are written: inclination
- * about the x-axis, then the node about the z, then the argument of perihelion
- * within the orbit. Reordering them is the classical way to get a planet into
- * the right part of the sky but the wrong part of it.
+ * ── The two angles that look alike and are not ─────────────────────────────
+ *
+ * `L − ϖ` is the mean anomaly: where the planet has got to, measured from its
+ * own perihelion. `ϖ − Ω` is the argument of perihelion: where its perihelion
+ * points, measured from the equinox. They share a subtraction and nothing else,
+ * and the first is what Kepler needs while the second is what the rotation from
+ * the orbital plane into the zodiac needs.
+ *
+ * One variable was doing both jobs, set to `L − ϖ`. Every planet then came out
+ * rotated by the difference between the two — for the Earth, where the node is
+ * zero and the two differ by a hundred and five degrees, that put the Earth at
+ * 355° when it is at 100°, and every inner planet landed on the far side of the
+ * Sun from where it was. Venus came out 180° from the Sun, which is not a
+ * position Venus can be in from anywhere in the solar system.
+ *
+ * It was not caught by the periodicity test, because rotating a planet's orbit by
+ * a constant angle leaves its orbital period intact. It was caught by asking the
+ * one question that needs no table: how far can Venus be from the Sun? Forty-seven
+ * degrees, because that is all the geometry allows. It was coming out at a hundred
+ * and eighty.
+ *
+ * Exported because that question is worth being able to ask again.
  */
-function heliocentric(jd: number, key: string) {
+export function heliocentric(jd: number, key: string) {
   const el = ELEMENTS[key];
   const centuries = (jd - J2000) / JULIAN_CENTURY_DAYS;
 
   const a = el.a + el.da * centuries;
   const e = el.e + el.de * centuries;
   const i = (el.i + el.di * centuries) * DEG;
-  const L = (el.L + el.dL * centuries) * DEG;
+  const L = (el.L + el.dL * (el.dLPerDay ? (jd - J2000) : centuries)) * DEG;
   const peri = (el.peri + el.dPeri * centuries) * DEG;
   const node = (el.node + el.dNode * centuries) * DEG;
 
-  const argPeri = L - peri;
-  const M = norm360(argPeri / DEG) * DEG;
-  const E = eccentricAnomaly(M, e);
+  // The mean anomaly, for Kepler. Measured from perihelion.
+  const meanAnomaly = norm360((L - peri) / DEG) * DEG;
+
+  // The argument of perihelion, for the rotation into the zodiac. Measured from
+  // the equinox, and nothing to do with the mean anomaly.
+  const argPeri = peri - node;
+
+  const E = eccentricAnomaly(meanAnomaly, e);
 
   const xp = a * (Math.cos(E) - e);
   const yp = a * Math.sqrt(Math.max(0, 1 - e * e)) * Math.sin(E);
