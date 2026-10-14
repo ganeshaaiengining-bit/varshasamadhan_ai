@@ -115,6 +115,9 @@ export const LANGUAGES: Language[] = [
 /* -------------------------------------------------------------------------- */
 
 const HINDI: Record<string, string> = {
+  'jgd.placeSearch': 'शहर का नाम लिखिए',
+  'jgd.placeNoMatch': 'यह शहर नहीं मिला। कोई और नाम लिखिए।',
+
   'account.name': 'आपका नाम',
   'account.namePlaceholder': 'जैसे: सीता देवी',
   'account.nameHint': 'यह आपकी पहचान के लिए है। कोई भी नाम चलेगा, और यह ज़रूरी नहीं है।',
@@ -726,6 +729,9 @@ const HINDI: Record<string, string> = {
 /* -------------------------------------------------------------------------- */
 
 const ENGLISH: Record<string, string> = {
+  'jgd.placeSearch': 'Type the name of your town',
+  'jgd.placeNoMatch': 'That town is not in the list. Try another name.',
+
   'account.name': 'Your name',
   'account.namePlaceholder': 'e.g. Sita Devi',
   'account.nameHint': 'So we know who you are. Any name will do, and it is not required.',
@@ -1286,6 +1292,9 @@ const ENGLISH: Record<string, string> = {
  */
 
 const BENGALI: Record<string, string> = {
+  'jgd.placeSearch': 'আপনার শহরের নাম লিখুন',
+  'jgd.placeNoMatch': 'এই শহরটি তালিকায় নেই। অন্য নাম লিখুন।',
+
   'account.name': 'আপনার নাম',
   'account.namePlaceholder': 'যেমন: সীতা দেবী',
   'account.nameHint': 'যাতে আমরা জানি আপনি কে। যেকোনো নাম চলবে, এবং এটি আবশ্যক নয়।',
@@ -1988,6 +1997,9 @@ const BENGALI: Record<string, string> = {
 };
 
 const TAMIL: Record<string, string> = {
+  'jgd.placeSearch': 'உங்கள் ஊரின் பெயரைத் தட்டச்சு செய்யுங்கள்',
+  'jgd.placeNoMatch': 'இந்த ஊர் பட்டியலில் இல்லை. வேறு பெயரைத் தட்டச்சு செய்யுங்கள்.',
+
   'account.name': 'உங்கள் பெயர்',
   'account.namePlaceholder': 'எ.கா. சீதா தேவி',
   'account.nameHint': 'நீங்கள் யார் என்பதை அறிய. எந்தப் பெயரும் போதும், இது தேவையில்லை.',
@@ -2689,6 +2701,9 @@ const TAMIL: Record<string, string> = {
 };
 
 const TELUGU: Record<string, string> = {
+  'jgd.placeSearch': 'మీ ఊరి పేరు టైప్ చేయండి',
+  'jgd.placeNoMatch': 'ఆ ఊరు జాబితాలో లేదు. వేరే పేరు ఇవ్వండి.',
+
   'account.name': 'మీ పేరు',
   'account.namePlaceholder': 'ఉదా. సీతా దేవి',
   'account.nameHint': 'మీరు ఎవరో తెలుసుకోవడానికి. ఏ పేరైనా పోతుంది, ఇది అవసరం లేదు.',
@@ -3390,6 +3405,9 @@ const TELUGU: Record<string, string> = {
 };
 
 const MARATHI: Record<string, string> = {
+  'jgd.placeSearch': 'तुमच्या शहराचे नाव लिहा',
+  'jgd.placeNoMatch': 'हे शहर या यादीत नाही. दुसरे नाव वापरा.',
+
   'account.name': 'तुमचे नाव',
   'account.namePlaceholder': 'उदा. सीता देवी',
   'account.nameHint': 'हे कळणून आपण कोण आहात. कोणताही नाव चालेल, आणि हे आवश्यक नाही.',
@@ -4091,6 +4109,9 @@ const MARATHI: Record<string, string> = {
 };
 
 const GUJARATI: Record<string, string> = {
+  'jgd.placeSearch': 'તમારા શહેરનું નામ લખો',
+  'jgd.placeNoMatch': 'આ શહેર યાદીમાં નથી. બીજું નામ લખો.',
+
   'account.name': 'તમારું નામ',
   'account.namePlaceholder': 'દા.ત. સીતા દેવી',
   'account.nameHint': 'આપણે કોણ છો તે જાણવા. કોઈપણ નામ ચાલશે, અને આ જરૂરી નથી.',
@@ -4792,6 +4813,9 @@ const GUJARATI: Record<string, string> = {
 };
 
 const KANNADA: Record<string, string> = {
+  'jgd.placeSearch': 'ನಿಮ್ಮ ಊರಿನ ಹೆಸರು ಟೈಪ್ ಮಾಡಿ',
+  'jgd.placeNoMatch': 'ಆ ಊರು ಪಟ್ಟಿಯಲ್ಲಿಲ್ಲ. ಬೇರೆ ಹೆಸರು ಟೈಪ್ ಮಾಡಿ.',
+
   'account.name': 'ನಿಮ್ಮ ಹೆಸರು',
   'account.namePlaceholder': 'ಉದಾ. ಸೀತಾ ದೇವಿ',
   'account.nameHint': 'ನೀವು ಯಾರು ಎಂದು ತಿಳಿಯಲು. ಯಾವುದೇ ಹೆಸರು ಸ್ವೀಕರಿಸಿದರೂ, ಇದು ಅಗತ್ಯವಿಲ್ಲ.',
@@ -5503,6 +5527,9 @@ const KANNADA: Record<string, string> = {
 };
 
 const MALAYALAM: Record<string, string> = {
+  'jgd.placeSearch': 'നിങ്ങളുടെ ഊരിന്റെ പേര് ടൈപ്പ് ചെയ്യുക',
+  'jgd.placeNoMatch': 'ആ ഊര് പട്ടിയില് ഇല്ല. മറ്റൊരു പേര് ടൈപ്പ് ചെയ്യുക.',
+
   'account.name': 'നിങ്ങളുടെ പേര്',
   'account.namePlaceholder': 'ഉദാ. സീത ദേവി',
   'account.nameHint': 'നിങ്ങൾ ആരാണെന്ന് അറിയാൻ. ഏത് പേരും സ്വീകരിക്കും, ഇത് ആവശ്യമല്ല.',
@@ -6218,6 +6245,9 @@ const MALAYALAM: Record<string, string> = {
 };
 
 const PUNJABI: Record<string, string> = {
+  'jgd.placeSearch': 'ਆਪਣੇ ਸ਼ਹਿਰ ਦਾ ਨਾਮ ਲਿਖੋ',
+  'jgd.placeNoMatch': 'ਇਹ ਸ਼ਹਿਰ ਸੂਚੀ ਵਿੱਚ ਨਹੀਂ। ਹੋਰ ਨਾਮ ਲਿਖੋ।',
+
   'account.name': 'ਤੁਹਾਡਾ ਨਾਮ',
   'account.namePlaceholder': 'ਉਦਾ. ਸੀਤਾ ਦੇਵੀ',
   'account.nameHint': 'ਤੁਸੀਂ ਕੌਣ ਹੋ ਇਹ ਜਾਣਣ ਲਈ। ਕੋਈ ਵੀ ਨਾਮ ਚੱਲੇਗਾ, ਅਤੇ ਇਹ ਲੋੜੀਂਦਾ ਨਹੀਂ।',
@@ -6936,6 +6966,9 @@ const PUNJABI: Record<string, string> = {
 };
 
 const URDU: Record<string, string> = {
+  'jgd.placeSearch': 'اپنے شہر کا نام لکھیں',
+  'jgd.placeNoMatch': 'یہ شہر فہرست میں نہیں۔ دوسرا نام لکھیں۔',
+
   'account.name': 'آپ کا نام',
   'account.namePlaceholder': 'مثلاً سیتا دیوی',
   'account.nameHint': 'یہ جاننے کے لیے کہ آپ کون ہیں۔ کوئی بھی نام چلے گا، اور یہ ضروری نہیں۔',
@@ -7643,6 +7676,9 @@ const URDU: Record<string, string> = {
 };
 
 const ARABIC: Record<string, string> = {
+  'jgd.placeSearch': 'اكتب اسم مدينتك',
+  'jgd.placeNoMatch': 'هذه المدينة ليست في القائمة. جرّب اسماً آخر.',
+
   'account.name': 'اسمك',
   'account.namePlaceholder': 'مثلاً سيدة ديفى',
   'account.nameHint': 'حتى نعرف من أنت. أي اسم سيفي، وليس مطلوبًا.',
@@ -8356,6 +8392,9 @@ const ARABIC: Record<string, string> = {
 };
 
 const SPANISH: Record<string, string> = {
+  'jgd.placeSearch': 'Escribe el nombre de tu pueblo',
+  'jgd.placeNoMatch': 'Ese pueblo no está en la lista. Prueba otro nombre.',
+
   'account.name': 'Tu nombre',
   'account.namePlaceholder': 'p. ej. Sita Devi',
   'account.nameHint': 'Para saber quién eres. Cualquier nombre sirve y no es obligatorio.',
