@@ -42,7 +42,7 @@ export const viewport: Viewport = {
  * panel, that is the moment to move it into the database.
  */
 function siteName(): string {
-  return process.env.NEXT_PUBLIC_SITE_NAME?.trim() || 'वर्षा समाधान AI';
+  return process.env.NEXT_PUBLIC_SITE_NAME?.trim() || 'Varsha Samadhan AI';
 }
 
 export async function generateMetadata(): Promise<Metadata> {

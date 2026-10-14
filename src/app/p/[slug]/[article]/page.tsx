@@ -47,7 +47,7 @@ export default async function ArticlePage({
   const { slug, article } = await params;
   const { t, lang } = await getT();
 
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'वर्षा समाधान AI';
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Varsha Samadhan AI';
 
   const row = await safeRead(
     `article:${article}`,

@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ReviewsPage() {
   const { t, lang } = await getT();
 
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'वर्षा समाधान AI';
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Varsha Samadhan AI';
 
   /*
    * Guarded, and unlike the other pages it does not fall back to an empty list.

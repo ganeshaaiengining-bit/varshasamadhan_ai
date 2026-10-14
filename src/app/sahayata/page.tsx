@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * arrive here have a problem right now and want an answer, not a menu.
  */
 export default async function SahayataPage() {
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'वर्षा समाधान AI';
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Varsha Samadhan AI';
   const { t, lang } = await getT();
 
   /*
