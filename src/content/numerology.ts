@@ -192,6 +192,11 @@ export function parseDate(iso: string): { year: number; month: number; day: numb
   if (month < 1 || month > 12) return null;
   if (day < 1 || day > 31) return null;
 
+  // Same range as the astrology engine, for the same reason: a date that parses
+  // is not the same as a date somebody was born on, and a chart for one looks
+  // like knowledge rather than an error.
+  if (year < 1900 || year > new Date().getFullYear()) return null;
+
   // Round-trip check: catches 30 February and 31 April.
   const check = new Date(Date.UTC(year, month - 1, day));
   if (

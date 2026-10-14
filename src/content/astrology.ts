@@ -58,9 +58,18 @@ export const RASHIS = [
 ];
 
 export interface NakshatraInfo {
+  /**
+   * 1–27, as nakshatras are numbered in every chart.
+   *
+   * NOT an array offset. `name` is `NAKSHATRAS[index - 1]`, and those two
+   * disagreeing is the bug this comment exists to prevent: the name was looked
+   * up with the zero-based value while the index carried a one, so index 7 came
+   * back labelled "Ardra", which is the sixth. It passed a page that renders and
+   * failed the first test written to look for it.
+   */
   index: number;
   name: string;
-  /** 1–27. */
+  /** 1–4. */
   pada: number;
   lord: string;
   /** Degrees within the nakshatra, 0–13°20′. */
@@ -68,6 +77,12 @@ export interface NakshatraInfo {
   /** The rashi the nakshatra falls in. */
   rashi: string;
 }
+
+/*
+ * The range a birth may fall in. See the note at the check below.
+ */
+const MIN_YEAR = 1900;
+const CURRENT_YEAR = new Date().getFullYear();
 
 /** Days from the reference epoch to 1 January 1900. */
 const EPOCH = 2415020.5;
@@ -184,6 +199,20 @@ export function vedic(input: BirthInput): AstroResult | null {
 
   if (month < 1 || month > 12 || day < 1 || day > 31) return null;
 
+  /*
+   * A birth has to be somebody's birth.
+   *
+   * 1850 parses as a date, so the round-trip check in the other parser passes
+   * it and the engine answers with a full chart and a confident verdict. It is
+   * not a wrong calculation, it is a calculation about nobody.
+   *
+   * 1900 at the low end and the current year at the high one. The upper bound
+   * is the useful half: a year typed as 20245 or 2100 is a typing slip, and
+   * giving a rashi and a nakshatra for it looks like knowledge rather than an
+   * error.
+   */
+  if (year < MIN_YEAR || year > CURRENT_YEAR) return null;
+
   let hours = 12; // noon, which is correct for a birth with no recorded time
   let minutes = 0;
   let timeKnown = false;
@@ -219,6 +248,9 @@ export function vedic(input: BirthInput): AstroResult | null {
 
   const result: AstroResult = {
     nakshatra: {
+      // One-based, because nakshatras are numbered 1 to 27 in every chart and a
+      // page that printed "0" or a name next to a number one lower than the
+      // one they count on would be checked against the wrong entry.
       index: nakshatraIndex + 1,
       name: NAKSHATRAS[nakshatraIndex],
       pada,
