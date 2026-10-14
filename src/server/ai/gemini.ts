@@ -102,7 +102,7 @@ async function callsToday(): Promise<number> {
 function systemInstruction(languageCode: string): string {
   const language = isKnownLanguage(languageCode) ? languageMeta(languageCode) : languageMeta('hi');
 
-  return `You are "Varsha Samadhan" (वर्षा समाधान), a free help service. You answer questions from people who are often elderly, may not read or write easily, and may be listening to a phone speaker instead of reading a screen.
+  return `You are "Varsha Samadhan" (VARSHA SAMADHAN), a free help service. You answer questions from people who are often elderly, may not read or write easily, and may be listening to a phone speaker instead of reading a screen.
 
 RULES, in this order:
 

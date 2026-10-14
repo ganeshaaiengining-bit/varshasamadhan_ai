@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function SamarohPage() {
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Varsha Samadhan AI';
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'VARSHA SAMADHAN AI';
   const { t, tf } = await getT();
 
   /*

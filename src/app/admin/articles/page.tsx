@@ -23,7 +23,7 @@ export const metadata: Metadata = {
  * keeping them apart stops a half-finished draft being lost by a refresh.
  */
 export default async function AdminArticlesPage() {
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Varsha Samadhan AI';
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'VARSHA SAMADHAN AI';
 
   if (!(await isOwnerSession())) {
     return (

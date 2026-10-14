@@ -38,7 +38,7 @@ export const metadata: Metadata = {
  * fixes, and an owner locked out of their own site is told which one it is.
  */
 export default async function AdminPage() {
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Varsha Samadhan AI';
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'VARSHA SAMADHAN AI';
 
   // Nothing is loaded at all until the session is confirmed. Rendering the panel
   // first and hiding it with CSS would ship the visitor names to anyone who

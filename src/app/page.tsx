@@ -106,7 +106,7 @@ export default async function HomePage() {
    */
   const noCategories = categories.length === 0;
 
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Varsha Samadhan AI';
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'VARSHA SAMADHAN AI';
 
   return (
     <SiteChrome siteName={siteName}>

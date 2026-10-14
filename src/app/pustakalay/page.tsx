@@ -41,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * that before they spend ten minutes searching for something that is not there.
  */
 export default async function LibraryPage() {
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Varsha Samadhan AI';
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'VARSHA SAMADHAN AI';
   const { t } = await getT();
 
   return (

@@ -32,7 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * for the same reason.
  */
 export default async function SmritiPage() {
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'Varsha Samadhan AI';
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'VARSHA SAMADHAN AI';
   const { lang, t } = await getT();
 
   return (
