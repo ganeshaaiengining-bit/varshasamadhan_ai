@@ -6,7 +6,7 @@ import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { getT } from '@/server/i18n';
 import { Icon, type IconName } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
-import { AskBox } from '@/components/ask/ask-box';
+import { AskBoxGate } from '@/components/ask/ask-box-gate';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs';
 
 /** Always current: the owner can add an article at any time. */
@@ -131,7 +131,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             {t('article.askAbout')}
           </h2>
           <div className="mt-4">
-            <AskBox
+            <AskBoxGate
               category={category.title}
               suggested={articles.slice(0, 3).map((a) => ({ label: a.title, question: a.summary || a.title }))}
             />

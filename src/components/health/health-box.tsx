@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { Icon } from '@/components/ui/icon';
 import { AskBox } from '@/components/ask/ask-box';
+import { SignInWall } from '@/components/ask/sign-in-wall';
 import { useLanguage } from '@/components/language/language';
 import {
   AGE_BANDS,
@@ -49,7 +50,7 @@ import {
  * trusting whatever comes back, and this is the only place to say so before
  * they read it.
  */
-export function HealthBox() {
+export function HealthBox({ signedIn = false }: { signedIn?: boolean }) {
   const { t } = useLanguage();
 
   /* The middle band is the default because the two ends are the ones that get
@@ -191,7 +192,13 @@ export function HealthBox() {
       </div>
 
       <div className="mt-6">
-        <AskBox suggested={suggested} />
+        /*
+     * The health box is a client component, so it cannot import the server gate.
+     * It asks its parent whether anybody is signed in and shows the wall itself
+     * when not. The rule still holds twice over: this is only what a person can
+     * see, and the route refuses the question regardless.
+     */
+    signedIn ? <AskBox suggested={suggested} /> : <SignInWall />
       </div>
 
       <p className="mt-4 flex items-center justify-center gap-2 text-sm text-ink-subtle">

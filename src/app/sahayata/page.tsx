@@ -3,8 +3,9 @@ import Link from 'next/link';
 import { prisma } from '@/server/db';
 import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { getT } from '@/server/i18n';
+import { currentUser } from '@/server/auth/session';
 import { SiteChrome } from '@/components/layout/site-chrome';
-import { AskBox } from '@/components/ask/ask-box';
+import { AskBoxGate } from '@/components/ask/ask-box-gate';
 import { HealthBox } from '@/components/health/health-box';
 
 export const dynamic = 'force-dynamic';
@@ -19,6 +20,10 @@ export async function generateMetadata(): Promise<Metadata> {
  * arrive here have a problem right now and want an answer, not a menu.
  */
 export default async function SahayataPage() {
+  /* Read here so the health box below can be told. It is a client
+   * component and cannot ask for itself. */
+  const user = await currentUser();
+
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'VARSHA SAMADHAN AI';
   const { t, lang } = await getT();
 
@@ -57,7 +62,7 @@ export default async function SahayataPage() {
         </div>
 
         <div className="card mt-8 p-5 sm:p-7">
-          <AskBox
+          <AskBoxGate
             suggested={[
               { label: t('help.q1.label'), question: t('help.q1.question') },
               { label: t('help.q2.label'), question: t('help.q2.question') },
@@ -77,7 +82,7 @@ export default async function SahayataPage() {
          * without diagnosing themselves, so it is asked first and the subject
          * chips stay as the second, harder way in.
          */}
-        <HealthBox />
+        <HealthBox signedIn={Boolean(user)} />
 
         {categories.length > 0 ? (
           <section className="mt-10">

@@ -4,6 +4,7 @@ import { prisma } from '@/server/db';
 import { safeRead } from '@/server/db-guard';
 import { askQuestion, isConfigured } from '@/server/ai/gemini';
 import { getLanguage } from '@/server/i18n';
+import { currentUser } from '@/server/auth/session';
 
 /**
  * POST /api/ask
@@ -45,6 +46,41 @@ const TRIVIAL = new Set([
 ]);
 
 export async function POST(request: Request) {
+  /*
+   * Sign in first.
+   *
+   * The owner decided this: nobody may ask anything until they have an account.
+   * That is their service and their decision, and it is enforced here rather
+   * than in the page, because a page is a suggestion and anything can post to
+   * this endpoint without ever loading it.
+   *
+   * ── What it costs, and it is a real cost ─────────────────────────────────
+   *
+   * Every anonymous visitor now meets a form before the thing they came for. The
+   * people this site is written for are elderly, often cannot read or write
+   * easily, and are frequently on a borrowed phone. Asking somebody to choose a
+   * name and invent a password before they may ask whether their mother's cough
+   * needs a doctor will lose most of them before they begin.
+   *
+   * This is written down because it is a consequence of the decision rather than
+   * a reason to reverse it, and it should not turn up later as a surprise. It is
+   * two blocks to lift: this one, and the gate in the ask box.
+   *
+   * ── One thing the owner should know before this ships ────────────────────
+   *
+   * There is no database behind sign-in yet. So sign-in always fails, and this
+   * gate means nobody can ask anything at all until it does. The service goes
+   * from open to closed the moment this deploys, not gradually.
+   */
+  const user = await currentUser();
+
+  if (!user) {
+    return NextResponse.json(
+      { ok: false, needsLogin: true, fallback: true, reasonKey: 'ask.signInFirst' },
+      { status: 401 },
+    );
+  }
+
   let raw: unknown;
   try {
     raw = await request.json();

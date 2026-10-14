@@ -3,7 +3,7 @@ import { prisma } from '@/server/db';
 import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { Icon, type IconName } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
-import { AskBox } from '@/components/ask/ask-box';
+import { AskBoxGate } from '@/components/ask/ask-box-gate';
 
 import { Sunrise, SunriseBanner } from '@/components/visual/sunrise';
 import { BrandTitle } from '@/components/visual/brand-title';
@@ -155,7 +155,7 @@ export default async function HomePage() {
           </p>
 
           <div className="animate-rise mx-auto mt-9 max-w-2xl text-left" style={{ animationDelay: '240ms' }}>
-            <AskBox
+            <AskBoxGate
               suggested={[
                 { label: 'बिजली चली गई तो क्या करें?', question: 'घर में अचानक बिजली चली गई है, अंधेरा हो गया है। क्या करना चाहिए?' },
                 { label: 'बच्चे की पढ़ाई में कमज़ोरी', question: 'मेरे बच्चे की पढ़ाई में बहुत कमज़ोरी है। घर पर उसकी पढ़ाई कैसे बेहतर करें?' },
