@@ -3,8 +3,7 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/components/language/language';
-import { signIn, signUp } from '@/server/account/actions';
-import { endSession } from '@/server/auth/session';
+import { signIn, signUp, signOut } from '@/server/account/actions';
 import type { AccountMode } from '@/server/account/actions';
 
 /**
@@ -55,7 +54,7 @@ export function AccountForm({
       <form
         className={className}
         action={async () => {
-          await endSession();
+          await signOut();
           router.refresh();
         }}
       >

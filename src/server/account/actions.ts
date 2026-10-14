@@ -1,14 +1,33 @@
-import 'server-only';
+'use server';
 
 import { z } from 'zod';
 import { prisma } from '@/server/db';
-import { newSalt, hashPassword, newSessionToken } from '@/server/auth/crypto';
-import { startSession, sessionExpiry } from '@/server/auth/session';
+import {
+  newSalt,
+  hashPassword,
+  verifyPassword,
+  newSessionToken,
+} from '@/server/auth/crypto';
+import { startSession, endSession, sessionExpiry } from '@/server/auth/session';
 
 /**
  * ===========================================================================
  *  SIGN IN, SIGN UP, SIGN OUT
  * ===========================================================================
+ *
+ * `'use server'` rather than `import 'server-only'`, and the difference is the
+ * whole reason this file can exist.
+ *
+ * The account form is a client component, because it has to react to typing.
+ * `import 'server-only'` marks a module as one that must never reach the
+ * browser bundle, so a client component cannot import anything from it. Every
+ * other module here uses that marker correctly and none of them is imported by
+ * a client component.
+ *
+ * `'use server'` does the opposite job: it declares that the exported functions
+ * are the entry points the browser is allowed to call, and Next replaces each
+ * one with a request to the server. The form calls `signIn` exactly as it would
+ * call a local function and never sees Prisma, the salt, or the token.
  *
  * ── What an account holds, and why so little ───────────────────────────────
  *
@@ -23,14 +42,6 @@ import { startSession, sessionExpiry } from '@/server/auth/session';
  * exist. One message is returned for all of them, and it says what to do rather
  * than what went wrong. The same applies to registration: a handle already
  * taken is reported as "choose another", not as "that name exists".
- *
- * ── Why the handle is compared case-insensitively ──────────────────────────
- *
- * Stored lowercased in a separate column rather than compared with a
- * case-insensitive operator. Two people with "Sita" and "sita" are different
- * people; on a shared phone one of them logging out is more likely than
- * anything else, and making both resolve to one row would be worse than the
- * rule that normally gets broken.
  *
  * ── Why the rate limit is by handle and not by IP ──────────────────────────
  *
@@ -164,7 +175,6 @@ export async function signIn(handle: string, password: string): Promise<AccountR
       return { ok: false, reason: 'account.errWrong' };
     }
 
-    const { verifyPassword } = await import('@/server/auth/crypto');
     if (!verifyPassword(parsed.data.password!, user.passwordSalt, user.passwordHash)) {
       return { ok: false, reason: 'account.errWrong' };
     }
@@ -180,4 +190,17 @@ export async function signIn(handle: string, password: string): Promise<AccountR
   } catch {
     return { ok: false, reason: 'account.errTryLater' };
   }
+}
+
+/**
+ * Sign out of this browser.
+ *
+ * A server action rather than a direct call from the form, because ending a
+ * session means deleting a row and writing a cookie header, and neither of
+ * those can happen in the browser. The form cannot import the session module
+ * for the same reason it cannot import this one: `next/headers` in a client
+ * bundle is a build error, and the build caught it.
+ */
+export async function signOut(): Promise<void> {
+  await endSession();
 }
