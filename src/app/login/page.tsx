@@ -60,11 +60,14 @@ export default async function LoginPage() {
           <div className="card mt-8 p-6 sm:p-8">
             <div className="flex items-center gap-3">
               <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-saffron/15 font-display text-xl text-saffron-deep">
-                {user.handle.slice(0, 1).toUpperCase()}
+                {(user.name || user.handle).slice(0, 1).toUpperCase()}
               </span>
               <div className="min-w-0">
                 <p className="text-sm text-ink-subtle">{t('account.signedInAs')}</p>
-                <p className="truncate font-display text-2xl">{user.handle}</p>
+                <p className="truncate font-display text-2xl">{user.name || user.handle}</p>
+                {user.name && (
+                  <p className="truncate text-sm text-ink-subtle">{user.handle}</p>
+                )}
               </div>
             </div>
 

@@ -67,6 +67,14 @@ const schema = z
   .object({
     handle: handleRule,
     password: passwordRule,
+    // The person's own name, as they would write it. Optional, and free text:
+    // it is not an identifier and nothing looks it up.
+    name: z
+      .string()
+      .trim()
+      .max(60, 'tooLong')
+      .optional()
+      .or(z.literal('')),
     phone: z
       .string()
       .trim()
@@ -105,8 +113,9 @@ export async function signUp(
   password: string,
   phone: string,
   language: string,
+  name = '',
 ): Promise<AccountResult> {
-  const parsed = schema.safeParse({ handle, password, phone });
+  const parsed = schema.safeParse({ handle, password, phone, name });
   if (!parsed.success) return { ok: false, reason: 'account.errBad' };
 
   const clean = parsed.data.handle!.trim();
@@ -129,6 +138,7 @@ export async function signUp(
         passwordHash: hashPassword(parsed.data.password!, salt),
         passwordSalt: salt,
         phone: parsed.data.phone?.trim() || null,
+        name: parsed.data.name?.trim() ?? '',
         language: language.slice(0, 5),
       },
       select: { id: true },

@@ -69,11 +69,16 @@ export default async function AccountPage() {
 
         <div className="card mt-6 flex flex-wrap items-center gap-4 p-5">
           <span className="grid h-12 w-12 place-items-center rounded-full bg-saffron/15 font-display text-xl text-saffron-deep">
-            {user.handle.slice(0, 1).toUpperCase()}
+            {(user.name || user.handle).slice(0, 1).toUpperCase()}
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-sm text-ink-subtle">{t('account.signedInAs')}</p>
-            <p className="truncate font-display text-2xl">{user.handle}</p>
+            {/* The name they gave, if they gave one, and the handle underneath it.
+                The name is what they recognise; the handle is what signs in. */}
+            <p className="truncate font-display text-2xl">{user.name || user.handle}</p>
+            {user.name && (
+              <p className="truncate text-sm text-ink-subtle">{user.handle}</p>
+            )}
           </div>
           <AccountForm mode="logout" className="btn-ghost" />
         </div>

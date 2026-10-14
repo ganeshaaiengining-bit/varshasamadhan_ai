@@ -46,6 +46,7 @@ export function AccountForm({
   const [handle, setHandle] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [phone, setPhone] = React.useState('');
+  const [name, setName] = React.useState('');
   const [reason, setReason] = React.useState('');
   const [busy, setBusy] = React.useState(false);
 
@@ -75,7 +76,7 @@ export function AccountForm({
     setReason('');
 
     const result = register
-      ? await signUp(handle, password, phone, document.documentElement.lang || 'hi')
+      ? await signUp(handle, password, phone, document.documentElement.lang || 'hi', name)
       : await signIn(handle, password);
 
     setBusy(false);
@@ -98,6 +99,22 @@ export function AccountForm({
       <p className="text-sm text-ink-subtle">
         {t(register ? 'account.registerNote' : 'account.signInNote')}
       </p>
+
+      <div className="grid gap-2">
+        <label htmlFor={`${mode}-name`} className="font-medium">
+          {t('account.name')} <span className="font-normal text-ink-subtle">({t('account.optional')})</span>
+        </label>
+        <input
+          id={`${mode}-name`}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          autoComplete="name"
+          maxLength={60}
+          placeholder={t('account.namePlaceholder')}
+          className="rounded-lg border border-line bg-paper px-4 py-3 text-lg"
+        />
+        <p className="text-sm text-ink-subtle">{t('account.nameHint')}</p>
+      </div>
 
       <div className="grid gap-2">
         <label htmlFor={`${mode}-handle`} className="font-medium">

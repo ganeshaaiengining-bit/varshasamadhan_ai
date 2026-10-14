@@ -240,6 +240,21 @@ model User {
   handle String @unique
 
   /**
+   * The person's own name, the way they would write it.
+   *
+   * The owner asked for this. It sits beside the handle rather than replacing
+   * it: the handle is the short thing that signs in and cannot be ambiguous,
+   * and this is the name a person recognises as their own.
+   *
+   * Optional. A shared or borrowed phone is common in the audience this service
+   * is for, and somebody who does not want to give their name should still be
+   * able to ask about their mother's cough. Nothing on the site requires it,
+   * nothing is shown publicly, and it is never shown on the sign-in page where
+   * somebody else might pick up the phone.
+   */
+  name String @default("")
+
+  /**
    * A scrypt hash, never a password.
    *
    * Generated in the application rather than by the database, because the

@@ -51,6 +51,8 @@ const COOKIE_DAYS = 30;
 export interface SignedInUser {
   id: string;
   handle: string;
+  /** The name they gave at sign-up, or empty if they did not give one. */
+  name: string;
   language: string;
 }
 
@@ -80,6 +82,7 @@ export async function currentUser(): Promise<SignedInUser | null> {
           select: {
             id: true,
             handle: true,
+            name: true,
             language: true,
             passwordChangedAt: true,
           },
@@ -122,6 +125,7 @@ export async function currentUser(): Promise<SignedInUser | null> {
     return {
       id: row.user.id,
       handle: row.user.handle,
+      name: row.user.name,
       language: row.user.language,
     };
   } catch {
