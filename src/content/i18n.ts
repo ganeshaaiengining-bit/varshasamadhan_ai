@@ -191,6 +191,8 @@ const HINDI: Record<string, string> = {
   'home.emergencyNote': 'ये सबसे पहले पढ़ें। बाकी सब बाद में देखा जा सकता है।',
   'home.readMore': 'पूरी जानकारी पढ़ें',
   'home.chooseTopic': 'किस विषय में जानना है?',
+  'home.kundaliTitle': 'जन्म गण्ठा',
+  'home.kundaliNote': 'पूरी कुंडली — 9 ग्रह, विमशोत्तरी दशा, फलादेश, योग, शोडशवर्ग, केपी, लाल किताब और अंक ज्योतिष। सब आपके फ़ोन पर ही गणना होगी।',
   'home.chooseTopicNote':
     'नीचे दिए गए विषय पर टैप कीजिए। हर जगह सरल भाषा में जानकारी दी गई है।',
   'home.askHere': 'इसी विषय में पूछें',
@@ -802,6 +804,8 @@ const ENGLISH: Record<string, string> = {
   'home.emergencyNote': 'Read these first. Everything else can wait.',
   'home.readMore': 'Read the full information',
   'home.chooseTopic': 'What do you need to know?',
+  'home.kundaliTitle': 'Birth chart',
+  'home.kundaliNote': 'A full chart — the nine grahas, Vimshottari dasha, phaladesh, yoga, shodasvarga, KP, Lal Kitab and Anka. All of it computed on your phone.',
   'home.chooseTopicNote':
     'Tap a subject below. Everything is written in plain language.',
   'home.askHere': 'Ask about this subject',
@@ -1683,6 +1687,8 @@ const BENGALI: Record<string, string> = {
 
   'home.step3Body': 'এই সেবা সম্পূর্ণ বিনামূল্যে। আপনার নাম, ঠিকানা বা ফোন নম্বর চাওয়া হয় না, আর কোনো বিজ্ঞাপনও দেখানো হয় না।',
 
+  'home.kundaliTitle': 'জন্ম গণ্ঠা',
+  'home.kundaliNote': 'পূর্ণ কুণ্ডলী — নয়টি গ্রহ, বিমশোত্তরী দশা, ফলাদেশ, যোগ, শোদশবর্গ, কেপি, লাল কিতাব এবং অঙ্ক জ্যোতিষ। সব আপনার ফোনেই হিসাব হবে।',
   'home.chooseTopicNote': 'নিচের বিষয়ে ট্যাপ করুন। প্রতিটি জায়গায় সহজ ভাষায় তথ্য দেওয়া আছে।',
 
   'home.categoryEmpty': 'এই বিষয়ে এখনো কোনো লেখা লেখা হয়নি।',
@@ -2388,6 +2394,8 @@ const TAMIL: Record<string, string> = {
 
   'home.step3Body': 'இந்தச் சேவை முற்றிலும் இலவசம். உங்கள் பெயர், முகவரி அல்லது தொலைபேசி எண் கேட்கப்படுவதில்லை, விளம்பரமும் காட்டப்படுவதில்லை.',
 
+  'home.kundaliTitle': 'பிறந்த நாள் சாத்திரம்',
+  'home.kundaliNote': 'முழுக் குண்டலம் — ஒன்பது கிரகங்கள், விமசோத்தரி தசை, பலதேசம், யோகம், சோடசவர்கம், கேபி, லால் கிதப், அங்க ஜோதிஷம். அனைத்தும் உங்கள் தொலைபேசியிலேயே கணக்கிடப்படும்.',
   'home.chooseTopicNote': 'கீழே உள்ள தலைப்பைத் தட்டவும். ஒவ்வொரு இடத்திலும் எளிய மொழியில் விவரம் உள்ளது.',
 
   'home.categoryEmpty': 'இந்தத் தலைப்பில் இன்னும் எதுவும் எழுதப்படவில்லை.',
@@ -3092,6 +3100,8 @@ const TELUGU: Record<string, string> = {
 
   'home.step3Body': 'ఈ సేవ పూర్తిగా ఉచితం. మీ పేరు, చిరునామా లేదా ఫోన్ నంబర్ అడగబడదు, ప్రచారం కూడా చూపబడదు.',
 
+  'home.kundaliTitle': 'జన్మ గంఠ',
+  'home.kundaliNote': 'పూర్తి కుండలి — తొమ్మిది గ్రహాలు, విమశోత్తరి దశ, ఫలాదేశ, యోగ, షోడశవర్గ, కెపి, లాల్ కితాబ్ మరియు అంక జ్యోతిషం. అన్నీ మీ ఫోన్‌లోనే లెక్క అవుతాయి.',
   'home.chooseTopicNote': 'కింద ఉన్న అంశాన్ని నొక్కండి. ప్రతి చోట అర్థమయ్యే భాషలో సమాచారం ఇవ్వబడింది.',
 
   'home.categoryEmpty': 'ఈ అంశంలో ఇంకా ఏమీ రాయలేదు.',
@@ -3796,6 +3806,8 @@ const MARATHI: Record<string, string> = {
 
   'home.step3Body': 'ही सेवा पूर्णपणे मोफत आहे. तुमचे नाव, पत्ता किंवा फोन नंबर मागितला जात नाही, आणि जाहिरात दाखवली जात नाही.',
 
+  'home.kundaliTitle': 'जन्म गण्ठ',
+  'home.kundaliNote': 'पूर्ण कुंडली — नऊ ग्रह, विमशोत्तरी दशा, फलादेश, योग, शोडशवर्ग, केपी, लाल किताब आणि अंक ज्योतिष. सर्व आपल्या फोनवरच मोजले जातील.',
   'home.chooseTopicNote': 'खालील विषयांवर टॅप करा. प्रत्येक ठिकाणी साध्या भाषेत माहिती दिली आहे.',
 
   'home.categoryEmpty': 'या विषयात अद्याप कोणतेही लेख लिहिलेले नाहीत.',
@@ -4500,6 +4512,8 @@ const GUJARATI: Record<string, string> = {
 
   'home.step3Body': 'આ સેવા સંપૂર્ણ મફત છે. તમારું નામ, સરનામું કે ફોન નંબર માંગવામાં આવતું નથી, અને કોઈ જાહેરાત બતાવવામાં આવતી નથી.',
 
+  'home.kundaliTitle': 'જન્મ ગંઠ',
+  'home.kundaliNote': 'સંપૂર્ણ કુંડળી — નવ ગ્રહ, વિમશોત્તરી દશા, ફલાદેશ, યોગ, શોડશવર્ગ, કેપી, લાલ કિતાબ અને અંક જ્યોતિષ. બધું તમારા ફોન પર જ ગણાય છે.',
   'home.chooseTopicNote': 'નીચેના વિષય પર ટેપ કરો. દરેક જગ્યાએ સરળ ભાષામાં માહિતી આપવામાં આવી છે.',
 
   'home.categoryEmpty': 'આ વિષયમાં હજી કંઈ લખાયું નથી.',
@@ -5210,6 +5224,8 @@ const KANNADA: Record<string, string> = {
 
   'home.step3Body': 'ಈ ಸೇವೆ ಸಂಪೂರ್ಣ ಉಚಿತ. ನಿಮ್ಮ ಹೆಸರು, ವಿಳಾಸ ಅಥವಾ ಫೋನ್ ಸಂಖ್ಯೆ ಕೇಳುವುದಿಲ್ಲ, ಮತ್ತು ಜಾಹೀರಾತು ತೋರಿಸುವುದಿಲ್ಲ.',
 
+  'home.kundaliTitle': 'ಜನ್ಮ ಗಂಠ',
+  'home.kundaliNote': 'ಪೂರ್ಣ ಕುಂಡಳಿ — ಒಂಬತ್ತು ಗ್ರಹಗಳು, ವಿಮಶೋತ್ತರಿ ದಶೆ, ಫಲದೇಶ, ಯೋಗ, ಶೋಡಶವರ್ಗ, ಕೆಪಿ, ಲಾಲ್ ಕಿತಾಬ್ ಮತ್ತು ಅಂಕ ಜ್ಯೋತಿಷ. ಎಲ್ಲವೂ ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲೇ ಲೆಕ್ಕಹವಾಗುತ್ತದೆ.',
   'home.chooseTopicNote': 'ಕೆಳಗಿನ ವಿಷಯಕ್ಕೆ ಒತ್ತಿ. ಪ್ರತಿ ಕಡೆ ಸರಳ ಭಾಷೆಯಲ್ಲಿ ಮಾಹಿತಿ ನೀಡಲಾಗಿದೆ.',
 
   'home.categoryEmpty': 'ಈ ವಿಷಯದಲ್ಲಿ ಇನ್ನೂ ಏನೂ ಬರೆಯಲಾಗಿಲ್ಲ.',
@@ -5928,6 +5944,8 @@ const MALAYALAM: Record<string, string> = {
 
   'home.step3Body': 'ഈ സേവനം പൂർണ്ണമായും സൗജന്യമാണ്. നിങ്ങളുടെ പേരും വിലാസവും ഫോൺ നമ്പറും ആരോഗ്യദാരും ചോദിക്കപ്പെട്ടില്ല, പരസ്താരവുമില്ല.',
 
+  'home.kundaliTitle': 'ജനന ഗണ്ഠ',
+  'home.kundaliNote': 'പൂർണ്ണ കുണ്ഡളി — ഒൻപത്ത് ഗ്രഹങ്ങൾ, വിമശോത്തരി ദശ, ഫലാദേശം, യോഗം, ഷോഡശവർഗം, കെപി, ലാൽ കിതാബ്, അങ്ക ജ്യോതിഷം. എല്ലാം നിങ്ങളുടെ ഫോണിൽ തന്നെ കണക്കാക്കും.',
   'home.chooseTopicNote': 'താഴെയുള്ള വിഷയത്തിൽ അമർത്തുക. ഓരോ സ്ഥലത്തും എളുപ്പമായ ഭാഷയിൽ വിവരങ്ങൾ നൽകിയിട്ടുണ്ട്.',
 
   'home.categoryEmpty': 'ഈ വിഷയത്തിൽ ഇതുവരെ ഒന്നും എഴുതിയിട്ടില്ല.',
@@ -6649,6 +6667,8 @@ const PUNJABI: Record<string, string> = {
 
   'home.step3Body': 'ਇਹ ਸੇਵਾ ਪੂਰੀ ਤਰ੍ਹਾਂ ਮੁਫ਼ਤ ਹੈ। ਤੁਹਾਡਾ ਨਾਮ, ਪਤਾ ਜਾਂ ਫੋਨ ਨੰਬਰ ਨਹੀਂ ਮੰਗਿਆ ਜਾਂਦਾ, ਅਤੇ ਕੋਈ ਇਸ਼ਤਿਹਾਨ ਨਹੀਂ ਦਿਖਾਇਆ ਜਾਂਦਾ।',
 
+  'home.kundaliTitle': 'ਜਨਮ ਗੰਠ',
+  'home.kundaliNote': 'ਪੂਰੀ ਕੁੰਡਲੀ — ਨੌ ਗ੍ਰਹ, ਵਿਮਸ਼ੋਤਤਰੀ ਦਸ਼ਾ, ਫਲਾਦੇਸ਼, ਯੋਗ, ਸ਼ੋਡਸ਼ਵਰਗ, ਕੇਪੀ, ਲਾਲ ਕਿਤਾਬ ਅਤੇ ਅੰਕ ਜੋਤਿਸ਼. ਸਭ ਤੁਹਾਡੇ ਫੋਨ ਉੱਤੇ ਹੀ ਗਿਣਤੀ ਹੋਵੇਗਾ.',
   'home.chooseTopicNote': 'ਹੇਠਾਂ ਦਿੱਤੇ ਵਿਸ਼ੇ \'ਤੇ ਟੈਪ ਕਰੋ। ਹਰ ਥਾਂ ਸੌਖੀ ਭਾਸ਼ਾ ਵਿੱਚ ਜਾਣਕਾਰੀ ਦਿੱਤੀ ਗਈ ਹੈ।',
 
   'home.categoryEmpty': 'ਇਸ ਵਿਸ਼ੇ ਵਿੱਚ ਹਾਲੇ ਕੁਝ ਵੀ ਨਹੀਂ ਲਿਖਿਆ ਗਿਆ।',
@@ -7363,6 +7383,8 @@ const URDU: Record<string, string> = {
 
   'home.step3Body': 'یہ خدمت مکمل طور پر مفت ہے۔ آپ کا نام، پتہ یا فون نمبر نہیں مانگا جاتا، اور کوئی اشتہار نہیں دکھایا جاتا۔',
 
+  'home.kundaliTitle': 'جन्म گنٹھ',
+  'home.kundaliNote': 'مکمل کنڈلی — نو گرہ، ویمشوتتری دشا، فلادیش، یوگ، شودشورگ، کے پی، لال کتاب اور انک جیوتش۔ سب آپ کے فون پر ہی حساب ہوگا۔',
   'home.chooseTopicNote': 'نیچے دیے گئے موضوع پر ٹیپ کریے۔ ہر جگہ آسان زبان میں معلومات دی گئی ہے۔',
 
   'home.categoryEmpty': 'اس موضوع میں ابھی کچھ بھی نہیں لکھا گیا۔',
@@ -8079,6 +8101,8 @@ const ARABIC: Record<string, string> = {
 
   'home.step3Body': 'هذه الخدمة مجانية تماماً. لا يُطلب اسمك ولا عنوانك ولا رقم هاتفك، ولا تظهر أي إعلانات.',
 
+  'home.kundaliTitle': 'مخطط الميلاد',
+  'home.kundaliNote': 'خريطة كاملة — الكواكب التسعة، فيمشوتتاري داشا، فالاديش، يوغا، شوداشفارغ، كي بي، كتاب لال والأرقام الفلكية. كل شيء يُحسب على هاتفك.',
   'home.chooseTopicNote': 'اضغط على الموضوع أدناه. المعلومات مكتوبة بلغة بسيطة في كل مكان.',
 
   'home.categoryEmpty': 'لم يُكتب شيء في هذا الموضوع بعد.',
@@ -8789,6 +8813,8 @@ const SPANISH: Record<string, string> = {
 
   'home.step3Body': 'Este servicio es totalmente gratis. No se pide tu nombre, ni tu dirección, ni tu teléfono, y no se muestran anuncios.',
 
+  'home.kundaliTitle': 'Carta natal',
+  'home.kundaliNote': 'Carta completa — los nueve planetas, dasha Vimshottari, phaladesh, yoga, shodasvarga, KP, Lal Kitab y Anka. Todo se calcula en su teléfono.',
   'home.chooseTopicNote': 'Toca el tema de abajo. La información está en lenguaje sencillo en todas partes.',
 
   'home.categoryEmpty': 'Todavía no se ha escrito nada en este tema.',

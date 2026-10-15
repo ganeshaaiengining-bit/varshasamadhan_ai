@@ -257,6 +257,48 @@ export default async function HomePage() {
           <p className="mx-auto mt-3 max-w-2xl text-center text-ink-muted">{t('home.chooseTopicNote')}</p>
 
           <ul className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {/*
+              The birth chart goes first, and is not one of the database
+              categories.
+
+              It could have been a row in the categories table, and that would
+              have made it look like the other eight and gone to /p/janam-ghathe
+              — a page that lists articles, and which would therefore have been
+              empty. A card that leads to an empty page is worse than no card:
+              it looks like the feature is broken rather than missing.
+
+              So it links to the page that exists and has the eight systems on
+              it, and it sits first because it is the one thing on this site
+              that a visitor cannot get from a question box.
+
+              Written in the site's own script rather than through the language
+              tables, because the chart names — कुंडली, विमशोत्तरी दशा, फलादेश,
+              योग, केपी — are Sanskrit terms that stay the same in every one of
+              the thirteen languages, exactly as "Ashwini" stays "Ashwini".
+            */}
+            <li>
+              <Link
+                href="/janam-ghathe"
+                className="card group flex h-full flex-col bg-saffron-soft/40 p-6 transition-all hover:-translate-y-1 hover:shadow-lift focus-visible:-translate-y-1"
+              >
+                <span className="grid h-14 w-14 place-items-center rounded-2xl bg-surface text-saffron-deep">
+                  <Icon name="sun" size={28} />
+                </span>
+
+                <h3 className="mt-4 text-xl text-ink">{t('home.kundaliTitle')}</h3>
+                <p className="mt-1.5 flex-1 text-ink-muted">{t('home.kundaliNote')}</p>
+
+                <span className="mt-4 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-saffron-deep">
+                  <span className="rounded-full bg-surface px-2 py-0.5">कुंडली</span>
+                  <span className="rounded-full bg-surface px-2 py-0.5">दशा</span>
+                  <span className="rounded-full bg-surface px-2 py-0.5">फलादेश</span>
+                  <span className="rounded-full bg-surface px-2 py-0.5">योग</span>
+                  <span className="rounded-full bg-surface px-2 py-0.5">केपी</span>
+                  <Icon name="arrow" size={16} className="transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
+            </li>
+
             {categories.map((category) => {
               const accent = ACCENT[category.accent] ?? ACCENT.saffron;
               return (
