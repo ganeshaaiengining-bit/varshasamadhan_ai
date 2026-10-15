@@ -183,13 +183,20 @@ check(
   missingMeaning || 'no heading without text under it',
 );
 
-// ── nakshatra and rashi ─────────────────────────────────────────────────────
+// nakshatra and rashi — what the page actually shows
 const astro = vedic({ date: '1975-03-14', time: '10:30', latitude: 19.076, longitude: 72.8777 });
 
 check(
   'a birth produces a nakshatra',
-  !!astro && astro.nakshatra.index >= 0 && astro.nakshatra.index < NAKSHATRAS.length,
-  `got index ${astro?.nakshatra.index}`,
+  // One-based. Nakshatras are numbered 1 to 27 in every chart ever printed and
+  // Revati, the twenty-seventh, is a real one. The bound was written against a
+  // table of length 27 with the far end exclusive, which excludes it.
+  //
+  // It passed for a long time only because the Moon's longitude was wrong and
+  // never landed on the last nakshatra. A test that passes because the thing
+  // under it is broken is worse than no test at all.
+  !!astro && astro.nakshatra.index >= 1 && astro.nakshatra.index <= NAKSHATRAS.length,
+  `got index ${astro?.nakshatra.index}, and the table holds ${NAKSHATRAS.length}`,
 );
 
 /*

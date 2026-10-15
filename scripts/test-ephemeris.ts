@@ -39,9 +39,12 @@ import {
   allGrahas,
   meanNode,
   heliocentric,
+  lagna,
   PLANETS,
 } from '../src/content/grahas';
 import { julianDayFromParts, partsFromJulianDay } from '../src/content/julian';
+import { vedic } from '../src/content/astrology';
+import { NAKSHATRAS, RASHIS } from '../src/content/astrology';
 
 /** A body's heliocentric longitude, in degrees. */
 function helioLongitude(jd: number, key: string): number {
@@ -389,6 +392,116 @@ check(
     'every graha stays inside the zodiac from 1850 to today',
     bad === '',
     bad || 'five dates, nine grahas each',
+  );
+}
+
+/* ── the page must not print two different lagnas ──────────────────────── */
+{
+  /*
+   * The ascendant was computed twice, by two functions, and the two disagreed
+   * by twelve degrees. Both were printed — one in the astrology summary and one
+   * in the full sheet — so a visitor saw two answers to the same question on
+   * the same page and had no way to tell which one to believe.
+   *
+   * Comparing the two engines directly is the only way to catch it, because
+   * each is internally consistent and each renders.
+   */
+  let bad = '';
+  const places: Array<[string, number, number]> = [
+    ['Mumbai', 19.076, 72.878],
+    ['Delhi', 28.614, 77.209],
+    ['Chennai', 13.083, 80.271],
+    ['Kolkata', 22.573, 88.364],
+    ['Leh', 34.152, 77.577],
+  ];
+
+  for (const [name, lat, lon] of places) {
+    for (const [year, month, day] of [
+      [1975, 3, 14], [1990, 11, 22], [2001, 12, 25], [1962, 1, 31],
+    ] as Array<[number, number, number]>) {
+      for (const hour of [3, 10, 18, 23]) {
+        const jd = julianDayFromParts(year, month, day, hour, 30);
+
+        const fromVedic = vedic({
+          date: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+          time: `${String(hour).padStart(2, '0')}:30`,
+          latitude: lat,
+          longitude: lon,
+        });
+        if (!fromVedic?.lagna) continue;
+
+        const fromSheet = lagna(jd, lat, lon);
+
+        const gap = shortestGap(fromVedic.lagna.degrees, fromSheet % 30);
+        if (gap > 0.05) {
+          bad += `${name} ${year}-${month}-${day} ${hour}:30 — summary says ${fromVedic.lagna.degrees.toFixed(2)}°, sheet says ${(fromSheet % 30).toFixed(2)}°. `;
+        }
+      }
+    }
+  }
+
+  check(
+    'the summary and the full sheet print the same lagna',
+    bad === '',
+    bad || '80 births across five places',
+  );
+}
+
+/* ── and the same nakshatra ────────────────────────────────────────────── */
+{
+  /*
+   * The Moon was computed twice as well: once from a constant daily rate times
+   * the days since an epoch, and once from the twenty-term series. The first is
+   * the Moon's mean motion, which is not the Moon, and multiplying a rate by
+   * seventy thousand days turns its imprecision into degrees. They disagreed on
+   * every one of sixty births, by up to six nakshatras.
+   *
+   * A nakshatra is a sixth of a degree wide at the Moon's speed and carries the
+   * dasha with it, so six of them apart is a different sign, a different lord
+   * and a different century of a life.
+   */
+  let bad = '';
+  let cases = 0;
+
+  const places: Array<[string, number, number]> = [
+    ['Mumbai', 19.076, 72.878],
+    ['Delhi', 28.614, 77.209],
+    ['Chennai', 13.083, 80.271],
+    ['Kolkata', 22.573, 88.364],
+    ['Leh', 34.152, 77.577],
+  ];
+
+  for (const [name, lat, lon] of places) {
+    for (const [year, month, day] of [
+      [1975, 3, 14], [1990, 11, 22], [2001, 12, 25], [1962, 1, 31], [1889, 6, 2],
+    ] as Array<[number, number, number]>) {
+      for (const hour of [0, 6, 12, 18]) {
+        const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const time = `${String(hour).padStart(2, '0')}:30`;
+
+        const summary = vedic({
+          date, time, latitude: lat, longitude: lon,
+        });
+        if (!summary) continue;
+
+        const sheet = allGrahas(julianDayFromParts(year, month, day, hour, 30));
+        const sheetName = NAKSHATRAS[sheet.moon.nakshatra - 1];
+
+        cases += 1;
+        if (summary.nakshatra.name !== sheetName) {
+          bad += `${name} ${date} ${time}: summary ${summary.nakshatra.name}, sheet ${sheetName}. `;
+        }
+        if (summary.rashi !== RASHIS[sheet.moon.rashi].name) {
+          bad += `${name} ${date} ${time}: summary rashi ${summary.rashi}, sheet ${RASHIS[sheet.moon.rashi].name}. `;
+        }
+      }
+    }
+  }
+
+  check(
+    `the summary and the full sheet name the same nakshatra (${cases} births)`,
+    bad === '',
+    bad,
   );
 }
 

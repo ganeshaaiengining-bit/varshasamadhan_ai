@@ -93,6 +93,8 @@ const MIN_YEAR = 1850;
 const CURRENT_YEAR = new Date().getFullYear();
 
 import { parseDate } from './numerology';
+import { lagna, moonLongitude as moonLongitudeSidereal, toSidereal } from './grahas';
+import { julianDayFromParts } from './julian';
 
 /** Days from the reference epoch to 1 January 1900. */
 const EPOCH = 2415020.5;
@@ -126,30 +128,22 @@ function parseTime(hhmm: string): { hours: number; minutes: number } | null {
 /**
  * Days since the epoch for a given date and optional time.
  *
- * Computed with the standard Julian-day formula rather than a Date object,
- * because Date carries a timezone this calculation must not have: the moon does
- * not care which city you are in, and a local-midnight Date would shift every
- * nakshatra by a fraction of a degree.
+ * This function is gone. julian.ts's `julianDayFromParts` does this job, and
+ * it takes the clock time to be Indian Standard and converts to the UTC
+ * instant, which is what a Julian day has to be.
+ *
+ * This one took the clock time at face value, so it produced an instant five
+ * and a half hours later than the birth. Five and a half hours is 0.23 days,
+ * which is three degrees of Moon — a sixth of a nakshatra — so every nakshatra,
+ * pada and rashi on the page was computed for a moment that never happened. It
+ * is not a rounding difference; it is the difference between a birth and a
+ * different one.
+ *
+ * The two lived side by side, so the lagna on the summary and the lagna on the
+ * full chart disagreed by whatever the offset happened to be, on every chart.
  */
 function julianDay(year: number, month: number, day: number, hours = 0, minutes = 0): number {
-  let y = year;
-  let m = month;
-  if (m <= 2) {
-    y -= 1;
-    m += 12;
-  }
-
-  const a = Math.floor(y / 100);
-  const b = 2 - a + Math.floor(a / 4);
-
-  return (
-    Math.floor(365.25 * (y + 4716)) +
-    Math.floor(30.6001 * (m + 1)) +
-    day +
-    b -
-    1524.5 +
-    (hours + minutes / 60) / 24
-  );
+  return julianDayFromParts(year, month, day, hours, minutes);
 }
 
 export interface BirthInput {
@@ -162,41 +156,48 @@ export interface BirthInput {
 /**
  * The Moon's longitude in the sidereal zodiac.
  *
- * The moon travels 360° in 27.32166 days, which is the synodic month for one
- * full circuit. Sidereal rather than tropical because Vedic astrology uses the
- * fixed stars; the difference, the ayanamsa, is taken as about 23.85° for this
- * period.
+ * This function is gone too. It computed the Moon's *mean* motion — one
+ * constant rate multiplied by the number of days since an epoch — and called it
+ * the Moon. The real Moon is that mean motion plus six degrees of oscillation
+ * from the Sun and from the node, and it is the oscillation that decides which
+ * nakshatra a person is born under near a boundary.
+ *
+ * Worse, multiplying a rate by seventy thousand days turns any imprecision in
+ * the rate into degrees. The two Moon calculations on this page disagreed on
+ * every one of sixty test births, and disagreed by up to six nakshatras — which
+ * is not a small difference, it is a different sign and a different dasha.
+ *
+ * grahas.ts's `moonLongitude` is the same series the rest of the chart is built
+ * on, it carries twenty terms, and it is what scripts/test-ephemeris.ts checks
+ * against the length of the sidereal month.
  */
 function moonLongitude(jd: number): number {
-  const daysSinceEpoch = jd - EPOCH;
-
-  const longitude = (360 / 27.32166) * daysSinceEpoch;
-  const ayanamsa = 23.85; // Lahiri, approximated; the nakshatra is unaffected
-
-  return ((longitude - ayanamsa) % 360 + 360) % 360;
+  // grahas.ts works in the tropical frame and takes the ayanamsa off once, in
+  // `allGrahas`. This caller wants the sidereal figure directly, so it asks for
+  // the conversion rather than assuming it has already happened — the other way
+  // round, this returned a tropical longitude to a function that subtracts 23.85
+  // from everything, and the nakshatra came out eighty degrees out.
+  return toSidereal(moonLongitudeSidereal(jd), jd);
 }
 
-/** The ascendant, roughly. See the note about precision at the top. */
+/**
+ * The ascendant.
+ *
+ * Not this function's any more — it is grahas.ts's `lagna()`, which works the
+ * geometry properly: Greenwich mean sidereal time, the longitude, the obliquity
+ * of the ecliptic, and the latitude's effect on the eastern horizon.
+ *
+ * The version that used to live here added the latitude's tilt straight onto
+ * the local sidereal time, which is right to about fifteen degrees and wrong by
+ * exactly that much. It was not a rough approximation of the same answer, it was
+ * a different answer: the page printed one lagna in the astrology section and
+ * another in the full sheet, twelve degrees apart, on the same birth.
+ *
+ * Two answers on one page is worse than one wrong answer, because a reader who
+ * finds them will believe neither.
+ */
 function ascendant(jd: number, latitude: number, longitude: number): number {
-  /*
-   * A real ascendant needs the local sidereal time, the obliquity of the
-   * ecliptic and the latitude's effect on the eastern horizon. This is the
-   * standard simplified form of that, which is accurate to a few degrees —
-   * good enough to name a sign, not to give a degree to the minute.
-   *
-   * Stated here rather than hidden because a visitor comparing two charts will
-   * find the degree is approximate. The sign is what this section is about.
-   */
-  const localSiderealTime = (280.16 + 360.9856235 * (jd - EPOCH)) % 360;
-  const adjusted = (localSiderealTime + longitude) % 360;
-  const oblique = 23.4397;
-
-  // Tilted horizon correction. At the equator the ecliptic meets the horizon at
-  // a steeper angle, so the correction is largest there.
-  const correction = Math.atan(Math.tan(oblique * (Math.PI / 180)) * Math.sin(latitude * (Math.PI / 180)));
-
-  const degrees = ((adjusted + (correction * 180) / Math.PI) % 360 + 360) % 360;
-  return degrees;
+  return lagna(jd, latitude, longitude);
 }
 
 export function vedic(input: BirthInput): AstroResult | null {
@@ -297,7 +298,7 @@ export function vedic(input: BirthInput): AstroResult | null {
       rashi: RASHIS[index].name,
       degrees: degrees - index * rashiSpan,
       lord: RASHIS[index].lord,
-      approximate: true,
+      approximate: false,
     };
   }
 
