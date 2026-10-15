@@ -4,11 +4,13 @@ import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { Icon, type IconName } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { AskBoxGate } from '@/components/ask/ask-box-gate';
+import { HealthBox } from '@/components/health/health-box';
 
 import { Sunrise, SunriseBanner } from '@/components/visual/sunrise';
 import { BrandTitle } from '@/components/visual/brand-title';
 import { SoundPad } from '@/components/audio/welcome-dhun';
 import { getT } from '@/server/i18n';
+import { currentUser } from '@/server/auth/session';
 import { VARSHA } from '@/content/tribute';
 
 export const dynamic = 'force-dynamic';
@@ -88,6 +90,16 @@ export default async function HomePage() {
       }),
     [],
   );
+
+  /*
+   * Whether somebody is already signed in.
+   *
+   * Only so the health box can decide whether to show the tap-to-ask button or
+   * the sign-in wall. The AI route checks it again regardless, so this is not
+   * a security decision — it is so that a visitor who has already signed in is
+   * not asked to sign in twice on the same page.
+   */
+  const user = await currentUser();
 
   /*
    * The question box does not come from the database. The AI endpoint, the
@@ -196,6 +208,30 @@ export default async function HomePage() {
           </div>
         </section>
       ) : null}
+
+      {/* ================================================ health by age */}
+      {/*
+        The same age box that `/sahayata` carries, put on the home page.
+
+        It was built for that page and stayed there, which meant the one way in
+        that does not require anybody to work out which of nine subjects their
+        problem belongs to was also the one you had to know a second URL for.
+        Somebody landing on the home page and in pain was one step further from
+        an answer than somebody who already knew where to look.
+
+        It sits directly under the question box, above the subject grid, because
+        the subject grid is the harder way in and age is the easier one.
+      */}
+      {/*
+        No heading of its own here. HealthBox brings one — "अपनी उम्र बताइए" —
+        and adding a second for the document outline meant a screen reader
+        announced the same heading twice on arrival.
+      */}
+      <section className="py-12 sm:py-14">
+        <div className="wrap-narrow">
+          <HealthBox signedIn={Boolean(user)} />
+        </div>
+      </section>
 
       {/* ================================================ categories */}
       {noCategories ? (
