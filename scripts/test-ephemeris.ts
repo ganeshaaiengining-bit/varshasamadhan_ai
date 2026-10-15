@@ -44,7 +44,7 @@ import {
 } from '../src/content/grahas';
 import { julianDayFromParts, partsFromJulianDay } from '../src/content/julian';
 import { vedic } from '../src/content/astrology';
-import { NAKSHATRAS, RASHIS } from '../src/content/astrology';
+import { NAKSHATRAS, RASHIS, nakshatraLordAt } from '../src/content/astrology';
 
 /** A body's heliocentric longitude, in degrees. */
 function helioLongitude(jd: number, key: string): number {
@@ -500,6 +500,41 @@ check(
 
   check(
     `the summary and the full sheet name the same nakshatra (${cases} births)`,
+    bad === '',
+    bad,
+  );
+}
+
+/* ── every nakshatra's lord ─────────────────────────────────────────────── */
+{
+  /*
+   * Checked against the dasha table rather than against a list written here,
+   * because a second hand-typed list would be a third chance to be wrong and
+   * would agree with whichever of the two was transcribed more carefully.
+   *
+   * The two are written in different files and they disagreed: fourteen of the
+   * twenty-seven were wrong, and Revati — Mercury's — was given Venus. So a birth
+   * under Revati was told its life was under Venus by the summary while the dasha
+   * section on the same page listed Mercury.
+   */
+  let bad = '';
+
+  const dashaOrder = ['ketu', 'venus', 'sun', 'moon', 'mars', 'rahu', 'jupiter', 'saturn', 'mercury'];
+  const hindiOf: Record<string, string> = {
+    ketu: 'केतु', venus: 'शुक्र', sun: 'सूर्य', moon: 'चंद्र', mars: 'मंगल',
+    rahu: 'राहु', jupiter: 'ज्योठि', saturn: 'शनि', mercury: 'बुध',
+  };
+
+  for (let n = 1; n <= 27; n += 1) {
+    const fromDasha = hindiOf[dashaOrder[(n - 1) % 9]];
+    const fromTable = nakshatraLordAt(n);
+    if (fromDasha !== fromTable) {
+      bad += `nakshatra ${n} (${NAKSHATRAS[n - 1]}): dasha says ${fromDasha}, the page says ${fromTable}. `;
+    }
+  }
+
+  check(
+    'all twenty-seven nakshatras are ruled by the graha their dasha names',
     bad === '',
     bad,
   );

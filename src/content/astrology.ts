@@ -305,15 +305,37 @@ export function vedic(input: BirthInput): AstroResult | null {
   return result;
 }
 
-/** The ruling graha of each nakshatra. */
+/**
+ * The ruling graha of each nakshatra, Ashwini first.
+ *
+ * It is the nine grahas repeated three times, in the dasha order: Ketu, Venus,
+ * Sun, Moon, Mars, Rahu, Jupiter, Saturn, Mercury.
+ *
+ * The table it replaces was scrambled. Mrigashira was given Rahu instead of
+ * Mars, Pushya Mercury instead of Saturn, Ashlesha the Moon instead of Mercury,
+ * and Revati — Mercury — was given Venus. Fourteen of the twenty-seven were
+ * wrong, and the nakshatra's lord is the graha that carries the Vimshottari
+ * dasha, so the page was naming one graha while the dasha table beside it ran
+ * another. Reading a chart, the summary said the life was under Venus while the
+ * dasha section listed Mercury.
+ *
+ * It is written as a repeating cycle rather than as twenty-seven entries
+ * because twenty-seven hand-typed names is twenty-seven chances to be wrong,
+ * and this way there are nine.
+ */
+/**
+ * The ruling graha of a nakshatra, Ashwini being 1.
+ *
+ * Exported so it can be checked against the dasha table, which is written in a
+ * different file and is the authority on which graha carries which nakshatra.
+ */
+export function nakshatraLordAt(oneBasedIndex: number): string {
+  const CYCLE = ['केतु', 'शुक्र', 'सूर्य', 'चंद्र', 'मंगल', 'राहु', 'ज्योठि', 'शनि', 'बुध'];
+  return CYCLE[(oneBasedIndex - 1) % 9];
+}
+
 function nakshatraLords(index: number): string {
-  const LORDS = [
-    'केतु', 'शुक्र', 'सूर्य', 'चंद्र', 'राहु', 'ज्योठि', 'बुध',
-    'चंद्र', 'राहु', 'केतु', 'शुक्र', 'सूर्य', 'चंद्र', 'राहु',
-    'ज्योठि', 'बुध', 'शुक्र', 'राहु', 'केतु', 'शुक्र', 'सूर्य',
-    'चंद्र', 'राहु', 'ज्योठि', 'बुध', 'केतु', 'शुक्र',
-  ];
-  return LORDS[index];
+  return nakshatraLordAt(index + 1);
 }
 
 /* ========================================================================== */
