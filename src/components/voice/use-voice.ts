@@ -131,6 +131,36 @@ export function useVoiceInput({
   const [interim, setInterim] = React.useState('');
   const [error, setError] = React.useState<string | null>(null);
 
+  /*
+   * Whether this browser can listen, worked out after the first paint.
+   *
+   * It used to be read during render:
+   *
+   *     supported: typeof window !== 'undefined' && recognitionCtor() !== null
+   *
+   * which is the textbook hydration mismatch. The server has no `window`, so it
+   * always answered false; the browser, on a machine with Chrome or Edge,
+   * answered true. React then found the rendered title, aria-pressed and class
+   * of the microphone button describing a button that does not work, on a page
+   * where the button works — and refused to correct it, because by then a user
+   * could have clicked it.
+   *
+   * So it starts as false on both sides and is set once in an effect. The cost
+   * is that the button's tooltip is briefly the generic one. The benefit is that
+   * the HTML React sent and the HTML React received agree, which is the only
+   * version in which clicking the button does what it looks like it does.
+   *
+   * It is set in an effect rather than lazily initialised because lazy
+   * initialisation runs on the client during the first render — the same
+   * render, a fraction of a second later — and produces exactly the same
+   * mismatch with a tidier-looking line of code.
+   */
+  const [supported, setSupported] = React.useState(false);
+
+  React.useEffect(() => {
+    setSupported(recognitionCtor() !== null);
+  }, []);
+
   // Held in a ref, not state: replacing the handler must not restart recognition.
   const handler = React.useRef(onResult);
   React.useEffect(() => {
@@ -241,10 +271,8 @@ export function useVoiceInput({
     error,
     start,
     stop,
-    // Inlined rather than calling a named helper: this is the only place that
-    // needs to know, and a second exported way to ask the same question is how
-    // one of them stops being updated.
-    supported: typeof window !== 'undefined' && recognitionCtor() !== null,
+    // Held in state, set once after mount. See the note where it is declared.
+    supported,
   };
 }
 

@@ -23,6 +23,18 @@ import { shodasvarga, VARGAS } from '@/content/shodasvarga';
 import { kpSystem } from '@/content/kp';
 import { lalKitab, lalKitabDisagreements } from '@/content/lalkitab';
 import { ankaJyotish, allAnkaMeanings } from '@/content/anka';
+import {
+  ankaProfile,
+  reduce9,
+  reduce52,
+  upayFor,
+  shatruAnk,
+  DEV_GRAHA,
+  ANUKOOL,
+  LOSH_ARMS,
+  MASTERS,
+  type LoshGrid,
+} from '@/content/ankaganit';
 
 /**
  * ===========================================================================
@@ -660,9 +672,14 @@ function LalKitabPanel({ chart }: { chart: Chart }) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 8. Anka Jyotish                                                             */
+/* 8. Anka Jyotish and the whole of Anka Ganit                               */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * The reading itself — what number each part of the date and the name gave, and
+ * what the two together say. Kept exactly as it was, because it was not what
+ * was wrong.
+ */
 function AnkaPanel({ chart }: { chart: Chart }) {
   const { anka } = chart;
   const meanings = allAnkaMeanings();
@@ -723,7 +740,297 @@ function AnkaPanel({ chart }: { chart: Chart }) {
           </table>
         </div>
       </details>
+
+      <AnkaGanit chart={chart} />
     </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Everything else that Anka Ganit is.
+ *
+ * A person asking for Anka Ganit is asking for the sum of it. The reading above
+ * answers "what is my number" and stops. This answers the other questions that
+ * are asked at the same sitting: what else came out of the date, what does the
+ * grid of my date look like, which numbers help me and which hinder, and what
+ * do I do about it.
+ *
+ * Every figure on this panel is computed in `content/ankaganit.ts` and checked
+ * in `scripts/test-ankaganit.ts`. Nothing here is worked out by hand at the
+ * point of display, because a hand-worked number on a page is a number that
+ * will be wrong the next time the page is touched.
+ */
+function AnkaGanit({ chart }: { chart: Chart }) {
+  const profile = ankaProfile(chart.input.day, chart.input.month, chart.input.year, chart.input.name || 'A');
+  const meanings = allAnkaMeanings();
+  const ruling = profile.bhavAnk.value;
+  const birthNumber = profile.janmAnk.value;
+
+  /** The cell of the Losh cross holding a given digit. */
+  const byDigit = (digit: number) =>
+    profile.losh.cells.find((cell) => cell.digit === digit) ?? {
+      digit,
+      arm: 'centre' as const,
+      count: 0,
+    };
+  const upay = upayFor(ruling);
+  const friends = ANUKOOL[ruling] ?? [];
+  const enemies = shatruAnk(ruling);
+  const devGraha = DEV_GRAHA[ruling - 1];
+  const master = MASTERS[profile.bhavAnk.compound ?? 0];
+
+  const numbers = [
+    { label: 'जन्म अंक (दिन)', n: profile.janmAnk, hint: 'जन्म के दिन से निकला अंक' },
+    { label: 'मासांक', n: { value: reduce9(chart.input.month), compound: reduce52(chart.input.month) }, hint: 'जन्म के महीने से' },
+    { label: 'वर्षांक', n: { value: reduce9(chart.input.year), compound: reduce52(chart.input.year) }, hint: 'जन्म के साल से' },
+    { label: 'भवांक / मूलांक', n: profile.bhavAnk, hint: 'दिन + महीना + साल — जीवन की मुख्य अंक' },
+    { label: 'कर्मांक', n: profile.karmAnk, hint: 'दिन + महीना — पिछले से लाया हुआ' },
+    { label: 'नाम अंक', n: profile.naamAnk, hint: 'नाम, ख़ल्दानी पद्धति से' },
+    { label: 'लेख अंक', n: profile.lekhaAnk, hint: `नाम में ${profile.lekhaAnk.compound ?? 0} अक्षर` },
+    { label: 'कुल अंक', n: profile.kulAnk, hint: 'तारीख़ के सारे अंक जोड़कर' },
+  ];
+
+  return (
+    <div className="grid gap-6 border-t border-line pt-6">
+
+      {/* ------------------------------------------------------- the numbers */}
+      <section>
+        <h3 className="font-display text-lg">तारीख़ से निकले सारे अंक</h3>
+        <p className="mt-1 text-sm text-ink-subtle">
+          एक तारीख़ से एक नहीं, आठ अंक निकलते हैं। हर एक कुछ अलग बताता है।
+        </p>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {numbers.map((item) => {
+            const isRuling = item.label === 'भवांक / मूलांक';
+            return (
+              <div
+                key={item.label}
+                className={
+                  'rounded-lg border p-4 ' +
+                  (isRuling ? 'border-saffron bg-saffron/10' : 'border-line')
+                }
+              >
+                <p className="text-xs text-ink-subtle">{item.label}</p>
+                <p className="mt-1 font-display text-3xl text-saffron-deep tabular-nums">
+                  {item.n.value}
+                </p>
+                {item.n.compound !== undefined && item.n.compound !== item.n.value && (
+                  <p className="text-xs text-ink-muted">
+                    यौगिक अंक <span className="tabular-nums">{item.n.compound}</span>
+                  </p>
+                )}
+                <p className="mt-1 text-xs text-ink-subtle">{item.hint}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        {master && (
+          <p className="mt-4 rounded-lg bg-saffron/10 p-4 text-sm">
+            <strong>मास्टर अंक {profile.bhavAnk.compound}:</strong> {master.what}
+            <br />
+            {master.how}
+          </p>
+        )}
+
+        <div className="mt-4 rounded-lg border border-line p-4">
+          <p className="font-medium">इस साल का अंक</p>
+          <div className="mt-2 flex flex-wrap gap-4">
+            {profile.varshAnk.map((y) => (
+              <span key={y.year} className="text-sm">
+                {y.year} → <strong className="tabular-nums text-saffron-deep">{y.value}</strong>
+              </span>
+            ))}
+          </div>
+          <p className="mt-2 text-sm text-ink-subtle">
+            जो अंक बीच वाले साल का हो, उस साल काम बड़ा करना चाहिए और जो बाद का हो, उस
+            साल ज़्यादा सोचना चाहिए।
+          </p>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------- the losh grid */}
+      <section>
+        <h3 className="font-display text-lg">लोश ग्रिड</h3>
+        <p className="mt-1 text-sm text-ink-subtle">
+          तारीख़ के हर अंक को गिनकर यह चौरा बनता है — हड्डी, लोहा, मांस, मज्जा और बीच
+          में आपकी अपनी जगह। जिस अंक के खाने खाली हैं, वह अंक आपकी तारीख़ में नहीं है।
+        </p>
+
+        <div className="mt-4 grid gap-4 sm:grid-cols-[auto_1fr]">
+          {/*
+            The cross, drawn on a five-column grid so the arms sit where they
+            sit on paper.
+
+            Every cell is placed by column and row rather than in reading order.
+            In reading order the seven cells fell into the first rows of a
+            five-column grid and the metal and centre cells were pushed off the
+            right-hand edge — the grid drew, the counts were right, and the shape
+            was not the shape it is supposed to be. A grid that is not the right
+            shape is read as a different reading, so the shape is stated here.
+          */}
+          <div className="mx-auto grid w-[19rem] max-w-full grid-cols-5 grid-rows-3 gap-1.5 text-center">
+            <LoshCell cell={byDigit(3)} className="col-start-2 row-start-1" />
+            <LoshCell cell={byDigit(4)} className="col-start-3 row-start-1" />
+            <LoshCell cell={byDigit(9)} className="col-start-4 row-start-1" />
+
+            <LoshCell cell={byDigit(1)} className="col-start-1 row-start-2" />
+            <LoshCell cell={byDigit(5)} className="col-start-3 row-start-2" centre />
+            <LoshCell cell={byDigit(6)} className="col-start-5 row-start-2" />
+
+            <LoshCell cell={byDigit(8)} className="col-start-2 row-start-3" />
+          </div>
+
+          <div className="grid content-start gap-2">
+            {LOSH_ARMS.map((arm) => (
+              <div key={arm.arm} className="flex items-baseline gap-3 rounded-lg bg-sun/10 px-4 py-2">
+                <span className="min-w-[5rem] font-medium">{arm.label}</span>
+                <span className="min-w-[1.5rem] text-right font-display text-lg tabular-nums">
+                  {profile.losh.arms[arm.arm]}
+                </span>
+                <span className="text-sm text-ink-subtle">{arm.what}</span>
+              </div>
+            ))}
+
+            {profile.losh.missing.length > 0 && (
+              <p className="mt-1 text-sm">
+                तारीख़ में ये अंक नहीं हैं:{' '}
+                <strong className="text-saffron-deep">
+                  {profile.losh.missing.join(', ')}
+                </strong>
+                . इन अंकों से जुड़ी चीज़ें या तो कम हैं या आपने रास्ता बदला है।
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------- the lo-shu square */}
+      <section>
+        <h3 className="font-display text-lg">लो-शु वर्ग</h3>
+        <p className="mt-1 text-sm text-ink-subtle">
+          एक से नौ तक के अंक इस वर्ग में ऐसे बैठते हैं कि हर पंक्ति, हर स्तंभ और दोनों
+          विकर्ण — हर जगह जोड़ने पर पंद्रह आते हैं। आपका अंक कहाँ बैठा है, वह रंग से
+          दिखाया गया है।
+        </p>
+
+        <div className="mt-4 grid w-[15rem] max-w-full grid-cols-3 gap-1.5 text-center">
+          {profile.loShu.map((row, r) =>
+            row.map((cell, c) => {
+              const mine = r === profile.loShuCell.row && c === profile.loShuCell.col;
+              return (
+                <div
+                  key={`${r}-${c}`}
+                  className={
+                    'grid aspect-square place-items-center rounded-lg font-display text-2xl ' +
+                    (mine ? 'bg-saffron text-white' : 'bg-sun/15 text-ink')
+                  }
+                >
+                  {cell}
+                </div>
+              );
+            }),
+          )}
+        </div>
+        <p className="mt-2 text-sm text-ink-subtle">
+          आपका जन्म अंक <strong className="text-saffron-deep">{birthNumber}</strong> इसी वर्ग में
+          पहचाना हुआ खाने पर है।
+        </p>
+      </section>
+
+      {/* ------------------------------------------------------- the dev graha */}
+      <section className="rounded-lg bg-saffron/10 p-5">
+        <h3 className="font-display text-lg">
+          अंक {ruling} — {devGraha.name}
+        </h3>
+        <p className="mt-2">{meanings.find((m) => m.number === ruling)?.line}</p>
+        <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+          <p><strong>शरीर:</strong> {devGraha.body}</p>
+          <p><strong>गुण:</strong> {devGraha.virtue}</p>
+          <p><strong>दोष:</strong> {devGraha.vice}</p>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------- friends and enemies */}
+      <section>
+        <h3 className="font-display text-lg">अनुकूल और शत्रु अंक</h3>
+        <div className="mt-3 grid gap-4 sm:grid-cols-2">
+          <div className="rounded-lg border border-leaf/40 bg-leaf/10 p-4">
+            <p className="font-medium">अनुकूल — जो मदद करते हैं</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {friends.map((n) => (
+                <AnkaChip key={n} n={n} />
+              ))}
+            </div>
+          </div>
+          <div className="rounded-lg border border-rose/40 bg-rose/10 p-4">
+            <p className="font-medium">शत्रु — जो रोकते हैं</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {enemies.map((n) => (
+                <AnkaChip key={n} n={n} />
+              ))}
+            </div>
+          </div>
+        </div>
+        <p className="mt-2 text-sm text-ink-subtle">
+          मकान, गाड़ी, फ़ोन नंबर, बिज़ली का बिल — इनमें जहाँ अनुकूल अंक हो, वहाँ रखें।
+        </p>
+      </section>
+
+      {/* ------------------------------------------------------------- the upay */}
+      <section className="rounded-lg border-2 border-saffron p-5">
+        <h3 className="font-display text-lg">उपाय — अंक {ruling} के लिए</h3>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <p><strong>रत्न:</strong> {upay.stone}</p>
+          <p><strong>रंग:</strong> {upay.colour}</p>
+          <p><strong>शुभ दिन:</strong> {upay.day}</p>
+          <p><strong>शुभ महीना:</strong> {upay.month}</p>
+          <p><strong>शुभ तारीख़:</strong> <span className="tabular-nums">{upay.dates.join(', ')}</span> के दिन</p>
+          <p><strong>मंत्र:</strong> {upay.mantra} का नाम लेकर बारह या बीस बार दोहराइए।</p>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+/** One cell of the Losh cross: the digit's place, and how many times it occurs. */
+function LoshCell({
+  cell,
+  centre = false,
+  className = '',
+}: {
+  cell: LoshGrid['cells'][number];
+  centre?: boolean;
+  className?: string;
+}) {
+  return (
+    <div
+      className={
+        'grid aspect-square place-items-center rounded-lg border ' +
+        (centre ? 'border-saffron bg-saffron/15' : 'border-line bg-surface') +
+        ' ' +
+        className
+      }
+    >
+      <div className="text-center leading-none">
+        <div className="font-display text-xl text-saffron-deep tabular-nums">{cell.digit}</div>
+        <div className="mt-1 font-display text-lg tabular-nums">{cell.count}</div>
+      </div>
+    </div>
+  );
+}
+
+/** A number in a button-sized square. */
+function AnkaChip({ n }: { n: number }) {
+  const graha = DEV_GRAHA[n - 1];
+  return (
+    <span className="grid h-12 w-12 place-items-center rounded-lg border border-line bg-surface text-center">
+      <span className="font-display text-lg tabular-nums">{n}</span>
+      <span className="text-[0.6rem] text-ink-subtle">{graha?.name}</span>
+    </span>
   );
 }
 

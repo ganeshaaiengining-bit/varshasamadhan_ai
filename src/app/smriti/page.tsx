@@ -5,6 +5,8 @@ import { MemoryFrame } from '@/components/visual/memory-frame';
 import { getT } from '@/server/i18n';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { VARSHA } from '@/content/tribute';
+import { readImageMeta, photoUrl } from '@/server/images';
+import { safeRead } from '@/server/db-guard';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,6 +36,25 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function SmritiPage() {
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'VARSHA SAMADHAN AI';
   const { lang, t } = await getT();
+
+  /*
+   * The photograph, from the database if the owner has uploaded one.
+   *
+   * Before this, both the home page and this page read `VARSHA.photo`, a path
+   * into the project's public folder. That is a file inside the build output,
+   * and the two pages therefore showed whatever happened to be committed last —
+   * changing the photograph meant asking me, and the next push could quietly
+   * put back the old one.
+   *
+   * The database is where the owner changes it from the admin panel, so both
+   * pages read it here. The static file stays as the fallback for a deployment
+   * whose database is unreachable — a memorial page that shows an empty gilt
+   * frame because a connection string expired is a worse thing than a
+   * photograph that is a few weeks old.
+   */
+  const uploaded = await safeRead('smriti:photo', () => readImageMeta('varsha-photo'), null);
+  const photo = uploaded ? photoUrl(uploaded.key) : VARSHA.photo;
+  const photoAlt = uploaded?.alt || VARSHA.photoAlt;
 
   return (
     <SiteChrome siteName={siteName}>
@@ -81,8 +102,8 @@ export default async function SmritiPage() {
         <div className="mt-12 grid items-start gap-10 lg:grid-cols-[20rem_minmax(0,1fr)] lg:gap-14">
           <div className="mx-auto w-full max-w-sm lg:sticky lg:top-8 lg:mx-0">
             <MemoryFrame
-              src={VARSHA.photo}
-              alt={VARSHA.photoAlt}
+              src={photo}
+              alt={photoAlt}
               nameplate={VARSHA.nameplate}
             />
           </div>

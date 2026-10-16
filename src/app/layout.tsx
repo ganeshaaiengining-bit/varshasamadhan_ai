@@ -49,7 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const name = await siteName();
   const base = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001';
   const description =
-    'श्रीमती वर्षा जी की स्मृति में — निःशुल्क समाधान सेवा। बोलकर या लिखकर अपनी समस्या पूछें।';
+    'श्रीमती VARSHA जी की स्मृति में — निःशुल्क समाधान सेवा। बोलकर या लिखकर अपनी समस्या पूछें।';
 
   return {
     title: {

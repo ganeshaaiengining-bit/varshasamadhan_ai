@@ -316,13 +316,51 @@ export async function playOpeningDhun(volume = 0.5): Promise<DhunHandle | null> 
 
   const ctx = new Ctor();
 
-  // A context created before a gesture starts suspended; this is the request
-  // that either succeeds or throws, and it is the whole autoplay question.
-  if (ctx.state === 'suspended') {
+  /*
+   * Ask to start, then look at what actually happened.
+   *
+   * The earlier version of this was:
+   *
+   *     if (ctx.state === 'suspended') {
+   *         try { await ctx.resume(); } catch { close; return null; }
+   *     }
+   *
+   * and it is the reason the sound never played for anybody.
+   *
+   * A context created before a gesture starts suspended, and calling
+   * `resume()` on it without one used to reject — so the `catch` was right and
+   * the invitation was shown. Chrome changed this: `resume()` now *resolves*,
+   * leaves the context suspended, and logs a warning saying so. The promise
+   * fulfilled, so nothing threw, so the code carried on and built the whole
+   * instrument chain for a context that was never going to make a sound.
+   *
+   * `playOpeningDhun` then returned a handle as though it had played, and the
+   * caller — correctly believing it — put `vs-dhun-played` into sessionStorage.
+   * Every later visit read that key, skipped the attempt entirely, and showed
+   * nothing. One blocked autoplay turned the sound off permanently, with no
+   * error anywhere and no invitation ever appearing.
+   *
+   * So the state is asked for a second time after the promise settles. A
+   * context that is still not running was refused, whatever the promise said,
+   * and the honest answer is to refuse too.
+   */
+  /*
+   * The state is read through this rather than off `ctx.state` directly,
+   * because TypeScript narrows `ctx.state` to "not running" after the first
+   * check and would then refuse to compile the second one — reporting that the
+   * comparison cannot be true, at the exact line whose whole purpose is to find
+   * out whether it has become true.
+   */
+  const isRunning = () => ctx.state === 'running';
+
+  if (!isRunning()) {
     try {
       await ctx.resume();
     } catch {
-      // Refused. The caller shows the invitation instead.
+      // Refused outright. Same outcome as below.
+    }
+
+    if (!isRunning()) {
       void ctx.close();
       return null;
     }

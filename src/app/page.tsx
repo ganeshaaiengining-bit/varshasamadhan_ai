@@ -5,6 +5,7 @@ import { Icon, type IconName } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { AskBoxGate } from '@/components/ask/ask-box-gate';
 import { HealthBox } from '@/components/health/health-box';
+import { MemorialStrip } from '@/components/layout/memorial-strip';
 
 import { Sunrise, SunriseBanner } from '@/components/visual/sunrise';
 import { BrandTitle } from '@/components/visual/brand-title';
@@ -122,6 +123,17 @@ export default async function HomePage() {
 
   return (
     <SiteChrome siteName={siteName}>
+      {/* ============================================== memorial */}
+      {/*
+        Who the site is for, above the hero and above everything.
+
+        It goes first because a visitor who lands here without having read
+        anything should see, before the question box and before the subjects,
+        who they are about to be asking. A help site with a memorial page
+        buried three links deep is not a memorial site.
+      */}
+      <MemorialStrip />
+
       {/* ===================================================== hero */}
       <section className="relative isolate overflow-hidden border-b border-line py-12 sm:py-16 lg:py-24">
         {/*

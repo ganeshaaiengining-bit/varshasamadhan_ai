@@ -7,6 +7,7 @@ import { SiteChrome } from '@/components/layout/site-chrome';
 import { AdminLogin } from '@/components/admin/admin-login';
 import { AdminPanel } from '@/components/admin/admin-panel';
 import { SetupWarning } from '@/components/admin/setup-warning';
+import { PhotoPanel } from '@/components/admin/photo-panel';
 
 export const dynamic = 'force-dynamic';
 
@@ -131,6 +132,18 @@ export default async function AdminPage() {
           looks broken — so the one place the owner can fix it should say so.
         */}
         <SetupWarning />
+
+        {/*
+          The photograph, above the numbers.
+
+          Above rather than below because it is the thing the owner most often
+          wants to change and the only control on this page that changes the
+          outside of the site rather than the inside. Numbers and article counts
+          do not go stale the way a photograph of a person does.
+        */}
+        <div className="mb-8">
+          <PhotoPanel />
+        </div>
 
         <AdminPanel
           pending={pending.map((r) => ({ ...r, createdAt: r.createdAt.toISOString() }))}

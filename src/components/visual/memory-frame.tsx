@@ -7,7 +7,7 @@ import * as React from 'react';
  *  स्मृति चौकट — the memorial portrait frame
  * ===========================================================================
  *
- * The photograph of वर्षा जी, in a double gilt frame, with her nameplate
+ * The photograph of VARSHA ji, in a double gilt frame, with her nameplate
  * beneath it.
  *
  * ── Why a component and not markup in the page ─────────────────────────────
@@ -77,16 +77,30 @@ export function MemoryFrame({
           {/* ------------------------------------------- the photograph */}
           <div className="overflow-hidden rounded-[5px] bg-surface">
             {/* eslint-disable-next-line @next/next/no-img-element -- the
-                memorial portrait. It is a fixed, hand-checked asset on the
-                server, and next/image would only add an optimisation step and
-                a layout shift to a page that must not reflow. */}
+                memorial photograph. It is whatever the owner uploaded, so its
+                shape is unknown at build time and next/image would only add an
+                optimisation step and a layout shift to a page that must not
+                reflow.
+
+                Shown whole, in its own shape.
+
+                This used to be a fixed four-by-five portrait box with hard-coded
+                pixel dimensions, which is right for a photograph of a person
+                taken standing up. The picture the owner actually gave is a
+                landscape memorial card, sixteen by nine, with words printed on
+                it — a four-by-five cover cut the card down to her shoulder and
+                the letters GV S, and the hard-coded dimensions fought the real
+                ones so the box was the wrong shape twice over.
+
+                So the frame takes the shape of what it is given, the ceiling
+                stops a tall photograph pushing the story off the screen, and
+                `contain` guarantees that no part of her is ever cropped away
+                without somebody having chosen to. */}
             <img
               src={src}
               alt={alt}
-              width={1254}
-              height={1568}
               onError={() => setMissing(true)}
-              className="aspect-[4/5] w-full object-cover object-top"
+              className="max-h-[26rem] w-full object-contain"
             />
           </div>
         </div>

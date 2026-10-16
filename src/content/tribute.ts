@@ -1,9 +1,9 @@
 /**
  * ===========================================================================
- *  श्रीमती वर्षा जी — स्मृति
+ *  VARSHA जी — स्मृति
  * ===========================================================================
  *
- * What the family of Varsha ji asked for: an account of who she was and what
+ * What the family of VARSHA ji asked for: an account of who she was and what
  * she stood for, in their own words.
  *
  * These lines are the owner's. They are kept in one file, in one object, so
@@ -45,12 +45,12 @@ export interface Tribute {
 }
 
 export const VARSHA: Tribute = {
-  name: 'वर्षा',
+  name: 'VARSHA',
   honorific: 'श्रीमती',
 
   photo: '/art/varsha.jpg',
-  photoAlt: 'कै. सौ. वर्षा जी — कार्यालयात बसलेल्या आपल्या फोटोत',
-  nameplate: 'कै. सौ. वर्षा · उपसचिव',
+  photoAlt: 'कै. सौ. VARSHA जी — कार्यालयात बसलेल्या आपल्या फोटोत',
+  nameplate: 'कै. सौ. VARSHA · उपसचिव',
 
   shortLine:
     'जिन्होंने समाज के लिए ज़िंदगी भर लड़ाई लड़ी, और जिन्हें आख़िर में अपने हिस्से का हिसाब नहीं मिला।',
@@ -61,7 +61,7 @@ export const VARSHA: Tribute = {
   paragraphs: [
     {
       text:
-        'वर्षा जी ने ज़िंदगी भर समाज के लिए लड़ाई लड़ी। सही बात बोलने वाले लोगों के साथ खड़ी हुईं। जो लोग सरकारी घरों में बैठकर भ्रष्टाचार करते थे, उनके सामने वे खड़ी रहीं।',
+        'VARSHA जी ने ज़िंदगी भर समाज के लिए लड़ाई लड़ी। सही बात बोलने वाले लोगों के साथ खड़ी हुईं। जो लोग सरकारी घरों में बैठकर भ्रष्टाचार करते थे, उनके सामने वे खड़ी रहीं।',
     },
     {
       text:

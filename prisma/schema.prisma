@@ -364,3 +364,47 @@ model SavedNote {
   @@index([userId, createdAt])
   @@map("saved_notes")
 }
+
+/**
+ * Pictures the owner uploads from the admin panel.
+ *
+ * ── Why these live in the database and not in /public ───────────────────────
+ *
+ * Because a file dropped into `public/` is gone at the next deployment. Every
+ * deploy replaces the build output, so a photograph added that way survives
+ * until somebody pushes, then vanishes with no warning and no error — which is
+ * the worst way for a memorial page to break.
+ *
+ * Storing it here means the owner changes it from a phone, at any time, and it
+ * is still there after a deploy, a rollback, or a month.
+ *
+ * ── Why base64 in a column and not a bytea ─────────────────────────────────
+ *
+ * Because it has to survive `prisma db push` on a provider that may move the
+ * table, and because the only consumer is a small `<img>` tag. Base64 costs a
+ * third in size and buys a value that is portable, diffable in a backup, and
+ * impossible to half-write.
+ *
+ * The size ceiling is enforced in the route, not here. A column this wide can
+ * hold a great deal more than a photograph and would happily accept it.
+ */
+model SiteImage {
+  /// A short name: "varsha-photo". The key is the URL.
+  key String @id
+
+  /// image/jpeg, image/png, image/webp. Kept so the browser is told rather than guessed.
+  mime String @default("image/jpeg")
+
+  /// Base64, without the `data:` prefix.
+  data String
+
+  /// The size of the decoded bytes, for the panel's display and for the ceiling check.
+  byteSize Int @default(0) @map("byte_size")
+
+  /// What a screen reader should say. Not left blank: an unlabelled photograph of a person is invisible to half the people who would be reading it.
+  alt String @default("")
+
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_images")
+}
