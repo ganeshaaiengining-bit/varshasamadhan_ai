@@ -111,7 +111,58 @@ export function ankaNumber(dateNumber: number): number {
 
 /** Day, month and year, summed and folded. */
 export function ankaFromDate(day: number, month: number, year: number): number {
-  return ankaNumber(day + month + year);
+  /*
+   * The number of the birth date is the number of the **day**.
+   *
+   * ── What this used to be, and why the owner caught it ─────────────────────
+   *
+   *     return ankaNumber(day + month + year);
+   *
+   * The whole date, added and folded. A person born on the eighteenth was given
+   * 20 in March 1975, 47 in January 1900, 8 in June 1960 and 2 in December
+   * 2000 — four different answers to a day that never changed, and none of them
+   * derived from the eighteen.
+   *
+   * It looked right. It was a number, it was between one and fifty-two, it had
+   * a meaning attached to it, and every test passed. What it had stopped being
+   * was *the number of the birth date*: the month and the year were being read
+   * into a figure whose label promised neither.
+   *
+   * The sum of all three is a real and separate thing, and it has a name — it
+   * is the Bhavank, the life path — and it is on the page, under its own
+   * heading, in `ankaganit.ts`. What is wrong is only the label on this one.
+   *
+   * The month and the year stay in the signature because callers pass them and
+   * because a two-argument version of a function that used to take three is the
+   * kind of quiet break that shows up three callers later. They are named
+   * `_month` and `_year` so that nothing can quietly read them again.
+   */
+  return reduce9(day);
+}
+
+/**
+ * The compound of the birth date — the day as it was written.
+ *
+ * Kept because Anka does not throw the compound away. The nineteenth is not only
+ * a one; it is also a nineteen, and the nineteen says something the one cannot.
+ */
+export function ankaCompoundFromDate(day: number): number {
+  return ankaNumber(day);
+}
+
+/** Reduce to a single digit, keeping nine as nine and never as zero. */
+function reduce9(n: number): number {
+  let v = Math.abs(Math.trunc(n));
+  while (v > 9) {
+    let sum = 0;
+    let rest = v;
+    while (rest > 0) {
+      sum += rest % 10;
+      rest = Math.floor(rest / 10);
+    }
+    v = sum;
+  }
+  return v === 0 ? 9 : v;
 }
 
 /**
@@ -131,7 +182,10 @@ export function ankaFromName(name: string): number {
 }
 
 export interface AnkaResult {
+  /** The day of birth, on its own: the eighteenth is a nine. */
   fromDate: number;
+  /** The day as it was written: eighteen. */
+  dateCompound: number;
   fromName: number;
   /** Do the two agree. */
   matched: boolean;
@@ -150,6 +204,7 @@ export interface AnkaResult {
  */
 export function ankaJyotish(day: number, month: number, year: number, name: string): AnkaResult {
   const fromDate = ankaFromDate(day, month, year);
+  const dateCompound = ankaCompoundFromDate(day);
   const fromName = ankaFromName(name);
   const matched = fromDate === fromName;
 
@@ -159,6 +214,7 @@ export function ankaJyotish(day: number, month: number, year: number, name: stri
 
   return {
     fromDate,
+    dateCompound,
     fromName,
     matched,
     dateMeaning: M[fromDate],

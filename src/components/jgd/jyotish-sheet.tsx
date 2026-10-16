@@ -688,13 +688,34 @@ function AnkaPanel({ chart }: { chart: Chart }) {
     <div className="grid gap-5">
       <div className="grid gap-4 sm:grid-cols-2">
         {[
-          { n: anka.fromDate, m: anka.dateMeaning, label: 'जन्म-तिथि का अंक' },
-          { n: anka.fromName, m: anka.nameMeaning, label: 'नाम का अंक' },
+          {
+            n: anka.fromDate,
+            compound: anka.dateCompound,
+            m: anka.dateMeaning,
+            label: 'जन्म-तिथि का अंक',
+            hint: `जन्म का दिन ${chart.input.day}`,
+          },
+          {
+            n: anka.fromName,
+            compound: undefined,
+            m: anka.nameMeaning,
+            label: 'नाम का अंक',
+            hint: chart.input.name ? `नाम: ${chart.input.name}` : 'नाम नहीं दिया गया',
+          },
         ].map((entry) => (
           <div key={entry.label} className="rounded-lg bg-saffron/10 p-5">
             <p className="text-sm text-ink-subtle">{entry.label}</p>
-            <p className="font-display text-5xl text-saffron-deep">{entry.n}</p>
-            <p className="mt-1 font-medium">{entry.m.title}</p>
+            <p className="font-display text-5xl text-saffron-deep tabular-nums">{entry.n}</p>
+            <p className="text-sm text-ink-subtle">{entry.hint}</p>
+
+            {entry.compound !== undefined && entry.compound !== entry.n && (
+              <p className="mt-1 text-sm">
+                यौगिक अंक <strong className="tabular-nums">{entry.compound}</strong>
+                <span className="text-ink-subtle"> — जैसे ही एक से घटाया तो यही आता है</span>
+              </p>
+            )}
+
+            <p className="mt-2 font-medium">{entry.m.title}</p>
             <p className="mt-1">{entry.m.line}</p>
             <p className="mt-2">{entry.m.body}</p>
             <p className="mt-3 border-t border-line pt-2 text-sm">
@@ -782,9 +803,9 @@ function AnkaGanit({ chart }: { chart: Chart }) {
   const master = MASTERS[profile.bhavAnk.compound ?? 0];
 
   const numbers = [
-    { label: 'जन्म अंक (दिन)', n: profile.janmAnk, hint: 'जन्म के दिन से निकला अंक' },
-    { label: 'मासांक', n: { value: reduce9(chart.input.month), compound: reduce52(chart.input.month) }, hint: 'जन्म के महीने से' },
-    { label: 'वर्षांक', n: { value: reduce9(chart.input.year), compound: reduce52(chart.input.year) }, hint: 'जन्म के साल से' },
+    { label: 'जन्म अंक (दिन)', n: profile.janmAnk, hint: `जन्म का दिन ${chart.input.day} — 1 से 9 तक` },
+    { label: 'मासांक', n: { value: reduce9(chart.input.month), compound: reduce52(chart.input.month) }, hint: `जन्म का महीना ${chart.input.month}` },
+    { label: 'वर्षांक', n: { value: reduce9(chart.input.year), compound: reduce52(chart.input.year) }, hint: `जन्म का साल ${chart.input.year}` },
     { label: 'भवांक / मूलांक', n: profile.bhavAnk, hint: 'दिन + महीना + साल — जीवन की मुख्य अंक' },
     { label: 'कर्मांक', n: profile.karmAnk, hint: 'दिन + महीना — पिछले से लाया हुआ' },
     { label: 'नाम अंक', n: profile.naamAnk, hint: 'नाम, ख़ल्दानी पद्धति से' },

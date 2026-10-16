@@ -12,6 +12,7 @@ import {
   ANKA_UPAY,
   MASTERS,
 } from '../src/content/ankaganit';
+import { ankaFromDate, ankaCompoundFromDate } from '../src/content/anka';
 
 /**
  * Is the Anka Ganit right?
@@ -234,7 +235,69 @@ check('and reports seven digits as absent',
 check('and they are 2, 3, 4, 5, 6, 7 and 8',
   thin.losh.missing.join(',') === '2,3,4,5,6,7,8', `got ${thin.losh.missing.join(',')}`);
 
-/* ── 8. the remedies, so a wrong index cannot pass ───────────────────────── */
+/* ── 9. the birth-date number is the day, and only the day ────────────────── */
+
+/*
+ * The owner reported this one, and it had passed every check in this file.
+ *
+ * The card labelled "जन्म-तिथि का अंक" was computing the day, the month and the
+ * year added together and folded. A person born on the eighteenth was given 20
+ * in March 1975, 47 in January 1900, 8 in June 1960 and 2 in December 2000 —
+ * four answers to a day that never changed, none of them containing the
+ * eighteen.
+ *
+ * Every test here still passed, because the result was a number, it was in
+ * range, and it had a meaning attached to it. The thing that was wrong was the
+ * *question being asked*, and no check of shape can see that. So these checks
+ * are written as the question rather than as the answer: the same day must give
+ * the same number whatever the month and the year, and the day itself must be
+ * what decides it.
+ */
+
+// The day alone decides it, for every day of the year, in every month.
+const monthYearPairs: Array<[number, number]> = [
+  [1, 1900], [2, 1947], [3, 1975], [6, 1960], [8, 1988], [12, 2000],
+];
+
+let unstable = 0;
+let wrongDay = 0;
+for (let day = 1; day <= 31; day += 1) {
+  const answers = new Set<number>();
+  for (const [month, year] of monthYearPairs) {
+    const got = ankaFromDate(day, month, year);
+    answers.add(got);
+    // 18 is a nine, 29 is a two, 31 is a four.
+    if (got !== reduce9(day)) wrongDay += 1;
+  }
+  if (answers.size > 1) unstable += 1;
+}
+
+check('the same day gives the same number in every month and year',
+  unstable === 0, `${unstable} days gave more than one answer`);
+check('and that number is the day itself, reduced',
+  wrongDay === 0, `${wrongDay} day/month/year combinations disagreed with their own day`);
+
+// The two the owner named, checked by hand.
+check('the 18th is a 9', ankaFromDate(18, 3, 1975) === 9,
+  `got ${ankaFromDate(18, 3, 1975)}`);
+check('the 18th is a 9 in any month', ankaFromDate(18, 12, 2000) === 9,
+  `got ${ankaFromDate(18, 12, 2000)}`);
+check('and it is not 16', ankaFromDate(18, 3, 1975) !== 16,
+  `got ${ankaFromDate(18, 3, 1975)}`);
+
+// The compound is kept, because Anka does not throw it away.
+check('the compound of the 18th is 18', ankaCompoundFromDate(18) === 18,
+  `got ${ankaCompoundFromDate(18)}`);
+check('the compound of the 31st is 31', ankaCompoundFromDate(31) === 31,
+  `got ${ankaCompoundFromDate(31)}`);
+
+// And the whole-date figure is still available — under its own name.
+check('the bhavank still counts all three parts',
+  ankaProfile(18, 3, 1975, 'V', 2026).bhavAnk.value ===
+    reduce9(reduce52(18 + 3 + 1975)),
+  'the life-path number stopped counting the date');
+
+/* ── 10. the remedies, so a wrong index cannot pass ──────────────────────── */
 
 // Upay is looked up by index, which is the one place an off-by-one shows
 // nothing but a wrong stone.
