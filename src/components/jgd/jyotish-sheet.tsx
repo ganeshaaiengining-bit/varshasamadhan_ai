@@ -36,6 +36,7 @@ import {
   type LoshGrid,
 } from '@/content/ankaganit';
 import { panchang as panchangOf, moonPhase } from '@/content/panchang';
+import { samagraPhala, type SamagraPhala } from '@/content/samagra';
 
 /**
  * ===========================================================================
@@ -391,11 +392,14 @@ function Dasha({ chart }: { chart: Chart }) {
 function Phaladesh({ chart }: { chart: Chart }) {
   const result = vimshottari(chart.jd, chart.input.year);
   const [open, setOpen] = React.useState<Planet | null>(result.current?.graha ?? null);
+  const samagra = samagraPhala(chart.grahas, chart.houses, chart.lagnaRashi);
 
   return (
     <div className="grid gap-5">
+      <SamagraPanel samagra={samagra} />
+
       <p className="text-sm text-ink-subtle">
-        हर महादशा बीस भागों में बँटती है। राशि पीछे की ओर चलती है और ग्रह आगे की ओर, इसलिए पहला
+        नीचे हर महादशा बीस भागों में बँटती है। राशि पीछे की ओर चलती है और ग्रह आगे की ओर, इसलिए पहला
         फला हमेशा दशा के स्वामी का अपना होता है।
       </p>
 
@@ -817,6 +821,105 @@ function PanchangPanel({ chart }: { chart: Chart }) {
         चाँद और सूर्य का निरयन उतना सही होगा।
       </Note>
     </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+
+/**
+ * समग्र फल — the whole chart, read at once.
+ *
+ * Nine grahas are nine readings, and a reader who has just been told nine
+ * things still does not know what to conclude. This is the answer to that: one
+ * verdict, the count of what was found behind it, and every single line the
+ * verdict rests on shown underneath so it can be argued with.
+ */
+function SamagraPanel({ samagra }: { samagra: SamagraPhala }) {
+  const { tally, kendradhipati } = samagra;
+
+  const tone = tally.hard === 0 ? 'border-leaf/50 bg-leaf/10'
+    : tally.hard <= 2 ? 'border-saffron bg-saffron/10'
+    : 'border-rose/50 bg-rose/10';
+
+  return (
+    <section className={`rounded-[var(--radius)] border-2 p-5 ${tone}`}>
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <h3 className="font-display text-xl">समग्र फल — पूरी कुंडली का एक निर्णय</h3>
+        <p className="text-sm text-ink-muted">
+          <span className="text-leaf">साफ़ा {tally.good}</span> ·{' '}
+          <span>साधारण {tally.mixed}</span> ·{' '}
+          <span className="text-rose">कठिन {tally.hard}</span>
+        </p>
+      </div>
+
+      <p className="mt-3">{samagra.summary}</p>
+
+      {/* --------------------------------------------- the pancha mahapurusha */}
+      <div className="mt-4 grid gap-2 sm:grid-cols-5">
+        {samagra.mahapurusha.map((m) => (
+          <div
+            key={m.graha}
+            className={
+              'rounded-lg border p-3 text-center ' +
+              (m.formed ? 'border-saffron bg-saffron/15' : 'border-line bg-surface')
+            }
+          >
+            <p className="text-xs text-ink-subtle">{m.name}</p>
+            <p className="mt-1 text-sm font-medium">{m.formed ? m.gift.split('—')[0].trim() : 'नहीं बना'}</p>
+            {m.formed && <p className="text-xs text-saffron-deep tabular-nums">{m.years} वर्ष</p>}
+          </div>
+        ))}
+      </div>
+
+      {samagra.mahapurushaCount > 0 && (
+        <p className="mt-2 text-sm text-ink-subtle">
+          {samagra.mahapurushaCount} में से — ये बनने वाले ग्रह मिलकर{' '}
+          <strong className="tabular-nums">{samagra.mahapurushaYears} वर्ष</strong> का भाग रखते हैं।
+        </p>
+      )}
+
+      <p className="mt-3 rounded-lg bg-surface p-3 text-sm">{kendradhipati.why}</p>
+
+      {/* --------------------------------------------------- the nine, listed */}
+      <div className="mt-4 grid gap-2">
+        {samagra.lines.map((line) => (
+          <div
+            key={line.graha}
+            className={
+              'flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-lg border p-3 ' +
+              (line.tone === 'good' ? 'border-leaf/40 bg-leaf/5'
+                : line.tone === 'hard' ? 'border-rose/40 bg-rose/5'
+                : 'border-line bg-surface')
+            }
+          >
+            <span className="font-medium">{line.name}</span>
+            <span className="text-sm text-ink-subtle">{line.rashi}</span>
+            <span className="rounded bg-sun/20 px-2 py-0.5 text-xs">{line.badge}</span>
+            <span className="w-full text-sm">{line.verdict}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* ------------------------------------------------------- two columns */}
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <div className="rounded-lg border border-leaf/40 p-4">
+          <p className="font-medium text-leaf">जिस पर टिकना है</p>
+          <ul className="mt-2 grid gap-1.5 text-sm">
+            {samagra.strengths.map((line, i) => (
+              <li key={i}>— {line}</li>
+            ))}
+          </ul>
+        </div>
+        <div className="rounded-lg border border-rose/40 p-4">
+          <p className="font-medium text-rose">जिससे सावधान</p>
+          <ul className="mt-2 grid gap-1.5 text-sm">
+            {samagra.cautions.map((line, i) => (
+              <li key={i}>— {line}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
   );
 }
 
