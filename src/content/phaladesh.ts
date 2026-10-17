@@ -406,8 +406,33 @@ export function phaladesh(
   const periods: PhalaPeriod[] = [];
 
   for (let i = 0; i < 20; i += 1) {
-    // Backwards through the zodiac, so the graha's own sign comes first.
-    const rashi = (startRashi - i + 12) % 12;
+    /*
+     * Backwards through the zodiac, so the graha's own sign comes first.
+     *
+     * ── Why the modulus is doubled ────────────────────────────────────────
+     *
+     * It used to be `(startRashi - i + 12) % 12`.
+     *
+     * That is not enough, because `i` runs to nineteen and the `+ 12` only
+     * lifts a value that is *slightly* negative. With the graha in Aries —
+     * `startRashi` zero — the nineteenth step gives `(0 - 19 + 12) % 12`, and
+     * in JavaScript the sign of a remainder is the sign of the dividend, so
+     * that is **minus seven**, not five.
+     *
+     * A rashi of minus seven is not a rashi. The reading for it was empty, and
+     * the page that draws it did `RASHIS[rashi].name` on the way past, which is
+     * reading a property of `undefined` — and the whole chart went blank, not
+     * just this one box: React tore down the tree, so every tab after फलादेश
+     * was empty as well and the failure looked like a broken tab rather than a
+     * broken number.
+     *
+     * It happened for roughly half of all birth charts, depending only on
+     * which sign the dasha lord was in. The check for it is in
+     * `scripts/test-ankaganit.ts` and `scripts/test-panchang.ts`'s sibling,
+     * `scripts/test-phaladesh.ts`: every rashi out of every period, for every
+     * graha, over a long run of dates.
+     */
+    const rashi = ((startRashi - i) % 12 + 12) % 12;
     const reading = readingFor(graha, rashi);
 
     periods.push({
