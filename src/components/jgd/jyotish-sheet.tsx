@@ -35,6 +35,7 @@ import {
   MASTERS,
   type LoshGrid,
 } from '@/content/ankaganit';
+import { panchang as panchangOf, moonPhase } from '@/content/panchang';
 
 /**
  * ===========================================================================
@@ -77,11 +78,12 @@ export interface JyotishInput {
 }
 
 type TabKey =
-  | 'kundali' | 'dasha' | 'phaladesh' | 'yoga'
+  | 'kundali' | 'panchang' | 'dasha' | 'phaladesh' | 'yoga'
   | 'shodasvarga' | 'kp' | 'lalkitab' | 'anka';
 
 const TABS: Array<{ key: TabKey; label: string }> = [
   { key: 'kundali', label: 'कुंडली' },
+  { key: 'panchang', label: 'पंचांग' },
   { key: 'dasha', label: 'विमशोत्तरी दशा' },
   { key: 'phaladesh', label: 'फलादेश' },
   { key: 'yoga', label: 'योग' },
@@ -167,6 +169,7 @@ export function JyotishSheet({ input }: { input: JyotishInput }) {
 
       <div className="mt-6">
         {tab === 'kundali' && <Kundali chart={chart} />}
+        {tab === 'panchang' && <PanchangPanel chart={chart} />}
         {tab === 'dasha' && <Dasha chart={chart} />}
         {tab === 'phaladesh' && <Phaladesh chart={chart} />}
         {tab === 'yoga' && <YogaPanel chart={chart} />}
@@ -196,6 +199,8 @@ interface Chart {
   lal: ReturnType<typeof lalKitab>;
   lalNotes: string[];
   anka: ReturnType<typeof ankaJyotish>;
+  panchang: ReturnType<typeof panchangOf>;
+  moonPhase: ReturnType<typeof moonPhase>;
 }
 
 function buildChart(input: JyotishInput): Chart {
@@ -224,6 +229,15 @@ function buildChart(input: JyotishInput): Chart {
     lal: lalKitab(jd),
     lalNotes: lalKitabDisagreements(grahas),
     anka: ankaJyotish(input.day, input.month, input.year, input.name || 'A'),
+    // The weekday of the calendar date, read straight off a UTC date built from
+    // the three numbers that were typed in.
+    //
+    // It used to be worked out by turning the Julian day into milliseconds and
+    // making a Date out of that, which is a round trip through a floating point
+    // number large enough to be off by a day in the last place — and a weekday
+    // is the one thing on this page where being a day out changes the reading.
+    panchang: panchangOf(jd, new Date(Date.UTC(input.year, input.month - 1, input.day)).getUTCDay()),
+    moonPhase: moonPhase(jd),
   };
 }
 
@@ -672,7 +686,141 @@ function LalKitabPanel({ chart }: { chart: Chart }) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* 8. Anka Jyotish and the whole of Anka Ganit                               */
+/* 2. Panchang                                                                  */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The five limbs of the day and hour of birth.
+ *
+ * The tithi, the nakshatra, the yoga, the karana and the weekday — the things a
+ * priest reads off an almanac before doing anything at all. Every one is a
+ * division of an angle, so all five are computed rather than looked up, and all
+ * five are checked in `scripts/test-panchang.ts` against arithmetic that can be
+ * done on paper.
+ *
+ * The Moon's own phase is drawn rather than described, because "how full is the
+ * moon" is the one of the five that everybody already knows how to read.
+ */
+function PanchangPanel({ chart }: { chart: Chart }) {
+  const { panchang, moonPhase: phase } = chart;
+
+  const limbs = [
+    { key: 'तिथि', point: panchang.tithi, count: '30 में से' },
+    { key: 'नक्षत्र', point: panchang.nakshatra, count: '27 में से' },
+    { key: 'योग', point: panchang.yoga, count: '27 में से' },
+    { key: 'करण', point: panchang.karana, count: '60 में से' },
+    { key: 'वार', point: panchang.vaara, count: '' },
+  ];
+
+  return (
+    <div className="grid gap-6">
+
+      {/* ------------------------------------------------------- the moon's face */}
+      <div className="flex flex-wrap items-center gap-6 rounded-lg bg-surface p-5">
+        {/*
+          The Moon, drawn. A circle with a shadow across it — the lit part
+          bright, the dark part a tint, and the terminator as a half ellipse that
+          leans one way or the other with the phase.
+        */}
+        <div
+          className="relative h-28 w-28 shrink-0 overflow-hidden rounded-full border border-line"
+          style={{ background: '#2b2b33' }}
+          role="img"
+          aria-label={`चाँद का प्रतिशत ${phase.percent}`}
+        >
+          <div
+            className="absolute inset-y-0 left-0"
+            style={{
+              width: `${phase.percent}%`,
+              background: 'radial-gradient(circle at 40% 35%, #fdfbf4, #cfc6ad)',
+              borderRadius: phase.percent > 50 ? '0' : '0 100% 100% 0',
+            }}
+          />
+          {phase.percent > 50 && (
+            <div
+              className="absolute inset-y-0 right-0 bg-[#2b2b33]"
+              style={{ width: `${100 - phase.percent}%` }}
+            />
+          )}
+        </div>
+
+        <div className="min-w-0">
+          <p className="font-display text-2xl">{phase.name}</p>
+          <p className="text-sm text-ink-muted">
+            चाँद का प्रतिशत <strong className="tabular-nums">{phase.percent}%</strong>
+          </p>
+          <p className="mt-1 text-sm text-ink-subtle">
+            {panchang.paksha} पक्ष · अगली अमावस्या में{' '}
+            <strong className="tabular-nums">{phase.daysToNewMoon.toFixed(1)}</strong> दिन
+          </p>
+        </div>
+      </div>
+
+      {/* ---------------------------------------------------------- the five limbs */}
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {limbs.map((limb) => (
+          <div key={limb.key} className="rounded-lg border border-line p-5">
+            <div className="flex items-baseline justify-between gap-3">
+              <p className="text-sm text-ink-subtle">{limb.key}</p>
+              <p className="text-xs text-ink-subtle">
+                {limb.count ? `${limb.count} ` : ''}
+                <span className="tabular-nums">{limb.point.index}</span>
+              </p>
+            </div>
+
+            <p className="mt-1 font-display text-xl">{limb.point.name}</p>
+            {limb.point.about && (
+              <p className="mt-1 text-sm text-ink-muted">{limb.point.about}</p>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/*
+        The angles, printed.
+
+        Because every limb above is a division, and a reader is entitled to be
+        able to check the division. Showing the two angles the whole panel rests
+        on costs two lines and turns five confident numbers into five checkable
+        ones.
+      */}
+      <details className="rounded-lg border border-line p-4">
+        <summary className="cursor-pointer font-medium">
+          गिनती देखिए — अंग कहाँ से आए
+        </summary>
+        <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+          <p>
+            सूर्य का निरयन:{' '}
+            <strong className="tabular-nums">{panchang.angles.sun.toFixed(3)}°</strong>
+          </p>
+          <p>
+            चंद्र का निरयन:{' '}
+            <strong className="tabular-nums">{panchang.angles.moon.toFixed(3)}°</strong>
+          </p>
+          <p>
+            अंतर (तिथि इसका बारहवाँ भाग):{' '}
+            <strong className="tabular-nums">{panchang.angles.tithiAngle.toFixed(3)}°</strong>
+          </p>
+          <p>
+            योग (दोनों का जोड़, सत्ताइसवाँ भाग):{' '}
+            <strong className="tabular-nums">{panchang.angles.yogaAngle.toFixed(3)}°</strong>
+          </p>
+        </div>
+        <p className="mt-3 text-sm text-ink-subtle">
+          ये सब निरयन माने गए हैं — यानी पृथ्वी के घूमने के कारण जो तय अंतर होता है, वह
+          हटा लिया गया है। पाश्चर का पंचांग भी यही मानता है।
+        </p>
+      </details>
+
+      <Note>
+        यह पंचांग आपके जन्म के क्षण का है, आज का नहीं। जन्म का समय जितना सही होगा,
+        चाँद और सूर्य का निरयन उतना सही होगा।
+      </Note>
+    </div>
+  );
+}
+
+/* 3. Anka Jyotish and the whole of Anka Ganit                               */
 /* -------------------------------------------------------------------------- */
 
 /**

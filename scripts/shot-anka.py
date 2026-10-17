@@ -92,33 +92,24 @@ with sync_playwright() as play:
         print("  form par:", str(error)[:200])
 
     tabs = page.locator('[role="tab"]')
-    print("  tabs:", tabs.count())
+    print("  tabs:", tabs.count(), [tabs.nth(i).inner_text() for i in range(tabs.count())])
 
+    wanted = sys.argv[2] if len(sys.argv) > 2 else "अंक"
     for i in range(tabs.count()):
-        if "अंक" in tabs.nth(i).inner_text():
+        if wanted in tabs.nth(i).inner_text():
             tabs.nth(i).click()
             break
+    else:
+        print(f"  tab '{wanted}' nahi mila")
 
     page.wait_for_timeout(3500)
 
     body = page.inner_text("body")
-    for probe in ["लोश ग्रिड", "लो-शु वर्ग", "अनुकूल", "उपाय", "कर्मांक", "लेख अंक", "भवांक"]:
+    for probe in ["लोश ग्रिड", "लो-शु वर्ग", "अनुकूल", "उपाय", "कर्मांक", "लेख अंक", "भवांक",
+                  "पंचांग", "तिथि", "नक्षत्र", "योग", "करण", "चाँद का प्रतिशत"]:
         print(f"  {'ok ' if probe in body else 'MISSING'} {probe}")
 
-    # The Losh cross and the square, on their own, so the *shape* can be seen
-    # rather than the text inside it. A grid that computes correctly and draws
-    # in the wrong place reads as a different reading.
-    losh = page.locator("text=लोश ग्रिड").first
-    losh.scroll_into_view_if_needed()
-    page.wait_for_timeout(800)
-    page.screenshot(path=".shot-lossh.png")
-
-    square = page.locator("text=लो-शु वर्ग").first
-    square.scroll_into_view_if_needed()
-    page.wait_for_timeout(800)
-    page.screenshot(path=".shot-square.png")
-
     page.screenshot(path=".shot-anka.png", full_page=True)
-    print("  .shot-anka.png, .shot-lossh.png, .shot-square.png")
+    print("  .shot-anka.png")
 
     browser.close()
