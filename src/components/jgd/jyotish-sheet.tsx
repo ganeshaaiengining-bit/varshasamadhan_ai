@@ -37,6 +37,7 @@ import {
 } from '@/content/ankaganit';
 import { panchang as panchangOf, moonPhase } from '@/content/panchang';
 import { samagraPhala, type SamagraPhala } from '@/content/samagra';
+import { KundaliChart, ChartLegend } from '@/components/jgd/kundali-chart';
 
 /**
  * ===========================================================================
@@ -247,8 +248,26 @@ function buildChart(input: JyotishInput): Chart {
 /* -------------------------------------------------------------------------- */
 
 function Kundali({ chart }: { chart: Chart }) {
+  const running = React.useMemo(() => {
+    const sequence = vimshottari(chart.jd, chart.input.year);
+    return sequence.current
+      ? { graha: sequence.current.graha, start: sequence.current.startYear, end: sequence.current.endYear }
+      : null;
+  }, [chart.jd, chart.input.year]);
+
   return (
     <div className="grid gap-6">
+      {/* The chart. */}
+      <KundaliChart
+        grahas={chart.grahas}
+        houses={chart.houses}
+        lagnaRashi={chart.lagnaRashi}
+        jd={chart.jd}
+        running={running}
+      />
+
+      <ChartLegend grahas={chart.grahas} houses={chart.houses} />
+
       <div className="rounded-lg bg-saffron/10 p-5">
         <p className="text-sm text-ink-subtle">लग्न (जन्म समय पर पूर्व क्षितिज)</p>
         <p className="font-display text-3xl">
