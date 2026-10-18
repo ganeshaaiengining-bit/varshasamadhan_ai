@@ -51,13 +51,13 @@ export const RASHIS = [
   { name: 'मिथुन', lord: 'बुध', element: 'वायु' },
   { name: 'कर्क', lord: 'चंद्र', element: 'जल' },
   { name: 'सिंह', lord: 'सूर्य', element: 'अग्नि' },
-  { name: 'कन्या', lord: 'शुक्र', element: 'पृथ्वी' },
+  { name: 'कन्या', lord: 'बुध', element: 'पृथ्वी' },
   { name: 'तुला', lord: 'शुक्र', element: 'वायु' },
   { name: 'वृश्चिक', lord: 'मंगल', element: 'जल' },
   { name: 'धनु', lord: 'गुरु', element: 'अग्नि' },
-  { name: 'मकर', lord: 'शत्रु', element: 'पृथ्वी' },
-  { name: 'कुंभ', lord: 'शत्रु', element: 'वायु' },
-  { name: 'मीन', lord: 'चंद्र', element: 'जल' },
+  { name: 'मकर', lord: 'शनि', element: 'पृथ्वी' },
+  { name: 'कुंभ', lord: 'शनि', element: 'वायु' },
+  { name: 'मीन', lord: 'बृहस्पति', element: 'जल' },
 ];
 
 export interface NakshatraInfo {

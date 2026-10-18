@@ -27,6 +27,60 @@ import { RASHIS } from '../src/content/astrology';
 let passed = 0;
 let failed = 0;
 
+/*
+ * Who rules which sign.
+ *
+ * Written out here rather than read from RASHIS, because the whole point is to
+ * check the table against something outside it. Reading it from the same place
+ * the drawing reads it from proves only that the code is consistent with
+ * itself, and four signs were wrong in exactly that way: कन्या was given Venus,
+ * मकर and कुंभ were given "शत्रु" — which is the word for *enemy*, not a planet
+ * at all — and मीन was given the Moon. Every other check in this file passed
+ * while those four sat in the drawing, because a lord's name is never counted;
+ * it is only printed.
+ *
+ * "शत्रु" is the clue that this was not a considered mistake. Nobody chooses it
+ * over शनि by accident of astrology — it came from the neighbouring table, the
+ * one that lists which planet each graha considers an enemy.
+ */
+const LORD: Record<string, string> = {
+  मेष: 'मंगल',
+  वृषभ: 'शुक्र',
+  मिथुन: 'बुध',
+  कर्क: 'चंद्र',
+  सिंह: 'सूर्य',
+  कन्या: 'बुध',
+  तुला: 'शुक्र',
+  वृश्चिक: 'मंगल',
+  धनु: 'गुरु',
+  मकर: 'शनि',
+  कुंभ: 'शनि',
+  मीन: 'बृहस्पति',
+};
+
+// One check, and it names every sign it got wrong rather than the first.
+{
+  const wrong: string[] = [];
+  for (let sign = 0; sign < 12; sign += 1) {
+    const rashi = RASHIS[sign];
+    const should = LORD[rashi.name];
+    if (!should) continue;
+    if (rashi.lord !== should) wrong.push(`${rashi.name}: ${rashi.lord} hona chahiye tha ${should}`);
+  }
+  check('every sign has the right lord', wrong.length === 0, wrong.join('; '));
+}
+
+// And no lord may be a word that is not a planet at all.
+{
+  const planets = new Set(Object.values(LORD));
+  const odd: string[] = [];
+  for (let sign = 0; sign < 12; sign += 1) {
+    const { name, lord } = RASHIS[sign];
+    if (!planets.has(lord)) odd.push(`${name} -> ${lord}`);
+  }
+  check('no sign is ruled by a word that is not a planet', odd.length === 0, odd.join('; '));
+}
+
 function check(name: string, ok: boolean, detail = ''): void {
   if (ok) {
     passed += 1;
