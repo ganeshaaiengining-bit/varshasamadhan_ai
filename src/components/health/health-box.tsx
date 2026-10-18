@@ -176,15 +176,24 @@ export function HealthBox({ signedIn = false }: { signedIn?: boolean }) {
         </p>
         <p>
           <strong>{t('health.emergencyStrong')}</strong>{' '}
-          <a href="tel:112" className="font-bold underline">
+          {/*
+           * The numbers are the sentence, so they get the finger-sized area.
+           *
+           * Each one is the height of a line of text and no more — nineteen
+           * pixels — which is the hardest thing to hit on a phone for somebody
+           * reading a health warning. The padding is vertical and negative on the
+           * sides, so the sentence does not reflow and the numbers stay exactly
+           * where they were.
+           */}
+          <a href="tel:112" className="-mx-1 inline-block px-1 py-2 font-bold underline">
             112
           </a>{' '}
           {t('health.emergencyCall')} ·{' '}
-          <a href="tel:108" className="font-bold underline">
+          <a href="tel:108" className="-mx-1 inline-block px-1 py-2 font-bold underline">
             108
           </a>{' '}
           {t('health.emergencyAmbulance')} ·{' '}
-          <a href="tel:181" className="font-bold underline">
+          <a href="tel:181" className="-mx-1 inline-block px-1 py-2 font-bold underline">
             181
           </a>{' '}
           {t('health.emergencyWomen')}

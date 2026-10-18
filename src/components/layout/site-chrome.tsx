@@ -207,7 +207,7 @@ export function SiteChrome({
               </li>
               <li className="flex items-center gap-2">
                 <Icon name="phone" size={16} />
-                <a href="tel:181" className="hover:text-saffron-deep">
+                <a href="tel:181" className="-mx-2 inline-block px-2 py-2 hover:text-saffron-deep">
                   181 — {t('footer.women')}
                 </a>
               </li>

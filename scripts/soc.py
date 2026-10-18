@@ -107,6 +107,23 @@ def section_doors() -> None:
             bad("door", f"{path} -> {status}")
 
 
+
+def open_page(page, url: str, timeout: int = 120000, tries: int = 3) -> bool:
+    """
+    पन्ना खोलो, और नेटवर्क रुक जाए तो दोबारा।
+
+    एक टूटा कनेक्शन जाँची हुई चीज़ की ग़लती नहीं होता — वह नीचे का नेटवर्क होता है।
+    बिना कोशिश के यह ऐसी ग़लती दर्ज कर देता है जो हुई ही नहीं, और यही वह है जो
+    जाँच को अमान्य बना देती है।
+    """
+    for attempt in range(1, tries + 1):
+        try:
+            page.goto(url, wait_until="domcontentloaded", timeout=timeout)
+            return True
+        except Exception:  # noqa: BLE001
+            time.sleep(3 * attempt)
+    return False
+
 def fetch(path: str, timeout: int = 60) -> int:
     try:
         request = urllib.request.Request(BASE + path, headers={"User-Agent": "soc"})
@@ -118,13 +135,26 @@ def fetch(path: str, timeout: int = 60) -> int:
         return 0
 
 
-def fetch_body(path: str, timeout: int = 60) -> str:
-    try:
-        request = urllib.request.Request(BASE + path, headers={"User-Agent": "soc"})
-        with urllib.request.urlopen(request, timeout=timeout) as response:
-            return response.read().decode("utf-8", "replace")
-    except Exception:
-        return ""
+def fetch_body(path: str, timeout: int = 60, tries: int = 3) -> str:
+    """
+    पन्ने का HTML, और थोड़ी कोशिश।
+
+    पहले सिर्फ़ एक बार पूछा जाता था और एक बार का टूटना "पन्ना मिला ही नहीं" भर
+    जाता था — जो कि वह नहीं हुआ था, बस उस पल नेटवर्क ने रोक दिया था। एक जाँच जो
+    नेटवर्क की उखड़पन को साइट की ग़लती बना दिया, वह असली ख़तरे के मुक़ाबले बेकार
+    हो जाती है।
+    """
+    for attempt in range(1, tries + 1):
+        try:
+            request = urllib.request.Request(BASE + path, headers={"User-Agent": "soc"})
+            with urllib.request.urlopen(request, timeout=timeout) as response:
+                body = response.read().decode("utf-8", "replace")
+            if body:
+                return body
+        except Exception:  # noqa: BLE001
+            pass
+        time.sleep(2 * attempt)
+    return ""
 
 
 # ═══════════════════════════════════════════════════════════════════════════
