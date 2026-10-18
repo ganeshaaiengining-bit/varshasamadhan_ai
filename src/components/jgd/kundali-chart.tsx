@@ -118,14 +118,35 @@ export function KundaliChart({
             >
               {/* house number, and the sign, in the corners */}
               <div className="flex items-start justify-between">
-                <span
-                  className={
-                    'text-xs tabular-nums ' +
-                    (isLagna ? 'font-bold text-saffron-deep' : 'text-ink-subtle')
-                  }
-                  title={`${house}वाँ भाव`}
-                >
-                  {house}
+                <span className="flex items-start gap-1">
+                  <span
+                    className={
+                      'text-xs tabular-nums ' +
+                      (isLagna ? 'font-bold text-saffron-deep' : 'text-ink-subtle')
+                    }
+                    title={`${house}वाँ भाव`}
+                  >
+                    {house}
+                  </span>
+
+                  {/*
+                   * The lagna mark, inside the box.
+                   *
+                   * It used to hang off the left edge of the cell — half on the
+                   * border, half off it — which on the one house that is already
+                   * outlined in orange read as a rendering fault rather than as a
+                   * label. It belongs next to the house number it belongs to,
+                   * and there is nothing to gain from putting it on the line
+                   * between two houses.
+                   */}
+                  {isLagna && (
+                    <span
+                      className="-mt-0.5 bg-saffron px-1 text-[0.6rem] font-bold leading-none text-paper"
+                      title="लग्न — यहीं से गिना जाता है"
+                    >
+                      ल
+                    </span>
+                  )}
                 </span>
                 <span className="text-[0.6rem] text-ink-subtle">{RASHIS[sign].name}</span>
               </div>
@@ -157,12 +178,6 @@ export function KundaliChart({
               <div className="text-right text-[0.6rem] text-ink-subtle">
                 {RASHIS[sign].lord}
               </div>
-
-              {isLagna && (
-                <span className="absolute -left-1 top-1/2 -translate-y-1/2 bg-saffron px-1 text-[0.6rem] font-bold">
-                  ल
-                </span>
-              )}
             </div>
           );
         })}
