@@ -81,7 +81,8 @@ export interface JyotishInput {
 
 type TabKey =
   | 'kundali' | 'panchang' | 'dasha' | 'phaladesh' | 'yoga'
-  | 'shodasvarga' | 'kp' | 'lalkitab' | 'anka';
+  | 'shodasvarga' | 'kp' | 'lalkitab' | 'anka'
+  | 'chalit' | 'ashtakavarga' | 'gochar' | 'shakti';
 
 const TABS: Array<{ key: TabKey; label: string }> = [
   { key: 'kundali', label: 'कुंडली' },
@@ -93,6 +94,10 @@ const TABS: Array<{ key: TabKey; label: string }> = [
   { key: 'kp', label: 'केपी' },
   { key: 'lalkitab', label: 'लाल किताब' },
   { key: 'anka', label: 'अंक ज्योतिष' },
+  { key: 'chalit', label: 'चालित · चंद्र' },
+  { key: 'ashtakavarga', label: 'अष्टकवर्ग' },
+  { key: 'gochar', label: 'गोचर' },
+  { key: 'shakti', label: 'शक्ति · जन्म' },
 ];
 
 /*
@@ -179,6 +184,24 @@ export function JyotishSheet({ input }: { input: JyotishInput }) {
         {tab === 'kp' && <KpPanel chart={chart} />}
         {tab === 'lalkitab' && <LalKitabPanel chart={chart} />}
         {tab === 'anka' && <AnkaPanel chart={chart} />}
+        {tab === 'chalit' && (
+          <ChalitPanel
+            jd={chart.jd}
+            latitude={chart.input.latitude}
+            longitudeEast={chart.input.longitude}
+          />
+        )}
+        {tab === 'ashtakavarga' && <AshtakavargaPanel jd={chart.jd} />}
+        {tab === 'gochar' && <GocharPanel jd={chart.jd} />}
+        {tab === 'shakti' && (
+          <ShaktiPanel
+            jd={chart.jd}
+            lagnaRashi={chart.lagnaRashi}
+            weekday={new Date(
+              Date.UTC(chart.input.year, chart.input.month - 1, chart.input.day),
+            ).getUTCDay()}
+          />
+        )}
       </div>
     </section>
   );
@@ -1344,3 +1367,9 @@ function formatDegrees(degrees: number): string {
 }
 
 void DASHA_ORDER;
+import {
+  AshtakavargaPanel,
+  ChalitPanel,
+  GocharPanel,
+  ShaktiPanel,
+} from './jyotish-extra-tabs';
