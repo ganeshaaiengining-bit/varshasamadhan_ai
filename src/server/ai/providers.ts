@@ -626,28 +626,51 @@ export async function askPollinations(
     const prompt = `${system}\n\nQuestion: ${question}\n\n${closing} Give the answer, not your working-out.`;
     const url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai`;
 
-    const response = await timedFetch(url, {
-      headers: { 'User-Agent': 'VarshaSamadhan/1.0', Accept: 'text/plain' },
-    }, POLLINATIONS_TIMEOUT_MS);
+    /*
+     * This is the last provider in the chain, so a refusal here is the visitor
+     * getting nothing at all.
+     *
+     * It refuses for one reason far more often than any other: a burst limit.
+     * Measured on a run of thirteen languages, an Arabic question produced no
+     * answer twice in a row and then answered perfectly on the third attempt,
+     * with a few seconds between tries — the signature of a service that counts
+     * requests per second rather than per day, and that we were asking faster
+     * than it likes.
+     *
+     * So one retry, after a pause long enough to be outside the burst window.
+     * Two seconds costs a visitor waiting only in the case where they were
+     * going to be given nothing, and it is the difference between an answer in
+     * their own language and an apology in it.
+     */
+    for (let attempt = 0; ; attempt++) {
+      const response = await timedFetch(url, {
+        headers: { 'User-Agent': 'VarshaSamadhan/1.0', Accept: 'text/plain' },
+      }, POLLINATIONS_TIMEOUT_MS);
 
-    if (response.status === 402 || response.status === 429) {
-      return { ok: false, provider: 'pollinations', reason: 'rate-limit', ms: Date.now() - started };
+      if (response.status === 402 || response.status === 429) {
+        if (attempt < 1) {
+          await new Promise((done) => setTimeout(done, 2000));
+          continue;
+        }
+        return { ok: false, provider: 'pollinations', reason: 'rate-limit', ms: Date.now() - started };
+      }
+
+      if (!response.ok) {
+        return { ok: false, provider: 'pollinations', reason: 'network', ms: Date.now() - started };
+      }
+
+      const text = extractAnswer(await response.text());
+
+      if (!text) {
+        /*
+         * Reasoning with no answer is the specific failure this service produces
+         * most often, and it used to be reported as a success.
+         */
+        return { ok: false, provider: 'pollinations', reason: 'empty', ms: Date.now() - started };
+      }
+
+      return { ok: true, text, provider: 'pollinations', ms: Date.now() - started };
     }
-    if (!response.ok) {
-      return { ok: false, provider: 'pollinations', reason: 'network', ms: Date.now() - started };
-    }
-
-    const text = extractAnswer(await response.text());
-
-    if (!text) {
-      /*
-       * Reasoning with no answer is the specific failure this service produces
-       * most often, and it used to be reported as a success.
-       */
-      return { ok: false, provider: 'pollinations', reason: 'empty', ms: Date.now() - started };
-    }
-
-    return { ok: true, text, provider: 'pollinations', ms: Date.now() - started };
   } catch {
     return { ok: false, provider: 'pollinations', reason: 'network', ms: Date.now() - started };
   }
