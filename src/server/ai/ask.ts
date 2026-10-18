@@ -69,6 +69,14 @@ export interface AskResult {
    * is "which of the three is failing", and this answers it without guessing.
    */
   provider?: ProviderName;
+  /**
+   * Which model inside that provider answered, when it has more than one.
+   *
+   * Passed back so the answer can be filed against the right model's daily
+   * allowance. Google's free quota is counted per model, so this is not
+   * reporting detail — it is the number the next day's budget is computed from.
+   */
+  model?: string;
   /** Milliseconds spent, across all providers tried. */
   ms?: number;
 }
@@ -102,11 +110,24 @@ export async function askQuestion(
    */
   languageCode?: string,
   /*
-   * How many calls the keyed provider has left today, or Infinity when the cap
-   * is off. Zero means do not call it at all — not call it and discard the
-   * answer, which is what the cap used to do.
+   * What is left of today's free allowance, for each model of the keyed provider
+   * by name.
+   *
+   * ── Why this is a list of numbers and not one number ────────────────────────
+   * It was one number, and it was the wrong shape. Google counts the free
+   * allowance per model — twenty each, six models, none of them shared — so a
+   * single total spends the allowance of a model that has never been called the
+   * moment a different one runs dry.
+   *
+   * The site could then go an entire afternoon answering everything through the
+   * flaky keyless fallback, with most of the day's real quota untouched and
+   * unreachable. Measured: thirteen questions in a row, six answered.
+   *
+   * Empty means "no budget is being tracked" and every model is tried. That is
+   * also the zero-cap emergency switch: sending nothing rather than zeros turns
+   * the keyed provider off without deleting the key.
    */
-  geminiBudget = Infinity,
+  geminiBudgets: Record<string, number> = {},
 ): Promise<AskResult> {
   const started = Date.now();
 
@@ -137,20 +158,33 @@ export async function askQuestion(
    *
    * Only the primary is retried. The fallbacks are free and unreliable, and
    * asking them twice doubles the waiting for a visitor who is already waiting.
+   *
+   * A day with any model left in it gets the second attempt. A day with none
+   * does not, because there is nothing to retry — asking again would only spend
+   * the visitor's time to arrive at the same place.
    */
-  const attempts = geminiBudget > 0 ? 2 : 1;
+  const budgetKeys = Object.keys(geminiBudgets);
+  const hasAllowance =
+    budgetKeys.length === 0 || budgetKeys.some((model) => geminiBudgets[model] > 0);
+
+  const attempts = hasAllowance ? 2 : 1;
 
   for (let pass = 0; pass < attempts; pass++) {
     for (const provider of ORDER) {
       if (provider.name === 'ollama' && !local) continue;
 
       /*
-       * The keyed provider is skipped, not failed, once today's allowance is
-       * gone. Skipping is what makes the cap a cap: the call is never made, so
-       * it cannot be paid for. The retry pass below is skipped at the same time,
-       * because a second attempt would spend a second call.
+       * The keyed provider is skipped, not failed, once every model's allowance
+       * is gone. Skipping is what makes the cap a cap: the call is never made,
+       * so it cannot be paid for. The retry pass below is skipped at the same
+       * time, because a second attempt would spend a second call.
+       *
+       * Note that this asks about *every* model, not about one. A day with four
+       * models spent and two untouched still has allowance, and switching the
+       * whole provider off at the first refusal is exactly how the untouched
+       * half was left unreachable for hours.
        */
-      if (provider.name === 'gemini' && geminiBudget <= 0) continue;
+      if (provider.name === 'gemini' && !hasAllowance) continue;
 
       // The primary is the one retried, and only when there is another pass left.
       const isLastPass = pass === attempts - 1;
@@ -160,7 +194,12 @@ export async function askQuestion(
         continue;
       }
 
-      const result: ProviderResult = await provider.run(system, question, languageCode);
+      // Only the keyed provider takes a budget; the others have no allowance to
+      // spend and are called exactly as they always were.
+      const result: ProviderResult =
+        provider.name === 'gemini'
+          ? await provider.run(system, question, languageCode, geminiBudgets)
+          : await provider.run(system, question, languageCode);
 
       if (result.ok) {
         /*
@@ -186,14 +225,19 @@ export async function askQuestion(
         }
 
         console.log(
-          `[ask] answered by ${result.provider} in ${result.ms}ms ` +
-            `(total ${Date.now() - started}ms, pass ${pass + 1})`,
+          `[ask] answered by ${result.provider}` +
+            (result.model ? `/${result.model}` : '') +
+            ` in ${result.ms}ms (total ${Date.now() - started}ms, pass ${pass + 1})`,
         );
         return {
           ok: true,
           answer: result.text,
           fallback: false,
           provider: result.provider,
+          // Carried through so the ledger records which model's allowance this
+          // answer spent. Google's quota is per model, so a count that does not
+          // name the model cannot be right.
+          model: result.model,
           ms: Date.now() - started,
         };
       }

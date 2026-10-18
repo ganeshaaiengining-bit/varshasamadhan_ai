@@ -190,10 +190,20 @@ model AskedQuestion {
   // the rest of the day while it still had quota. The traffic that was meant to
   // be free was spending the moneyed provider's allowance.
   provider   String   @default("")
+  // Which Gemini model answered, when Gemini answered.
+  //
+  // This column is the whole reason the site's AI keeps working through a busy
+  // day. Google's free allowance is counted per model — twenty calls each, six
+  // models, none of them shared — and the site used to count every Gemini
+  // answer into one number. So an allowance spent on the first four models was
+  // also spent on the two that had never been called, and the whole chain was
+  // switched off while most of the day's quota sat untouched.
+  model      String   @default("")
   createdAt  DateTime  @default(now()) @map("created_at")
 
   @@index([createdAt])
   @@index([provider, createdAt])
+  @@index([model, createdAt])
   @@map("asked_questions")
 }
 

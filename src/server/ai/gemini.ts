@@ -2,7 +2,7 @@ import 'server-only';
 
 import { isKnownLanguage, languageMeta } from '@/content/i18n';
 import { askQuestion as ask, aiStatus } from './ask';
-import { geminiKey, geminiModel, ollamaModel } from './providers';
+import { FALLBACK_MODELS, geminiKey, geminiModel, ollamaModel } from './providers';
 
 /**
  * ===========================================================================
@@ -47,32 +47,54 @@ export { geminiModel, ollamaModel };
 export { aiStatus };
 
 /**
- * Counts today's Gemini calls.
+ * Counts today's Gemini answers, per model.
  *
- * Counts only the questions Gemini actually answered, not every answered
- * question. Both numbers were once the same count, and the difference is not
- * academic: the keyless providers answer most questions, and each of those was
- * consuming an allowance that belongs to the keyed provider. A live run showed
- * the cap at 83 of 50 with Gemini skipped for every request after the fortieth,
- * while Google's own limit is 20 per model per day and had barely been touched.
+ * ── Why the count is per model and not one total ─────────────────────────────
+ * Google counts the free allowance **per model, per day**: twenty calls to each
+ * model, counted separately. So the only honest way to know what is left is to
+ * ask what has been spent on each model, and this returns one number per model.
  *
- * The row is written after the provider answers, so this is a record of what
- * happened rather than a record of what was attempted. A call that was made and
- * then refused for the wrong script is not counted, which is correct: it cost
- * nothing that a retry would not also cost, and counting it would make the cap
- * stricter without making it safer.
+ * The single total that used to stand here was wrong in a way that only showed
+ * up later in the day. It added up every Gemini answer and compared the sum to
+ * one limit, so once the total passed it the whole provider was switched off —
+ * including for models that had not been called even once. Two models were
+ * sitting on an untouched forty calls each while visitors were sent to a
+ * keyless service that answers one question every thirty seconds.
+ *
+ * Both numbers matter, so both are recorded: the rows say which provider
+ * answered, and the new `model` column says which model inside it.
+ *
+ * Only answered questions are counted, not attempts. The row is written after
+ * the provider answers, so this is a record of what happened rather than a
+ * record of what was tried. A call that was made and then refused for the wrong
+ * script is not counted, which is correct: it cost nothing that a retry would not
+ * also cost, and counting it would make the cap stricter without making it safer.
+ *
+ * Rows written before the `model` column existed carry an empty model name, and
+ * they are counted against the first model — the pinned one — which is where
+ * they did in fact go. Otherwise today's allowance would appear untouched by
+ * yesterday's spending, and the cap would be exactly as broken as before for as
+ * long as those rows lived.
  */
-async function callsToday(): Promise<number> {
+async function callsTodayByModel(): Promise<Record<string, number>> {
   const { prisma } = await import('@/server/db');
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
 
-  return prisma.askedQuestion.count({
+  const rows = await prisma.askedQuestion.groupBy({
+    by: ['model'],
     where: {
       createdAt: { gte: startOfDay },
       provider: 'gemini',
     },
+    _count: { _all: true },
   });
+
+  const counts: Record<string, number> = {};
+  for (const row of rows) {
+    counts[row.model || geminiModel()] = row._count._all;
+  }
+  return counts;
 }
 
 
@@ -139,30 +161,28 @@ Stop after the answer. Do not offer follow-up questions.`;
  */
 
 /**
- * How many questions may be answered by the keyed provider in one day.
+ * How many questions the whole day may be answered by the keyed provider.
  *
  * ── Why 120, and not 40 ──────────────────────────────────────────────────────
  * Google's free allowance is counted **per model, per day** — twenty calls to
  * each model, and six models that answer today, so a hundred and twenty questions
  * before anything is refused.
  *
- * This cap was 40, which is a third of what the account actually has, and the
- * calls that went unused were being thrown away deliberately: once the fortieth
- * answer of the day had been given, every later visitor was sent straight to
- * the keyless providers — which are free, but which serve one question every
- * thirty seconds each, and which refused more than half of thirteen questions in
- * a row.
+ * This cap was 40, a third of what the account actually has, and the unused
+ * calls were being thrown away deliberately: once the fortieth answer of the day
+ * had been given, every later visitor was sent straight to the keyless
+ * providers — which are free, but which serve one question every thirty seconds
+ * and which refused seven of thirteen questions in a row.
  *
- * That showed up as a fault that looked like nothing at all. A live check of all
- * thirteen languages had every one of them answered by Gemini, then, ten
- * questions later, the day's quota was spent and the last three were left to the
- * flakiest provider on the list.
+ * It is a whole-day total that is then divided by the number of models, because
+ * that is the shape Google's own limit has: twenty each, not twenty in total.
+ * Dividing rather than handing the whole figure to one model is what stops the
+ * first model to run out from starving the other five.
  *
  * The cap is kept, because it is the thing that stops a bad deployment loop or a
  * bored visitor from turning into an invoice, and because a cap of zero is the
- * emergency switch if the key ever leaks. It is simply set to the number the
- * free tier actually grants. Going above it costs nothing: Google refuses the
- * call itself, per model, and askGemini then walks to the next model.
+ * emergency switch if the key ever leaks. Going above it costs nothing: Google
+ * refuses the call itself, per model, and askGemini walks to the next one.
  */
 export function dailyLimit(): number {
   const raw = Number(process.env.GEMINI_DAILY_REQUEST_LIMIT ?? '120');
@@ -203,35 +223,43 @@ export async function askQuestion(
    */
 
   /*
-   * The cap, enforced.
+   * The cap, enforced — per model, because that is how Google counts it.
    *
-   * This used to test the count, log that the cap had been reached, and then
-   * call the provider anyway — so the message "daily cap reached (52/40),
-   * using a free provider" was printed immediately above a line reading
+   * This used to test a single running total, log that the cap had been reached,
+   * and then call the provider anyway — so the message "daily cap reached
+   * (52/40), using a free provider" was printed immediately above a line reading
    * "answered by gemini", over and over. The cap was a log line, not a cap.
    *
-   * The budget is now passed into ask.ts, which is where the provider order
-   * lives, so the decision to skip the keyed provider is made in the same place
-   * that decides the order. Nothing is called and then discarded.
+   * Then it did skip the provider, which was better and still wrong: one total
+   * against a per-model quota, so a busy hour on the first model locked out the
+   * models that had not been touched. What is passed down is now what is left
+   * **for each model by name**, so a model with nothing is skipped and a model
+   * with its full twenty is asked as normal.
    *
    * A cap of zero switches the keyed provider off without deleting the key,
    * which is the emergency setting if the key ever leaks.
    */
-  let remaining = Infinity;
+  let budgets: Record<string, number> = {};
 
   if (geminiKey().length > 10) {
-    const limit = dailyLimit();
+    const perModel = Math.floor(dailyLimit() / Math.max(1, FALLBACK_MODELS.length));
 
-    if (limit > 0) {
-      const today = await callsToday().catch(() => 0);
-      remaining = Math.max(0, limit - today);
+    if (perModel > 0) {
+      const spent = await callsTodayByModel().catch(() => ({}) as Record<string, number>);
 
-      if (remaining <= 0) {
-        console.log(`[ask] daily cap reached (${today}/${limit}), skipping gemini`);
+      budgets = Object.fromEntries(
+        FALLBACK_MODELS.map((model) => [model, Math.max(0, perModel - (spent[model] ?? 0))]),
+      );
+
+      const empty = Object.values(budgets).every((left) => left <= 0);
+      if (empty) {
+        console.log(`[ask] every model's daily allowance is spent (${perModel} each), skipping gemini`);
       }
     }
   } else {
-    remaining = 0;
+    // No key: an empty record means "nothing left on every model", which is the
+    // same as sending zeros and does not need a special case.
+    budgets = Object.fromEntries(FALLBACK_MODELS.map((model) => [model, 0]));
   }
 
   /*
@@ -244,5 +272,5 @@ export async function askQuestion(
     ? `${question}\n\n(Context: the visitor is on the page for ${category.trim().slice(0, 60)}.)`
     : question;
 
-  return ask(system, withContext, languageCode, remaining);
+  return ask(system, withContext, languageCode, budgets);
 }

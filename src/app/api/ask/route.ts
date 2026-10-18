@@ -193,6 +193,22 @@ export async function POST(request: Request) {
          * Gemini was being skipped for the day while it still had quota.
          */
         provider: result.ok ? (result.provider ?? '') : '',
+
+        /*
+         * Which model inside that provider answered, by name.
+         *
+         * Google's free allowance is counted per model, so this column is what
+         * makes tomorrow's count correct. Without it every Gemini answer was
+         * added into one pile and divided by the number of models afterwards,
+         * which is arithmetically fine and factually wrong: it cannot tell that
+         * model one has spent its twenty while models two to six have spent
+         * none, so the day gets declared over and forty untouched calls sit
+         * there being unusable.
+         *
+         * Empty for the keyless providers, which have no allowance to keep
+         * track of, and for anything that failed.
+         */
+        model: result.ok ? (result.model ?? '') : '',
       },
       select: { id: true },
     });

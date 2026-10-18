@@ -58,6 +58,15 @@ export type ProviderName = 'gemini' | 'ollama' | 'pollinations';
 export interface ProviderAnswer {
   text: string;
   provider: ProviderName;
+  /**
+   * Which model inside that provider produced the answer.
+   *
+   * Present only for the keyed provider, and it is not decoration. Google's free
+   * allowance is counted per model, so knowing which one answered is the only way
+   * to know how much of the day is left — and the answer is written to the
+   * ledger against this name so tomorrow's count is right.
+   */
+  model?: string;
   /** Milliseconds. Logged, so a slow provider can be spotted. */
   ms: number;
 }
@@ -207,6 +216,15 @@ export async function askGemini(
   // Unused here, but part of the one signature every provider shares so
   // ask.ts can call them interchangeably.
   _languageCode?: string,
+  /**
+   * What is left of today's free allowance, for each model by name.
+   *
+   * Omitted means "no budget is being tracked", and every model is tried. This
+   * is what a second Gemini key would need, and it is also what the fallback
+   * path gets, so a caller that has not been updated keeps working exactly as
+   * before rather than being told the day is over.
+   */
+  budgets: Record<string, number> = {},
 ): Promise<ProviderResult> {
   const started = Date.now();
   const key = geminiKey();
@@ -237,6 +255,26 @@ export async function askGemini(
   const models = [geminiModel(), ...FALLBACK_MODELS.filter((m) => m !== geminiModel())];
 
   for (const model of models) {
+    /*
+     * This model has already spent today's allowance.
+     *
+     * Google's allowance is counted per model, so the models that have not been
+     * called yet are worth calling even after the first few have run dry. That
+     * is what this line is for: the caller sends what is left of the day's quota
+     * for each model by name, and a model with nothing left is skipped rather
+     * than sent a request Google is certain to refuse.
+     *
+     * Skipping rather than trying matters for the visitor's patience as much as
+     * for the quota. Six models each refusing in turn costs six round trips to
+     * arrive at the same "no", and the site has measured refusals taking real
+     * seconds each.
+     */
+    const left = budgets[model];
+    if (left !== undefined && left <= 0) {
+      console.log(`[gemini] ${model} has no allowance left today, skipping it`);
+      continue;
+    }
+
     try {
       const response = await timedFetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
@@ -299,7 +337,7 @@ export async function askGemini(
         return { ok: false, provider: 'gemini', reason: 'empty', ms: Date.now() - started };
       }
 
-      return { ok: true, text, provider: 'gemini', ms: Date.now() - started };
+      return { ok: true, text, provider: 'gemini', model, ms: Date.now() - started };
   } catch (error) {
       /*
        * The cause is logged, not just swallowed.
