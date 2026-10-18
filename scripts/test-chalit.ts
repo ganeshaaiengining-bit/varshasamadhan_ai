@@ -369,10 +369,32 @@ console.log('='.repeat(64));
 }
 
 {
-  // The verdict thresholds must be ordered, or the sheet contradicts itself.
-  check('the verdict words are in the right order',
-    signVerdict(34) === 'बहुत बलवान' && signVerdict(29) === 'बलवान' &&
-    signVerdict(25) === 'साधारण' && signVerdict(20) === 'कमज़ोर');
+  // The verdicts compare against this chart's own best. Both properties matter:
+  // the words must run in order, and the *best* sign must actually come out best.
+  check('the verdict words run in order',
+    signVerdict(20, 20) === 'सबसे बलवान' && signVerdict(14, 20) === 'बलवान' &&
+    signVerdict(10, 20) === 'साधारण' && signVerdict(6, 20) === 'कमज़ोर' &&
+    signVerdict(2, 20) === 'सबसे कमज़ोर');
+
+  {
+    let bad = 0;
+    let detail = '';
+    for (const b of BIRTHS) {
+      const a = ashtakavarga(jdOf(b));
+      const best = Math.max(...a.sarva);
+      const worst = Math.min(...a.sarva);
+      if (best === worst) continue;
+      if (signVerdict(best, best) !== 'सबसे बलवान') {
+        bad += 1;
+        detail += b.label + ' par sabse mazboot sahi nahi bola; ';
+      }
+      if (signVerdict(worst, best) !== 'सबसे कमज़ोर') {
+        bad += 1;
+        detail += b.label + ' par sabse kamzor sahi nahi bola; ';
+      }
+    }
+    check('and the best sign of every chart is called the best', bad === 0, detail);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

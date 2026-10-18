@@ -154,8 +154,8 @@ export function AshtakavargaPanel({ jd }: { jd: number }) {
       <Card title="अष्टकवर्ग — हर राशि कितने बिंदु लेती है">
         <p className="mb-3 text-ink-subtle">
           हर ग्रह हर राशि में कुछ न कुछ बिंदु लेता है। जोड़कर देखने पर पता चलता है कि कौनसा
-          भाव मज़बूत है और कौनसा कमज़ोर। सबसे मज़बूत बिंदु सोलह या अधिक, सबसे कमज़ोर छह या उससे
-          कम।
+          भाव मज़बूत है और कौनसा कमज़ोर। नीचे "हाल" इसी कुंडली की सबसे मज़बूत राशि से
+          मिला कर बताया गया है — इसलिए हर कुंडली का पैमाना अपना अलग होता है।
         </p>
 
         <div className="overflow-x-auto">
@@ -180,7 +180,7 @@ export function AshtakavargaPanel({ jd }: { jd: number }) {
                   <tr key={sign}>
                     <td className="py-2 pr-3 font-medium">{RASHIS[sign].name}</td>
                     <td className="py-2 pr-3 tabular-nums font-bold">{total}</td>
-                    <td className="py-2 pr-3">{signVerdict(total)}</td>
+                    <td className="py-2 pr-3">{signVerdict(total, sheet.best)}</td>
                     <td className="py-2 text-ink-subtle">{best.name} ({best.value})</td>
                   </tr>
                 );
@@ -189,7 +189,8 @@ export function AshtakavargaPanel({ jd }: { jd: number }) {
           </table>
         </div>
         <p className="mt-2 text-sm text-ink-subtle">
-          अधिकतम {PRAK_MAX * 9} — सब नौ ग्रह मिलकर। ये बिंदु राशि के हैं, भाव के नहीं।
+          अधिकतम {PRAK_MAX * 9} — सब नौ ग्रह मिलकर। अभी इस कुंडली में सबसे ऊँचा{' '}
+          {sheet.best} और सबसे नीचा {Math.min(...sheet.sarva)}। ये बिंदु राशि के हैं, भाव के नहीं।
         </p>
       </Card>
 

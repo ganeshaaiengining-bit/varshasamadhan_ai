@@ -103,14 +103,40 @@ export interface AshtakavargaResult {
   strongest: number[];
   /** Signs scoring 25 or less. */
   weakest: number[];
+  /** The highest sign total in this chart — what the verdicts are measured against. */
+  best: number;
 }
 
-/** Traditional reading of one sign's total, in plain words. */
-export function signVerdict(total: number): string {
-  if (total >= 32) return 'बहुत बलवान';
-  if (total >= 28) return 'बलवान';
-  if (total >= 24) return 'साधारण';
-  return 'कमज़ोर';
+/**
+ * How strong a sign's total is, in plain words.
+ *
+ * ── Why this compares rather than counts ────────────────────────────────────
+ * The first version used fixed thresholds — thirty-two for "very strong", twenty-
+ * four for "ordinary" — and every sign on every chart came out "weak". Those
+ * thresholds were copied from published tables of a full Bhinn Ashtakavarga,
+ * which is not what this file computes: it prints Prak, and Prak's totals run to
+ * roughly a fifth of what a complete sheet reaches. The labels were describing a
+ * calculation that is not on this page, which is the same mistake as printing a
+ * remembered table.
+ *
+ * So the comparison is against **this chart's own strongest sign**. That is also
+ * the more useful answer: what a reader wants to know is which of their twelve
+ * signs carries the most, and a scale that shifts with the chart cannot quietly
+ * call a perfectly ordinary chart a disaster.
+ *
+ * `best` is the highest total anywhere in this chart. Pass nothing and the words
+ * degrade to "this chart's own scale" rather than guessing.
+ */
+export function signVerdict(total: number, best: number): string {
+  if (best <= 0) return 'कोई अंक नहीं';
+
+  const share = total / best;
+
+  if (share >= 0.8) return 'सबसे बलवान';
+  if (share >= 0.6) return 'बलवान';
+  if (share >= 0.4) return 'साधारण';
+  if (share >= 0.2) return 'कमज़ोर';
+  return 'सबसे कमज़ोर';
 }
 
 /**
@@ -199,11 +225,19 @@ export function ashtakavarga(jd: number): AshtakavargaResult {
     grahas.reduce((sum, g) => sum + (g.prak[sign] ?? 0), 0),
   );
 
+  const best = Math.max(0, ...sarva);
+
   return {
     grahas,
     sarva,
     sarvaTotal: sarva.reduce((sum, n) => sum + n, 0),
-    strongest: sarva.map((v, i) => ({ v, sign: i })).filter((s) => s.v >= 32).map((s) => s.sign),
-    weakest: sarva.map((v, i) => ({ v, sign: i })).filter((s) => s.v <= 25).map((s) => s.sign),
+    best,
+    // "Strong" and "weak" are the top and bottom three of *this* chart, for the
+    // same reason the verdicts compare rather than count. A fixed cut-off here
+    // would say the same thing about every chart, which is no information.
+    strongest: sarva.map((v, i) => ({ v, sign: i }))
+      .sort((a, b) => b.v - a.v).slice(0, 3).map((s) => s.sign).sort((a, b) => a - b),
+    weakest: sarva.map((v, i) => ({ v, sign: i }))
+      .sort((a, b) => a.v - b.v).slice(0, 3).map((s) => s.sign).sort((a, b) => a - b),
   };
 }
