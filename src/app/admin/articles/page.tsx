@@ -29,7 +29,7 @@ export default async function AdminArticlesPage() {
     return (
       <SiteChrome siteName={siteName}>
         <div className="wrap-narrow py-12 sm:py-16">
-          <AdminLogin configured={isOwnerConfigured()} />
+          <AdminLogin configured={await isOwnerConfigured()} />
         </div>
       </SiteChrome>
     );

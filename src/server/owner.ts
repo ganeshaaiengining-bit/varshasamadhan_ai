@@ -2,6 +2,8 @@ import 'server-only';
 
 import { cookies } from 'next/headers';
 
+import { verifyPassword, storedPassword } from './owner-password';
+
 /**
  * ============================================================================
  *  OWNER ACCESS
@@ -81,9 +83,20 @@ export interface OwnerSession {
  * wrong" need different instructions, and lumping them together leaves an owner
  * locked out of their own site with no idea why.
  */
-export function isOwnerConfigured(): boolean {
-  const password = process.env.ADMIN_PASSWORD ?? '';
-  return password.length >= 8;
+/**
+ * Is there any password at all to log in with?
+ *
+ * Two possible answers, and this one has to be true if **either** is. A fresh
+ * install has only the environment variable. An install where the owner set their
+ * own has only the table. Neither is broken on its own, and checking just the
+ * first would turn the owner's successful setup into a site that reports itself
+ * as having no password.
+ */
+export async function isOwnerConfigured(): Promise<boolean> {
+  const fromEnv = (process.env.ADMIN_PASSWORD ?? '').length >= 8;
+  if (fromEnv) return true;
+
+  return (await storedPassword()) !== null;
 }
 
 /**
@@ -128,7 +141,10 @@ function lockoutKey(ip: string): string {
  * until `LOCKOUT_MINUTES` have passed.
  */
 export async function checkOwnerPassword(password: string, ip: string): Promise<OwnerSession> {
-  if (!isOwnerConfigured()) {
+  // Awaited, because it now asks the database as well as the environment — and
+  // forgetting that is the kind of mistake TypeScript catches, which is why this
+  // one was worth a compile error rather than a quiet always-true.
+  if (!(await isOwnerConfigured())) {
     return { ok: false, reason: 'no-password-configured' };
   }
 
@@ -141,7 +157,28 @@ export async function checkOwnerPassword(password: string, ip: string): Promise<
 
   const expected = process.env.ADMIN_PASSWORD ?? '';
 
-  if (!sameSecret(password, expected)) {
+  /*
+   * Which one is the password.
+   *
+   * The owner's own choice, if they have made one, wins. The environment variable
+   * is the fallback and not the other way round, because a fallback is what lets
+   * an install that never ran the setup link keep working exactly as it did —
+   * and because the whole point of the table is that the owner can change their
+   * password without anybody else's help.
+   *
+   * Both are still checked, not one or the other. Somebody who set a password on
+   * this site and also has the environment variable should have to type the one
+   * they last chose, and no single typo should log them out of both.
+   */
+  const stored = await storedPassword();
+
+  const matches = stored
+    ? verifyPassword(password, stored.hash, stored.salt)
+    : false;
+
+  const matchesEnv = expected.length > 0 && sameSecret(password, expected);
+
+  if (!matches && !matchesEnv) {
     const failures = Number(store.get(throttleKey(ip))?.value ?? '0') + 1;
     if (failures >= MAX_FAILURES) {
       store.set(lockoutKey(ip), String(Date.now() + LOCKOUT_MINUTES * 60_000), {
@@ -163,20 +200,43 @@ export async function checkOwnerPassword(password: string, ip: string): Promise<
     return { ok: false, reason: 'wrong-password' };
   }
 
-  const value = await newSessionValue();
-  if (!value) return { ok: false, reason: 'wrong-password' };
-
-  store.set(COOKIE, value, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    path: '/',
-    maxAge: MAX_AGE,
-  });
-  store.delete(throttleKey(ip));
-  store.delete(lockoutKey(ip));
+  await createOwnerSession(ip);
 
   return { ok: true };
+}
+
+/**
+ * Give this browser the owner session, and clear any failed-attempt count.
+ *
+ * Separate from `checkOwnerPassword` because a second route needs it — the
+ * one-time setup that sets the first password signs the owner straight in, and
+ * making them type the password they had just chosen, immediately, would be
+ * friction for no security gain: they have just proved who they are.
+ *
+ * Same cookie, same rules, same lifetime. Nothing downstream can tell which way
+ * the session was established, which is what makes this safe to add.
+ */
+export async function createOwnerSession(ip?: string): Promise<void> {
+  const store = await cookies();
+  const value = await newSessionValue();
+
+  if (value) {
+    store.set(COOKIE, value, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      maxAge: MAX_AGE,
+    });
+  }
+
+  // The counter is cleared on entry, not on failure. Somebody who has just
+  // remembered their password should not still be sitting behind a lockout from
+  // the attempts that came before they remembered it.
+  if (ip) {
+    store.delete(throttleKey(ip));
+    store.delete(lockoutKey(ip));
+  }
 }
 
 /**
@@ -187,7 +247,7 @@ export async function checkOwnerPassword(password: string, ip: string): Promise<
  * exactly the "password is the session" problem above.
  */
 export async function isOwnerSession(): Promise<boolean> {
-  if (!isOwnerConfigured()) return false;
+  if (!(await isOwnerConfigured())) return false;
 
   const value = (await cookies()).get(COOKIE)?.value;
   if (!value) return false;

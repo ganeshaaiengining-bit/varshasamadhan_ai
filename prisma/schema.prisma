@@ -208,6 +208,44 @@ model AskedQuestion {
 }
 
 /* ==========================================================================
+   OWNER LOGIN
+   ========================================================================== */
+
+/**
+ * The owner's password, when the owner has set one for themselves.
+ *
+ * ── Why this table exists at all ─────────────────────────────────────────────
+ * The password used to live only in an environment variable, which meant that
+ * changing it meant redeploying the site and meant the owner had to hand the new
+ * value to somebody else to put there. Neither is acceptable for the one
+ * credential that guards every unpublished thing on this site.
+ *
+ * So the owner sets it themselves, once, through a one-time link, and from then
+ * on this row is the password. The environment variable is still read, and still
+ * works, as a fallback — so a fresh install with no row in this table is not
+ * locked out, and so a deployment that never runs the setup link behaves exactly
+ * as it did before.
+ *
+ * ── What is stored ──────────────────────────────────────────────────────────
+ * A hash and a salt. Never the password, and never the hash without its own salt,
+ * so a copy of this table is not a copy of the password.
+ *
+ * One row. The id is fixed rather than generated so that a second attempt to set
+ * a password overwrites the first instead of quietly creating a second owner.
+ */
+model OwnerCredential {
+  id     String @id @default("owner")
+  /// A scrypt hash, hex encoded.
+  hash   String
+  /// The salt it was hashed with, hex encoded.
+  salt   String
+  /// When it was last changed, so the page can say how old the password is.
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("owner_credentials")
+}
+
+/* ==========================================================================
    VISITOR ACCOUNTS
    ========================================================================== */
 
