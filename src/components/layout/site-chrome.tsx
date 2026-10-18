@@ -163,13 +163,13 @@ export function SiteChrome({
             <ul className="mt-3 space-y-1.5">
               {links.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-ink-muted hover:text-saffron-deep">
+                  <Link href={link.href} className="-mx-2 inline-block px-2 py-1.5 text-ink-muted hover:text-saffron-deep">
                     {t(link.labelKey)}
                   </Link>
                 </li>
               ))}
               <li>
-                <Link href="/admin" className="text-ink-muted hover:text-saffron-deep">
+                <Link href="/admin" className="-mx-2 inline-block px-2 py-1.5 text-ink-muted hover:text-saffron-deep">
                   {t('footer.admin')}
                 </Link>
               </li>
@@ -181,15 +181,27 @@ export function SiteChrome({
               {t('footer.helplines')}
             </h2>
             <ul className="mt-3 space-y-2 text-ink-muted">
+              {/*
+               * The tap target is padded, not the text.
+
+               * 112, 108 and 181 were nineteen pixels tall — the smallest things
+               * anybody can press on this site, on the page where somebody in
+               * trouble is looking for a number to call. Nobody using this site is
+               * young and nobody is holding the phone steadily.
+
+               * The padding is vertical and negative on the sides, so the numbers
+               * stay where they were and only the finger-sized area around them
+               * grows.
+               */}
               <li className="flex items-center gap-2">
                 <Icon name="phone" size={16} />
-                <a href="tel:112" className="hover:text-saffron-deep">
+                <a href="tel:112" className="-mx-2 inline-block px-2 py-2 hover:text-saffron-deep">
                   112 — {t('footer.emergency')}
                 </a>
               </li>
               <li className="flex items-center gap-2">
                 <Icon name="phone" size={16} />
-                <a href="tel:108" className="hover:text-saffron-deep">
+                <a href="tel:108" className="-mx-2 inline-block px-2 py-2 hover:text-saffron-deep">
                   108 — {t('footer.ambulance')}
                 </a>
               </li>
