@@ -141,29 +141,32 @@ Stop after the answer. Do not offer follow-up questions.`;
 /**
  * How many questions may be answered by the keyed provider in one day.
  *
- * ── Why 80 and not 40 ────────────────────────────────────────────────────────
+ * ── Why 120, and not 40 ──────────────────────────────────────────────────────
  * Google's free allowance is counted **per model, per day** — twenty calls to
- * each model, four models, so eighty questions in a day before anything is
- * refused. This cap was 40, which is half of what the account actually has, and
- * the two hundred unused calls were being thrown away on purpose: once the
- * fortieth answer of the day had been given, every later visitor was sent
- * straight to the keyless providers, which are free but unreliable.
+ * each model, and six models that answer today, so a hundred and twenty questions
+ * before anything is refused.
  *
- * That showed up as a fault that looked like nothing at all. A live check of
- * all thirteen languages had every one of them answered by Gemini, then, ten
- * questions later, the quota was spent and the last three were answered by the
- * flakiest of the three providers — and one of those three simply produced no
- * answer, twice out of three attempts.
+ * This cap was 40, which is a third of what the account actually has, and the
+ * calls that went unused were being thrown away deliberately: once the fortieth
+ * answer of the day had been given, every later visitor was sent straight to
+ * the keyless providers — which are free, but which serve one question every
+ * thirty seconds each, and which refused more than half of thirteen questions in
+ * a row.
  *
- * The cap is kept, because it is the thing that stops a bad deployment loop or
- * a bored visitor from turning into an invoice, and because a cap of zero is
- * the emergency switch if the key ever leaks. It is simply set to the number
- * the free tier actually grants. Going above it does not spend anything: Google
- * refuses the call itself, per model, and askGemini then walks to the next one.
+ * That showed up as a fault that looked like nothing at all. A live check of all
+ * thirteen languages had every one of them answered by Gemini, then, ten
+ * questions later, the day's quota was spent and the last three were left to the
+ * flakiest provider on the list.
+ *
+ * The cap is kept, because it is the thing that stops a bad deployment loop or a
+ * bored visitor from turning into an invoice, and because a cap of zero is the
+ * emergency switch if the key ever leaks. It is simply set to the number the
+ * free tier actually grants. Going above it costs nothing: Google refuses the
+ * call itself, per model, and askGemini then walks to the next model.
  */
 export function dailyLimit(): number {
-  const raw = Number(process.env.GEMINI_DAILY_REQUEST_LIMIT ?? '80');
-  return Number.isFinite(raw) && raw > 0 ? Math.floor(raw) : 80;
+  const raw = Number(process.env.GEMINI_DAILY_REQUEST_LIMIT ?? '120');
+  return Number.isFinite(raw) && raw > 0 ? Math.floor(raw) : 120;
 }
 
 /**

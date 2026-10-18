@@ -149,14 +149,20 @@ export function geminiModel(): string {
   //   gemini-flash-lite-latest  answered all afternoon, then 503 for everyone
   //   gemini-3.1-flash-lite     503 for most of an afternoon, then answered
   //   gemini-3.5 / 3.6-flash    answered, then spent their 20 for the day
-  //   gemini-3.8-flash          never answered once, always 503
-  //   gemini-flash-latest       never answered once, always 503
-  //   gemini-2.5-flash-lite     404, no longer available
+  //   gemini-3.8-flash          503 all one afternoon; 200 when re-measured
+  //   gemini-flash-latest       503 all one afternoon; 200 when re-measured
+  //   gemini-2.5 / 2.0-flash    404, no longer available
   //   gemini-pro variants       429 with a limit of 0, not on the free tier
   //
   // There is no model that is reliably free and reliably uncrowded, so the
   // answer is a rotation rather than a single name: FALLBACK_MODELS is walked
   // when the first one is refused, and a 503 costs nothing but the check.
+  //
+  // Do not read the "503 all one afternoon" lines as a verdict on the model.
+  // Two of them were written off on that evidence and were answering 200 a few
+  // days later, which is two hundred questions a day left on the table. Run
+  // scripts/probe-models.ts and believe it.
+  //
   // GEMINI_MODEL pins the first choice, which is how this is overridden.
   return process.env.GEMINI_MODEL?.trim() || FALLBACK_MODELS[0];
 }
@@ -168,12 +174,31 @@ export function geminiModel(): string {
  * only ever returned 404 or 503 is not here, because including it would add a
  * request's worth of delay to every failure for the chance of an answer that
  * has not been observed even once.
+ *
+ * ── Why the list is six long and not four ────────────────────────────────────
+ * Google counts the free allowance **per model**: twenty calls each, counted
+ * separately, so six models is a hundred and twenty questions in a day instead
+ * of eighty. That is not a trick and it costs nothing — it is simply what the
+ * free tier already grants, and a shorter list quietly leaves two thirds of it
+ * unclaimed.
+ *
+ * Two of these six were left out for a long time because they returned 503 every
+ * time they were asked, and a note here recorded that as a fact about the model.
+ * It was not: it was a fact about an afternoon. Re-measured with
+ * scripts/probe-models.ts, both answer 200 today.
+ *
+ * That is the whole reason that script exists, and the reason this list is
+ * written as a measurement rather than an opinion. A comment that says a model
+ * is dead is a claim that decays; a script that asks Google is true every time
+ * it is run, and answers in twenty seconds.
  */
 export const FALLBACK_MODELS = [
   'gemini-3.1-flash-lite',
   'gemini-flash-lite-latest',
   'gemini-3.5-flash',
   'gemini-3.6-flash',
+  'gemini-3.8-flash',
+  'gemini-flash-latest',
 ];
 
 export async function askGemini(
@@ -589,6 +614,38 @@ function languageInstruction(languageCode?: string): string {
   return `Write the entire answer in ${language.english} (${language.native}), using that language's own script and no other.`;
 }
 
+/**
+ * The longest a visitor will be kept waiting for this provider to free up.
+ *
+ * Six seconds. Long enough that the retry actually lands in a new slot when the
+ * service says one is coming soon, short enough that a refusal is still an
+ * answer to the question "is this thing working" rather than an unanswered one.
+ */
+const POLLINATIONS_MAX_WAIT_MS = 6000;
+
+/**
+ * How long this service says to wait, from its own header.
+ *
+ * Returns null when there is no usable number, which is treated as "do not
+ * wait" rather than as "wait a guessed amount". A guessed wait is a wasted wait:
+ * it cannot be right twice.
+ *
+ * Accepts both forms of the header — a plain number of seconds, and an HTTP
+ * date — because only the first is documented for this endpoint and the second
+ * is what a standard-compliant server would send.
+ */
+function retryAfterSeconds(header: string | null): number | null {
+  if (!header) return null;
+
+  const seconds = Number(header.trim());
+  if (Number.isFinite(seconds) && seconds >= 0) return seconds;
+
+  const when = Date.parse(header);
+  if (Number.isNaN(when)) return null;
+
+  return Math.max(0, Math.round((when - Date.now()) / 1000));
+}
+
 export async function askPollinations(
   system: string,
   question: string,
@@ -630,17 +687,24 @@ export async function askPollinations(
      * This is the last provider in the chain, so a refusal here is the visitor
      * getting nothing at all.
      *
-     * It refuses for one reason far more often than any other: a burst limit.
-     * Measured on a run of thirteen languages, an Arabic question produced no
-     * answer twice in a row and then answered perfectly on the third attempt,
-     * with a few seconds between tries — the signature of a service that counts
-     * requests per second rather than per day, and that we were asking faster
-     * than it likes.
+     * And its refusal is now understood rather than guessed at. Pollinations'
+     * free tier serves **one text request per thirty seconds, per IP address**,
+     * and says so: a 402 carrying a Retry-After header that names the moment the
+     * next slot opens. A fixed two-second retry was therefore guaranteed to fail
+     * — it asked again inside a window the service had already closed — and cost
+     * two seconds of the visitor's wait to arrive at the same answer.
      *
-     * So one retry, after a pause long enough to be outside the burst window.
-     * Two seconds costs a visitor waiting only in the case where they were
-     * going to be given nothing, and it is the difference between an answer in
-     * their own language and an apology in it.
+     * So the wait is now the number the service sent, and only when that number
+     * is small enough to sit through. Up to six seconds is worth it: it is the
+     * difference between an answer in the visitor's own language and an apology
+     * in it. Anything longer is refused at once, because a visitor who has waited
+     * six seconds for nothing will not wait thirty, and a slow "no" is the worst
+     * of the three outcomes.
+     *
+     * Measured while writing this: thirteen questions in a row, of which Pollinations
+     * answered six. Gemini answers the rest, at eighty a day. That is the honest
+     * capacity of a free service, and it is why the retry is bounded rather than
+     * generous.
      */
     for (let attempt = 0; ; attempt++) {
       const response = await timedFetch(url, {
@@ -648,10 +712,14 @@ export async function askPollinations(
       }, POLLINATIONS_TIMEOUT_MS);
 
       if (response.status === 402 || response.status === 429) {
-        if (attempt < 1) {
-          await new Promise((done) => setTimeout(done, 2000));
+        const wait = retryAfterSeconds(response.headers.get('retry-after'));
+
+        if (attempt < 1 && wait !== null && wait > 0 && wait <= POLLINATIONS_MAX_WAIT_MS) {
+          console.warn(`[pollinations] limited, retrying in ${wait}s`);
+          await new Promise((done) => setTimeout(done, wait * 1000));
           continue;
         }
+
         return { ok: false, provider: 'pollinations', reason: 'rate-limit', ms: Date.now() - started };
       }
 
