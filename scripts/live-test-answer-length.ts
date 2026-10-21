@@ -49,7 +49,8 @@ function check(name: string, condition: boolean, detail = ''): void {
   }
 }
 
-async function ask(question: string, lang: string): Promise<{ status: number; body: Record<string, unknown> }> {
+async function ask(question: string, lang: string): Promise<{ status: number; body: Record<string, unknown>; ms: number }> {
+  const started = Date.now();
   const response = await fetch(`${SITE}/api/ask`, {
     method: 'POST',
     headers: {
@@ -59,7 +60,7 @@ async function ask(question: string, lang: string): Promise<{ status: number; bo
     body: JSON.stringify({ question, lang }),
   });
   const body = (await response.json().catch(() => ({}))) as Record<string, unknown>;
-  return { status: response.status, body };
+  return { status: response.status, body, ms: Date.now() - started };
 }
 
 async function withRetry<T>(label: string, run: () => Promise<T>): Promise<T> {
