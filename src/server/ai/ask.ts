@@ -132,6 +132,20 @@ export async function askQuestion(
   const started = Date.now();
 
   /*
+   * The request must finish before the platform kills it.
+   *
+   * Measured on the live site: a hung model plus one retry ran past sixty
+   * seconds, and Vercel answered the visitor with a 504 page instead of an
+   * answer. A JSON "could not answer" is not a good outcome, but it is a far
+   * better one than a page that says nothing at all — the site can explain
+   * itself and offer the next step, and a 504 cannot.
+   *
+   * Fifty-four seconds leaves six for the response to be written and for the
+   * question to be filed.
+   */
+  const TOTAL_BUDGET_MS = Number(process.env.ASK_TOTAL_BUDGET_MS ?? 54_000);
+
+  /*
    * Ollama is asked whether it is even installed before spending a call on it.
    * A 4-second check against a closed port beats a 90-second timeout on every
    * single request, which is what happens if it is simply tried and allowed to
@@ -169,9 +183,37 @@ export async function askQuestion(
 
   const attempts = hasAllowance ? 2 : 1;
 
-  for (let pass = 0; pass < attempts; pass++) {
+  outer: for (let pass = 0; pass < attempts; pass++) {
     for (const provider of ORDER) {
       if (provider.name === 'ollama' && !local) continue;
+
+      /*
+       * No time left for another attempt.
+       *
+       * Checked before the call rather than after, because a provider that is
+       * allowed to start at second fifty-three will still be running when the
+       * platform kills the function. A provider is only worth starting if there
+       * is enough of the minute left to hear an answer.
+       */
+      const elapsed = Date.now() - started;
+      if (elapsed > TOTAL_BUDGET_MS - 8_000) {
+        console.warn(
+          `[ask] out of time after ${elapsed}ms — answering honestly instead of letting the platform time out`,
+        );
+        break outer;
+      }
+
+      /*
+       * The retry pass is only for a quick failure.
+       *
+       * It exists because the free providers are flaky, not because they are
+       * slow. Retrying after a thirty-second timeout spends another thirty
+       * seconds to arrive at the same place, and it was half of the 504 above.
+       */
+      if (pass > 0 && elapsed > 15_000) {
+        console.log(`[ask] no time left for a second attempt at ${provider.name}`);
+        continue;
+      }
 
       /*
        * The keyed provider is skipped, not failed, once every model's allowance

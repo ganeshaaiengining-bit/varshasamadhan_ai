@@ -101,9 +101,26 @@ export type ProviderResult =
  * guard rejects most of what it returns, so waiting longer on it mostly waits
  * longer for something that will be discarded.
  */
-const GEMINI_TIMEOUT_MS = Number(process.env.GEMINI_TIMEOUT_MS ?? 150_000);
+const GEMINI_TIMEOUT_MS = Number(process.env.GEMINI_TIMEOUT_MS ?? 20_000);
 const OLLAMA_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS ?? 90_000);
-const POLLINATIONS_TIMEOUT_MS = Number(process.env.POLLINATIONS_TIMEOUT_MS ?? 45_000);
+const POLLINATIONS_TIMEOUT_MS = Number(process.env.POLLINATIONS_TIMEOUT_MS ?? 22_000);
+
+/*
+ * The whole keyed provider gets this long, across every model it tries.
+ *
+ * ── Why a per-model timeout was not enough ─────────────────────────────────
+ * A measured failure: one reasoning model sat for 53 seconds and returned an
+ * empty answer, then the retry pass started again and Vercel killed the function
+ * at sixty seconds. The visitor received an HTML 504 page — no answer, no
+ * explanation, nothing to read. The per-model deadline was 150 seconds, which is
+ * longer than the function is even allowed to live.
+ *
+ * Now no single model can spend more than twenty seconds, and the provider as a
+ * whole cannot spend more than thirty-five, which leaves the rest of the
+ * function's minute for the keyless fallbacks or for an honest "could not
+ * answer" instead of a dead page.
+ */
+const GEMINI_TOTAL_MS = Number(process.env.GEMINI_TOTAL_MS ?? 32_000);
 
 /** The default for any provider that does not pass its own deadline. */
 const TIMEOUT_MS = 90_000;
@@ -202,12 +219,27 @@ export function geminiModel(): string {
  * it is run, and answers in twenty seconds.
  */
 export const FALLBACK_MODELS = [
-  'gemini-3.1-flash-lite',
+  /*
+   * First because it was measured, not because it is newest.
+   *
+   * Asked for a complete Hanuman Chalisa it answered in **7.2 seconds** with 934
+   * output tokens, no thinking tokens, and `finishReason: STOP` — a whole text,
+   * not a summary.
+   *
+   * The model that used to stand here, gemini-3.1-flash-lite, was measured at
+   * the same time and did not answer in **90 seconds**: it is a reasoning model,
+   * and its output budget went on thoughts the site then filters out. Live it
+   * produced "gemini gave nothing: empty in 53122ms" and Vercel killed the
+   * function at sixty seconds, so the visitor got nothing at all. It is still in
+   * the list — its own daily allowance is still worth having — but at the end,
+   * where a slow refusal costs the least.
+   */
   'gemini-flash-lite-latest',
   'gemini-3.5-flash',
   'gemini-3.6-flash',
   'gemini-3.8-flash',
   'gemini-flash-latest',
+  'gemini-3.1-flash-lite',
 ];
 
 export async function askGemini(
@@ -255,6 +287,19 @@ export async function askGemini(
   const models = [geminiModel(), ...FALLBACK_MODELS.filter((m) => m !== geminiModel())];
 
   for (const model of models) {
+    /*
+     * Out of time for this provider.
+     *
+     * A model that hangs must not be allowed to spend the visitor's whole
+     * minute. This is the line that turns "504, no answer" into "tried the next
+     * provider".
+     */
+    const timeLeft = GEMINI_TOTAL_MS - (Date.now() - started);
+    if (timeLeft < 4000) {
+      console.warn(`[gemini] out of time after ${Date.now() - started}ms, moving on`);
+      break;
+    }
+
     /*
      * This model has already spent today's allowance.
      *
@@ -306,7 +351,7 @@ export async function askGemini(
             generationConfig: { temperature: 0.4, maxOutputTokens: 4096 },
           }),
         },
-        GEMINI_TIMEOUT_MS,
+        Math.min(GEMINI_TIMEOUT_MS, timeLeft),
       );
 
       if (response.status === 429 || response.status === 503) {
@@ -342,7 +387,24 @@ export async function askGemini(
        * different way. A thinking model is a live path here and not a
        * hypothetical.
        */
-      const text = (data.candidates?.[0]?.content?.parts ?? [])
+      const parts = data.candidates?.[0]?.content?.parts ?? [];
+
+      /*
+       * Thinking is counted, because it is the thing that went wrong.
+       *
+       * A reasoning model writes its working-out into the same `parts` array,
+       * marked `thought: true`, and pays for it out of `maxOutputTokens`. One of
+       * the models in the list spent 53 seconds and its entire budget on
+       * thoughts, produced no answer text at all, and the function was killed by
+       * the platform a few seconds later. Treating that as "this model refused"
+       * and moving on is the whole fix; treating it as "no model can answer"
+       * (which is what the empty check below did) threw the request away.
+       */
+      const thoughtChars = parts
+        .filter((part) => part.thought === true)
+        .reduce((total, part) => total + (part.text?.length ?? 0), 0);
+
+      const text = parts
         .filter((part) => part.thought !== true)
         .map((part) => part.text ?? '')
         .join('')
@@ -361,6 +423,14 @@ export async function askGemini(
       }
 
       if (!text) {
+        if (thoughtChars > 0) {
+          console.warn(
+            `[gemini] ${model} spent its whole budget thinking ` +
+              `(${thoughtChars} chars, ${Date.now() - started}ms) — trying the next model`,
+          );
+          continue;
+        }
+
         // A refusal or a safety block arrives as a 200 with no text. Not a
         // model problem, so trying a different model would refuse the same way.
         return { ok: false, provider: 'gemini', reason: 'empty', ms: Date.now() - started };
