@@ -70,7 +70,10 @@ export async function POST(request: Request) {
   const answer = typeof body.answer === 'string' ? body.answer : '';
   const password = typeof body.password === 'string' ? body.password : '';
 
-  if (answer.length === 0 || answer.length > 200 || password.length > 200) {
+  // Length policed by the same function the setup page uses, so the two routes
+  // cannot drift into disagreeing about what is a possible answer.
+  const answerProblemCode = answerProblem(answer);
+  if (answerProblemCode || password.length > 200) {
     return NextResponse.json({ ok: false, reason: 'bad-request' }, { status: 400 });
   }
 
