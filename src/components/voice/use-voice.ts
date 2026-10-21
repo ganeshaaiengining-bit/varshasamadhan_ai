@@ -293,6 +293,23 @@ export interface SpeakOptions {
 }
 
 /**
+ * Module-level, because a second click has to be able to kill the first one.
+ *
+ * `stopToken` is bumped on every new speak() and every stop: callbacks from an
+ * older utterance check it before doing anything, so a queue that was cancelled
+ * mid-sentence cannot keep walking and finish somebody else's answer.
+ */
+let keepAlive: number | null = null;
+let stopToken = 0;
+
+function clearKeepAlive(): void {
+  if (keepAlive !== null) {
+    window.clearInterval(keepAlive);
+    keepAlive = null;
+  }
+}
+
+/**
  * Speaks text aloud, slowly, in the visitor's chosen language.
  *
  * `rate` defaults to 0.85 rather than 1. The browser default is pitched at a
@@ -325,15 +342,21 @@ export function speak(
 
   // Anything queued from a previous click would keep talking over the new answer.
   synth.cancel();
+  clearKeepAlive();
+  stopToken += 1;
+  const token = stopToken;
 
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = tag;
-  utterance.rate = options.rate ?? 0.85;
-  utterance.pitch = 1;
+  const chunks = chunksForSpeech(text);
+  if (chunks.length === 0) {
+    options.onError?.('voice.speakFailed');
+    return;
+  }
 
-  const pickVoice = () => {
+  let index = 0;
+
+  const pickVoice = (): SpeechSynthesisVoice | null => {
     const voices = synth.getVoices();
-    if (voices.length === 0) return;
+    if (voices.length === 0) return null;
 
     /*
      * An exact tag match first, then a bare-language match. Chrome on Android
@@ -341,41 +364,164 @@ export function speak(
      * beats the default voice by a wide margin.
      */
     const exact = voices.find((v) => v.lang.toLowerCase() === tag.toLowerCase());
-    if (exact) {
-      utterance.voice = exact;
+    if (exact) return exact;
+
+    const base = tag.split('-')[0].toLowerCase();
+    return voices.find((v) => v.lang.toLowerCase().split(/[-_]/)[0] === base) ?? null;
+  };
+
+  const done = () => {
+    if (token !== stopToken) return;
+    clearKeepAlive();
+    options.onEnd?.();
+  };
+
+  const speakNext = () => {
+    if (token !== stopToken) return;
+
+    if (index >= chunks.length) {
+      done();
       return;
     }
 
-    const base = tag.split('-')[0].toLowerCase();
-    const sameLanguage = voices.find((v) => v.lang.toLowerCase().split(/[-_]/)[0] === base);
-    if (sameLanguage) utterance.voice = sameLanguage;
+    const utterance = new SpeechSynthesisUtterance(chunks[index]);
+    utterance.lang = tag;
+    utterance.rate = options.rate ?? 0.85;
+    utterance.pitch = 1;
+
+    const voice = pickVoice();
+    if (voice) utterance.voice = voice;
+
+    utterance.onend = () => {
+      index += 1;
+      speakNext();
+    };
+
+    utterance.onerror = (event) => {
+      const reason = (event as unknown as { error?: string }).error;
+      if (reason === 'interrupted' || reason === 'canceled') return; // our own cancel
+      if (token !== stopToken) return;
+      clearKeepAlive();
+      options.onError?.('voice.speakFailed');
+    };
+
+    /*
+     * Some devices accept the utterance, report no error, and produce no sound
+     * at all — usually because no voice exists for this script. The button then
+     * looks like it worked, which is the worst outcome: the visitor waits, hears
+     * nothing, and blames the answer. This is the check that turns silence into
+     * a sentence they can read.
+     */
+    if (index === 0) {
+      window.setTimeout(() => {
+        if (token !== stopToken) return;
+        if (index === 0 && !synth.speaking && !synth.pending) {
+          clearKeepAlive();
+          options.onError?.('voice.speakFailed');
+        }
+      }, 1400);
+    }
+
+    synth.speak(utterance);
   };
 
-  pickVoice();
+  /*
+   * Speak at once, rather than waiting for `voiceschanged`.
+   *
+   * The old version waited for the voice list before calling speak(), and only
+   * called speak() inside that callback. On iOS the callback runs outside the
+   * click's user gesture, and Safari refuses speech that was not started by a
+   * gesture — so the button did nothing at all on the devices whose voice list
+   * loads a moment late. Speaking now, with a null voice and the right `lang`,
+   * lets the browser choose; a later chunk picks up the better voice once the
+   * list arrives.
+   */
+  speakNext();
 
-  // Voices often load after first paint. If the list is empty, wait for the
-  // event and try once more.
-  if (synth.getVoices().length === 0) {
-    const onVoices = () => {
-      pickVoice();
-      synth.speak(utterance);
-      synth.removeEventListener('voiceschanged', onVoices);
-    };
-    synth.addEventListener('voiceschanged', onVoices);
+  // Chrome on desktop cuts long speech off after about fifteen seconds unless
+  // it is nudged. The chunks keep most answers under that; this catches the
+  // rest, and a nudge on a browser that does not need it is harmless.
+  keepAlive = window.setInterval(() => {
+    if (token !== stopToken) return;
+    if (synth.speaking && !synth.paused) {
+      synth.pause();
+      synth.resume();
+    }
+  }, 9000);
+}
+
+/**
+ * Split text into speakable chunks.
+ *
+ * ── Why a chunk at all ──────────────────────────────────────────────────────
+ * Because a single utterance of a whole answer is what makes the audio stop
+ * halfway. Chrome (especially on Android) drops utterances after roughly
+ * fifteen seconds, so a bhajan or an aarti read as one string simply ends part
+ * of the way through, with no error and no way to know why. Feeding it sentence
+ * by sentence keeps every piece short enough to finish, and the queue makes it
+ * sound continuous.
+ *
+ * Sentences are cut on the marks that actually end one in these languages — the
+ * Devanagari danda, the double danda, full stops, question marks, exclamation
+ * marks and newlines — and a sentence too long for one chunk is split again at
+ * spaces so no chunk is ever a single unbroken run.
+ *
+ * Exported because it is the only part of speech that can be tested without a
+ * browser, and it is the part that was actually broken.
+ */
+export function chunksForSpeech(text: string, limit = 170): string[] {
+  const clean = text.replace(/\r/g, '').replace(/[ \t]+/g, ' ').trim();
+  if (clean.length === 0) return [];
+
+  const sentences: string[] = [];
+  let current = '';
+
+  for (const ch of clean) {
+    current += ch;
+    if (ch === '।' || ch === '॥' || ch === '.' || ch === '!' || ch === '?' || ch === '\n') {
+      if (current.trim()) sentences.push(current.trim());
+      current = '';
+    }
+  }
+  if (current.trim()) sentences.push(current.trim());
+
+  const chunks: string[] = [];
+  let buffer = '';
+
+  const push = (piece: string) => {
+    if (buffer.length > 0 && buffer.length + 1 + piece.length > limit) {
+      chunks.push(buffer);
+      buffer = piece;
+      return;
+    }
+    buffer = buffer.length > 0 ? `${buffer} ${piece}` : piece;
+  };
+
+  for (const sentence of sentences) {
+    if (sentence.length <= limit) {
+      push(sentence);
+      continue;
+    }
+
+    // A single long sentence: break it at spaces.
+    let rest = sentence;
+    while (rest.length > limit) {
+      const cut = rest.lastIndexOf(' ', limit);
+      const take = cut > limit * 0.4 ? cut : limit;
+      push(rest.slice(0, take).trim());
+      rest = rest.slice(take).trim();
+    }
+    if (rest) push(rest);
   }
 
-  utterance.onend = () => options.onEnd?.();
-  utterance.onerror = (event) => {
-    const reason = (event as unknown as { error?: string }).error;
-    if (reason === 'interrupted' || reason === 'canceled') return; // our own cancel
-    options.onError?.('voice.speakFailed');
-  };
-
-  synth.speak(utterance);
+  if (buffer) chunks.push(buffer);
+  return chunks;
 }
 
 export function stopSpeaking() {
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    stopToken += 1;
+    clearKeepAlive();
     window.speechSynthesis.cancel();
   }
 }

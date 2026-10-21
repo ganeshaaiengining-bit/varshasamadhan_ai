@@ -135,7 +135,21 @@ export default async function ArticlePage({
 
           <div className="mt-6 flex flex-wrap gap-2">
             <ReadAloud
-              text={row.voiceSummary || `${row.title}। ${row.summary}`}
+              /*
+               * The whole article, not its summary.
+               *
+               * This used to read `voiceSummary || title + summary`, so on every
+               * page the "listen" button read a paragraph and stopped. For an
+               * aarti or a bhajan that is the feature not working: the visitor
+               * presses listen to hear the text they cannot read, and gets the
+               * first two lines of it.
+               *
+               * The short line still comes first when one exists — it is a
+               * useful introduction — and the body follows it in full.
+               */
+              text={[row.title, row.voiceSummary || row.summary, row.body]
+                .filter((part) => part && part.trim().length > 0)
+                .join('\n\n')}
               label={t('article.readAloud')}
             />
 

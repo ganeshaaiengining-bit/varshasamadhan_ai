@@ -287,7 +287,23 @@ export async function askGemini(
           body: JSON.stringify({
             systemInstruction: { parts: [{ text: system }] },
             contents: [{ role: 'user', parts: [{ text: question }] }],
-            generationConfig: { temperature: 0.4, maxOutputTokens: 700 },
+            /*
+             * Four thousand, not seven hundred.
+             *
+             * Seven hundred was enough for "what should I do about a cough" and
+             * nowhere near enough for what people actually ask at a temple-going
+             * site: a full aarti, a bhajan, a challisa, a recipe with fifteen
+             * steps. Those came back cut off mid-verse, and a cut-off aarti is
+             * not a short answer — it is the wrong answer, because the visitor
+             * cannot tell what is missing.
+             *
+             * The prompt also told the model to stay under five paragraphs,
+             * which is the real reason the text was short; this is the ceiling
+             * that would have stopped it even after the prompt was fixed.
+             * Ordinary answers are still short, because the prompt asks for
+             * short and nothing here forces length.
+             */
+            generationConfig: { temperature: 0.4, maxOutputTokens: 4096 },
           }),
         },
         GEMINI_TIMEOUT_MS,
@@ -312,6 +328,7 @@ export async function askGemini(
       const data = (await response.json()) as {
         candidates?: {
           content?: { parts?: { text?: string; thought?: boolean }[] };
+          finishReason?: string;
         }[];
       };
 
@@ -330,6 +347,18 @@ export async function askGemini(
         .map((part) => part.text ?? '')
         .join('')
         .trim();
+
+      /*
+       * Say so when the ceiling was hit.
+       *
+       * A truncated aarti and a complete one look the same on the screen, and
+       * the visitor is the last person who can tell the difference. If this ever
+       * logs, the answer went out short and the owner should know before a
+       * visitor does.
+       */
+      if (data.candidates?.[0]?.finishReason === 'MAX_TOKENS') {
+        console.warn('[gemini] answer hit maxOutputTokens and was cut off');
+      }
 
       if (!text) {
         // A refusal or a safety block arrives as a 200 with no text. Not a
@@ -438,8 +467,9 @@ export async function askOllama(
         prompt: `${system}\n\nQuestion: ${question}\n\nAnswer:`,
         stream: false,
         // Low, because this runs on a CPU with no graphics card. The default is
-        // closer to a minute per answer here.
-        options: { temperature: 0.4, num_predict: 500 },
+        // closer to a minute per answer here. Twelve hundred rather than five
+        // hundred: an aarti cut off mid-verse is worse than a slower answer.
+        options: { temperature: 0.4, num_predict: 1200 },
       }),
     }, OLLAMA_TIMEOUT_MS);
 

@@ -3,6 +3,9 @@
 import * as React from 'react';
 import { Icon } from '@/components/ui/icon';
 import { useLanguage } from '@/components/language/language';
+// Imported directly rather than on click: iOS refuses speech that does not begin
+// inside the click's user gesture, and an `await import(...)` finishes after it.
+import { speak, stopSpeaking } from '@/components/voice/use-voice';
 
 /**
  * Read-aloud button.
@@ -40,22 +43,24 @@ export function ReadAloud({
   React.useEffect(
     () => () => {
       // Leaving the page mid-playback otherwise keeps talking.
-      import('@/components/voice/use-voice').then((m) => m.stopSpeaking());
+      stopSpeaking();
     },
     [],
   );
 
-  const play = async () => {
+  const play = () => {
     if (speaking) {
-      const { stopSpeaking } = await import('@/components/voice/use-voice');
       stopSpeaking();
       setSpeaking(false);
       return;
     }
 
     setError(null);
-    const { speak } = await import('@/components/voice/use-voice');
     setSpeaking(true);
+
+    // Called straight from the click, with no `await` in between. That is not
+    // style: iOS only allows speech that starts inside a user gesture, and an
+    // awaited import would land just outside it.
     speak(text, {
       rate: 0.85,
       language,
