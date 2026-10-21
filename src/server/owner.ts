@@ -3,6 +3,7 @@ import 'server-only';
 import { cookies } from 'next/headers';
 
 import { verifyPassword, storedPassword } from './owner-password';
+import { clearLimit, countFailure, readLimit } from './rate-limit';
 
 /**
  * ============================================================================
@@ -125,13 +126,19 @@ function sameSecret(a: string, b: string): boolean {
 /* Failure throttle                                                           */
 /* -------------------------------------------------------------------------- */
 
-function throttleKey(ip: string): string {
-  return `vs-owner-fail:${ip}`;
-}
-
-function lockoutKey(ip: string): string {
-  return `vs-owner-lock:${ip}`;
-}
+/**
+ * Where the failure count lives.
+ *
+ * In the database, keyed by address — see `src/server/rate-limit.ts` for why it
+ * is not in a cookie. This file used to keep it in a cookie, which meant the
+ * count belonged to the person being counted and could be reset by deleting
+ * it: "five attempts then fifteen minutes" was true of the intent and false of
+ * the effect, and the same was true of the recovery route it was copied to.
+ *
+ * A separate scope from `recover`, so five wrong passwords do not also lock the
+ * owner out of the one thing that gets them back in.
+ */
+const SCOPE = 'login';
 
 /**
  * Check a submitted password.
@@ -148,10 +155,8 @@ export async function checkOwnerPassword(password: string, ip: string): Promise<
     return { ok: false, reason: 'no-password-configured' };
   }
 
-  const store = await cookies();
-
-  const lockedUntil = store.get(lockoutKey(ip))?.value;
-  if (lockedUntil && Number(lockedUntil) > Date.now()) {
+  const limit = await readLimit(SCOPE, ip);
+  if (!limit.allowed) {
     return { ok: false, reason: 'locked-out' };
   }
 
@@ -179,27 +184,16 @@ export async function checkOwnerPassword(password: string, ip: string): Promise<
   const matchesEnv = expected.length > 0 && sameSecret(password, expected);
 
   if (!matches && !matchesEnv) {
-    const failures = Number(store.get(throttleKey(ip))?.value ?? '0') + 1;
-    if (failures >= MAX_FAILURES) {
-      store.set(lockoutKey(ip), String(Date.now() + LOCKOUT_MINUTES * 60_000), {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        maxAge: LOCKOUT_MINUTES * 60,
-      });
-      // Cleared so the next attempt starts a fresh count once the lock expires.
-      store.delete(throttleKey(ip));
-    } else {
-      store.set(throttleKey(ip), String(failures), {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        maxAge: LOCKOUT_MINUTES * 60,
-      });
-    }
+    // Counted, and if this was the fifth the address is locked from the next
+    // attempt onwards. This response still says "wrong-password" rather than
+    // "locked-out", because it *is* wrong — the person who mistyped deserves the
+    // accurate answer, and the refusal lands on whatever they do next.
+    await countFailure(SCOPE, ip, MAX_FAILURES, LOCKOUT_MINUTES);
+
     return { ok: false, reason: 'wrong-password' };
   }
 
+  await clearLimit(SCOPE, ip);
   await createOwnerSession(ip);
 
   return { ok: true };
@@ -232,10 +226,13 @@ export async function createOwnerSession(ip?: string): Promise<void> {
 
   // The counter is cleared on entry, not on failure. Somebody who has just
   // remembered their password should not still be sitting behind a lockout from
-  // the attempts that came before they remembered it.
+  // the attempts that came before they remembered it. `recovery` is deliberately
+  // *not* cleared here: signing in with the right password says nothing about
+  // whether the recovery answer is right, and wiping that tally would let a
+  // steady stream of correct logins give an attacker unlimited guesses at the
+  // one thing that works when the password is forgotten.
   if (ip) {
-    store.delete(throttleKey(ip));
-    store.delete(lockoutKey(ip));
+    await clearLimit(SCOPE, ip);
   }
 }
 

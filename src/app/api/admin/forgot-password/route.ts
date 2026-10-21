@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 
 import {
   answerProblem,
@@ -9,6 +8,7 @@ import {
   storedRecovery,
 } from '@/server/owner-password';
 import { createOwnerSession } from '@/server/owner';
+import { clearLimit, countFailure, readLimit } from '@/server/rate-limit';
 
 /**
  * POST /api/admin/forgot-password
@@ -26,10 +26,12 @@ import { createOwnerSession } from '@/server/owner';
  *
  *   1. The answer is **hashed with scrypt**, so a stolen database gives an
  *      attacker a puzzle rather than a key, and each guess costs real time.
- *   2. Attempts are **counted per address**, and after five wrong answers that
- *      address is refused for fifteen minutes — the same numbers the password
- *      login uses, because a weaker limit on the more dangerous door would be
- *      backwards.
+ *   2. Attempts are **counted in the database per address**, and after five
+ *      wrong answers that address is refused for fifteen minutes — the same
+ *      numbers the password login uses, because a weaker limit on the more
+ *      dangerous door would be backwards. Counted in the database and not in a
+ *      cookie, which is the only place a count survives a script that deletes
+ *      its cookies between guesses; see `src/server/rate-limit.ts`.
  *   3. The question itself is shown to anybody who asks, on purpose. It is not
  *      a secret and pretending otherwise would only hide the mechanism while
  *      the answer stayed the same. Security that depends on an attacker not
@@ -54,13 +56,8 @@ interface Body {
   password?: unknown;
 }
 
-function throttleKey(ip: string): string {
-  return `vs-recover-fail:${ip}`;
-}
-
-function lockoutKey(ip: string): string {
-  return `vs-recover-lock:${ip}`;
-}
+/** Separate scope from `login`, so five wrong passwords do not also lock recovery. */
+const SCOPE = 'recover';
 
 export async function POST(request: Request) {
   let body: Body;
@@ -78,43 +75,25 @@ export async function POST(request: Request) {
   }
 
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'local';
-  const store = await cookies();
 
-  const lockedUntil = Number(store.get(lockoutKey(ip))?.value ?? '0');
-  if (lockedUntil > Date.now()) {
+  // Read before anything that could confirm anything: no recovery set up and a
+  // wrong answer are the same "no" from the outside, and the lockout is the
+  // same either way.
+  const limit = await readLimit(SCOPE, ip);
+  if (!limit.allowed) {
     return NextResponse.json({ ok: false, reason: 'locked-out' }, { status: 429 });
   }
 
-  // Nothing is checked before this point that could confirm anything: no
-  // recovery set up and a wrong answer are the same "no" from the outside, and
-  // the lockout is the same either way.
   const recovery = await storedRecovery();
 
   const answerOk = recovery !== null && (await checkRecoveryAnswer(answer));
 
   if (!answerOk) {
-    const failures = Number(store.get(throttleKey(ip))?.value ?? '0') + 1;
+    const after = await countFailure(SCOPE, ip, MAX_FAILURES, LOCKOUT_MINUTES);
 
-    if (failures >= MAX_FAILURES) {
-      store.set(lockoutKey(ip), String(Date.now() + LOCKOUT_MINUTES * 60_000), {
-        httpOnly: true,
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
-        path: '/',
-        maxAge: LOCKOUT_MINUTES * 60,
-      });
-      store.delete(throttleKey(ip));
-
+    if (!after.allowed) {
       return NextResponse.json({ ok: false, reason: 'locked-out' }, { status: 429 });
     }
-
-    store.set(throttleKey(ip), String(failures), {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      path: '/',
-      maxAge: LOCKOUT_MINUTES * 60,
-    });
 
     // Deliberately the same message whether no recovery exists or the answer is
     // simply wrong — see the note at the top of this file.
@@ -125,16 +104,18 @@ export async function POST(request: Request) {
   if (problem) {
     // Reached only with a correct answer, so this message is for the owner and
     // reveals nothing an attacker who already had the answer does not have.
+    // Not counted as a failure: the answer was right, and punishing a short
+    // password after a correct answer would lock out the one person who is
+    // demonstrably the owner.
     return NextResponse.json({ ok: false, reason: problem }, { status: 400 });
   }
 
   await resetPassword(password);
 
-  // The failed-attempt count is cleared on success, and the owner is signed in
-  // — they have just proved who they are, and asking them to type the password
-  // they had set one second ago would be friction with no security behind it.
-  store.delete(throttleKey(ip));
-  store.delete(lockoutKey(ip));
+  // Cleared on success, and the owner is signed in — they have just proved who
+  // they are, and asking them to type the password they had set one second ago
+  // would be friction with no security behind it.
+  await clearLimit(SCOPE, ip);
   await createOwnerSession(ip);
 
   return NextResponse.json({ ok: true });

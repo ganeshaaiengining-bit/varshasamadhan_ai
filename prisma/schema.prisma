@@ -258,6 +258,48 @@ model OwnerCredential {
 }
 
 /* ==========================================================================
+   RATE LIMITING
+   ========================================================================== */
+
+/**
+ * Failed attempts, counted in the database rather than in a cookie.
+ *
+ * ── Why not a cookie ────────────────────────────────────────────────────────
+ * Because a cookie belongs to the person who is being counted. Deleting it
+ * resets the count, sending a different one starts a fresh tally, and a script
+ * does both without thinking about it — so a lockout stored that way is a
+ * lockout that stops nobody except a browser user who has no reason to evade it.
+ *
+ * This file used to do exactly that, on both the login and the recovery route,
+ * and it was written down as "five attempts, fifteen minutes" in comments that
+ * were true about the intent and false about the effect. Moving it here is the
+ * difference between a limit and a description of one.
+ *
+ * ── Why a table and not memory ──────────────────────────────────────────────
+ * This runs on serverless functions: there is no process that stays alive, so
+ * "keep a counter in a variable" is a counter that resets on every request and
+ * on every deploy. The database is the only thing here that remembers.
+ *
+ * ── Best effort, honestly ───────────────────────────────────────────────────
+ * Two simultaneous wrong answers can read the same count and both write one
+ * increment, which means a determined parallel attacker gets a few more tries
+ * than the number says. That is worth stating rather than papering over: the
+ * goal is to make grinding expensive, and it is — each attempt also costs a
+ * scrypt verification, whether or not the row keeps up.
+ */
+model RateLimit {
+  /// The thing being counted: `login:1.2.3.4`, `recover:1.2.3.4`, ...
+  key        String    @id
+  /// Consecutive failures since the last success or expiry.
+  failures   Int       @default(0)
+  /// When the address may try again. Null while it still can.
+  lockedUntil DateTime?
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  @@map("rate_limits")
+}
+
+/* ==========================================================================
    VISITOR ACCOUNTS
    ========================================================================== */
 
