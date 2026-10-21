@@ -17,7 +17,8 @@
  * boundary. An audio reader that loses the last line of every aarti is the same
  * bug in a new place.
  */
-import { chunksForSpeech } from '../src/components/voice/use-voice';
+import { chunksForSpeech, bestVoiceFor } from '../src/components/voice/use-voice';
+import { LANGUAGES, translate } from '../src/content/i18n';
 
 let ok = 0;
 let fail = 0;
@@ -117,6 +118,54 @@ check('lambi lines alag chunks me', longLineChunks.length === 3, `chunks: ${long
 check('har chunk limit ke andar', longLineChunks.every((c) => c.length <= LIMIT));
 check('lambi lines me bhi kuch nahi khoya',
   wordsIn(longLineChunks.join(' ')).join(' ') === wordsIn(longLines).join(' '));
+
+console.log('\n=== kya is device me us bhasha ki awaaz hai? ===');
+/*
+ * The question that stopped this site from reading Devanagari with an English
+ * voice. Measured on the owner's machine: three `en-GB` voices and nothing else,
+ * so `bestVoiceFor` must return null rather than silently fall back to whatever
+ * the browser would have picked.
+ */
+const voices = (langs: string[]): SpeechSynthesisVoice[] =>
+  langs.map((lang, i) => ({
+    lang,
+    name: `Voice ${i}`,
+    default: i === 0,
+    localService: true,
+    voiceURI: `voice-${i}`,
+  } as SpeechSynthesisVoice));
+
+check('exact tag (hi-IN) milta hai',
+  bestVoiceFor(voices(['hi-IN', 'en-GB']), 'hi-IN')?.lang === 'hi-IN');
+check('bare language (hi) bhi chalta hai',
+  bestVoiceFor(voices(['hi', 'en-GB']), 'hi-IN')?.lang === 'hi');
+check('case-insensitive hai',
+  bestVoiceFor(voices(['EN-in']), 'en-IN')?.lang === 'EN-in');
+check('koi match nahi to null — chupke se angrezi awaaz nahi',
+  bestVoiceFor(voices(['en-GB']), 'hi-IN') === null);
+check('khali list to null (awaaz abhi load ho rahi hai)',
+  bestVoiceFor([], 'hi-IN') === null);
+check('doosri lipi ka naam match nahi karta',
+  bestVoiceFor(voices(['ta-IN', 'te-IN']), 'bn-IN') === null);
+check('farsi-Latin ho ya Devanagari, base code par milta hai',
+  bestVoiceFor(voices(['mr-IN']), 'mr-IN')?.lang === 'mr-IN');
+
+console.log('\n=== message 13 bhashaon me hai ===');
+/*
+ * `voice.noVoice` is the sentence a person sees when their device cannot read
+ * the language at all. Falling back to English for eleven of them would be a
+ * second, quieter version of the same problem: a message meant to explain a
+ * language mismatch, in a language the reader did not choose.
+ */
+for (const language of LANGUAGES) {
+  const value = translate(language.code, 'voice.noVoice');
+  const okForKey =
+    value !== 'voice.noVoice' &&
+    value.includes('{name}') &&
+    value.length > 30;
+  check(`${language.code}: message maujood aur {name} bhara hua`, okForKey,
+    JSON.stringify(value).slice(0, 70));
+}
 
 console.log('===========================================');
 console.log(`  ${ok} me se ${ok + fail} check pass, ${fail} fail`);

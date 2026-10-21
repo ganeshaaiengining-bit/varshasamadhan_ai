@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { localeTag } from '@/content/i18n';
+import { localeTag, languageMeta } from '@/content/i18n';
 
 /**
  * ===========================================================================
@@ -288,8 +288,13 @@ export interface SpeakOptions {
   /**
    * Receives a translation key, not a finished sentence, so the caller can
    * render it in the visitor's language.
+   *
+   * `values` carries what the sentence needs to mean something — for now just
+   * `{name}` of the language that has no voice, because "no voice installed" on a
+   * Hindi article read from a Tamil interface otherwise says nothing about which
+   * voice is missing.
    */
-  onError?: (reasonKey: string) => void;
+  onError?: (reasonKey: string, values?: Record<string, string | number>) => void;
 }
 
 /**
@@ -300,6 +305,31 @@ export interface SpeakOptions {
  * mid-sentence cannot keep walking and finish somebody else's answer.
  */
 let stopToken = 0;
+
+/**
+ * The voice to use for a tag, or nothing.
+ *
+ * Exact tag first (`hi-IN`), then the bare language (`hi`), because Chrome on
+ * Android often reports `ta-IN` while some devices only ship `ta`, and a bare
+ * match beats the default voice by a wide margin.
+ *
+ * Exported because "does this device have a Hindi voice?" is a question worth
+ * asking of a plain list rather than of a live browser: the check that stops the
+ * site reading Devanagari with an English voice is built on this, and it is the
+ * kind of thing that passes by accident if it cannot be tested.
+ */
+export function bestVoiceFor(
+  voices: SpeechSynthesisVoice[],
+  tag: string,
+): SpeechSynthesisVoice | null {
+  if (voices.length === 0) return null;
+
+  const exact = voices.find((v) => v.lang.toLowerCase() === tag.toLowerCase());
+  if (exact) return exact;
+
+  const base = tag.split('-')[0].split('_')[0].toLowerCase();
+  return voices.find((v) => v.lang.toLowerCase().split(/[-_]/)[0] === base) ?? null;
+}
 
 /**
  * Speaks text aloud, slowly, in the visitor's chosen language.
@@ -317,6 +347,9 @@ let stopToken = 0;
  * having no way to tell that the *audio* is at fault rather than the answer.
  * Matching the voice to the answer's language is the whole point of having a
  * read-aloud button on a multilingual page.
+ *
+ * ── And when the device has no voice for that language ─────────────────────
+ * It says so and stops, rather than playing. See the check at the end.
  */
 export function speak(
   text: string,
@@ -346,21 +379,7 @@ export function speak(
   let index = 0;
   let started = false;
 
-  const pickVoice = (): SpeechSynthesisVoice | null => {
-    const voices = synth.getVoices();
-    if (voices.length === 0) return null;
-
-    /*
-     * An exact tag match first, then a bare-language match. Chrome on Android
-     * often reports `ta-IN` but some devices only ship `ta`, and a bare match
-     * beats the default voice by a wide margin.
-     */
-    const exact = voices.find((v) => v.lang.toLowerCase() === tag.toLowerCase());
-    if (exact) return exact;
-
-    const base = tag.split('-')[0].toLowerCase();
-    return voices.find((v) => v.lang.toLowerCase().split(/[-_]/)[0] === base) ?? null;
-  };
+  const pickVoice = (): SpeechSynthesisVoice | null => bestVoiceFor(synth.getVoices(), tag);
 
   const done = () => {
     if (token !== stopToken) return;
@@ -437,7 +456,55 @@ export function speak(
    * lets the browser choose; a later chunk picks up the better voice once the
    * list arrives.
    */
-  speakNext();
+  /*
+   * The last thing, and the reason for the whole file's note about silence.
+   *
+   * ── The bug this catches ─────────────────────────────────────────────────
+   * Measured on the owner's own machine: three English voices, no Hindi voice at
+   * all. `pickVoice()` found nothing, left `utterance.voice` null, and the
+   * browser read Devanagari with a default English voice. `speaking` was true, no
+   * error fired, the button said "Stop" — and what came out was unintelligible.
+   * That is the "bahut jagah audio aata hi nahi" report exactly: the button
+   * works, the sound is wrong, and nothing on screen explains why.
+   *
+   * ── Why not simply refuse before speaking ────────────────────────────────
+   * Two reasons. The voice list often arrives a moment after the page does
+   * (`voiceschanged`), so an empty list at click time is not a verdict, and
+   * speaking anyway keeps iOS's requirement that audio start inside the user's
+   * gesture. So it speaks first and is stopped a moment later if the list turns
+   * up empty of anything usable. The blip is far shorter than a whole article of
+   * nonsense.
+   *
+   * ── Why the language matters to *this* check ─────────────────────────────
+   * A Hindi article read by a Tamil voice is the same failure in a new place,
+   * and the voice list has no way to say "I can sort of do that". Matching on the
+   * base language is the only honest test available.
+   */
+  const refuseIfNoVoice = (): boolean => {
+    const voices = synth.getVoices();
+    if (voices.length === 0) return false; // not loaded yet — still no verdict
+
+    if (bestVoiceFor(voices, tag)) return true;
+
+    // Bumping the token kills the queue, the silence timer and any late `onend`.
+    stopToken += 1;
+    synth.cancel();
+    options.onError?.('voice.noVoice', { name: languageMeta(languageCode).native });
+    return true;
+  };
+
+  if (!refuseIfNoVoice()) {
+    const onVoices = () => {
+      if (refuseIfNoVoice()) synth.removeEventListener('voiceschanged', onVoices);
+    };
+    synth.addEventListener('voiceschanged', onVoices);
+    window.setTimeout(() => {
+      // Still nothing after this long: play best-effort rather than show a
+      // message that might be wrong about a slow device.
+      synth.removeEventListener('voiceschanged', onVoices);
+      refuseIfNoVoice();
+    }, 1600);
+  }
 }
 
 /**

@@ -467,7 +467,7 @@ function AnswerCard({
   language: string;
   onSpeakError: (message: string) => void;
 }) {
-  const { t } = useLanguage();
+  const { t, tf } = useLanguage();
   const [speaking, setSpeaking] = React.useState(false);
 
   const play = () => {
@@ -475,11 +475,11 @@ function AnswerCard({
     speak(text, {
       language,
       onEnd: () => setSpeaking(false),
-      onError: (reasonKey) => {
+      onError: (reasonKey, values) => {
         setSpeaking(false);
         // Spoken in the answer's own language: a Tamil answer that fails to play
         // should not report the failure in Hindi.
-        onSpeakError(t(reasonKey));
+        onSpeakError(values ? tf(reasonKey, values) : t(reasonKey));
       },
     });
   };

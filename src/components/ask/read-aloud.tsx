@@ -36,7 +36,7 @@ export function ReadAloud({
   label?: string;
   language?: string;
 }) {
-  const { t } = useLanguage();
+  const { t, tf } = useLanguage();
   const [speaking, setSpeaking] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -65,9 +65,9 @@ export function ReadAloud({
       rate: 0.85,
       language,
       onEnd: () => setSpeaking(false),
-      onError: (reasonKey) => {
+      onError: (reasonKey, values) => {
         setSpeaking(false);
-        setError(t(reasonKey));
+        setError(values ? tf(reasonKey, values) : t(reasonKey));
       },
     });
   };

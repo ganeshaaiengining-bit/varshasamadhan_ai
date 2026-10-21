@@ -351,6 +351,7 @@ const HINDI: Record<string, string> = {
   'voice.aborted': 'रुक गया। दोबारा कोशिश कीजिए।',
   'voice.unsupported': 'इस ब्राउज़र में बोलकर पूछना काम नहीं करेगा। लिखकर पूछिए।',
   'voice.speakFailed': 'यह उत्तर सुनाया नहीं जा सका।',
+  'voice.noVoice': 'इस डिवाइस में {name} बोलने वाली आवाज़ नहीं मिली। अभी लिखा हुआ पढ़िए, या फ़ोन की सेटिंग में जाकर आवाज़ जोड़िए।',
   'voice.generic': 'कुछ गड़बड़ हो गई। दोबारा कोशिश कीजिए।',
   'voice.noHindiVoice':
     'इस फ़ोन में हिन्दी बोलने वाली आवाज़ नहीं मिली। जवाब लिखकर पढ़ा जा सकता है।',
@@ -955,6 +956,7 @@ const ENGLISH: Record<string, string> = {
   'voice.aborted': 'Stopped. Please try again.',
   'voice.unsupported': 'Asking by voice does not work in this browser. Please write instead.',
   'voice.speakFailed': 'This answer could not be read aloud.',
+  'voice.noVoice': 'This device has no voice for {name} installed. Read the text for now, or add a voice in your settings.',
   'voice.generic': 'Something went wrong. Please try again.',
   'voice.noHindiVoice':
     'No Hindi speaking voice was found on this phone. The answer can be read on screen.',
@@ -1514,6 +1516,7 @@ const BENGALI: Record<string, string> = {
   'voice.serviceNotAllowed': 'মাইকের অনুমতি পাওয়া যায়নি। উপরে গিয়ে অনুমতি দিন, অথবা লিখে জিজ্ঞাসা করুন।',
 
   'voice.speakFailed': 'এই উত্তরটি পড়ে শোনানো যায়নি।',
+  'voice.noVoice': 'এই ডিভাইসে {name} ভাষার কোনো কণ্ঠস্বর নেই। এখন লেখাটি পড়ুন, অথবা সেটিংসে গিয়ে কণ্ঠস্বর যোগ করুন।',
 
   'voice.unsupported': 'এই ব্রাউজারে বলে জিজ্ঞাসা করা কাজ করবে না। লিখে জিজ্ঞাসা করুন।',
 
@@ -2224,6 +2227,7 @@ const TAMIL: Record<string, string> = {
   'voice.serviceNotAllowed': 'மைக்ரோஃபோன் அனுமதி கிடைக்கவில்லை. மேலே சென்று அனுமதி அளியுங்கள், அல்லது எழுதி கேளுங்கள்.',
 
   'voice.speakFailed': 'இந்தப் பதிலைப் படித்து கேட்க முடியவில்லை.',
+  'voice.noVoice': 'இந்தச் சாதனத்தில் {name} குரல் இல்லை. இப்போது எழுதியதைப் படியுங்கள், அல்லது அமைப்புகளில் குரலைச் சேர்க்கவும்.',
 
   'voice.unsupported': 'இந்த உலாவியில் பேசி கேட்பது வேலை செய்யாது. எழுதி கேளுங்கள்.',
 
@@ -2933,6 +2937,7 @@ const TELUGU: Record<string, string> = {
   'voice.serviceNotAllowed': 'మైక్ అనుమతి రాలేదు. పైకి వెళ్ళి అనుమతి ఇవ్వండి, లేదా టైప్ చేసి అడగండి.',
 
   'voice.speakFailed': 'ఈ సమాధానాన్ని చదివి వినించలేకపోయాము.',
+  'voice.noVoice': 'ఈ పరికరంలో {name} స్వరం లేదు. ఇప్పుడు రాసినది చదవండి, లేదా ఫోన్ సెట్టింగ్స్\u200cలో స్వరాన్ని చేర్చండి.',
 
   'voice.unsupported': 'ఈ బ్రౌజర్‌లో మాట్లాడి అడగడం పనిచేయదు. టైప్ చేసి అడగండి.',
 
@@ -3642,6 +3647,7 @@ const MARATHI: Record<string, string> = {
   'voice.serviceNotAllowed': 'माइकची परवानगी मिळाली नाही. वर जाऊन परवानगी द्या, किंवा लिहून विचारा.',
 
   'voice.speakFailed': 'हे उत्तर वाचून ऐकता आले नाहीत.',
+  'voice.noVoice': 'या उपकरणावर {name} आवाज़ नाही. आत्ता लिहिलेले वाचा, किंवा फोनच्या सेटिंग्जमध्ये जाऊन आवाज़ जोडा.',
 
   'voice.unsupported': 'या ब्राउझरमध्ये बोलून विचारणार काम करणार नाही. लिहून विचारा.',
 
@@ -4351,6 +4357,7 @@ const GUJARATI: Record<string, string> = {
   'voice.serviceNotAllowed': 'માઇકની પરવાનગી મળી નથી. ઉપર જઈને પરવાનગી આપો, અથવા લખીને પૂછો.',
 
   'voice.speakFailed': 'આ જવાબ વાંચીને સાંભળવામાં આવ્યું નહીં.',
+  'voice.noVoice': 'આ ઉપકરણમાં {name} અવાજ નથી. હમણાં લખેલું વાંચો, અથવા ફોનની સેટિંગ્સમાં જઈને અવાજ ઉમેરો.',
 
   'voice.unsupported': 'આ બ્રાઉઝરમાં બોલીને પૂછવાનું કામ નહીં કરે. લખીને પૂછો.',
 
@@ -5066,6 +5073,7 @@ const KANNADA: Record<string, string> = {
   'voice.serviceNotAllowed': 'ಮೈಕ್‌ಗೆ ಅನುಮತಿ ಸಿಗಲಿಲ್ಲ. ಮೇಲಕ್ಕೆ ಹೋಗಿ ಅನುಮತಿ ನೀಡಿ, ಅಥವಾ ಬರೆದು ಕೇಳಿ.',
 
   'voice.speakFailed': 'ಈ ಉತ್ತರವನ್ನು ಓದಿ ಕೇಳಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.',
+  'voice.noVoice': 'ಈ ಸಾಧನದಲ್ಲಿ {name} ಧ್ವನಿ ಇಲ್ಲ. ಈಗ ಬರೆದಿರುವುದನ್ನು ಓದಿ, ಅಥವಾ ಫೋನ್ ಸೆಟ್ಟಿಂಗ್\u200cಗಳಲ್ಲಿ ಧ್ವನಿ ಸೇರಿಸಿ.',
 
   'voice.unsupported': 'ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಮಾತನಾಡಿ ಕೇಳುವುದು ಕೆಲಸ ಮಾಡುವುದಿಲ್ಲ. ಬರೆದು ಕೇಳಿ.',
 
@@ -5789,6 +5797,7 @@ const MALAYALAM: Record<string, string> = {
   'voice.serviceNotAllowed': 'മൈക്രോഫോണിന് അനുമതി ലഭിച്ചില്ല. മുകളിലേക്ക് പോയി അനുമതി നൽകുക, അല്ലെങ്കിൽ എഴുതി ചോദിക്കുക.',
 
   'voice.speakFailed': 'ഈ ഉത്തരം വായിക്കുകയാകാത്തിരുന്നു.',
+  'voice.noVoice': 'ഈ ഉപകരണത്തിൽ {name} ശബ്ദമില്ല. ഇപ്പോൾ എഴുതിയത് വായിക്കുക, അല്ലെങ്കിൽ ഫോൺ ക്രമീകരണങ്ങളിൽ ശബ്ദം ചേർക്കുക.',
 
   'voice.unsupported': 'ഈ ബ്രൗസറിൽ പറഞ്ഞ് ചോദിക്കിയാൽ പ്രവർത്തിക്കില്ല. എഴുതി ചോദിക്കുക.',
 
@@ -6515,6 +6524,7 @@ const PUNJABI: Record<string, string> = {
   'voice.serviceNotAllowed': 'ਮਾਈਕ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਮਿਲੀ। ਉੱਪਰ ਜਾ ਕੇ ਇਜਾਜ਼ਤ ਦਿਓ, ਜਾਂ ਲਿਖ ਕੇ ਪੁੱਛੋ।',
 
   'voice.speakFailed': 'ਇਹ ਜਵਾਬ ਪੜ੍ਹ ਕੇ ਸੁਣਾਇਆ ਨਹੀਂ ਜਾ ਸਕਿਆ।',
+  'voice.noVoice': 'ਇਸ ਡਿਵਾਈਸ ਵਿੱਚ {name} ਆਵਾਜ਼ ਨਹੀਂ ਹੈ। ਹੁਣ ਲਿਖਿਆ ਪੜ੍ਹੋ, ਜਾਂ ਫੋਨ ਦੀਆਂ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਜਾ ਕੇ ਆਵਾਜ਼ ਜੋੜੋ।',
 
   'voice.unsupported': 'ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਬੋਲ ਕੇ ਪੁੱਛਣਾ ਕੰਮ ਨਹੀਂ ਕਰੇਗਾ। ਲਿਖ ਕੇ ਪੁੱਛੋ।',
 
@@ -7234,6 +7244,7 @@ const URDU: Record<string, string> = {
   'voice.serviceNotAllowed': 'مائیک کی اجازت نہیں ملی۔ اوپر جا کر اجازت دیں، یا لکھ کر پوچھیں۔',
 
   'voice.speakFailed': 'یہ جواب پڑھ کر سنایا نہیں جا سکا۔',
+  'voice.noVoice': 'اس ڈیوائس میں {name} کی آواز نہیں ہے۔ ابھی لکھا ہوا پڑھیں، یا فون کی سیٹنگز میں جا کر آواز شامل کریں۔',
 
   'voice.unsupported': 'اس براؤزر میں بول کر پوچھنا کام نہیں کرے گا۔ لکھ کر پوچھیں۔',
 
@@ -7955,6 +7966,7 @@ const ARABIC: Record<string, string> = {
   'voice.serviceNotAllowed': 'لم يُمنح الإذن للميكروفون. اذهب إلى الأعلى وامنح الإذن، أو اكتب سؤالك.',
 
   'voice.speakFailed': 'تعذّرت قراءة هذه الإجابة صوتيًا.',
+  'voice.noVoice': 'لا يوجد في هذا الجهاز صوت لغة {name}. اقرأ النص الآن، أو أضِف الصوت من إعدادات الهاتف.',
 
   'voice.unsupported': 'السؤال بالصوت لن يعمل في هذا المتصفح. اكتب سؤالك بدلاً من ذلك.',
 
@@ -8670,6 +8682,7 @@ const SPANISH: Record<string, string> = {
   'voice.serviceNotAllowed': 'No se concedió permiso para el micrófono. Conceda el permiso arriba o escriba su pregunta.',
 
   'voice.speakFailed': 'No se pudo leer esta respuesta en voz alta.',
+  'voice.noVoice': 'Este dispositivo no tiene voz en {name}. Lee el texto ahora, o añade una voz en los ajustes del teléfono.',
 
   'voice.unsupported': 'Hablar para preguntar no funciona en este navegador. Escriba su pregunta.',
 
