@@ -44,6 +44,25 @@ export default async function LibraryPage() {
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'VARSHA SAMADHAN AI';
   const { t } = await getT();
 
+  /*
+   * One library line, in this visitor's language.
+   *
+   * These eighteen entries used to be Hindi on every page of the site, whatever
+   * language had been chosen — the title above the cards, the sentence under it,
+   * the line saying which languages the material is in. The rest of the page had
+   * been translated long before, so a Marathi visitor read a Marathi page with a
+   * Hindi card in the middle of it, three times per card, eighteen cards.
+   *
+   * `translate` answers with the key itself when nothing has been written for
+   * that language, and a key on screen is worse than the original Hindi, because
+   * it looks like the site is broken rather than unfinished. So the original
+   * comes back instead — which is exactly what was on the page before.
+   */
+  const line = (id: string, field: 'title' | 'what' | 'langs', original: string) => {
+    const value = t(`lib.entry.${id}.${field}`);
+    return value.startsWith('lib.entry.') ? original : value;
+  };
+
   return (
     <SiteChrome siteName={siteName}>
       <div className="wrap-narrow py-10 sm:py-14">
@@ -96,8 +115,8 @@ export default async function LibraryPage() {
                   <li key={entry.url} className="card p-5">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <h3 className="text-lg">{entry.title}</h3>
-                        <p className="mt-1 text-ink-muted">{entry.what}</p>
+                        <h3 className="text-lg">{line(entry.id, 'title', entry.title)}</h3>
+                        <p className="mt-1 text-ink-muted">{line(entry.id, 'what', entry.what)}</p>
                       </div>
 
                       {/* Government and no-signup are worth seeing without reading. */}
@@ -129,7 +148,7 @@ export default async function LibraryPage() {
 
                     {entry.languages ? (
                       <p className="mt-2 text-sm text-ink-subtle">
-                        <Icon name="om" size={14} /> {entry.languages}
+                        <Icon name="om" size={14} /> {line(entry.id, 'langs', entry.languages)}
                       </p>
                     ) : null}
 
@@ -152,8 +171,17 @@ export default async function LibraryPage() {
                         the text the page exists to replace, so it had to be in
                         the reader's language before anything else on the page
                         did.
+
+                        The name above it went the same way for the five that
+                        were sentences: "Free to read" under a Tamil heading was
+                        English on a Tamil page. The two that are acronyms keep
+                        their own spelling, because that is how the licence is
+                        written where it comes from — see `Licence`.
                       */}
-                      <strong>{entry.licence.name}</strong> — {t(entry.licence.shareKey)}
+                      <strong>
+                        {entry.licence.nameKey ? t(entry.licence.nameKey) : entry.licence.name}
+                      </strong>{' '}
+                      — {t(entry.licence.shareKey)}
                     </p>
 
                     {/*

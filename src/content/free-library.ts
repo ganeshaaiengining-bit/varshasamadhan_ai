@@ -51,8 +51,20 @@
  * moment a licence was reworded in another language.
  */
 export interface Licence {
-  /** Shown as a badge. */
+  /**
+   * Shown as a badge.
+   *
+   * Acronyms stay exactly as they are — CC BY 4.0 is not translated anywhere,
+   * and translating it would only make it harder to match against the licence
+   * text on the page it comes from. `CC0 / Public domain`, `Public domain`,
+   * `Government of India`, `Creative Commons (mixed)` and `Free to read` are
+   * English sentences, though, and they sat on every card in every language: a
+   * Tamil reader got a Tamil page with "Free to read" underneath it. Those carry
+   * a `nameKey` instead and are looked up like the rest of the page.
+   */
   name: string;
+  /** The same badge, in the visitor's language. Absent for the acronyms. */
+  nameKey?: string;
   /** Whether copying and sharing are permitted, or only reading is free. */
   freeness: Freeness;
   /**
@@ -65,8 +77,7 @@ export interface Licence {
    * Roman-Hindi literal, which put that one line under every card in every
    * language: a Bengali reader saw their own title above it and
    * "Padhna free hai. Copy karke aage dena kisi aur ke condition par hai."
-   * directly below, on all thirty cards. The names stay as they are — CC BY 4.0
-   * is not translated anywhere.
+   * directly below, on all thirty cards.
    */
   shareKey: string;
 }
@@ -107,29 +118,43 @@ export const GROUPS: LibraryGroup[] = [
 export const LICENCES = {
   ccBy: { freeness: 'open', name: 'CC BY 4.0', shareKey: 'lib.licence.ccBy' },
   ccBySa: { freeness: 'open', name: 'CC BY-SA 4.0', shareKey: 'lib.licence.ccBySa' },
-  ccZero: { freeness: 'open', name: 'CC0 / Public domain', shareKey: 'lib.licence.ccZero' },
-  pd: { freeness: 'open', name: 'Public domain', shareKey: 'lib.licence.pd' },
+  ccZero: {
+    freeness: 'open',
+    name: 'CC0 / Public domain',
+    nameKey: 'lib.licence.ccZero.name',
+    shareKey: 'lib.licence.ccZero',
+  },
+  pd: {
+    freeness: 'open',
+    name: 'Public domain',
+    nameKey: 'lib.licence.pd.name',
+    shareKey: 'lib.licence.pd',
+  },
   govtIndia: {
     freeness: 'open',
     name: 'Government of India',
+    nameKey: 'lib.licence.govtIndia.name',
     shareKey: 'lib.licence.govtIndia',
   },
   creativeCommons: {
     freeness: 'open',
     name: 'Creative Commons (mixed)',
+    nameKey: 'lib.licence.creativeCommons.name',
     shareKey: 'lib.licence.creativeCommons',
   },
   freeToRead: {
     freeness: 'free',
     name: 'Free to read',
+    nameKey: 'lib.licence.freeToRead.name',
     shareKey: 'lib.licence.freeToRead',
   },
 } satisfies Record<string, Licence>;
 
-export const ENTRIES: Array<LibraryEntry & { group: string }> = [
+export const ENTRIES: Array<LibraryEntry & { group: string; id: string }> = [
   /* ------------------------------------------------------ शिक्षा / education */
   {
     group: 'padhai',
+    id: 'ncert',
     title: 'NCERT किताबें — कक्षा 1 से 12 तक',
     what: 'हर विषय की सारी किताबें, अभी हर कक्षा के लिए। बिना लॉगिन, सीधी PDF।',
     url: 'https://ncert.nic.in/textbook.php',
@@ -140,6 +165,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   },
   {
     group: 'padhai',
+    id: 'pm-evidya',
     title: 'PM eVIDYA — डिजिटल पाठ्यपुस्तक',
     what: 'NCERT की किताबों का ऐप, बड़े अक्षर में पढ़ा जा सकता है। बोलकर भी सुन सकते हैं।',
     url: 'https://pmvidya.education.gov.in/',
@@ -150,6 +176,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   },
   {
     group: 'padhai',
+    id: 'diksha',
     title: 'DIKSHA — शिक्षकों और बच्चों के लिए',
     what: 'पाठ्यक्रम, वीडियो और अभ्यास — कक्षा 1 से 12 तक।',
     url: 'https://diksha.gov.in/',
@@ -160,6 +187,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   },
   {
     group: 'padhai',
+    id: 'khan-academy',
     title: 'Khan Academy — अंग्रेज़ी में गणित और विज्ञान',
     what: 'वीडियो पाठ, हर कक्षा तक। सीधे पढ़ने वालों के लिए भी लिखित है।',
     url: 'https://www.khanacademy.org/in/',
@@ -168,6 +196,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   },
   {
     group: 'padhai',
+    id: 'openstax',
     title: 'OpenStax — अंग्रेज़ी में मुफ़्त किताबें',
     what: 'कॉलेज स्तर की किताबें — गणित, विज्ञान, मानविकी। हर पन्ने पर PDF।',
     url: 'https://openstax.org/subjects',
@@ -176,6 +205,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   },
   {
     group: 'padhai',
+    id: 'nios',
     title: 'NIOS — दूरस्थ शिक्षा, मुफ़्त सामग्री',
     what: 'ओपन और ऑनलाइन कोर्स की मुफ़्त पुस्तिकाएँ, बिना दाखिले के।',
     url: 'https://www.nios.ac.in/',
@@ -186,6 +216,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   },
   {
     group: 'padhai',
+    id: 'ignou',
     title: 'IGNOU — बड़े स्कूल की मुफ़्त पुस्तकें',
     what: 'दूरस्थ शिक्षा की किताबें जो बिल्कुल मुफ़्त मिलती हैं।',
     url: 'https://www.ignou.ac.in/econtent/',
@@ -197,6 +228,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   /* ------------------------------------------------- पुस्तकें / free books */
   {
     group: 'kitab',
+    id: 'gutenberg',
     title: 'Project Gutenberg — अंग्रेज़ी की पुरानी किताबें',
     what: '70,000 से ज़्यादा किताबें, सब की copyright समाप्त। मुफ़्त ई-बुक और ऑडियो।',
     url: 'https://www.gutenberg.org/',
@@ -205,6 +237,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   },
   {
     group: 'kitab',
+    id: 'pratham-books',
     title: 'Pratham Books — बच्चों की किताबें',
     what: 'भारतीय भाषाओं में बच्चों की किताबें, बिल्कुल मुफ़्त। कक्षा 1 से 5 के लिए।',
     url: 'https://prathambooks.org/',
@@ -214,6 +247,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   },
   {
     group: 'kitab',
+    id: 'internet-archive-texts',
     title: 'Internet Archive — अख़बार और पुरानी पत्रिकाएँ',
     what: 'लाखों पुरानी किताबें, पत्रिकाएँ और अख़बार — मुफ़्त।',
     url: 'https://archive.org/details/texts',
@@ -222,6 +256,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   },
   {
     group: 'kitab',
+    id: 'wikisource',
     title: 'Wikisource — जन-गद्य पाठ',
     what: 'कोई कॉपीराइट नहीं — ये सबकी दुनिया की पुरानी साहित्यिक किताबें हैं।',
     url: 'https://en.wikisource.org/wiki/Main_Page',
@@ -232,6 +267,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   /* ------------------------------------------------ तस्वीरें / images */
   {
     group: 'tasveer',
+    id: 'wikimedia-commons',
     title: 'Wikimedia Commons — हर तस्वीर',
     what: 'उपजाति, नक्शा, तारे, ऐतिहास — सब कुछ। हर तस्वीर पर अलग लाइसेंस लिखा है।',
     url: 'https://commons.wikimedia.org/wiki/Main_Page',
@@ -240,6 +276,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   },
   {
     group: 'tasveer',
+    id: 'pixabay',
     title: 'Pixabay — तस्वीरें और चित्र',
     what: 'तस्वीरें, रेखाचित्र और छोटी वीडियो।',
     url: 'https://pixabay.com/images/',
@@ -248,6 +285,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   },
   {
     group: 'tasveer',
+    id: 'unsplash',
     title: 'Unsplash — सुंदर तस्वीरें',
     what: 'मुफ़्त, बड़े अक्षर में, बिना अकाउंट के।',
     url: 'https://unsplash.com/photos',
@@ -256,6 +294,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   },
   {
     group: 'tasveer',
+    id: 'openverse',
     title: 'Openverse — सब तस्वीरें एक जगह',
     what: 'कई मुफ़्त तस्वीरों के साइट एक साथ खोजें।',
     url: 'https://openverse.org/',
@@ -266,6 +305,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   /* -------------------------------------------------------- audio / audio */
   {
     group: 'audio',
+    id: 'librivox',
     title: 'LibriVox — सुनकर किताबें',
     what: 'पुरानी अंग्रेज़ी किताबों का मुफ़्त ऑडियो, मनुष्य की आवाज़ में।',
     url: 'https://librivox.org/',
@@ -274,6 +314,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   },
   {
     group: 'audio',
+    id: 'internet-archive-audio',
     title: 'Internet Archive — ऑडियो संग्रह',
     what: 'हज़ारों मुफ़्त ऑडियो — किताबें, भाषण, संगीत।',
     url: 'https://archive.org/details/audio',
@@ -282,6 +323,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string }> = [
   },
   {
     group: 'audio',
+    id: 'vande-mataram',
     title: 'Vande Mataram — राष्ट्रीय गान और गीत',
     what: 'भारत का राष्ट्रीय गान और अन्य राष्ट्रीय गीत, मुफ़्त।',
     url: 'https://www.indiaculture.gov.in/',

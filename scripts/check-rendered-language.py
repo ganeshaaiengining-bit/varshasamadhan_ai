@@ -38,6 +38,12 @@ WHAT COUNTS AS A FAULT
 Base64 data in an inline script is stripped first. Href values are dropped
 along with tags, so a link target in Latin is not counted while link text is.
 
+Text no visitor can reach is dropped as well: anything marked `sr-only`,
+`hidden`, `aria-hidden` or `display:none`. The contact form carries a decoy
+field labelled "Website" for spam traps, spelled so it is invisible on the page,
+and counting it made the contact page look broken in every language it is not —
+a check that reports what cannot be seen is measuring the source, not the page.
+
 WHY EVERY LANGUAGE IS FETCHED
 
 Because the failure is not always in the same place. One string missing from
@@ -91,13 +97,42 @@ ACRONYMS = {
     "MB", "GB", "KG", "CM", "MM", "PM", "AM", "VIP", "OK", "TV", "URL",
 }
 
+# Proper names, allowed only on the page that needs them.
+#
+# The library lists eighteen places to get free books and pictures from, and
+# almost all of them are named in Latin by the people who run them: NCERT,
+# DIKSHA, Khan Academy, Project Gutenberg, LibriVox. Those names are correct
+# however the page around them is written, so a Tamil reader is meant to see
+# "NCERT" in a Tamil sentence.
+#
+# Kept per page rather than added to ACRONYMS, because these are ordinary words
+# too — "Books", "Archive", "Commons", "Project" — and allowing them everywhere
+# would hide the day one of them turns up in a sentence somebody forgot to
+# translate on a page that has nothing to do with books.
+PAGE_NAMES = {
+    "/pustakalay": {
+        "NCERT", "eVIDYA", "DIKSHA", "Khan", "Academy", "OpenStax", "NIOS",
+        "IGNOU", "Project", "Gutenberg", "Pratham", "Books", "Internet",
+        "Archive", "Wikisource", "Wikimedia", "Commons", "Pixabay",
+        "Unsplash", "Openverse", "LibriVox", "Vande", "Mataram", "BY-SA",
+    },
+}
+
 TAG = re.compile(r"<[^>]*>")
 SCRIPT = re.compile(r"<(script|style|svg)[\s\S]*?</\1>", re.I)
+# Nothing a visitor can read: the contact form's decoy field, the skip link,
+# anything a screen reader is told to ignore.
+HIDDEN = re.compile(
+    r"<(\w+)\b[^>]*?(?:\bsr-only\b|\bhidden\b|aria-hidden=[\"']true[\"']"
+    r"|display\s*:\s*none)[^>]*>[\s\S]*?</\1>",
+    re.I,
+)
 LATIN_RUN = re.compile(r"\b[A-Za-z][A-Za-z'’-]{2,}\b")
 DATA_URI = re.compile(r"data:[^\s\"')]+")
 
 
 def visible(html: str) -> str:
+    html = HIDDEN.sub(" ", html)
     html = SCRIPT.sub(" ", html)
     html = DATA_URI.sub(" ", html)
     text = TAG.sub(" ", html)
@@ -139,7 +174,8 @@ def main() -> int:
                 continue
 
             text = visible(html)
-            words = [w for w in LATIN_RUN.findall(text) if w not in ACRONYMS]
+            allowed = ACRONYMS | PAGE_NAMES.get(path, set())
+            words = [w for w in LATIN_RUN.findall(text) if w not in allowed]
 
             if not words:
                 pages_ok += 1
