@@ -121,7 +121,7 @@ async function callsTodayByModel(): Promise<Record<string, number>> {
  * which made "answer in Hindi" a property of the prompt — and there was no way
  * to answer in anything else without rewriting it per language.
  */
-function systemInstruction(languageCode: string): string {
+export function systemInstruction(languageCode: string): string {
   const language = isKnownLanguage(languageCode) ? languageMeta(languageCode) : languageMeta('hi');
 
   return `You are "VARSHA SAMADHAN", a free help service. You answer questions from people who are often elderly, may not read or write easily, and may be listening to a phone speaker instead of reading a screen.

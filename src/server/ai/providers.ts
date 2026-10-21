@@ -358,7 +358,18 @@ export async function askGemini(
         Math.min(GEMINI_TIMEOUT_MS, timeLeft),
       );
 
-      if (response.status === 429 || response.status === 503) {
+      /*
+       * A refusal, a saturated model, or a Google-side error: all three mean
+       * "this model is not the one today", and all three are cheap to walk past.
+       *
+       * The >= 500 line was added after a live failure that looked like a broken
+       * question. Google answered one request with an HTTP 500 in 819ms; the code
+       * below treated anything that was not a 429 or 503 as the end of the road
+       * and returned "network", so the whole keyed provider was written off on a
+       * single bad second. The same question answered normally twice in a row
+       * moments later. A server error is not a verdict about the question.
+       */
+      if (response.status === 429 || response.status === 503 || response.status >= 500) {
         console.warn(
           `[gemini] ${model} is unavailable (HTTP ${response.status}), trying the next model`,
         );
