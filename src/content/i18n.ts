@@ -247,7 +247,6 @@ const HINDI: Record<string, string> = {
   'nav.collapse': 'बाँस बंद करें',
   'nav.skip': 'सीधे सामग्री पर जाएँ',
   'nav.language': 'भाषा बदलें',
-  'nav.main': 'मुख्य',
 
   /* ---- footer ----------------------------------------------------------- */
   'footer.pages': 'पन्ने',
@@ -299,14 +298,6 @@ const HINDI: Record<string, string> = {
    * the interface rather than content. A Tamil speaker who sees a Hindi button
    * does not learn what it does.
    */
-  'home.q1.label': 'बिजली चली गई तो क्या करें?',
-  'home.q1.question': 'घर में अचानक बिजली चली गई है, अंधेरा हो गया है। क्या करना चाहिए?',
-  'home.q2.label': 'बच्चे की पढ़ाई में कमज़ोरी',
-  'home.q2.question': 'मेरे बच्चे की पढ़ाई में बहुत कमज़ोरी है। घर पर उसकी पढ़ाई कैसे बेहतर करें?',
-  'home.q3.label': 'माँ की देखभाल',
-  'home.q3.question': 'मेरी माँ की बहुत उम्र हो गई है। उनकी देखभाल कैसे करूँ?',
-  'home.q4.label': 'आग लग जाए तो',
-  'home.q4.question': 'अगर घर में आग लग जाए तो सबसे पहले क्या करना चाहिए?',
   'help.q1.label': 'बिजली गई है, क्या करूँ?',
   'help.q1.question':
     'घर में बिजली चली गई है। क्या करना चाहिए, और मोबाइल फ़ोन कैसे चार्ज करें?',
@@ -394,8 +385,6 @@ const HINDI: Record<string, string> = {
   'ask.sending': 'सोच रहे हैं…',
   'ask.clear': 'लिखा हुआ मिटाइए',
   'ask.speak': 'बोलकर पूछिए',
-  'ask.speakShort': 'बोलिए',
-  'ask.speakLong': 'माइक से बोलकर पूछिए',
   'ask.listening': 'बोलना शुरू कीजिए…',
   'ask.heard': 'सुन रहे हैं',
   'ask.stopListening': 'सुनना रोकिए',
@@ -403,7 +392,6 @@ const HINDI: Record<string, string> = {
   'ask.answerTitle': 'समाधान',
   'ask.listen': 'सुनिए',
   'ask.stopSpeak': 'रोकिए',
-  'ask.readAloud': 'सुनिए',
   'ask.aiNote': 'यह उत्तर AI ने दिया है। किसी विशेषज्ञ की सलाह का विकल्प नहीं है।',
   'ask.errorRateLimit':
     'बहुत सारे सवाल एक साथ भेज दिए गए। थोड़ी देर बाद कोशिश कीजिए।',
@@ -411,7 +399,6 @@ const HINDI: Record<string, string> = {
   'ask.notAnswer': 'इस सवाल का सीधा जवाब हमारे पास नहीं है।',
   'ask.emptyAnswer': 'इस बार जवाब नहीं बना पाया। थोड़ा अलग करके फिर पूछिए।',
   'ask.micUnsupported': 'इस ब्राउज़र में बोलकर पूछना काम नहीं करेगा। लिखकर पूछिए।',
-  'ask.speakHint': 'बोलना शुरू करने के लिए माइक दबाइए।',
   'ask.heardWith': 'यह सुन रहे हैं:',
 
   /* ---- voice ------------------------------------------------------------ */
@@ -429,14 +416,11 @@ const HINDI: Record<string, string> = {
   'voice.speakFailed': 'यह उत्तर सुनाया नहीं जा सका।',
   'voice.noVoice': 'इस डिवाइस में {name} बोलने वाली आवाज़ नहीं मिली। अभी लिखा हुआ पढ़िए, या फ़ोन की सेटिंग में जाकर आवाज़ जोड़िए।',
   'voice.generic': 'कुछ गड़बड़ हो गई। दोबारा कोशिश कीजिए।',
-  'voice.noHindiVoice':
-    'इस फ़ोन में हिन्दी बोलने वाली आवाज़ नहीं मिली। जवाब लिखकर पढ़ा जा सकता है।',
 
   /* ---- sound ------------------------------------------------------------ */
   'sound.title': 'शांति के लिए ध्वनि',
   'sound.intro': 'कोई शुल्क नहीं, कोई विज्ञापन नहीं। बस मन शांत करने के लिए।',
   'sound.playing': 'आवाज़ चल रही है। रोकने के लिए दोबारा उसी बटन को दबाइए।',
-  'sound.tap': 'कोई बटन दबाकर ध्वनि सुनिए।',
   'sound.shankh': 'शंख',
   'sound.shankhHint': 'गहरी, लंबी',
   'sound.bansuri': 'बांसुरी',
@@ -445,11 +429,9 @@ const HINDI: Record<string, string> = {
   'sound.dholHint': 'तीखी, तेज़',
   'sound.all': 'तीनों',
   'sound.allHint': 'एक साथ',
-  'sound.playingLabel': 'बज रही है',
   'sound.listenLabel': 'सुनिए',
   'sound.errUnsupported': 'यह ब्राउज़र ध्वनि नहीं चला पा रहा।',
   'sound.errGeneric': 'ध्वनि चलाने में समस्या हुई।',
-  'sound.statusLabel': 'ध्वनि बज रही है',
 
   /* ---- opening sound ---------------------------------------------------- */
   'dhun.welcome': 'स्वागत है',
@@ -497,7 +479,6 @@ const HINDI: Record<string, string> = {
   'article.askAbout': 'इसी विषय में पूछिए',
   'article.readAloud': 'यह लेख सुनिए',
   'article.others': 'इसी विषय के और लेख',
-  'article.voiceLabel': 'यह लेख सुनिए',
   'article.count': '{count} लेख',
 
   /* ---- theme and misc --------------------------------------------------- */
@@ -942,7 +923,6 @@ const ENGLISH: Record<string, string> = {
   'nav.collapse': 'Collapse the bar',
   'nav.skip': 'Skip to content',
   'nav.language': 'Change language',
-  'nav.main': 'Main',
 
   'footer.pages': 'Pages',
   'footer.helplines': 'Important numbers',
@@ -985,15 +965,6 @@ const ENGLISH: Record<string, string> = {
   'home.freeTitle': 'This service is completely free',
   'home.freeBody':
     'No money is taken, no personal details are asked for, and no advertisements are shown.',
-
-  'home.q1.label': 'The power has gone',
-  'home.q1.question': 'The power in the house has suddenly gone off and it is dark. What should I do?',
-  'home.q2.label': 'A child weak at school',
-  'home.q2.question': 'My child is very weak in studies. How can I improve this at home?',
-  'home.q3.label': "Caring for my mother",
-  'home.q3.question': 'My mother has become very old. How should I look after her?',
-  'home.q4.label': 'If there is a fire',
-  'home.q4.question': 'If there is a fire in the house, what should be done first?',
   'help.q1.label': 'The power has gone, what do I do?',
   'help.q1.question':
     'The power in the house has gone. What should I do, and how do I charge my phone?',
@@ -1067,6 +1038,25 @@ const ENGLISH: Record<string, string> = {
   'support.contactBody':
     'Write here about anything at all — a mistake, something useful you found, or a question. As much or as little as is easy.',
   'support.faqTitle': 'Questions that come up often',
+  'support.contactMessageLabel': 'Your message',
+  'support.contactPlaceholder': 'Write whatever you want to say — a mistake you found, something that helped, or a question.',
+  'support.contactHelp': 'At least 10 characters. This goes straight to the owner.',
+  'support.contactSubmit': 'Send',
+  'support.contactSending': 'Sending…',
+  'support.contactPrivacy': 'You do not have to give your name.',
+  'support.contactSent': 'It has arrived',
+  'support.contactSentBody': 'Your message has reached the owner.',
+  'support.contactFailed': 'It could not be sent',
+  'support.faq1Q': 'Is this really free?',
+  'support.faq1A': 'Yes. No money is taken, no adverts are shown, and no membership is sold. It runs on one person\'s money, not a company\'s or a government\'s.',
+  'support.faq2Q': 'Is my name, address or phone number taken?',
+  'support.faq2A': 'No, and it will not be. The site builds no identity of its own — no login, no tracking script. All that is asked is your question, and when you ask it.',
+  'support.faq3Q': 'Is this a doctor or a lawyer?',
+  'support.faq3A': 'No. It gives no medical advice and no legal advice. Where the matter is serious it tells you to see a doctor or an official — it does not take their place.',
+  'support.faq4Q': 'Is every answer right?',
+  'support.faq4A': 'Not always. A computer writes the answer, not a doctor — which is why every answer carries a line saying it is not medical advice. See a doctor before starting or stopping any medicine.',
+  'support.faq5Q': 'Will I have to download an app?',
+  'support.faq5A': 'No. It opens in the browser. No app to install, no permission to grant, no update to wait for.',
   'support.faqBody':
     'Is it really free? Yes. Is my name taken? No, and it is not required. Are there advertisements? No. Is a phone number or address asked for? No. Does an app need installing? No, it opens in the browser.',
 
@@ -1077,8 +1067,6 @@ const ENGLISH: Record<string, string> = {
   'ask.sending': 'Thinking…',
   'ask.clear': 'Clear what you typed',
   'ask.speak': 'Ask by speaking',
-  'ask.speakShort': 'Speak',
-  'ask.speakLong': 'Ask by speaking',
   'ask.listening': 'Start speaking…',
   'ask.heard': 'Listening',
   'ask.stopListening': 'Stop listening',
@@ -1086,7 +1074,6 @@ const ENGLISH: Record<string, string> = {
   'ask.answerTitle': 'Answer',
   'ask.listen': 'Listen',
   'ask.stopSpeak': 'Stop',
-  'ask.readAloud': 'Listen',
   'ask.aiNote': 'This answer came from AI. It is not a substitute for an expert.',
   'ask.errorRateLimit':
     'Too many questions at once. Please try again in a moment.',
@@ -1094,7 +1081,6 @@ const ENGLISH: Record<string, string> = {
   'ask.notAnswer': 'We do not have a direct answer to this question.',
   'ask.emptyAnswer': 'No answer could be made this time. Try asking a little differently.',
   'ask.micUnsupported': 'Speaking is not available in this browser. Please write instead.',
-  'ask.speakHint': 'Press the microphone to start speaking.',
   'ask.heardWith': 'Hearing:',
 
   'voice.notAllowed':
@@ -1110,13 +1096,10 @@ const ENGLISH: Record<string, string> = {
   'voice.speakFailed': 'This answer could not be read aloud.',
   'voice.noVoice': 'This device has no voice for {name} installed. Read the text for now, or add a voice in your settings.',
   'voice.generic': 'Something went wrong. Please try again.',
-  'voice.noHindiVoice':
-    'No Hindi speaking voice was found on this phone. The answer can be read on screen.',
 
   'sound.title': 'Sound for peace',
   'sound.intro': 'No fee, no adverts. Only to calm the mind.',
   'sound.playing': 'Playing. Press the same button again to stop.',
-  'sound.tap': 'Press any button to hear the sound.',
   'sound.shankh': 'Conch',
   'sound.shankhHint': 'Deep, long',
   'sound.bansuri': 'Flute',
@@ -1125,11 +1108,9 @@ const ENGLISH: Record<string, string> = {
   'sound.dholHint': 'Sharp, quick',
   'sound.all': 'All three',
   'sound.allHint': 'Together',
-  'sound.playingLabel': 'Playing',
   'sound.listenLabel': 'Listen',
   'sound.errUnsupported': 'This browser cannot play the sound.',
   'sound.errGeneric': 'The sound could not be started.',
-  'sound.statusLabel': 'Sound is playing',
 
   'dhun.welcome': 'Welcome',
   'dhun.prompt': 'Conch, flute and drum together — tap to listen.',
@@ -1174,7 +1155,6 @@ const ENGLISH: Record<string, string> = {
   'article.askAbout': 'Ask about this subject',
   'article.readAloud': 'Listen to this article',
   'article.others': 'More articles on this subject',
-  'article.voiceLabel': 'Listen to this article',
   'article.count': '{count} articles',
 
   'theme.toLight': 'Switch to the light appearance',
@@ -1578,18 +1558,16 @@ const BENGALI: Record<string, string> = {
   'jgd.disclaimer': 'এটি বিধিবদ্ধ পদ্ধতিতে হিসাব, ভবিষ্যদ্বাণী নয়। কোনো সংখ্যা বা রাশি কারও স্বাস্থ্য, টাকা বা সম্পর্ক ঠিক করে না। বড় সিদ্ধান্তে ডাক্তার, আইনজীবী বা অভিজ্ঞ কারও পরামর্শ নিন।',
   'nav.openMenu': 'মেনু খুলুন', 'nav.closeMenu': 'মেনু বন্ধ করুন', 'nav.language': 'ভাষা বদলান',
   'nav.expand': 'বার খুলুন', 'nav.collapse': 'বার বন্ধ করুন', 'nav.skip': 'সরাসরি বিষয়বস্তুতে যান',
-  'nav.main': 'প্রধান',
   'ask.label': 'আপনার সমস্যা লিখুন বা বলুন', 'ask.placeholder': 'যেমন: সন্তানের পড়াশোনায় দুর্বলতা',
   'ask.help': 'এন্টার চাপলেও পাঠানো যাবে।', 'ask.send': 'জিজ্ঞাসা করুন', 'ask.sending': 'ভাবছি…',
   'ask.clear': 'লেখা মুছুন', 'ask.speak': 'বলে জিজ্ঞাসা করুন', 'ask.listening': 'বলতে শুরু করুন…',
   'ask.heard': 'শুনছি', 'ask.stopListening': 'শোনা বন্ধ করুন', 'ask.suggested': 'সাধারণ প্রশ্ন',
-  'ask.answerTitle': 'উত্তর', 'ask.listen': 'শুনুন', 'ask.stopSpeak': 'থামান', 'ask.readAloud': 'শুনুন',
+  'ask.answerTitle': 'উত্তর', 'ask.listen': 'শুনুন', 'ask.stopSpeak': 'থামান',
   'ask.aiNote': 'এই উত্তরটি AI দিয়েছে। বিশেষজ্ঞের বিকল্প নয়।',
   'sound.title': 'শান্তির শব্দ', 'sound.intro': 'কোনো খরচ নেই, কোনো বিজ্ঞাপন নেই।',
   'sound.shankh': 'শঙ্খ', 'sound.bansuri': 'বাঁশি', 'sound.dhol': 'ঢোল', 'sound.all': 'তিনটি',
   'dhun.welcome': 'স্বাগতম', 'dhun.prompt': 'শঙ্খ, বাঁশি ও ঢোল একসাথে শুনতে ছুঁয়ে দিন।',
-  'dhun.listen': 'শুনুন', 'dhun.skip': 'বাদ দিন',
-  'cta.emergencyTitle': 'জরুরি — এখনই সাহায্য দরকার', 'home.readMore': 'সম্পূর্ণ তথ্য পড়ুন',
+  'dhun.listen': 'শুনুন', 'dhun.skip': 'বাদ দিন', 'home.readMore': 'সম্পূর্ণ তথ্য পড়ুন',
   'home.chooseTopic': 'কী জানতে চান?', 'home.askHere': 'এই বিষয়ে জিজ্ঞাসা করুন',
   'home.howTitle': 'এই সেবা কীভাবে কাজ করে', 'home.soundTitle': 'শান্তির শব্দ',
   'footer.pages': 'পাতা', 'footer.helplines': 'জরুরি নম্বর', 'footer.readStory': 'তাঁর সম্পূর্ণ কথা পড়ুন',
@@ -1671,6 +1649,7 @@ const BENGALI: Record<string, string> = {
   'footer.free': 'এই পরিষেবা সম্পূর্ণ বিনামূল্যে। কারও কাছ থেকে পয়সা নেওয়া হয় না।',
 
   'cat.empty': 'এই বিষয়ে এখন কোনো লেখা নেই।',
+  'cat.notFound': 'এই পাতাটি পাওয়া যায়নি',
 
   'dhun.label': 'শব্দ চালানোর অনুমতি',
 
@@ -2365,12 +2344,11 @@ const TAMIL: Record<string, string> = {
   'jgd.disclaimer': 'இது பாரம்பரிய முறையில் கணக்கிடப்பட்டது, எதிர்பார்ப்பு அல்ல. எந்த எண்ணும் ராசியும் யாரையும் நல்ல ஆரோக்கியம், பணம் அல்லது உறவு நிர்ணயிக்காது. பெரிய முடிவுகளுக்கு மருத்துவர், வழக்கறிஞர் அல்லது அனுபவமுள்ளவரின் அறிவுரை பெறுங்கள்.',
   'nav.openMenu': 'பட்டி திற', 'nav.closeMenu': 'பட்டி மூடு', 'nav.language': 'மொழி மாற்று',
   'nav.expand': 'பட்டி விரிவு', 'nav.collapse': 'பட்டி சுருக்கு', 'nav.skip': 'நேரடியாக உள்ளடக்கத்திற்குச் செல்',
-  'nav.main': 'முதன்மை',
   'ask.label': 'உங்கள் பிரச்சினையை எழுதுங்கள் அல்லது பேசுங்கள்', 'ask.placeholder': 'எடுத்துக்காட்டு: குழந்தையின் படிப்பு குறைவு',
   'ask.help': 'என்டர் அழுத்தினாலும் அனுப்பலாம்.', 'ask.send': 'கேளுங்கள்', 'ask.sending': 'சிந்திக்கிறது…',
   'ask.clear': 'எழுதியதை அழியுங்கள்', 'ask.speak': 'பேசி கேளுங்கள்', 'ask.listening': 'பேசத் தொடங்குங்கள்…',
   'ask.heard': 'கேட்டுக்கொண்டிருக்கிறது', 'ask.stopListening': 'கேட்பதை நிறுத்து', 'ask.suggested': 'வழக்கமான கேள்விகள்',
-  'ask.answerTitle': 'தீர்வு', 'ask.listen': 'கேட்க', 'ask.stopSpeak': 'நிறுத்து', 'ask.readAloud': 'கேட்க',
+  'ask.answerTitle': 'தீர்வு', 'ask.listen': 'கேட்க', 'ask.stopSpeak': 'நிறுத்து',
   'ask.aiNote': 'இது AI வழங்கிய பதில். நிபுணர் ஆலோசனைக்கு மாற்று அல்ல.',
   'sound.title': 'அமைதிக்கான ஒலி', 'sound.intro': 'கட்டணம் இல்லை, விளம்பரம் இல்லை.',
   'sound.shankh': 'சங்கு', 'sound.bansuri': 'புனாறு', 'sound.dhol': 'தபலாக்', 'sound.all': 'மூன்று',
@@ -2458,6 +2436,7 @@ const TAMIL: Record<string, string> = {
   'footer.free': 'இந்த சேவை முற்றிலும் இலவசம். யாரிடமிருந்தும் பணம் வசிக்கப்படுவதில்லை.',
 
   'cat.empty': 'இந்தத் தலைப்பில் இன்னும் கட்டுரைகள் இல்லை.',
+  'cat.notFound': 'இந்தப் பக்கம் கிடைக்கவில்லை',
 
   'dhun.label': 'ஒலி இயக்க அனுமதி',
 
@@ -3151,12 +3130,11 @@ const TELUGU: Record<string, string> = {
   'jgd.disclaimer': 'ఇది సంప్రదాయ పద్ధతిలో లెక్కించినది, జాతిచేక కాదు. ఏ సంఖ్యా, ఏ రాశి ఎవరి ఆరోగ్యాన్ని, డబ్బును లేదా సంబంధాన్ని నిర్ణయించదు. పెద్ద నిర్ణయాలకు వైద్యుడు, న్యాయవాది లేదా అనుభవి వ్యక్తి సలహా తీసుకోండి.',
   'nav.openMenu': 'మెనూ తెరవండి', 'nav.closeMenu': 'మెనూ మూసివేయండి', 'nav.language': 'భాష మార్చండి',
   'nav.expand': 'పట్టీ విస్తరించు', 'nav.collapse': 'పట్టీ మూడివేయి', 'nav.skip': 'సరిగ్గా విషయానికి వెళ్లండి',
-  'nav.main': 'ప్రధాన',
   'ask.label': 'మీ సమస్యను టైప్ చేయండి లేదా మాట్లాడండి', 'ask.placeholder': 'ఉదాహరణకు: పిల్లలకు చదవు బలహీనం',
   'ask.help': 'ఎంటర్ నొక్కి పంపవచ్చు.', 'ask.send': 'అడిగండి', 'ask.sending': 'ఆలోచిస్తోంది…',
   'ask.clear': 'రాసినది తొలగించండి', 'ask.speak': 'మాట్లాడి అడిగండి', 'ask.listening': 'మాట్లాడటం ప్రారంభించండి…',
   'ask.heard': 'వింటున్నాం', 'ask.stopListening': 'వినడం ఆపండి', 'ask.suggested': 'సాధారణ ప్రశ్నలు',
-  'ask.answerTitle': 'సమాధానం', 'ask.listen': 'వినండి', 'ask.stopSpeak': 'ఆపండి', 'ask.readAloud': 'వినండి',
+  'ask.answerTitle': 'సమాధానం', 'ask.listen': 'వినండి', 'ask.stopSpeak': 'ఆపండి',
   'ask.aiNote': 'ఈ సమాధానం AI ఇచ్చింది. నిపుణుల సలహాకు ప్రత్యామ్నాయం కాదు.',
   'sound.title': 'శాంతికి ధ్వని', 'sound.intro': 'ఫీజు లేదు, ప్రకటన లేదు.',
   'sound.shankh': 'శంఖం', 'sound.bansuri': 'బంసి', 'sound.dhol': 'డ్రమ్', 'sound.all': 'మూడు',
@@ -3244,6 +3222,7 @@ const TELUGU: Record<string, string> = {
   'footer.free': 'ఈ సేవ పూర్తిగా ఉచితం. ఎవరి నుండీ డబ్బు తీసుకోబడ్డు.',
 
   'cat.empty': 'ఈ అంశంలో ఇంకా వ్యాసాలు లేవు.',
+  'cat.notFound': 'ఈ పేజీ కనబడలేదు',
 
   'dhun.label': 'శబ్దం ప్లే చేయడానికి అనుమతి',
 
@@ -3937,12 +3916,11 @@ const MARATHI: Record<string, string> = {
   'jgd.disclaimer': 'हे पारंपरिक पद्धतीने केलेली गणना आहे, भविष्यवाणी नाही. कोणताही संख्या किंवा राशी कोणाचे आरोग्य, पैसा किंवा नाते ठरवत नाही. मोठ्या निर्णयासाठी डॉक्टर, वकील किंवा अनुभवी माणसाचा सल्ला घ्या.',
   'nav.openMenu': 'मेनू उघडा', 'nav.closeMenu': 'मेनू बंद करा', 'nav.language': 'भाषा बदला',
   'nav.expand': 'बाँस उघडा', 'nav.collapse': 'बाँस बंद करा', 'nav.skip': 'थेट मजकुराकडे जा',
-  'nav.main': 'मुख्य',
   'ask.label': 'तुमची समस्या लिहा किंवा बोला', 'ask.placeholder': 'उदा.: मुलाचा अभ्यासात कमतरता आहे',
   'ask.help': 'एंटर दाबूनही पाठवता येईल.', 'ask.send': 'विचारा', 'ask.sending': 'विचार करत आहे…',
   'ask.clear': 'लिहिलेला पुसा', 'ask.speak': 'बोलून विचारा', 'ask.listening': 'बोलायला सुरुवात करा…',
   'ask.heard': 'ऐकत आहे', 'ask.stopListening': 'ऐकणे थांबवा', 'ask.suggested': 'नेहमीचे प्रश्न',
-  'ask.answerTitle': 'उत्तर', 'ask.listen': 'ऐका', 'ask.stopSpeak': 'थांबवा', 'ask.readAloud': 'ऐका',
+  'ask.answerTitle': 'उत्तर', 'ask.listen': 'ऐका', 'ask.stopSpeak': 'थांबवा',
   'ask.aiNote': 'हे उत्तर AI ने दिले आहे. तज्ज्ञांच्या सल्ल्याला पर्याय नाही.',
   'sound.title': 'शांततेसाठी ध्वनी', 'sound.intro': 'शुल्क नाही, जाहिरात नाही.',
   'sound.shankh': 'शंख', 'sound.bansuri': 'बांसुरी', 'sound.dhol': 'ढोल', 'sound.all': 'तीनही',
@@ -4030,6 +4008,7 @@ const MARATHI: Record<string, string> = {
   'footer.free': 'ही सेवा पूर्णपणे निःशुल्क आहे. कोणाच्याही जागून पैसे घेतले जात नाहीत.',
 
   'cat.empty': 'या विषयात अजून कोणतेही लेख नाहीत.',
+  'cat.notFound': 'हापान सापडला नाही',
 
   'dhun.label': 'ध्वनी चालवण्याची परवानगी',
 
@@ -4723,12 +4702,11 @@ const GUJARATI: Record<string, string> = {
   'jgd.disclaimer': 'આ પરંપરાની પદ્ધતિથી ગણતરી છે, ભવિષ્યવાણી નથી. કોઈ સંખ્યા કે રાશિ કોઈનું આરોગ્ય, પૈસા કે સંબંધ નક્કી કરતી નથી. મોટા નિર્ણય માટે ડૉક્ટર, વકીલ કે અનુભવી વ્યક્તિની સલાહ લો.',
   'nav.openMenu': 'મેનુ ખોલો', 'nav.closeMenu': 'મેનુ બંધ કરો', 'nav.language': 'ભાષા બદલો',
   'nav.expand': 'બાર ખોલો', 'nav.collapse': 'બાર બંધ કરો', 'nav.skip': 'સીધા સામગ્રી પર જાઓ',
-  'nav.main': 'મુખ્ય',
   'ask.label': 'તમારી સમસ્યા લખો અથવા બોલો', 'ask.placeholder': 'દા.ત.: બાળકના વિદ્યામાં નબળાઈ',
   'ask.help': 'એન્ટર દબાવીને પણ મોકલી શકાય.', 'ask.send': 'પૂછો', 'ask.sending': 'વિચારુ છે…',
   'ask.clear': 'લખેલું કાઢો', 'ask.speak': 'બોલીને પૂછો', 'ask.listening': 'બોલવાનું શરૂ કરો…',
   'ask.heard': 'સાંભળી રહ્યા છીએ', 'ask.stopListening': 'સાંભળવાનું બંધ કરો', 'ask.suggested': 'સામાન્ય પ્રશ્નો',
-  'ask.answerTitle': 'ઉત્તર', 'ask.listen': 'સાંભળો', 'ask.stopSpeak': 'બંધ કરો', 'ask.readAloud': 'સાંભળો',
+  'ask.answerTitle': 'ઉત્તર', 'ask.listen': 'સાંભળો', 'ask.stopSpeak': 'બંધ કરો',
   'ask.aiNote': 'આ ઉત્તર AI એ આપ્યું છે. નિષ્ણાતની સલાહનો વિકલ્પ નથી.',
   'sound.title': 'શાંતિ માટે ધ્વનિ', 'sound.intro': 'કોઈ ફી નથી, કોઈ જાહેરાત નથી.',
   'sound.shankh': 'શંખ', 'sound.bansuri': 'બાંસુરી', 'sound.dhol': 'ઢોલ', 'sound.all': 'ત્રણેય',
@@ -4816,6 +4794,7 @@ const GUJARATI: Record<string, string> = {
   'footer.free': 'આ સેવા સંપૂર્ણ રીતે મફત છે. કોઈના પૈસા લેવામાં આવતા નથી.',
 
   'cat.empty': 'આ વિષયમાં હજી કોઈ લેખ નથી.',
+  'cat.notFound': 'આ પાનું મળ્યું નથી',
 
   'dhun.label': 'ધ્વનિ વગાડવાની પરવાનગી',
 
@@ -5515,6 +5494,7 @@ const KANNADA: Record<string, string> = {
   'ask.suggested': 'ಸಾಮಾನ್ಯ ಪ್ರಶ್ನೆಗಳು', 'ask.answerTitle': 'ಉತ್ತರ', 'ask.listen': 'ಕೇಳಿ', 'ask.stopSpeak': 'ನಿಲ್ಲಿಸಿ',
   'ask.aiNote': 'ಈ ಉತ್ತರವನ್ನು AI ನೀಡಿದೆ. ತಜ್ಞರ ಸಲಹೆಗೆ ಪರ್ಯಾಯವಿಲ್ಲ.',
   'sound.title': 'ಶಾಂತಿಗೆ ಧ್ವನಿ', 'sound.intro': 'ಶುಲ್ಕವಿಲ್ಲ, ಜಾಹೀರಾತವಿಲ್ಲ.',
+  'home.soundTitle': 'ಶಾಂತಿಗೆ ಧ್ವನಿ',
   'sound.shankh': 'ಶಂಖ', 'sound.bansuri': 'ಬಂಸಿ', 'sound.dhol': 'ಢೋಲ್', 'sound.all': 'ಮೂರು',
   'dhun.welcome': 'ಸ್ವಾಗತ', 'dhun.prompt': 'ಶಂಖ, ಬಂಸಿ, ಢೋಲ್ ಜೊತೆ ಕೇಳಲು ಮುಟ್ಟಿ.',
   'dhun.listen': 'ಕೇಳಿ', 'dhun.skip': 'ಬಿಟ್ಟುಬಿಡಿ',
@@ -5598,6 +5578,7 @@ const KANNADA: Record<string, string> = {
   'footer.free': 'ಈ ಸೇವೆ ಸಂಪೂರ್ಣವಾಗಿ ಉಚಿತ. ಯಾರಿಂದೂ ಹಣ ಪಡೆಯುವುದಿಲ್ಲ.',
 
   'cat.empty': 'ಈ ವಿಷಯದಲ್ಲಿ ಇನ್ನೂ ಲೇಖನಗಳಿಲ್ಲ.',
+  'cat.notFound': 'ಈ ಪುಟ ಸಿಗಲಿಲ್ಲ',
 
   'dhun.label': 'ಧ್ವನಿ ಪ್ಲೇ ಮಾಡಲು ಅನುಮತಿ',
 
@@ -5620,6 +5601,7 @@ const KANNADA: Record<string, string> = {
   'ask.errorRateLimit': 'ಒಂದೇ ಸಮಯದಲ್ಲಿ ಹಲವಾದ ಪ್ರಶ್ನೆಗಳು ಕಳುಹಿಸಲ್ಪಟ್ಟಿವೆ. ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಪ್ರಯತ್ನಿಸಿ.',
 
   'ask.heardWith': 'ಈಗ ಕೇಳುತ್ತಿದ್ದೇವೆ',
+  'ask.heard': 'ಕೇಳುತ್ತಿದ್ದೇವೆ',
 
   'ask.micUnsupported': 'ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಮಾತನಾಡಿ ಕೇಳುವುದು ಕೆಲಸ ಮಾಡುವುದಿಲ್ಲ. ಬರೆದು ಕೇಳಿ.',
 
@@ -6311,6 +6293,7 @@ const MALAYALAM: Record<string, string> = {
   'ask.answerTitle': 'ഉത്തരം', 'ask.listen': 'കേൾക്കുക', 'ask.stopSpeak': 'നിർത്തുക',
   'ask.aiNote': 'ഈ ഉത്തരം AI നൽകിയതാണ്. വിദഗ്ധന്റെ നിർദ്ദേശത്തിന് പകരം അല്ല.',
   'sound.title': 'ശാന്തതയ്ക്കുള്ള ശബ്ദം', 'sound.intro': 'ഫീസില്ല, പരസ്താരങ്ങളില്ല.',
+  'home.soundTitle': 'ശാന്തതയ്ക്കുള്ള ശബ്ദം',
   'sound.shankh': 'ശംഖം', 'sound.bansuri': 'ബാംസുരി', 'sound.dhol': 'ഡ്രം', 'sound.all': 'മൂന്നും',
   'dhun.welcome': 'സ്വാഗതം', 'dhun.prompt': 'ശംഖം, ബാംസുരി, ഡ്രം ഒരുടെ കേൾക്കാൻ സ്പർശിക്കുക.',
   'dhun.listen': 'കേൾക്കുക', 'dhun.skip': 'ഒഴിവാക്കുക',
@@ -6394,6 +6377,7 @@ const MALAYALAM: Record<string, string> = {
   'footer.free': 'ഈ സേവനം പൂർണ്ണമായും സൗജന്യം. ആരോടും പണം ആവശ്യമാക്കില്ല.',
 
   'cat.empty': 'ഈ വിഷയത്തിൽ ഇതുവരെ ലേഖനങ്ങളില്ല.',
+  'cat.notFound': 'ഈ പേജ് കണ്ടെത്താൻ കഴിഞ്ഞില്ല',
 
   'dhun.label': 'ശബ്ദം കളിക്കാനുള്ള അനുമതി',
 
@@ -6418,6 +6402,7 @@ const MALAYALAM: Record<string, string> = {
   'ask.errorRateLimit': 'ഒരുസമയം കൂടുതൽ ചോദ്യങ്ങൾ അയച്ചു. കുറച്ച് സമയം കഴിഞ്ഞ് ശ്രമിക്കുക.',
 
   'ask.heardWith': 'ഇപ്പോൾ കേളുന്നു',
+  'ask.heard': 'കേൾക്കുന്നു',
 
   'ask.listening': 'പറയാൻ തുടങ്ങുക…',
 
@@ -7110,6 +7095,7 @@ const PUNJABI: Record<string, string> = {
   'ask.suggested': 'ਆਮ ਸਵਾਲ', 'ask.answerTitle': 'ਹੱਲ', 'ask.listen': 'ਸੁਣੋ',
   'ask.aiNote': 'ਇਹ ਜਵਾਬ AI ਨੇ ਦਿੱਤਾ ਹੈ। ਮਾਹਰ ਦੀ ਸਲਾਹ ਦਾ ਬਦਲ ਨਹੀਂ।',
   'sound.title': 'ਸ਼ਾਂਤੀ ਲਈ ਆਵਾਜ਼', 'sound.intro': 'ਕੋਈ ਫ਼ੀਸ ਨਹੀਂ, ਕੋਈ ਇਸ਼ਤਿਹਾਨ ਨਹੀਂ।',
+  'home.soundTitle': 'ਸ਼ਾਂਤੀ ਲਈ ਆਵਾਜ਼',
   'sound.shankh': 'ਸ਼ੰਖ', 'sound.bansuri': 'ਬਾਂਸੁਰੀ', 'sound.dhol': 'ਢੋਲ', 'sound.all': 'ਤਿੰਨੇ',
   'dhun.welcome': 'ਸਵਾਗਤ ਹੈ', 'dhun.prompt': 'ਸ਼ੰਖ, ਬਾਂਸੁਰੀ ਅਤੇ ਢੋਲ ਇਕੱਠੇ ਸੁਣਣ ਲਈ ਛੂਹੋ।',
   'dhun.listen': 'ਸੁਣੋ', 'dhun.skip': 'ਛੱਡੋ',
@@ -7193,6 +7179,7 @@ const PUNJABI: Record<string, string> = {
   'footer.free': 'ਇਹ ਸੇਵਾ ਪੂਰੀ ਤਰ੍ਹਾਂ ਮੁਫ਼ਤ ਹੈ। ਕਿਸੇ ਤੋਂ ਪੈਸੇ ਨਹੀਂ ਲਏ ਜਾਂਦੇ।',
 
   'cat.empty': 'ਇਸ ਵਿਸ਼ੇ ਵਿੱਚ ਹਾਲੇ ਕੋਈ ਲੇਖ ਨਹੀਂ ਹੈ।',
+  'cat.notFound': 'ਇਹ ਪੇਜ ਨਹੀਂ ਮਿਲਿਆ',
 
   'dhun.label': 'ਧੁਨ ਚਲਾਉਣ ਦੀ ਇਜਾਜ਼ਤ',
 
@@ -7217,6 +7204,7 @@ const PUNJABI: Record<string, string> = {
   'ask.errorRateLimit': 'ਇੱਕੋ ਵਾਰ ਬਹੁਤ ਸਾਰੇ ਸਵਾਲ ਭੇਜੇ ਗਏ। ਥੋੜ੍ਹੀ ਦੇਰ ਬਾਅਦ ਕੋਸ਼ਿਸ਼ ਕਰੋ।',
 
   'ask.heardWith': 'ਹੁਣ ਸੁਣ ਰਹੇ ਹਾਂ',
+  'ask.heard': 'ਸੁਣ ਰਹੇ ਹਾਂ',
 
   'ask.help': 'ਐਂਟਰ ਦਬਾ ਕੇ ਵੀ ਭੇਜ ਸਕਦੇ ਹੋ।',
 
@@ -7913,6 +7901,7 @@ const URDU: Record<string, string> = {
   'ask.suggested': 'عام سوالات', 'ask.answerTitle': 'حل', 'ask.listen': 'سنیں', 'ask.stopSpeak': 'روکیں',
   'ask.aiNote': 'یہ جواب AI نے دیا ہے۔ ماہر کی مشورے کا متبادل نہیں۔',
   'sound.title': 'سکون کے لیے آواز', 'sound.intro': 'نہ کوئی فیس، نہ اشتہار۔',
+  'home.soundTitle': 'سکون کے لیے آواز',
   'sound.shankh': 'شاخ', 'sound.bansuri': 'بانسُری', 'sound.dhol': 'ڈھول', 'sound.all': 'تینوں',
   'dhun.welcome': 'خوش آمدید', 'dhun.prompt': 'شاخ، بانسری اور ڈھول ایک ساتھ — سننے کے لیے چھوئیں۔',
   'dhun.listen': 'سنیں', 'dhun.skip': 'چھوڑیں',
@@ -7997,6 +7986,7 @@ const URDU: Record<string, string> = {
   'footer.free': 'یہ خدمت مکمل طور پر مفت ہے۔ کسی سے پیسے نہیں لیے جاتے۔',
 
   'cat.empty': 'اس موضوع میں ابھی کوئی مضمون نہیں ہے۔',
+  'cat.notFound': 'یہ صفحہ نہیں ملا',
 
   'dhun.label': 'آواز چلانے کی اجازت',
 
@@ -8021,6 +8011,7 @@ const URDU: Record<string, string> = {
   'ask.errorRateLimit': 'ایک ہی وقت میں بہت سے سوالات بھیج دیے گئے۔ کچھ دیر بعد کوشش کریں۔',
 
   'ask.heardWith': 'اب ہم سن رہے ہیں',
+  'ask.heard': 'سن رہے ہیں',
 
   'ask.micUnsupported': 'اس براؤزر میں بول کر پوچھنا کام نہیں کرے گا۔ لکھ کر پوچھیں۔',
 
@@ -8705,6 +8696,7 @@ const ARABIC: Record<string, string> = {
   'ask.suggested': 'أسئلة شائعة', 'ask.answerTitle': 'الحل', 'ask.listen': 'استمع', 'ask.stopSpeak': 'أوقف',
   'ask.aiNote': 'هذا الرد من الذكاء الاصطناعي وليس بديلا عن المختص.',
   'sound.title': 'صوت للهدوء', 'sound.intro': 'لا رسوم ولا إعلانات.',
+  'home.soundTitle': 'صوت للهدوء',
   'sound.shankh': 'صدى الأبواق', 'sound.bansuri': 'الناي', 'sound.dhol': 'الطبول', 'sound.all': 'الثلاثة',
   'dhun.welcome': 'أهلا وسهلا', 'dhun.prompt': 'صدى الأبواق والناي والطبول معا — المس للاستماع.',
   'dhun.listen': 'استمع', 'dhun.skip': 'تخط',
@@ -8793,6 +8785,7 @@ const ARABIC: Record<string, string> = {
   'footer.helplines': 'أرقام مهمة',
 
   'cat.empty': 'لا توجد مقالات في هذا الموضوع بعد.',
+  'cat.notFound': 'هذه الصفحة غير موجودة',
 
   'dhun.label': 'الإذن بتشغيل الصوت',
 
@@ -8817,6 +8810,7 @@ const ARABIC: Record<string, string> = {
   'ask.errorRateLimit': 'تم إرسال أسئلة كثيرة دفعة واحدة. أعد المحاولة بعد قليل.',
 
   'ask.heardWith': 'نسمع الآن',
+  'ask.heard': 'نستمع',
 
   'ask.micUnsupported': 'السؤال بالصوت لن يعمل في هذا المتصفح. اكتب سؤالك بدلاً من ذلك.',
 
@@ -9503,6 +9497,7 @@ const SPANISH: Record<string, string> = {
   'ask.suggested': 'Preguntas frecuentes', 'ask.answerTitle': 'Respuesta', 'ask.listen': 'Escuchar', 'ask.stopSpeak': 'Detener',
   'ask.aiNote': 'Esta respuesta la dio una IA. No sustituye a un experto.',
   'sound.title': 'Sonido para la calma', 'sound.intro': 'Sin costo, sin anuncios.',
+  'home.soundTitle': 'Sonido para la calma',
   'sound.shankh': 'Caracola', 'sound.bansuri': 'Flauta', 'sound.dhol': 'Tambor', 'sound.all': 'Los tres',
   'dhun.welcome': 'Bienvenido', 'dhun.prompt': 'Caracola, flauta y tambor juntos — toque para escuchar.',
   'dhun.listen': 'Escuchar', 'dhun.skip': 'Omitir',
@@ -9587,6 +9582,7 @@ const SPANISH: Record<string, string> = {
   'footer.free': 'Este servicio es totalmente gratuito. No se cobra a nadie.',
 
   'cat.empty': 'Todavía no hay artículos sobre este tema.',
+  'cat.notFound': 'No se encontró esta página',
 
   'dhun.label': 'Permiso para reproducir el sonido',
 
@@ -9611,6 +9607,7 @@ const SPANISH: Record<string, string> = {
   'ask.errorRateLimit': 'Se enviaron muchas preguntas a la vez. Vuelva a intentarlo en unos minutos.',
 
   'ask.heardWith': 'Escuchando:',
+  'ask.heard': 'Escuchando',
 
   'ask.micUnsupported': 'Hablar para preguntar no funciona en este navegador. Escriba su pregunta.',
 

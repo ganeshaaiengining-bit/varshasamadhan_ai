@@ -62,12 +62,24 @@ BLOCKS = {
 # number, a version string, a URL. Checked by hand rather than by pattern.
 LATIN_ALLOWED = {"vs-lang", "https", "http"}
 
+# One table entry: a key in single quotes, a value in either kind of quote.
+ENTRY = re.compile(
+    r"'([a-zA-Z0-9_.]+)':\s*(?:'((?:[^'\\]|\\.)*)'|\"((?:[^\"\\]|\\.)*)\")"
+)
+
 
 def load_table(source, name):
     opener = re.search(r"const %s: Record<string, string> = \{" % name, source)
     closer = re.search(r"^\};", source[opener.end():], re.M)
     body = source[opener.end(): opener.end() + closer.start()]
-    return dict(re.findall(r"'([a-zA-Z0-9_.]+)':\s*'((?:[^'\\]|\\.)*)'", body, re.S))
+    # A value may be written in single or double quotes: "Women's helpline" has
+    # an apostrophe in it, and matching only single-quoted values made the whole
+    # key look absent from the English table — a gap that was not there, which
+    # is how the check lost its authority in the first place.
+    found = {}
+    for entry in ENTRY.finditer(body, re.S):
+        found[entry.group(1)] = entry.group(2) if entry.group(2) is not None else entry.group(3)
+    return found
 
 
 def has_native_script(value, language):
@@ -85,6 +97,26 @@ def main():
     hi = load_table(source, "HINDI")
 
     problems = []
+
+    # Every table must hold the same keys.
+    #
+    # The four checks below only ever visit the keys a table *has*, which is
+    # how `home.soundTitle` went missing from six of the thirteen and nothing
+    # said a word: an absent key is never looked at, the site quietly shows the
+    # English line instead — the fallback chain is language, then English, then
+    # Hindi, then the key itself — and a Kannada page ends up reading "Sound for
+    # peace" under a Kannada paragraph.
+    #
+    # That is precisely the fault this file exists to catch, and it was invisible
+    # from inside. A missing key is now a finding of its own, on every table,
+    # including `es`, whose Latin script hides the same problem from the checks
+    # that look at script.
+    expected = set(hi) | set(tables["en"])
+    for code, table in tables.items():
+        for key in sorted(expected - set(table)):
+            problems.append(f"{code} {key}: missing — the page falls back to English")
+        for key in sorted(set(table) - set(hi)):
+            problems.append(f"{code} {key}: no Hindi to check it against")
 
     for language, table in tables.items():
         if language == "en":
