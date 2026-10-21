@@ -159,6 +159,11 @@ export default async function AdminPage() {
           <Link href="/admin/articles" className="btn-outline !min-h-[2.75rem]">
             लेख देखें / बदलें
           </Link>
+          {/* Next to the other settings rather than buried, because a password
+              the owner cannot find a way to change is a password they keep. */}
+          <Link href="/admin/pasvard-badal" className="btn-outline !min-h-[2.75rem]">
+            पासवर्ड बदलिए
+          </Link>
           <Link href="/" className="btn-ghost !min-h-[2.75rem]">
             साइट देखें
           </Link>

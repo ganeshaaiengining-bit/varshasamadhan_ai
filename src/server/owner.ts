@@ -2,8 +2,10 @@ import 'server-only';
 
 import { cookies } from 'next/headers';
 
-import { verifyPassword, storedPassword } from './owner-password';
+import { storedPassword } from './owner-password';
+import { verifyPassword } from '@/content/password-hash';
 import { clearLimit, countFailure, readLimit } from './rate-limit';
+import { mintSessionCookie, verifySessionCookie } from '@/content/session-signature';
 
 /**
  * ============================================================================
@@ -101,15 +103,38 @@ export async function isOwnerConfigured(): Promise<boolean> {
 }
 
 /**
+ * The key the session cookie is signed with.
+ *
+ * The stored password hash and salt, when the owner has set one — that is
+ * high-entropy, and it is stable for exactly as long as the password is. Which
+ * gives a property worth having: **changing the password signs everybody out**,
+ * because the old signature was made under a key that no longer exists.
+ *
+ * On an install that has never run the setup link there is no row, so the
+ * environment password stands in. It is a weaker key (a person typed it), but it
+ * is the only thing such an install has, and the alternative — no signature at
+ * all — is the bug this replaced.
+ *
+ * Null means "no key", and every caller treats that as "nobody is signed in".
+ */
+async function sessionSecret(): Promise<string | null> {
+  const stored = await storedPassword();
+  if (stored) return stored.hash + ':' + stored.salt;
+
+  const fromEnv = process.env.ADMIN_PASSWORD ?? '';
+  return fromEnv.length >= 8 ? fromEnv : null;
+}
+
+/**
  * The owner's own cookie header value, for setting after a successful login.
  *
- * Returns null when the platform cannot give us randomness, which is the
- * difference between "nobody is logged in" and "everyone is".
+ * Returns null when there is no secret to sign with, which is the difference
+ * between "nobody is logged in" and "everyone is".
  */
 async function newSessionValue(): Promise<string | null> {
-  const bytes = new Uint8Array(32);
-  crypto.getRandomValues(bytes);
-  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+  const secret = await sessionSecret();
+  if (!secret) return null;
+  return mintSessionCookie(secret);
 }
 
 /** Constant-time string compare, in the browser-safe way. */
@@ -141,6 +166,38 @@ function sameSecret(a: string, b: string): boolean {
 const SCOPE = 'login';
 
 /**
+ * Is this the owner's current password?
+ *
+ * ── Which one is the password ────────────────────────────────────────────────
+ * The owner's own choice, if they have made one, wins. The environment variable
+ * is the fallback and not the other way round, because a fallback is what lets
+ * an install that never ran the setup link keep working exactly as it did — and
+ * because the whole point of the table is that the owner can change their
+ * password without anybody else's help.
+ *
+ * Both are still checked, not one or the other. Somebody who set a password on
+ * this site and also has the environment variable should have to type the one
+ * they last chose, and no single typo should log them out of both.
+ *
+ * Used by the login route (which then mints the session) and by the
+ * change-password route — which asks for the current password again even though
+ * a session is already open, because a session proves the *browser* was signed
+ * in at some point, not that the person at the keyboard right now is the one who
+ * did it.
+ */
+export async function confirmOwnerPassword(password: string): Promise<boolean> {
+  if (!(await isOwnerConfigured())) return false;
+
+  const stored = await storedPassword();
+  const matches = stored ? verifyPassword(password, stored.hash, stored.salt) : false;
+
+  const expected = process.env.ADMIN_PASSWORD ?? '';
+  const matchesEnv = expected.length > 0 && sameSecret(password, expected);
+
+  return matches || matchesEnv;
+}
+
+/**
  * Check a submitted password.
  *
  * On success the session cookie is set and the throttle is cleared. On failure
@@ -160,30 +217,12 @@ export async function checkOwnerPassword(password: string, ip: string): Promise<
     return { ok: false, reason: 'locked-out' };
   }
 
-  const expected = process.env.ADMIN_PASSWORD ?? '';
-
   /*
-   * Which one is the password.
-   *
-   * The owner's own choice, if they have made one, wins. The environment variable
-   * is the fallback and not the other way round, because a fallback is what lets
-   * an install that never ran the setup link keep working exactly as it did —
-   * and because the whole point of the table is that the owner can change their
-   * password without anybody else's help.
-   *
-   * Both are still checked, not one or the other. Somebody who set a password on
-   * this site and also has the environment variable should have to type the one
-   * they last chose, and no single typo should log them out of both.
+   * The rule for "which password" lives in `confirmOwnerPassword`, because a
+   * second route now applies it and two copies of a rule about passwords is how
+   * they end up disagreeing.
    */
-  const stored = await storedPassword();
-
-  const matches = stored
-    ? verifyPassword(password, stored.hash, stored.salt)
-    : false;
-
-  const matchesEnv = expected.length > 0 && sameSecret(password, expected);
-
-  if (!matches && !matchesEnv) {
+  if (!(await confirmOwnerPassword(password))) {
     // Counted, and if this was the fifth the address is locked from the next
     // attempt onwards. This response still says "wrong-password" rather than
     // "locked-out", because it *is* wrong — the person who mistyped deserves the
@@ -249,10 +288,18 @@ export async function isOwnerSession(): Promise<boolean> {
   const value = (await cookies()).get(COOKIE)?.value;
   if (!value) return false;
 
-  // The session lives only in an httpOnly cookie the browser echoes back, so
-  // its presence is the check. This is deliberately not a bearer token anyone
-  // can copy out of a database.
-  return value.length === 64 && /^[0-9a-f]+$/.test(value);
+  const secret = await sessionSecret();
+  if (!secret) return false;
+
+  /*
+   * The signature is the check. Until this existed, the check was the *shape* of
+   * the string — sixty-four hex characters — which is a property anybody can
+   * produce in a browser console. A visitor could set that cookie and be
+   * treated as the owner: reading names, publishing reviews, and replacing the
+   * password. The function's own comment claimed the cookie was signed. It was
+   * not; this is the line that makes the comment true.
+   */
+  return verifySessionCookie(value, secret);
 }
 
 export async function endOwnerSession(): Promise<void> {
