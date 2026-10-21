@@ -73,6 +73,18 @@ async function main(): Promise<void> {
   // down. This is the one line that has to know about that.
   const { clearLimit, countFailure, readLimit } = await import('../src/server/rate-limit');
 
+  /*
+   * How many real login rows existed before this file ran.
+   *
+   * An earlier version of this check asserted there were *zero* — which is true
+   * only on a site nobody has ever signed into, and it duly failed the first
+   * time a real login happened. The property worth asserting is that this file
+   * does not change that number, whatever it happens to be.
+   */
+  const loginRowsBefore = await prisma.rateLimit.count({
+    where: { key: { startsWith: 'login:' } },
+  });
+
   // Start from nothing, whatever an earlier interrupted run left behind.
   await prisma.rateLimit.deleteMany({ where: { key: { startsWith: SCOPE } } });
 
@@ -144,9 +156,11 @@ async function main(): Promise<void> {
   });
   check('test rows delete ho gaye', after === 0 && before > 0,
     `pehle ${before}, baad ${after}`);
-  const owner = await prisma.rateLimit.count({ where: { key: { startsWith: 'login:' } } });
-  check('owner ki kisi row ko chhua nahi', owner === 0,
-    `${owner} login rows milin — ye file owner ko count kar rahi hai`);
+  const loginRows = await prisma.rateLimit.count({
+    where: { key: { startsWith: 'login:' } },
+  });
+  check('owner ki kisi row ko chhua nahi', loginRows === loginRowsBefore,
+    `pehle ${loginRowsBefore}, baad ${loginRows} — ye file owner ko count kar rahi hai`);
 
   console.log('===========================================');
   console.log(`  ${ok} me se ${ok + fail} check pass, ${fail} fail`);
