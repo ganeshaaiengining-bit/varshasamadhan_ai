@@ -299,15 +299,7 @@ export interface SpeakOptions {
  * older utterance check it before doing anything, so a queue that was cancelled
  * mid-sentence cannot keep walking and finish somebody else's answer.
  */
-let keepAlive: number | null = null;
 let stopToken = 0;
-
-function clearKeepAlive(): void {
-  if (keepAlive !== null) {
-    window.clearInterval(keepAlive);
-    keepAlive = null;
-  }
-}
 
 /**
  * Speaks text aloud, slowly, in the visitor's chosen language.
@@ -342,7 +334,6 @@ export function speak(
 
   // Anything queued from a previous click would keep talking over the new answer.
   synth.cancel();
-  clearKeepAlive();
   stopToken += 1;
   const token = stopToken;
 
@@ -353,6 +344,7 @@ export function speak(
   }
 
   let index = 0;
+  let started = false;
 
   const pickVoice = (): SpeechSynthesisVoice | null => {
     const voices = synth.getVoices();
@@ -372,7 +364,6 @@ export function speak(
 
   const done = () => {
     if (token !== stopToken) return;
-    clearKeepAlive();
     options.onEnd?.();
   };
 
@@ -392,6 +383,20 @@ export function speak(
     const voice = pickVoice();
     if (voice) utterance.voice = voice;
 
+    /*
+     * `onstart` is the proof that the browser really began speaking.
+     *
+     * The silence check below used to look at `synth.speaking` instead, and on a
+     * phone that is fetching a voice over the network `speaking` can still be
+     * false a second later while everything is fine. That would have shown "could
+     * not read this aloud" over audio that was about to play — a new bug in place
+     * of the old one. This flag is only set by the event the browser fires when
+     * it actually starts.
+     */
+    utterance.onstart = () => {
+      started = true;
+    };
+
     utterance.onend = () => {
       index += 1;
       speakNext();
@@ -401,7 +406,6 @@ export function speak(
       const reason = (event as unknown as { error?: string }).error;
       if (reason === 'interrupted' || reason === 'canceled') return; // our own cancel
       if (token !== stopToken) return;
-      clearKeepAlive();
       options.onError?.('voice.speakFailed');
     };
 
@@ -409,17 +413,14 @@ export function speak(
      * Some devices accept the utterance, report no error, and produce no sound
      * at all — usually because no voice exists for this script. The button then
      * looks like it worked, which is the worst outcome: the visitor waits, hears
-     * nothing, and blames the answer. This is the check that turns silence into
-     * a sentence they can read.
+     * nothing, and blames the answer. Three and a half seconds is long enough for
+     * a voice to load and too long for a person to keep waiting in silence.
      */
     if (index === 0) {
       window.setTimeout(() => {
         if (token !== stopToken) return;
-        if (index === 0 && !synth.speaking && !synth.pending) {
-          clearKeepAlive();
-          options.onError?.('voice.speakFailed');
-        }
-      }, 1400);
+        if (!started) options.onError?.('voice.speakFailed');
+      }, 3500);
     }
 
     synth.speak(utterance);
@@ -437,17 +438,6 @@ export function speak(
    * list arrives.
    */
   speakNext();
-
-  // Chrome on desktop cuts long speech off after about fifteen seconds unless
-  // it is nudged. The chunks keep most answers under that; this catches the
-  // rest, and a nudge on a browser that does not need it is harmless.
-  keepAlive = window.setInterval(() => {
-    if (token !== stopToken) return;
-    if (synth.speaking && !synth.paused) {
-      synth.pause();
-      synth.resume();
-    }
-  }, 9000);
 }
 
 /**
@@ -466,10 +456,18 @@ export function speak(
  * marks and newlines — and a sentence too long for one chunk is split again at
  * spaces so no chunk is ever a single unbroken run.
  *
+ * ── Why a hundred and twenty characters, and not two hundred ───────────────
+ * The cutoff being avoided is measured in seconds, not letters, so the safe
+ * length depends on how fast the language is spoken. Devanagari at 0.85 speed
+ * runs at roughly twelve characters a second, which puts a 120-character chunk
+ * at ten seconds — comfortably inside the fifteen-second limit Chrome enforces,
+ * with room for a slower voice. Two hundred characters was the first attempt and
+ * it landed right on the edge, which is not where a limit should be.
+ *
  * Exported because it is the only part of speech that can be tested without a
  * browser, and it is the part that was actually broken.
  */
-export function chunksForSpeech(text: string, limit = 170): string[] {
+export function chunksForSpeech(text: string, limit = 120): string[] {
   const clean = text.replace(/\r/g, '').replace(/[ \t]+/g, ' ').trim();
   if (clean.length === 0) return [];
 
@@ -521,7 +519,6 @@ export function chunksForSpeech(text: string, limit = 170): string[] {
 export function stopSpeaking() {
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
     stopToken += 1;
-    clearKeepAlive();
     window.speechSynthesis.cancel();
   }
 }

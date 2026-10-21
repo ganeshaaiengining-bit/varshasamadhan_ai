@@ -32,7 +32,7 @@ function check(name: string, condition: boolean, detail = ''): void {
   }
 }
 
-const LIMIT = 170;
+const LIMIT = 120;
 
 const aarti = `ॐ जय जगदीश हरे, स्वामी जय जगदीश हरे।
 भक्त जनों के संकट, क्षण में दूर करे।
