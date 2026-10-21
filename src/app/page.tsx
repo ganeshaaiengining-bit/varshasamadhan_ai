@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { prisma } from '@/server/db';
 import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
@@ -16,7 +17,19 @@ import { VARSHA } from '@/content/tribute';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata = { title: 'मुफ़्त समाधान, आपके अपने शब्दों में' };
+/**
+ * The one title that was left in Hindi for every visitor.
+ *
+ * Every other page takes its title from the category or article it is showing,
+ * which is the owner's writing and stays as she wrote it. The home page had a
+ * literal, so a Tamil visitor saw the rest of the site in Tamil and a Hindi
+ * string in the browser tab — the last place a language switch visibly fails,
+ * and one that shows up in search results and in every copied link.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT();
+  return { title: t('home.metaTitle') };
+}
 
 /** Accent → Tailwind classes. Written out, never assembled at runtime. */
 const ACCENT: Record<string, { bg: string; text: string; border: string }> = {

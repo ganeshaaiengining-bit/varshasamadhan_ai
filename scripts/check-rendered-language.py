@@ -81,6 +81,10 @@ LANGUAGES = [
 ACRONYMS = {
     "AI", "SMS", "PDF", "DOC", "DOCX", "XLS", "ATM", "PIN", "OTP", "UPI",
     "QR", "App", "WhatsApp", "YouTube", "Google", "Android", "iOS", "IV",
+    # The site's own name, written in Latin capitals in every language by
+    # the brief itself. Counting it as a fault failed every page in every
+    # language, and a check that never passes cannot find anything.
+    "VARSHA", "SAMADHAN",
     "MB", "GB", "KG", "CM", "MM", "PM", "AM", "VIP", "OK", "TV", "URL",
 }
 

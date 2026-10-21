@@ -42,6 +42,33 @@ const COOKIE = 'vs-lang';
 const MAX_AGE = 60 * 60 * 24 * 365;
 
 /**
+ * The same code as a query parameter, so the choice reaches the server even in
+ * a browser that refuses cookies.
+ *
+ * ── Why this exists ────────────────────────────────────────────────────────
+ * The cookie was the only channel, and a visitor whose browser blocks cookies —
+ * private mode, an in-app browser inside a messaging app, a privacy setting set
+ * to "block all" — got a reload that came back in the old language. The header
+ * changed and the page body did not, so they reported, correctly, that
+ * switching to Marathi showed Hindi. Nothing was broken from the browser's
+ * point of view: the choice simply never arrived.
+ *
+ * `middleware.ts` reads this parameter and turns it into the cookie for the
+ * request that follows, so every existing `cookies()` read keeps working and no
+ * page has to know about the parameter at all.
+ */
+const PARAM = 'vs-lang';
+
+/**
+ * One reload per choice, guarded here rather than by a flag on the object.
+ *
+ * The self-heal below would loop forever without it: reload, still no cookie,
+ * reload. Once a choice has been tried with the parameter and the page still
+ * came back wrong, trying again is pointless.
+ */
+const FIX_KEY = 'vs-language-fix';
+
+/**
  * The offered language codes, exposed on `window` for the responsive verifier.
  *
  * A test needs to know which languages are legitimately available before it
@@ -144,12 +171,34 @@ export function LanguageProvider({
     if (stored === language.code) return; // already what the server sent us
 
     const remembered = LANGUAGES.find((l) => l.code === stored);
-    if (remembered) setLanguageState(remembered);
-    // Deliberately no `router.refresh()` here. This effect runs on the first
-    // mount, and the server has already rendered from the same cookie, so the
-    // two already agree in the normal case; refreshing here would fire a second
-    // render request on every single page load. Where they genuinely disagree the
-    // next change of language refreshes anyway.
+    if (!remembered) return;
+    setLanguageState(remembered);
+
+    /*
+     * The server rendered this page in a language this browser did not choose.
+     *
+     * Two ways that happens. A tab left open from before a change, and a browser
+     * that refuses cookies — private mode, the webview inside a messaging app, a
+     * privacy setting set to "block all". In the second case the choice never
+     * arrives at all, which is why the reload below repeats the code in the URL
+     * and not only in the cookie.
+     *
+     * Guarded per page and per choice rather than once per session: the loop it
+     * prevents is the *same* page reloading over and over, while a visitor
+     * walking through the site should still be carried along to each new page in
+     * their own language.
+     */
+    const guard = `${stored}|${window.location.pathname}${window.location.search}`;
+    try {
+      if (sessionStorage.getItem(FIX_KEY) === guard) return; // already tried here
+      sessionStorage.setItem(FIX_KEY, guard);
+    } catch {
+      /* private browsing: still worth one attempt */
+    }
+
+    const url = new URL(window.location.href);
+    url.searchParams.set(PARAM, stored);
+    window.location.replace(url.toString());
   }, [language.code]);
 
   /*
@@ -169,6 +218,28 @@ export function LanguageProvider({
       localStorage.setItem(KEY, language.code);
     } catch {
       /* private browsing; the cookie is the one that matters */
+    }
+
+    try {
+      // This page is in the language the visitor chose, so the guard that
+      // stopped the reload is not needed again until something changes.
+      sessionStorage.removeItem(FIX_KEY);
+    } catch {
+      /* nothing to clean up */
+    }
+
+    /*
+     * Take the parameter back out of the address bar.
+     *
+     * The server has already read it, and leaving `?vs-lang=ta` on every link a
+     * visitor copies out of the site would make one language look like part of
+     * the address. `replaceState` keeps the back button out of it: there is no
+     * entry to add and none to remove.
+     */
+    if (typeof window !== 'undefined' && window.location.search.includes(`${PARAM}=`)) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete(PARAM);
+      window.history.replaceState(window.history.state, '', url.toString());
     }
   }, [language]);
 
@@ -252,7 +323,19 @@ export function LanguageProvider({
       // Put the visitor's half-typed question somewhere safe before the page goes.
       stashForLanguageChange();
 
-      window.location.reload();
+      /*
+       * Go — with the code in the address as well as the cookie.
+       *
+       * The cookie is the normal channel and the server reads it. But a browser
+       * that refuses cookies turns this reload into a request for the same page
+       * in the old language, and the visitor watches their choice vanish. The
+       * parameter reaches the server either way; `middleware.ts` turns it back
+       * into a cookie for the request that follows, so nothing downstream
+       * changes.
+       */
+      const url = new URL(window.location.href);
+      url.searchParams.set(PARAM, next.code);
+      window.location.replace(url.toString());
     },
     [],
   );

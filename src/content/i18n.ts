@@ -123,7 +123,7 @@ const HINDI: Record<string, string> = {
   'account.nameHint': 'यह आपकी पहचान के लिए है। कोई भी नाम चलेगा, और यह ज़रूरी नहीं है।',
 
   /* ---- navigation ------------------------------------------------------- */
-  'nav.home': 'होम',
+  'nav.home': 'होम', 'home.metaTitle': 'मुफ़्त समाधान, आपके अपने शब्दों में',
   'nav.tribute': 'स्मृति',
   'nav.help': 'सहायता',
   'nav.reference': 'संदर्भ',
@@ -742,7 +742,7 @@ const ENGLISH: Record<string, string> = {
   'account.namePlaceholder': 'e.g. Sita Devi',
   'account.nameHint': 'So we know who you are. Any name will do, and it is not required.',
 
-  'nav.home': 'Home',
+  'nav.home': 'Home', 'home.metaTitle': 'Free answers, in your own words',
   'nav.tribute': 'In memory',
   'nav.help': 'Help',
   'nav.reference': 'About',
@@ -1311,7 +1311,7 @@ const BENGALI: Record<string, string> = {
   'account.namePlaceholder': 'যেমন: সীতা দেবী',
   'account.nameHint': 'যাতে আমরা জানি আপনি কে। যেকোনো নাম চলবে, এবং এটি আবশ্যক নয়।',
 
-  'nav.home': 'হোম', 'nav.tribute': 'স্মৃতি', 'nav.help': 'সহায়তা', 'nav.reference': 'পরিচিতি',
+  'nav.home': 'হোম', 'home.metaTitle': 'বিনামূল্যে সমাধান, আপনার নিজের শব্দে', 'nav.tribute': 'স্মৃতি', 'nav.help': 'সহায়তা', 'nav.reference': 'পরিচিতি',
   'nav.reviews': 'মতামত', 'nav.support': 'সহায়তা করুন', 'nav.menu': 'মেনু',
   'nav.birthChart': 'জন্ম গণ্ঠা',
   'jgd.title': 'আপনার জন্ম গণ্ঠা',
@@ -2022,7 +2022,7 @@ const TAMIL: Record<string, string> = {
   'account.namePlaceholder': 'எ.கா. சீதா தேவி',
   'account.nameHint': 'நீங்கள் யார் என்பதை அறிய. எந்தப் பெயரும் போதும், இது தேவையில்லை.',
 
-  'nav.home': 'முகப்பு', 'nav.tribute': 'நினைவு', 'nav.help': 'உதவி', 'nav.reference': 'அறிமுகம்',
+  'nav.home': 'முகப்பு', 'home.metaTitle': 'இலவச தீர்வு, உங்கள் சொற்களில்', 'nav.tribute': 'நினைவு', 'nav.help': 'உதவி', 'nav.reference': 'அறிமுகம்',
   'nav.reviews': 'கருத்து', 'nav.support': 'உதவி செய்யுங்கள்', 'nav.menu': 'பட்டி',
   'nav.birthChart': 'ஜन्म கட்டு',
   'jgd.title': 'உங்கள் ஜन्म கட்டு',
@@ -2732,7 +2732,7 @@ const TELUGU: Record<string, string> = {
   'account.namePlaceholder': 'ఉదా. సీతా దేవి',
   'account.nameHint': 'మీరు ఎవరో తెలుసుకోవడానికి. ఏ పేరైనా పోతుంది, ఇది అవసరం లేదు.',
 
-  'nav.home': 'హోమ్', 'nav.tribute': 'స్మృతి', 'nav.help': 'సహాయం', 'nav.reference': 'పరిచయం',
+  'nav.home': 'హోమ్', 'home.metaTitle': 'ఉచిత సమాధానాలు, మీ సొంత మాటల్లో', 'nav.tribute': 'స్మృతి', 'nav.help': 'సహాయం', 'nav.reference': 'పరిచయం',
   'nav.reviews': 'అభిప్రాయం', 'nav.support': 'సహాయం చేయండి', 'nav.menu': 'మెనూ',
   'nav.birthChart': 'జన్మ గంఠం',
   'jgd.title': 'మీ జన్మ గంఠం',
@@ -3442,7 +3442,7 @@ const MARATHI: Record<string, string> = {
   'account.namePlaceholder': 'उदा. सीता देवी',
   'account.nameHint': 'हे कळणून आपण कोण आहात. कोणताही नाव चालेल, आणि हे आवश्यक नाही.',
 
-  'nav.home': 'मुख्यपृष्ठ', 'nav.tribute': 'स्मृती', 'nav.help': 'मदत', 'nav.reference': 'माहिती',
+  'nav.home': 'मुख्यपृष्ठ', 'home.metaTitle': 'मोफत उपाय, तुमच्या स्वतःच्या शब्दांत', 'nav.tribute': 'स्मृती', 'nav.help': 'मदत', 'nav.reference': 'माहिती',
   'nav.reviews': 'अभिप्राय', 'nav.support': 'मदत करा', 'nav.menu': 'मेनू',
   'nav.birthChart': 'जन्म पत्रिका',
   'jgd.title': 'तुमचे जन्म पत्रिका',
@@ -4152,7 +4152,7 @@ const GUJARATI: Record<string, string> = {
   'account.namePlaceholder': 'દા.ત. સીતા દેવી',
   'account.nameHint': 'આપણે કોણ છો તે જાણવા. કોઈપણ નામ ચાલશે, અને આ જરૂરી નથી.',
 
-  'nav.home': 'હોમ', 'nav.tribute': 'સ્મૃતિ', 'nav.help': 'મદદ', 'nav.reference': 'માહિતી',
+  'nav.home': 'હોમ', 'home.metaTitle': 'મફત સમાધાન, તમારા પોતાના શબ્દોમાં', 'nav.tribute': 'સ્મૃતિ', 'nav.help': 'મદદ', 'nav.reference': 'માહિતી',
   'nav.reviews': 'અભિપ્રાય', 'nav.support': 'મદદ કરો', 'nav.menu': 'મેનુ',
   'nav.birthChart': 'જન્મ ગંઠ',
   'jgd.title': 'તમારી જન્મ ગંઠ',
@@ -4862,7 +4862,7 @@ const KANNADA: Record<string, string> = {
   'account.namePlaceholder': 'ಉದಾ. ಸೀತಾ ದೇವಿ',
   'account.nameHint': 'ನೀವು ಯಾರು ಎಂದು ತಿಳಿಯಲು. ಯಾವುದೇ ಹೆಸರು ಸ್ವೀಕರಿಸಿದರೂ, ಇದು ಅಗತ್ಯವಿಲ್ಲ.',
 
-  'nav.home': 'ಮುಖಪುಟ', 'nav.tribute': 'ಸ್ಮರಣೆ', 'nav.help': 'ಸಹಾಯ', 'nav.reference': 'ಪರಿಚಯ',
+  'nav.home': 'ಮುಖಪುಟ', 'home.metaTitle': 'ಉಚಿತ ಪರಿಹಾರ, ನಿಮ್ಮ ಸ್ವಂತ ಪದಗಳಲ್ಲಿ', 'nav.tribute': 'ಸ್ಮರಣೆ', 'nav.help': 'ಸಹಾಯ', 'nav.reference': 'ಪರಿಚಯ',
   'nav.reviews': 'ಅಭಿಪ್ರಾಯ', 'nav.support': 'ಸಹಾಯ ಮಾಡಿ', 'nav.menu': 'ಮೆನು',
   'nav.birthChart': 'ಜನ್ಮ ಗಂಠ',
   'jgd.title': 'ನಿಮ್ಮ ಜನ್ಮ ಗಂಠ',
@@ -5582,7 +5582,7 @@ const MALAYALAM: Record<string, string> = {
   'account.namePlaceholder': 'ഉദാ. സീത ദേവി',
   'account.nameHint': 'നിങ്ങൾ ആരാണെന്ന് അറിയാൻ. ഏത് പേരും സ്വീകരിക്കും, ഇത് ആവശ്യമല്ല.',
 
-  'nav.home': 'ഹോം', 'nav.tribute': 'സ്മരണം', 'nav.help': 'സഹായം', 'nav.reference': 'വിവരം',
+  'nav.home': 'ഹോം', 'home.metaTitle': 'സൗജന്യ പരിഹാരം, നിങ്ങളുടെ സ്വന്തം വാക്കുകളിൽ', 'nav.tribute': 'സ്മരണം', 'nav.help': 'സഹായം', 'nav.reference': 'വിവരം',
   'nav.reviews': 'അഭിപ്രായം', 'nav.support': 'സഹായിക്കൂ', 'nav.menu': 'മെനു',
   'nav.birthChart': 'ജനം ഗണ്ഠം',
   'jgd.title': 'നിങ്ങളുടെ ജനം ഗണ്ഠം',
@@ -6306,7 +6306,7 @@ const PUNJABI: Record<string, string> = {
   'account.namePlaceholder': 'ਉਦਾ. ਸੀਤਾ ਦੇਵੀ',
   'account.nameHint': 'ਤੁਸੀਂ ਕੌਣ ਹੋ ਇਹ ਜਾਣਣ ਲਈ। ਕੋਈ ਵੀ ਨਾਮ ਚੱਲੇਗਾ, ਅਤੇ ਇਹ ਲੋੜੀਂਦਾ ਨਹੀਂ।',
 
-  'nav.home': 'ਹੋਮ', 'nav.tribute': 'ਸਮਰਨ', 'nav.help': 'ਮਦਦ', 'nav.reference': 'ਜਾਣਕਾਰੀ',
+  'nav.home': 'ਹੋਮ', 'home.metaTitle': 'ਮੁਫ਼ਤ ਹੱਲ, ਆਪਣੇ ਸੁਭਾਅ ਦੇ ਸ਼ਬਦਾਂ ਵਿੱਚ', 'nav.tribute': 'ਸਮਰਨ', 'nav.help': 'ਮਦਦ', 'nav.reference': 'ਜਾਣਕਾਰੀ',
   'nav.reviews': 'ਰਾਇ', 'nav.support': 'ਮਦਦ ਕਰੋ', 'nav.menu': 'ਮੀਨੂ',
   'nav.birthChart': 'ਜਨਮ ਗੰਠ',
   'jgd.title': 'ਤੁਹਾਡੀ ਜਨਮ ਗੰਠ',
@@ -7033,7 +7033,7 @@ const URDU: Record<string, string> = {
   'account.namePlaceholder': 'مثلاً سیتا دیوی',
   'account.nameHint': 'یہ جاننے کے لیے کہ آپ کون ہیں۔ کوئی بھی نام چلے گا، اور یہ ضروری نہیں۔',
 
-  'nav.home': 'ہوم', 'nav.tribute': 'یادگار', 'nav.help': 'مدد', 'nav.reference': 'تعارف',
+  'nav.home': 'ہوم', 'home.metaTitle': 'مفت حل، آپ کے اپنے الفاظ میں', 'nav.tribute': 'یادگار', 'nav.help': 'مدد', 'nav.reference': 'تعارف',
   'nav.reviews': 'آراء', 'nav.support': 'مدد کریں', 'nav.menu': 'مینو',
   'nav.birthChart': 'جन्म گنٹھ',
   'jgd.title': 'آپ کی جन्म گنٹھ',
@@ -7749,7 +7749,7 @@ const ARABIC: Record<string, string> = {
   'account.namePlaceholder': 'مثلاً سيدة ديفى',
   'account.nameHint': 'حتى نعرف من أنت. أي اسم سيفي، وليس مطلوبًا.',
 
-  'nav.home': 'الرئيسية', 'nav.tribute': 'ذكرى', 'nav.help': 'مساعدة', 'nav.reference': 'تعريف',
+  'nav.home': 'الرئيسية', 'home.metaTitle': 'حلول مجانية، بكلماتك أنت', 'nav.tribute': 'ذكرى', 'nav.help': 'مساعدة', 'nav.reference': 'تعريف',
   'nav.reviews': 'آراء', 'nav.support': 'ادعمونا', 'nav.menu': 'القائمة',
   'nav.birthChart': 'ورقة الميلاد',
   'jgd.title': 'ورقة ميلادك',
@@ -8471,7 +8471,7 @@ const SPANISH: Record<string, string> = {
   'account.namePlaceholder': 'p. ej. Sita Devi',
   'account.nameHint': 'Para saber quién eres. Cualquier nombre sirve y no es obligatorio.',
 
-  'nav.home': 'Inicio', 'nav.tribute': 'En memoria', 'nav.help': 'Ayuda', 'nav.reference': 'Acerca de',
+  'nav.home': 'Inicio', 'home.metaTitle': 'Soluciones gratis, en tus propias palabras', 'nav.tribute': 'En memoria', 'nav.help': 'Ayuda', 'nav.reference': 'Acerca de',
   'nav.reviews': 'Opiniones', 'nav.support': 'Apóyenos', 'nav.menu': 'Menú',
   'nav.birthChart': 'Carta natal',
   'jgd.title': 'Tu carta natal',
