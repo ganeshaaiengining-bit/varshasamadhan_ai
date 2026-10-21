@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { prisma } from '@/server/db';
 import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { getT } from '@/server/i18n';
+import { categoryLabel, articleLabel } from '@/content/labels';
 import { Icon, type IconName } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { AskBoxGate } from '@/components/ask/ask-box-gate';
@@ -18,6 +19,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const { t, lang } = await getT();
 
   // Guarded: metadata is generated before the page body, so an unguarded read
   // here would throw before the page's own guard could answer.
@@ -31,13 +33,22 @@ export async function generateMetadata({
     undefined,
   );
 
-  if (category === undefined) return { title: 'सेवा उपलब्ध नहीं है' };
-  if (!category) return { title: 'नहीं मिला' };
+  if (category === undefined) return { title: t('cat.notFound') };
+  if (!category) return { title: t('cat.notFound') };
 
-  return {
-    title: category.title,
-    description: category.subtitle || category.title,
-  };
+  /*
+   * The tab title follows the visitor's language, the same as the heading on
+   * the page. Until this was changed the title was whatever she wrote in the
+   * database, so a Tamil visitor read Tamil all the way down the page and then
+   * saw a Hindi word in the browser tab — the one place a language switch
+   * visibly fails, because the tab is the first thing on screen.
+   */
+  const title = categoryLabel(lang, slug, 'title', category.title);
+  const description = category.subtitle
+    ? categoryLabel(lang, slug, 'subtitle', category.subtitle)
+    : title;
+
+  return { title, description };
 }
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -72,6 +83,19 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     );
   }
   if (!category) notFound();
+
+  /*
+   * The headings as this visitor should read them.
+   *
+   * Each one is decided here rather than at every use: `categoryLabel` asks the
+   * same question each time — has she edited this since it was translated? — and
+   * answering it once keeps the heading, the tab title, the breadcrumb and the
+   * ask box from ever disagreeing with each other on the same page.
+   */
+  const heading = categoryLabel(lang, category.slug, 'title', category.title);
+  const subheading = category.subtitle
+    ? categoryLabel(lang, category.slug, 'subtitle', category.subtitle)
+    : null;
 
   const articles = await safeRead(
     `category:${slug}:articles`,
@@ -108,15 +132,15 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
       <div className="wrap-narrow py-8 sm:py-12">
         <Breadcrumbs
           ariaLabel={t('nav.path')}
-          items={[{ href: '/', label: t('nav.home') }, { label: category.title }]}
+          items={[{ href: '/', label: t('nav.home') }, { label: heading }]}
         />
 
         <header className="mt-4 text-center">
           <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-saffron-soft text-saffron-deep">
             <Icon name={category.icon as IconName} size={32} />
           </span>
-          <h1 className="mt-4">{category.title}</h1>
-          {category.subtitle ? <p className="mt-2 text-ink-muted">{category.subtitle}</p> : null}
+          <h1 className="mt-4">{heading}</h1>
+          {subheading ? <p className="mt-2 text-ink-muted">{subheading}</p> : null}
           {articles.length > 0 ? (
             <p className="mt-2 text-sm text-ink-subtle">
               {tf('article.count', { count: articles.length })}
@@ -132,8 +156,14 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           </h2>
           <div className="mt-4">
             <AskBoxGate
-              category={category.title}
-              suggested={articles.slice(0, 3).map((a) => ({ label: a.title, question: a.summary || a.title }))}
+              category={heading}
+              suggested={articles.slice(0, 3).map((a) => {
+                const label = articleLabel(lang, a.slug, 'title', a.title);
+                return {
+                  label,
+                  question: a.summary ? articleLabel(lang, a.slug, 'summary', a.summary) : label,
+                };
+              })}
             />
           </div>
         </div>
@@ -144,7 +174,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         ) : (
           <section aria-labelledby="articles-heading" className="mt-10">
             <h2 id="articles-heading" className="sr-only">
-              {tf('article.heading', { category: category.title })}
+              {tf('article.heading', { category: heading })}
             </h2>
             <ul className="space-y-4">
               {articles.map((article) => (
@@ -165,7 +195,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
                     <span className="min-w-0 flex-1">
                       <span className="flex flex-wrap items-center gap-2">
-                        <span className="text-lg font-bold text-ink">{article.title}</span>
+                        <span className="text-lg font-bold text-ink">
+                          {articleLabel(lang, article.slug, 'title', article.title)}
+                        </span>
                         {article.isEmergency ? (
                           <span className="rounded-full bg-rose-soft px-2.5 py-0.5 text-xs font-bold text-rose">
                             {t('article.emergency')}
@@ -173,7 +205,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                         ) : null}
                       </span>
                       {article.summary ? (
-                        <span className="mt-1 block text-ink-muted">{article.summary}</span>
+                        <span className="mt-1 block text-ink-muted">
+                          {articleLabel(lang, article.slug, 'summary', article.summary)}
+                        </span>
                       ) : null}
                       {article.helpline ? (
                         <span className="mt-2 block font-bold text-rose">{article.helpline}</span>
@@ -199,7 +233,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                     href={`/p/${other.slug}`}
                     className="inline-flex items-center rounded-full border-2 border-line bg-surface px-4 py-2.5 font-semibold transition-colors hover:border-saffron hover:text-saffron-deep"
                   >
-                    {other.title}
+                    {categoryLabel(lang, other.slug, 'title', other.title)}
                   </Link>
                 </li>
               ))}

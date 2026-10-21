@@ -16,6 +16,7 @@ without being told, that this part of the site was never made for them.
 Run with a language code to check one, or with none to check all of them.
 """
 
+import os
 import io
 import json
 import re
@@ -24,7 +25,9 @@ import urllib.request
 
 sys.stdout.reconfigure(encoding="utf-8")
 
-BASE = "http://127.0.0.1:3001"
+# The local dev server by default. A deployed site is checked the same
+# way with:  VS_BASE=https://varsha-samadhan.vercel.app python scripts/check-page-language.py
+BASE = os.environ.get("VS_BASE", "http://127.0.0.1:3001")
 
 # The cookie the language switcher writes. The name is `vs-lang`, defined as
 # LANGUAGE_COOKIE in src/server/i18n.ts — not "lang", which was the first guess
@@ -52,7 +55,7 @@ def sample_for(language: str) -> list[str]:
         "ta": ["உங்கள் வயதைச் சொல்லுங்கள்", "வயது (ஆண்டுகள்)", "இது மருத்துவ ஆலோசனை அல்ல"],
         "te": ["మీ వయస్సు చెప్పండి", "వయస్సు (సంవత్సరాలు)", "ఇది వైద్య సలహా కాదు"],
         "gu": ["તમારી ઉંમર કહો", "ઉંમર (વર્ષ)", "આ તબીબી સલાહ નથી"],
-        "kn": ["ನಿಮ್ಮ ವಯಸ್ಸು ತಿಳಿಸಿ", "ವಯಸ್ಸು (ವರ್ಷ)", "ಇದು ವೈದ್ಯ ಸಲಹೆ ಅಲ್ಲ"],
+        "kn": ["ನಿಮ್ಮ ವಯಸ್ಸು ತಿಳಿಸಿ", "ವಯಸ್ಸು (ವರ್ಷ)", "ಇದು ವೈದ್ಯಕೀಯ ಸಲಹೆ ಅಲ್ಲ"],
         "ml": ["നിങ്ങളുടെ പ്രായം പറയൂ", "പ്രായം (വർഷം)", "ഇത് വൈദ്യ ഉപദേശമല്ല"],
         "pa": ["ਆਪਣੀ ਉਮਰ ਦੱਸੋ", "ਉਮਰ (ਸਾਲ)", "ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ"],
         "ur": ["اپنی عمر بتائیے", "عمر (سال)", "یہ طبی مشورہ نہیں ہے"],

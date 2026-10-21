@@ -1,3 +1,4 @@
+import os
 import re
 import sys
 import urllib.request
@@ -44,7 +45,9 @@ one table shows up in exactly one language, and a check that only looked at
 Hindi would have found this bug today by luck rather than by design.
 """
 
-BASE = "http://127.0.0.1:3001"
+# The local dev server by default. A deployed site is checked the same
+# way with:  VS_BASE=https://varsha-samadhan.vercel.app python scripts/check-rendered-language.py
+BASE = os.environ.get("VS_BASE", "http://127.0.0.1:3001")
 
 PAGES = [
     ("/", "home"),

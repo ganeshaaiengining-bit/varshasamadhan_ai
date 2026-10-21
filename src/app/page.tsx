@@ -12,6 +12,7 @@ import { Sunrise, SunriseBanner } from '@/components/visual/sunrise';
 import { BrandTitle } from '@/components/visual/brand-title';
 import { SoundPad } from '@/components/audio/welcome-dhun';
 import { getT } from '@/server/i18n';
+import { categoryLabel, articleLabel } from '@/content/labels';
 import { currentUser } from '@/server/auth/session';
 import { VARSHA } from '@/content/tribute';
 
@@ -217,7 +218,7 @@ export default async function HomePage() {
             <ul className="mt-5 grid gap-3 md:grid-cols-3">
               {emergency.map((item) => (
                 <li key={item.slug} className="card border-rose/40 p-5">
-                  <h3 className="text-lg">{item.title}</h3>
+                  <h3 className="text-lg">{articleLabel(lang, item.slug, 'title', item.title)}</h3>
                   {item.helpline ? (
                     <p className="mt-2 font-bold text-rose">{item.helpline}</p>
                   ) : null}
@@ -343,8 +344,19 @@ export default async function HomePage() {
                       <Icon name={category.icon as IconName} size={28} />
                     </span>
 
-                    <h3 className="mt-4 text-xl text-ink">{category.title}</h3>
-                    <p className="mt-1.5 flex-1 text-ink-muted">{category.subtitle}</p>
+                    {/*
+                      The nine headings are the owner's, written once in the
+                      database. Offered in this visitor's language while she
+                      has not edited them — see `content/labels.ts`.
+                    */}
+                    <h3 className="mt-4 text-xl text-ink">
+                      {categoryLabel(lang, category.slug, 'title', category.title)}
+                    </h3>
+                    <p className="mt-1.5 flex-1 text-ink-muted">
+                      {category.subtitle
+                        ? categoryLabel(lang, category.slug, 'subtitle', category.subtitle)
+                        : ''}
+                    </p>
 
                     <span className={`mt-4 flex items-center gap-1.5 text-sm font-bold ${accent.text}`}>
                       {category._count.articles > 0

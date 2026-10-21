@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { prisma } from '@/server/db';
 import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { getT } from '@/server/i18n';
+import { categoryLabel, articleLabel } from '@/content/labels';
 import { Icon } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs';
@@ -18,6 +19,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string; article: string }>;
 }): Promise<Metadata> {
   const { article } = await params;
+  const { t, lang } = await getT();
 
   /*
    * Guarded for the same reason as the page body: `generateMetadata` runs before
@@ -34,9 +36,15 @@ export async function generateMetadata({
     undefined,
   );
 
-  if (row === undefined) return { title: 'सेवा उपलब्ध नहीं है' };
-  if (!row) return { title: 'नहीं मिला' };
-  return { title: row.title, description: row.summary };
+  if (row === undefined) return { title: t('cat.notFound') };
+  if (!row) return { title: t('cat.notFound') };
+
+  // The tab title speaks the visitor's language, the same as the heading below
+  // it — see the note in `labels.ts` for why only the heading moves and not the
+  // article itself.
+  const title = articleLabel(lang, article, 'title', row.title);
+  const description = row.summary ? articleLabel(lang, article, 'summary', row.summary) : title;
+  return { title, description };
 }
 
 export default async function ArticlePage({
@@ -96,6 +104,12 @@ export default async function ArticlePage({
    */
   const blocks = renderBody(row.body);
 
+  // Decided once, so the breadcrumb, the heading and the tab title cannot
+  // disagree about what this page is called. See `content/labels.ts`.
+  const heading = articleLabel(lang, article, 'title', row.title);
+  const summary = articleLabel(lang, article, 'summary', row.summary);
+  const inCategory = categoryLabel(lang, row.category.slug, 'title', row.category.title);
+
   return (
     <SiteChrome siteName={siteName}>
       <div className="wrap-narrow py-8 sm:py-12">
@@ -103,8 +117,8 @@ export default async function ArticlePage({
           ariaLabel={t('nav.path')}
           items={[
             { href: '/', label: t('nav.home') },
-            { href: `/p/${row.category.slug}`, label: row.category.title },
-            { label: row.title },
+            { href: `/p/${row.category.slug}`, label: inCategory },
+            { label: heading },
           ]}
         />
 
@@ -117,8 +131,8 @@ export default async function ArticlePage({
               </p>
             ) : null}
 
-            <h1>{row.title}</h1>
-            {row.summary ? <p className="mt-3 text-ink-muted">{row.summary}</p> : null}
+            <h1>{heading}</h1>
+            {summary ? <p className="mt-3 text-ink-muted">{summary}</p> : null}
           </header>
 
           {/* The helpline sits above the text, not at the bottom. Someone in a
@@ -162,10 +176,10 @@ export default async function ArticlePage({
               finding it a second time on a phone is the part that goes wrong.
             */}
             <SaveArticle
-              title={row.title}
-              summary={row.summary}
+              title={heading}
+              summary={summary}
               body={row.body}
-              categoryTitle={row.category?.title ?? ''}
+              categoryTitle={inCategory}
             />
           </div>
 
@@ -224,7 +238,7 @@ export default async function ArticlePage({
 
         <div className="mt-12 flex flex-wrap gap-3 border-t border-line pt-8">
           <Link href={`/p/${row.category.slug}`} className="btn-outline">
-            ← {row.category.title}
+            ← {inCategory}
           </Link>
           <Link href="/sahayata" className="btn-primary">
             <Icon name="mic" size={20} />
