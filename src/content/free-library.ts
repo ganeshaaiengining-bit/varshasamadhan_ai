@@ -230,7 +230,7 @@ export const ENTRIES: Array<LibraryEntry & { group: string; id: string }> = [
     group: 'kitab',
     id: 'gutenberg',
     title: 'Project Gutenberg — अंग्रेज़ी की पुरानी किताबें',
-    what: '70,000 से ज़्यादा किताबें, सब की copyright समाप्त। मुफ़्त ई-बुक और ऑडियो।',
+    what: '70,000 से ज़्यादा किताबें, सब की कॉपीराइट समाप्त। मुफ़्त ई-बुक और ऑडियो।',
     url: 'https://www.gutenberg.org/',
     licence: LICENCES.pd,
     noSignup: true,

@@ -56,17 +56,8 @@ TABLE = {
     "es": "SPANISH",
 }
 
-KEYS = [
-    "cat.dharmik-upay.title",
-    "cat.dharmik-upay.subtitle",
-    "cat.aapatkalen-gayide.title",
-    "cat.aapatkalen-gayide.subtitle",
-    "art.aag-lagne-par-kya-karein.title",
-    "art.aag-lagne-par-kya-karein.summary",
-    "home.metaTitle",
-]
-
-# The pages each key has to appear on.
+# The pages each key has to appear on. This is also the list of keys: see
+# `KEYS` below.
 PAGES = {
     "cat.dharmik-upay.title": ["/", "/p/dharmik-upay"],
     "cat.dharmik-upay.subtitle": ["/", "/p/dharmik-upay"],
@@ -88,6 +79,16 @@ PAGES = {
     "lib.entry.pratham-books.what": ["/pustakalay"],
     "lib.entry.nios.langs": ["/pustakalay"],
 }
+
+# One list, not two.
+#
+# The keys and the pages they belong on used to be kept in separate places, and
+# three library keys were added to the second without being added to the first —
+# so the checker fetched the library page in all thirteen languages, found
+# nothing it had been told to look for, and reported it clean. A list that can
+# disagree with itself will, quietly, and a quiet pass is the one failure a
+# check must not have.
+KEYS = list(PAGES)
 
 
 def translations():

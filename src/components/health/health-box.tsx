@@ -200,14 +200,22 @@ export function HealthBox({ signedIn = false }: { signedIn?: boolean }) {
         </p>
       </div>
 
+      {/*
+        The health box is a client component, so it cannot import the server gate.
+        It asks its parent whether anybody is signed in and shows the wall itself
+        when not. The rule still holds twice over: this is only what a person can
+        see, and the route refuses the question regardless.
+
+        Written inside braces, the two things this block used to be missing. A
+        comment in JSX has to be written as an expression, and a condition has to
+        be written as an expression, and both of those omissions were here: this
+        whole paragraph, and then the words "signedIn ?" and ":", printed on the
+        help page in every language as English text above the question box. The
+        comment was always meant for whoever reads this file, and instead it was
+        the first thing a visitor saw.
+      */}
       <div className="mt-6">
-        /*
-     * The health box is a client component, so it cannot import the server gate.
-     * It asks its parent whether anybody is signed in and shows the wall itself
-     * when not. The rule still holds twice over: this is only what a person can
-     * see, and the route refuses the question regardless.
-     */
-    signedIn ? <AskBox suggested={suggested} /> : <SignInWall />
+        {signedIn ? <AskBox suggested={suggested} /> : <SignInWall />}
       </div>
 
       <p className="mt-4 flex items-center justify-center gap-2 text-sm text-ink-subtle">

@@ -148,7 +148,7 @@ const HINDI: Record<string, string> = {
   'lib.entry.ignou.title': 'IGNOU — बड़े स्कूल की मुफ़्त पुस्तकें',
   'lib.entry.ignou.what': 'दूरस्थ शिक्षा की किताबें जो बिल्कुल मुफ़्त मिलती हैं।',
   'lib.entry.gutenberg.title': 'Project Gutenberg — अंग्रेज़ी की पुरानी किताबें',
-  'lib.entry.gutenberg.what': '70,000 से ज़्यादा किताबें, सब की copyright समाप्त। मुफ़्त ई-बुक और ऑडियो।',
+  'lib.entry.gutenberg.what': '70,000 से ज़्यादा किताबें, सब की कॉपीराइट समाप्त। मुफ़्त ई-बुक और ऑडियो।',
   'lib.entry.pratham-books.title': 'Pratham Books — बच्चों की किताबें',
   'lib.entry.pratham-books.what': 'भारतीय भाषाओं में बच्चों की किताबें, बिल्कुल मुफ़्त। कक्षा 1 से 5 के लिए।',
   'lib.entry.pratham-books.langs': 'हिंदी, मराठी, बंगाली, तमिल, तेलुगु और अन्य',
