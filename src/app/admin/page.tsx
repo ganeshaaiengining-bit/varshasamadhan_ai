@@ -134,6 +134,23 @@ export default async function AdminPage() {
         <SetupWarning />
 
         {/*
+          The two things the owner comes here to change, at the top.
+
+          They used to live at the bottom of the page, under the review queue —
+          which on a busy day is a long list, so a link that existed was a link
+          the owner could not find. "It is there, just scroll" is not a UI
+          decision; it is a report of a bug. Settings go where the eye starts.
+        */}
+        <div className="mb-6 flex flex-wrap gap-2">
+          <Link href="/admin/pasvard-badal" className="btn-outline !min-h-[2.75rem]">
+            पासवर्ड बदलिए
+          </Link>
+          <Link href="/admin/articles" className="btn-outline !min-h-[2.75rem]">
+            लेख देखें / बदलें
+          </Link>
+        </div>
+
+        {/*
           The photograph, above the numbers.
 
           Above rather than below because it is the thing the owner most often
@@ -155,15 +172,9 @@ export default async function AdminPage() {
         {/* The article editor is the other half of the panel and a separate page:
             writing an article is a long task, and keeping it away from the review
             queue stops a half-finished draft being lost to a refresh. */}
+        {/* Only the way out is left down here. The two settings links moved to
+            the top of the page, where they can actually be seen. */}
         <div className="mt-8 flex flex-wrap gap-2 border-t border-line pt-6">
-          <Link href="/admin/articles" className="btn-outline !min-h-[2.75rem]">
-            लेख देखें / बदलें
-          </Link>
-          {/* Next to the other settings rather than buried, because a password
-              the owner cannot find a way to change is a password they keep. */}
-          <Link href="/admin/pasvard-badal" className="btn-outline !min-h-[2.75rem]">
-            पासवर्ड बदलिए
-          </Link>
           <Link href="/" className="btn-ghost !min-h-[2.75rem]">
             साइट देखें
           </Link>
