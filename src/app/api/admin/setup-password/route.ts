@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { passwordProblem, savePassword, setupAlreadyUsed } from '@/server/owner-password';
+import { passwordProblem, setupAlreadyUsed, setPasswordWithRecovery, questionProblem, answerProblem } from '@/server/owner-password';
 import { createOwnerSession } from '@/server/owner';
 
 /**
@@ -31,6 +31,8 @@ export const dynamic = 'force-dynamic';
 interface Body {
   token?: unknown;
   password?: unknown;
+  question?: unknown;
+  answer?: unknown;
 }
 
 /** Compared in constant time, so a token cannot be found one character at a time. */
@@ -53,6 +55,8 @@ export async function POST(request: Request) {
 
   const token = typeof body.token === 'string' ? body.token : '';
   const password = typeof body.password === 'string' ? body.password : '';
+  const question = typeof body.question === 'string' ? body.question : '';
+  const answer = typeof body.answer === 'string' ? body.answer : '';
 
   // Checked before the token, deliberately.
   //
@@ -74,7 +78,29 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, reason: problem }, { status: 400 });
   }
 
-  await savePassword(password);
+  /*
+   * The recovery pair is required, not optional.
+   *
+   * A password with no way back is a lockout waiting to happen — the owner has
+   * already been through exactly that once, which is why this page exists. So
+   * the question is asked here, at the one moment the owner is provably present
+   * and willing to set things up, rather than later through a nag nobody would
+   * act on.
+   *
+   * The answer is stored hashed, exactly like the password. The question is not
+   * a secret and is shown to whoever is locked out; the answer is the key.
+   */
+  const questionProblemCode = questionProblem(question);
+  if (questionProblemCode) {
+    return NextResponse.json({ ok: false, reason: questionProblemCode }, { status: 400 });
+  }
+
+  const answerProblemCode = answerProblem(answer);
+  if (answerProblemCode) {
+    return NextResponse.json({ ok: false, reason: answerProblemCode }, { status: 400 });
+  }
+
+  await setPasswordWithRecovery(password, question, answer);
 
   /*
    * Signs them straight in.

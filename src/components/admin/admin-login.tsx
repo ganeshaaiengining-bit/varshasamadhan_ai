@@ -122,6 +122,20 @@ export function AdminLogin({ configured }: { configured: boolean }) {
             {error}
           </p>
         ) : null}
+
+        {/*
+          Placed inside the form's card but not inside its submit path: a
+          forgotten password is the second most common reason to be standing
+          here, and making it a separate page reached from the place where the
+          failure is being felt costs one line and saves a dead end.
+        */}
+        {configured ? (
+          <p className="mt-4 text-center text-sm">
+            <a href="/admin/bhool-gaye" className="underline text-ink-subtle hover:text-ink">
+              पासवर्ड भूल गए?
+            </a>
+          </p>
+        ) : null}
       </form>
 
       <p className="mt-6 text-center text-sm text-ink-subtle">

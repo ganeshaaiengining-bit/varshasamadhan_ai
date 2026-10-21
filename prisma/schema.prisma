@@ -242,6 +242,18 @@ model OwnerCredential {
   /// When it was last changed, so the page can say how old the password is.
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  /// The recovery question, in plain text. It is not a secret — it is shown to
+  /// whoever is locked out, which is the whole point of it.
+  question String @default("")
+  /// A scrypt hash of the *answer*, hex encoded. The answer itself is never
+  /// stored, only hashed, so a copy of this table is not a way in.
+  answerHash String @default("")
+  /// The salt for the answer, hex encoded.
+  answerSalt String @default("")
+  /// When the recovery pair was last changed, so a stale answer can be told
+  /// from a current one if that ever matters.
+  recoveryAt DateTime? @map("recovery_at")
+
   @@map("owner_credentials")
 }
 

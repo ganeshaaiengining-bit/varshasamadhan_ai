@@ -94,3 +94,50 @@ export function passwordProblem(password: string): string | null {
   if (password.length > 200) return 'too-long';
   return null;
 }
+
+/* -------------------------------------------------------------------------- */
+/* Recovery answers — the "I forgot my password" half                          */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Fold a recovery answer into the form it is stored and checked in.
+ *
+ * ── Why anything is normalised at all ───────────────────────────────────────
+ * Because the person typing it is, at that exact moment, locked out of their
+ * own site. Capitalisation and a double space are not security events; they are
+ * what a hurried person under stress produces. Forgiven here so the recovery
+ * path never refuses somebody for the one kind of typo that recovery exists to
+ * absorb.
+ *
+ * Trimmed, lowercased, and internal runs of whitespace collapsed to one space.
+ * Punctuation and script are left exactly as typed — "माँ" and "maa" are
+ * different answers to a Hindi question and must stay different.
+ */
+export function normalizeAnswer(answer: string): string {
+  return answer.trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+/**
+ * Is this answer worth storing?
+ *
+ * Two characters is a deliberately low floor: the answers here are things like
+ * a first name or a city, and a rule that rejects "राम" would reject the
+ * answer the owner actually chose. The protection against a short answer is
+ * not a length rule — it is that the answer is checked slowly (scrypt) and
+ * checked at most a handful of times per address before that address is
+ * refused.
+ */
+export function answerProblem(answer: string): string | null {
+  const value = normalizeAnswer(answer);
+  if (value.length < 2) return 'answer-too-short';
+  if (value.length > 200) return 'answer-too-long';
+  return null;
+}
+
+/** Is this question worth storing? Shown in plain text, so only length matters. */
+export function questionProblem(question: string): string | null {
+  const value = question.trim();
+  if (value.length < 4) return 'question-too-short';
+  if (value.length > 200) return 'question-too-long';
+  return null;
+}

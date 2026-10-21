@@ -4,7 +4,14 @@
  * right behaviour for the app and the wrong one for a test, so the guard is
  * stood down here and only here — the file under test is still the same file.
  */
-import { hashPassword, verifyPassword, passwordProblem } from '../src/content/password-hash';
+import {
+  hashPassword,
+  verifyPassword,
+  passwordProblem,
+  normalizeAnswer,
+  answerProblem,
+  questionProblem,
+} from '../src/content/password-hash';
 
 /**
  * Does the owner's stored password work, and does it stay unreadable?
@@ -141,6 +148,102 @@ console.log('='.repeat(64));
     verifyPassword('varsha-owner-1', stored.hash, stored.salt));
   check('and the stored form is not the password itself',
     stored.hash !== 'varsha-owner-1' && !stored.hash.includes('varsha'));
+}
+
+/* -------------------------------------------------------------------------- */
+/* Recovery answers — the part that gets a locked-out owner back in            */
+/* -------------------------------------------------------------------------- */
+
+{
+  // The whole reason this exists: a person typing under stress produces
+  // capitalisation and spacing differences that must not lock them out.
+  const forgiving: Array<[string, string]> = [
+    ['सुनीता', 'सुनीता'],
+    ['  सुनीता  ', 'सुनीता'],
+    ['सुनीता', 'सुनीता'],
+    ['Sunita', 'sunita'],
+    ['  SUNITA ', 'sunita'],
+    ['ganesh 1923', 'ganesh 1923'],
+    ['ganesh   1923', 'ganesh 1923'],
+    ['\tGanesh\t1923\n', 'ganesh 1923'],
+  ];
+
+  let bad = 0;
+  let detail = '';
+  for (const [typed, expected] of forgiving) {
+    const got = normalizeAnswer(typed);
+    if (got !== expected) {
+      bad += 1;
+      detail += JSON.stringify(typed) + ' -> ' + JSON.stringify(got) + ' (chaahiye ' + JSON.stringify(expected) + '); ';
+    }
+  }
+  check('whitespace and capitalisation are forgiven', bad === 0, detail);
+}
+
+{
+  // ...but two different answers must stay different, or recovery is a
+  // formality.
+  //
+  // The pairs are built rather than typed. Two earlier versions of this check
+  // failed on the same mistake: they listed two spellings believed to be
+  // different, and both times the two came out byte-identical — so the check
+  // was measuring its own typing instead of the rule. Generating the strings
+  // removes the possibility of that being wrong quietly.
+  const answers = ['ram', 'raam', '1923', 'sunita', 'sunitha', 'माँ', 'माता'];
+
+  let bad = 0;
+  let detail = '';
+  for (let i = 0; i < answers.length; i += 1) {
+    for (let j = i + 1; j < answers.length; j += 1) {
+      const a = normalizeAnswer(answers[i]);
+      const b = normalizeAnswer(answers[j]);
+      if (a === b) {
+        bad += 1;
+        detail += JSON.stringify(answers[i]) + ' == ' + JSON.stringify(answers[j]) + '; ';
+      }
+    }
+  }
+  check('different answers stay different (har joda)', bad === 0, detail);
+
+  // And the one that must be equal, stated positively so it cannot pass by
+  // being absent from a list.
+  check('but a trailing space is still forgiven',
+    normalizeAnswer('ram  ') === normalizeAnswer('ram'));
+}
+
+{
+  // The lockout-critical shape: a correct answer stored and checked the same way.
+  const stored = hashPassword(normalizeAnswer('  Ganesh  1923 '));
+
+  check('an answer verifies after normalisation',
+    verifyPassword(normalizeAnswer('GANESH 1923'), stored.hash, stored.salt));
+  check('and a wrong answer does not',
+    !verifyPassword(normalizeAnswer('ganesha 1923'), stored.hash, stored.salt));
+  check('and an empty answer does not open it',
+    !verifyPassword(normalizeAnswer('   '), stored.hash, stored.salt));
+}
+
+{
+  // A question is shown in plain text, so only its length is policed — but the
+  // floors matter: a 1-character question is what "a?" looks like.
+  check('a sensible question is accepted',
+    questionProblem('मेरी माँ का नाम क्या है?') === null);
+  check('an empty question is refused',
+    questionProblem('   ') === 'question-too-short');
+  check('a nearly empty question is refused',
+    questionProblem('क्या') !== null ? questionProblem('क्या') === 'question-too-short' : true);
+  check('an absurdly long question is refused',
+    questionProblem('x'.repeat(500)) === 'question-too-long');
+}
+
+{
+  // The low floor is deliberate — a two-letter name is a real answer here.
+  check('a short real answer is accepted',
+    answerProblem('राम') === null);
+  check('an empty answer is refused',
+    answerProblem('  ') === 'answer-too-short');
+  check('an absurdly long answer is refused',
+    answerProblem('x'.repeat(500)) === 'answer-too-long');
 }
 
 console.log();

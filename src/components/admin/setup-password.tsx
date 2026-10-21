@@ -33,12 +33,18 @@ const MESSAGES: Record<string, string> = {
   'bad-token': 'यह लिंक काम नहीं कर रहा। शायद इसे पहले ही इस्तेमाल किया जा चुका है।',
   'already-set': 'पासवर्ड पहले से बना हुआ है। अगर आप उसे भूल गए हैं तो लिंक दोबारा काम नहीं करेगा — यही इसकी ताक़त है।',
   'network': 'सर्वर से जुड़ नहीं पाए। थोड़ी देर में कोशिश कीजिए।',
-  'saved': 'पासवर्ड बन गया। आप अंदर हैं — अब इसे कहीं न लिखिए।',
+  'saved': 'पासवर्ड बन गया। आप अंदर हैं — अब ये तीनों सिर्फ़ आपके पास हैं: पासवर्ड, सवाल, जवाब।',
+  'question-too-short': 'सवाल थोड़ा लंबा लिखिए — कम से कम 4 अक्षर।',
+  'question-too-long': 'सवाल बहुत लंबा है — 200 अक्षर से कम रखिए।',
+  'answer-too-short': 'जवाब कम से कम 2 अक्षर का हो।',
+  'answer-too-long': 'जवाब बहुत लंबा है — 200 अक्षर से कम रखिए।',
 };
 
 export function SetupPassword({ token }: { token: string }) {
   const [password, setPassword] = React.useState('');
   const [again, setAgain] = React.useState('');
+  const [question, setQuestion] = React.useState('');
+  const [answer, setAnswer] = React.useState('');
   const [busy, setBusy] = React.useState(false);
   const [message, setMessage] = React.useState<string | null>(null);
   const [tone, setTone] = React.useState<'error' | 'good'>('error');
@@ -61,7 +67,7 @@ export function SetupPassword({ token }: { token: string }) {
       const response = await fetch('/api/admin/setup-password', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ token, password }),
+        body: JSON.stringify({ token, password, question, answer }),
       });
 
       const data = (await response.json()) as { ok: boolean; reason?: string };
@@ -71,6 +77,8 @@ export function SetupPassword({ token }: { token: string }) {
         setMessage(MESSAGES.saved);
         setPassword('');
         setAgain('');
+        setQuestion('');
+        setAnswer('');
 
         // Straight to the panel. They have just proved who they are, so making
         // them type it again on the next screen would be asking twice.
@@ -129,6 +137,64 @@ export function SetupPassword({ token }: { token: string }) {
             className="rounded-lg border border-line bg-paper px-4 py-3 text-lg"
             required
           />
+        </div>
+
+        {/*
+          The recovery pair, asked right here rather than later.
+
+          It is asked at setup for one reason: this is the only moment the owner
+          is both present and unhurried. A nag afterwards gets dismissed, and a
+          recovery that is set up after the password has already been forgotten
+          is a recovery nobody can use exactly when they need it. Two examples
+          under the box instead of rules above it — a person choosing a question
+          wants to see what a good one looks like, not read a policy.
+        */}
+        <div className="rounded-[var(--radius)] border border-line bg-sun/10 p-4">
+          <p className="font-semibold">अगर पासवर्ड भूल गए तो?</p>
+          <p className="mt-1 text-sm text-ink-subtle">
+            एक सवाल और उसका जवाब तय कीजिए। जब भी पासवर्ड याद न रहे, यही जवाब आपको अंदर
+            ले जाएगा। दोनों सिर्फ़ आपके पास रहेंगे।
+          </p>
+        </div>
+
+        <div className="grid gap-2">
+          <label htmlFor="recovery-question" className="font-medium">
+            सवाल
+          </label>
+          <input
+            id="recovery-question"
+            type="text"
+            autoComplete="off"
+            placeholder="जैसे: मेरी माँ का नाम क्या है?"
+            value={question}
+            onChange={(event) => setQuestion(event.target.value)}
+            className="rounded-lg border border-line bg-paper px-4 py-3 text-lg"
+            required
+            maxLength={200}
+          />
+          <p className="text-sm text-ink-subtle">
+            कोई ऐसा सवाल जिसका जवाब सिर्फ़ आप जानते हैं — और जो आप भूलें नहीं।
+          </p>
+        </div>
+
+        <div className="grid gap-2">
+          <label htmlFor="recovery-answer" className="font-medium">
+            जवाब
+          </label>
+          <input
+            id="recovery-answer"
+            type="text"
+            autoComplete="off"
+            placeholder="जैसे: सुनीता"
+            value={answer}
+            onChange={(event) => setAnswer(event.target.value)}
+            className="rounded-lg border border-line bg-paper px-4 py-3 text-lg"
+            required
+            maxLength={200}
+          />
+          <p className="text-sm text-ink-subtle">
+            बड़े-छोटे अक्षर और खाली जगह का फ़र्क नहीं पड़ता — लेकिन जो लिखेंगे वही याद रखिए।
+          </p>
         </div>
 
         {mismatch && (

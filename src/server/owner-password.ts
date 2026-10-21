@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { hashPassword } from '@/content/password-hash';
+import { hashPassword, verifyPassword, normalizeAnswer } from '@/content/password-hash';
 
 /**
  * ============================================================================
@@ -51,21 +51,110 @@ export async function storedPassword(): Promise<{ hash: string; salt: string } |
   }
 }
 
-/** Write the password, replacing whatever was there. */
-export async function savePassword(password: string): Promise<void> {
-  const { hash, salt } = hashPassword(password);
+/** Has the owner ever set a password of their own? */
+export async function hasStoredPassword(): Promise<boolean> {
+  return (await storedPassword()) !== null;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Recovery — the question that gets the owner back in                         */
+/* -------------------------------------------------------------------------- */
+
+/** What the forgot-password flow needs: the question to show, and its answer. */
+export interface Recovery {
+  question: string;
+  answerHash: string;
+  answerSalt: string;
+}
+
+/**
+ * The stored recovery pair, if one was set.
+ *
+ * Null when there is no row and also when the row has no question — both mean
+ * "there is nothing to recover *with*", which the caller reports in words
+ * rather than pretending a reset happened.
+ */
+export async function storedRecovery(): Promise<Recovery | null> {
+  try {
+    const { prisma } = await import('@/server/db');
+    const row = await prisma.ownerCredential.findUnique({ where: { id: ROW_ID } });
+    if (!row?.question || !row.answerHash || !row.answerSalt) return null;
+    return { question: row.question, answerHash: row.answerHash, answerSalt: row.answerSalt };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Write the password and its recovery question together.
+ *
+ * Together, in one statement, because a password with no way back and a
+ * question with no password to unlock are both half-features — and because
+ * doing it in one upsert means a failure between the two writes cannot leave
+ * the owner with one without the other.
+ *
+ * The answer is normalised and hashed here, so no caller can accidentally store
+ * the plain answer by forgetting a step.
+ */
+export async function setPasswordWithRecovery(
+  password: string,
+  question: string,
+  answer: string,
+): Promise<void> {
+  const passwordPair = hashPassword(password);
+  const answerPair = hashPassword(normalizeAnswer(answer));
   const { prisma } = await import('@/server/db');
 
   await prisma.ownerCredential.upsert({
     where: { id: ROW_ID },
-    create: { id: ROW_ID, hash, salt },
-    update: { hash, salt },
+    create: {
+      id: ROW_ID,
+      hash: passwordPair.hash,
+      salt: passwordPair.salt,
+      question: question.trim(),
+      answerHash: answerPair.hash,
+      answerSalt: answerPair.salt,
+      recoveryAt: new Date(),
+    },
+    update: {
+      hash: passwordPair.hash,
+      salt: passwordPair.salt,
+      question: question.trim(),
+      answerHash: answerPair.hash,
+      answerSalt: answerPair.salt,
+      recoveryAt: new Date(),
+    },
   });
 }
 
-/** Has the owner ever set a password of their own? */
-export async function hasStoredPassword(): Promise<boolean> {
-  return (await storedPassword()) !== null;
+/**
+ * Does this answer unlock the account?
+ *
+ * Normalised the same way it was on the way in, hashed with the stored salt, and
+ * compared in constant time. False when there is no recovery pair at all — the
+ * locked-out state must never be readable as "yes".
+ */
+export async function checkRecoveryAnswer(answer: string): Promise<boolean> {
+  const recovery = await storedRecovery();
+  if (!recovery) return false;
+  return verifyPassword(normalizeAnswer(answer), recovery.answerHash, recovery.answerSalt);
+}
+
+/**
+ * Replace the password with a new one, keeping the recovery question as it is.
+ *
+ * Only ever called after `checkRecoveryAnswer` returned true, and never with a
+ * password that has not been through `passwordProblem`. The route enforces both
+ * because the route is where the attempts are counted.
+ */
+export async function resetPassword(password: string): Promise<void> {
+  const { hash, salt } = hashPassword(password);
+  const { prisma } = await import('@/server/db');
+
+  await prisma.ownerCredential.update({
+    where: { id: ROW_ID },
+    data: { hash, salt, updatedAt: new Date() },
+  });
 }
 
 /**
@@ -80,3 +169,8 @@ export async function setupAlreadyUsed(): Promise<boolean> {
 }
 
 export { hashPassword, verifyPassword, passwordProblem } from '@/content/password-hash';
+export {
+  normalizeAnswer,
+  answerProblem,
+  questionProblem,
+} from '@/content/password-hash';
