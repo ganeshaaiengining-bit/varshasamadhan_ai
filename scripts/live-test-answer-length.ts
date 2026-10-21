@@ -114,12 +114,15 @@ async function main(): Promise<void> {
     console.log(`  ... lambai: ${answer.length} akshar`);
 
     check('jawab 1500 akshar se lamba (aarti jaisa chhota nahi)', answer.length > 1500, `${answer.length}`);
-    check('shuruaat maujood — doha ya "बाल समय"', /बाल समय|दोहा/.test(answer));
+    // A chalisa opens with either the guru doha or "जय हनुमान"; either proves
+    // the text starts at the beginning rather than at verse ten.
+    check('shuruaat maujood — guru doha / जय हनुमान', /श्री\s*गुरु चरन|जय हनुमान|बाल समय/.test(answer));
+    check('beech ka hissa maujood — लंका / सुग्रीव', /लंका|सुग्रीव|जामवंत/.test(answer));
     check('kam se kam 20 panktiyan (chalisa ki tarah lamba)', answer.split('\n').filter((l) => l.trim()).length >= 20,
       `${answer.split('\n').filter((l) => l.trim()).length} panktiyan`);
     check(
       'ant maujood — aakhri doha',
-      answer.includes('पवनतनय संकट हरण') || answer.includes('संकट हरण मंगल करन'),
+      /संकट\s*हरण/.test(answer) || /हृदय\s*बसहु/.test(answer),
     );
     check('aadha shabd par khatam nahi', /[।॥.!?\)"'”’]\s*$/.test(answer.trim()), JSON.stringify(answer.slice(-40)));
     check('"etc." ya "इत्यादि" se kaam nahi chalaaya', !/\betc\.?|इत्यादि|वगैरह/i.test(answer));

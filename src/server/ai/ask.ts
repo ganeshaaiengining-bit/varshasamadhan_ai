@@ -140,10 +140,10 @@ export async function askQuestion(
    * better one than a page that says nothing at all — the site can explain
    * itself and offer the next step, and a 504 cannot.
    *
-   * Fifty-four seconds leaves six for the response to be written and for the
+   * Fifty-six seconds leaves four for the response to be written and for the
    * question to be filed.
    */
-  const TOTAL_BUDGET_MS = Number(process.env.ASK_TOTAL_BUDGET_MS ?? 54_000);
+  const TOTAL_BUDGET_MS = Number(process.env.ASK_TOTAL_BUDGET_MS ?? 56_000);
 
   /*
    * Ollama is asked whether it is even installed before spending a call on it.

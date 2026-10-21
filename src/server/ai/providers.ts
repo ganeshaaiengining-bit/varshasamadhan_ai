@@ -101,7 +101,7 @@ export type ProviderResult =
  * guard rejects most of what it returns, so waiting longer on it mostly waits
  * longer for something that will be discarded.
  */
-const GEMINI_TIMEOUT_MS = Number(process.env.GEMINI_TIMEOUT_MS ?? 20_000);
+const GEMINI_TIMEOUT_MS = Number(process.env.GEMINI_TIMEOUT_MS ?? 40_000);
 const OLLAMA_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS ?? 90_000);
 const POLLINATIONS_TIMEOUT_MS = Number(process.env.POLLINATIONS_TIMEOUT_MS ?? 22_000);
 
@@ -115,12 +115,16 @@ const POLLINATIONS_TIMEOUT_MS = Number(process.env.POLLINATIONS_TIMEOUT_MS ?? 22
  * explanation, nothing to read. The per-model deadline was 150 seconds, which is
  * longer than the function is even allowed to live.
  *
- * Now no single model can spend more than twenty seconds, and the provider as a
- * whole cannot spend more than thirty-five, which leaves the rest of the
- * function's minute for the keyless fallbacks or for an honest "could not
- * answer" instead of a dead page.
+ * ── Why forty seconds, and not twenty ─────────────────────────────────────
+ * Twenty was tried first and it was too tight in the other direction: the first
+ * live run after the change came back with "could not answer" on a complete
+ * Hanuman Chalisa, because a long text sometimes needs more than twenty seconds
+ * even from the fast model. A cap that is too generous gives a 504; a cap that
+ * is too tight throws away the answer it was protecting. Forty seconds is over
+ * five times the measured 7.2-second Chalisa and still leaves the platform's
+ * minute intact, because the total is capped separately below.
  */
-const GEMINI_TOTAL_MS = Number(process.env.GEMINI_TOTAL_MS ?? 32_000);
+const GEMINI_TOTAL_MS = Number(process.env.GEMINI_TOTAL_MS ?? 46_000);
 
 /** The default for any provider that does not pass its own deadline. */
 const TIMEOUT_MS = 90_000;
