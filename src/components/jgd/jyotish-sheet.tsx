@@ -27,11 +27,13 @@ import {
   ankaProfile,
   reduce9,
   reduce52,
+  dateDigits,
   upayFor,
   shatruAnk,
   DEV_GRAHA,
   ANUKOOL,
-  LOSH_ARMS,
+  LOSH_ROWS,
+  LOSH_COLS,
   MASTERS,
   type LoshGrid,
 } from '@/content/ankaganit';
@@ -1082,14 +1084,23 @@ function AnkaGanit({ chart }: { chart: Chart }) {
   const ruling = profile.bhavAnk.value;
   const birthNumber = profile.janmAnk.value;
 
-  /** The cell of the Losh cross holding a given digit. */
-  const byDigit = (digit: number) =>
-    profile.losh.cells.find((cell) => cell.digit === digit) ?? {
-      digit,
-      arm: 'centre' as const,
-      count: 0,
-    };
   const upay = upayFor(ruling);
+
+  /*
+   * The भाग्यांक — the birth date written out digit by digit, added, folded to
+   * one digit. For 18.2.1972 that is 1 + 8 + 2 + 1 + 9 + 7 + 2 = 30 → 3, which
+   * is the figure the owner counts by hand before reading a Lo Shu grid, and
+   * the grid did not show it anywhere — the number sat in the cards above and
+   * the section he was reading never named it.
+   *
+   * It comes from `kulAnk` — the same sum the cards print — so the two can
+   * never disagree; only the writing of it out is new.
+   */
+  const bhagyankDigits = dateDigits(chart.input.day, chart.input.month, chart.input.year);
+  const bhagyankSum = profile.kulAnk.compound ?? bhagyankDigits.reduce((a, b) => a + b, 0);
+  const bhagyankChain =
+    `${bhagyankDigits.join(' + ')} = ${bhagyankSum}` +
+    (profile.kulAnk.value === bhagyankSum ? '' : ` → ${profile.kulAnk.value}`);
   const friends = ANUKOOL[ruling] ?? [];
   const enemies = shatruAnk(ruling);
   const devGraha = DEV_GRAHA[ruling - 1];
@@ -1170,44 +1181,74 @@ function AnkaGanit({ chart }: { chart: Chart }) {
       <section>
         <h3 className="font-display text-lg">लोश ग्रिड</h3>
         <p className="mt-1 text-sm text-ink-subtle">
-          तारीख़ के हर अंक को गिनकर यह चौरा बनता है — हड्डी, लोहा, मांस, मज्जा और बीच
-          में आपकी अपनी जगह। जिस अंक के खाने खाली हैं, वह अंक आपकी तारीख़ में नहीं है।
+          तारीख़ के हर अंक को गिनकर लो-शु वर्ग में रखा जाता है। नौ में से हर खाने में
+          एक अंक है — गिनती शून्य का मतलब है कि वह अंक तारीख़ में है ही नहीं।
         </p>
+
+        {/*
+          The भाग्यांक, at the head of the grid, with its arithmetic written
+          out digit by digit. The reader counts the date to one number before
+          looking at the grid; the grid should be the thing that answers.
+        */}
+        <div className="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 rounded-lg border border-saffron/40 bg-saffron/10 px-4 py-3">
+          <span className="font-medium">भाग्यांक</span>
+          <span className="font-display text-3xl leading-none text-saffron-deep tabular-nums">
+            {profile.kulAnk.value}
+          </span>
+          <span className="text-sm text-ink-subtle">
+            तारीख़ के सारे अंक:{' '}
+            <span className="tabular-nums">{bhagyankChain}</span>
+          </span>
+        </div>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-[auto_1fr]">
           {/*
-            The cross, drawn on a five-column grid so the arms sit where they
-            sit on paper.
+            The nine squares, in the order of the magic square itself:
 
-            Every cell is placed by column and row rather than in reading order.
-            In reading order the seven cells fell into the first rows of a
-            five-column grid and the metal and centre cells were pushed off the
-            right-hand edge — the grid drew, the counts were right, and the shape
-            was not the shape it is supposed to be. A grid that is not the right
-            shape is read as a different reading, so the shape is stated here.
+                4  9  2
+                3  5  7
+                8  1  6
+
+            The grid that used to be drawn here was a cross of seven cells and
+            had no square at all for 2 or 7. A visitor whose date was full of
+            sevens could not see one of them in the grid that exists to show
+            them. All nine are drawn now, zero counts included, because the
+            reading below — which numbers are missing, which repeat — is read
+            off exactly these nine numbers.
           */}
-          <div className="mx-auto grid w-[19rem] max-w-full grid-cols-5 grid-rows-3 gap-1.5 text-center">
-            <LoshCell cell={byDigit(3)} className="col-start-2 row-start-1" />
-            <LoshCell cell={byDigit(4)} className="col-start-3 row-start-1" />
-            <LoshCell cell={byDigit(9)} className="col-start-4 row-start-1" />
-
-            <LoshCell cell={byDigit(1)} className="col-start-1 row-start-2" />
-            <LoshCell cell={byDigit(5)} className="col-start-3 row-start-2" centre />
-            <LoshCell cell={byDigit(6)} className="col-start-5 row-start-2" />
-
-            <LoshCell cell={byDigit(8)} className="col-start-2 row-start-3" />
+          <div className="mx-auto grid w-[19rem] max-w-full grid-cols-3 gap-1.5 text-center">
+            {profile.losh.cells.map((cell) => (
+              <LoshCell key={cell.digit} cell={cell} />
+            ))}
           </div>
 
           <div className="grid content-start gap-2">
-            {LOSH_ARMS.map((arm) => (
-              <div key={arm.arm} className="flex items-baseline gap-3 rounded-lg bg-sun/10 px-4 py-2">
-                <span className="min-w-[5rem] font-medium">{arm.label}</span>
+            {[...LOSH_ROWS, ...LOSH_COLS].map((line) => (
+              <div
+                key={line.label}
+                className="flex items-baseline gap-3 rounded-lg bg-sun/10 px-4 py-2"
+              >
+                <span className="min-w-[11rem] font-medium">{line.label}</span>
                 <span className="min-w-[1.5rem] text-right font-display text-lg tabular-nums">
-                  {profile.losh.arms[arm.arm]}
+                  {'row' in line ? profile.losh.rows[line.row] : profile.losh.cols[line.col]}
                 </span>
-                <span className="text-sm text-ink-subtle">{arm.what}</span>
               </div>
             ))}
+
+            {profile.losh.repeated.length > 0 && (
+              <p className="mt-1 text-sm">
+                ये अंक एक से ज़्यादा बार आए हैं —{' '}
+                <strong className="text-saffron-deep">
+                  {profile.losh.repeated
+                    .map(
+                      (n) =>
+                        `${n} (${profile.losh.cells.find((cell) => cell.digit === n)?.count ?? 0})`,
+                    )
+                    .join(', ')}
+                </strong>
+                . जिस अंक की गिनती ज़्यादा है, उसका असर ज़्यादा।
+              </p>
+            )}
 
             {profile.losh.missing.length > 0 && (
               <p className="mt-1 text-sm">
@@ -1226,9 +1267,9 @@ function AnkaGanit({ chart }: { chart: Chart }) {
       <section>
         <h3 className="font-display text-lg">लो-शु वर्ग</h3>
         <p className="mt-1 text-sm text-ink-subtle">
-          एक से नौ तक के अंक इस वर्ग में ऐसे बैठते हैं कि हर पंक्ति, हर स्तंभ और दोनों
-          विकर्ण — हर जगह जोड़ने पर पंद्रह आते हैं। आपका अंक कहाँ बैठा है, वह रंग से
-          दिखाया गया है।
+          ऊपर जो गिनती दिखी, उसी वर्ग के अंक थे। यहाँ वर्ग अपनी जगह पर है — हर पंक्ति,
+          हर स्तंभ और दोनों विकर्ण जोड़ने पर पंद्रह आते हैं। आपका जन्म अंक कहाँ बैठता
+          है, वह पहचाना हुआ खाना है।
         </p>
 
         <div className="mt-4 grid w-[15rem] max-w-full grid-cols-3 gap-1.5 text-center">
@@ -1282,11 +1323,21 @@ function AnkaGanit({ chart }: { chart: Chart }) {
           </div>
           <div className="rounded-lg border border-rose/40 bg-rose/10 p-4">
             <p className="font-medium">शत्रु — जो रोकते हैं</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {enemies.map((n) => (
-                <AnkaChip key={n} n={n} />
-              ))}
-            </div>
+            {/*
+              चंद्र has no enemy at all, and an empty box would read as a page
+              that failed to load. The list says so instead.
+            */}
+            {enemies.length === 0 ? (
+              <p className="mt-2 text-sm text-ink-subtle">
+                इस अंक का कोई शत्रु अंक नहीं माना जाता।
+              </p>
+            ) : (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {enemies.map((n) => (
+                  <AnkaChip key={n} n={n} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
         <p className="mt-2 text-sm text-ink-subtle">
@@ -1310,25 +1361,10 @@ function AnkaGanit({ chart }: { chart: Chart }) {
   );
 }
 
-/** One cell of the Losh cross: the digit's place, and how many times it occurs. */
-function LoshCell({
-  cell,
-  centre = false,
-  className = '',
-}: {
-  cell: LoshGrid['cells'][number];
-  centre?: boolean;
-  className?: string;
-}) {
+/** One square of the grid: the digit that sits there, and its count. */
+function LoshCell({ cell }: { cell: LoshGrid['cells'][number] }) {
   return (
-    <div
-      className={
-        'grid aspect-square place-items-center rounded-lg border ' +
-        (centre ? 'border-saffron bg-saffron/15' : 'border-line bg-surface') +
-        ' ' +
-        className
-      }
-    >
+    <div className="grid aspect-square place-items-center rounded-lg border border-line bg-surface">
       <div className="text-center leading-none">
         <div className="font-display text-xl text-saffron-deep tabular-nums">{cell.digit}</div>
         <div className="mt-1 font-display text-lg tabular-nums">{cell.count}</div>

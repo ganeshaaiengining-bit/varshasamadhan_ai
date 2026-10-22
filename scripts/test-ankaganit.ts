@@ -2,17 +2,21 @@ import {
   ankaProfile,
   reduce9,
   reduce52,
+  dateDigits,
   nameNumber,
   digitCounts,
   upayFor,
   loShuSquare,
   loShuCell,
+  LOSH_CELLS,
   ANUKOOL,
+  SHATRU,
   shatruAnk,
   ANKA_UPAY,
+  DEV_GRAHA,
   MASTERS,
 } from '../src/content/ankaganit';
-import { ankaFromDate, ankaCompoundFromDate } from '../src/content/anka';
+import { ankaFromDate, ankaCompoundFromDate, allAnkaMeanings } from '../src/content/anka';
 
 /**
  * Is the Anka Ganit right?
@@ -105,6 +109,44 @@ check('the counts add up to the digits that are not zero',
 
 check('the missing digits of 14.3.1975 are 2, 6 and 8',
   p.losh.missing.join(',') === '2,6,8', `got ${p.losh.missing.join(',')}`);
+
+/* ── 3b. the count grid holds all nine digits ────────────────────────────── */
+
+/*
+ * The grid that used to be drawn was a cross of seven cells: 3, 4 and 9 on
+ * top, 1, 5 and 6 across, 8 below. Two digits — 2 and 7 — had no cell at all,
+ * so a date full of sevens showed not one of them in the grid that exists to
+ * show them, and the line underneath about missing numbers was printed next
+ * to a picture that could not have held them.
+ */
+const gridDigits = LOSH_CELLS.map((cell) => cell.digit).sort((a, b) => a - b);
+check('the count grid holds all nine digits',
+  gridDigits.join(',') === '1,2,3,4,5,6,7,8,9', `got ${gridDigits.join(',')}`);
+
+check('and each sits in the square of the magic square that holds it',
+  LOSH_CELLS.every((cell) => loShuSquare()[cell.row][cell.col] === cell.digit),
+  'the count grid and the magic square have drifted apart');
+
+// Every row total and every column total is a plain sum of three counts, and
+// all three of each add to the same figure — the digits in the date. Anyone
+// can check this with a pencil, which is the point of printing it.
+check('every row total is the sum of its three counts',
+  p.losh.rows.every((total, row) =>
+    LOSH_CELLS.filter((cell) => cell.row === row).reduce(
+      (sum, cell) => sum + counts[cell.digit],
+      0,
+    ) === total),
+  `got ${p.losh.rows.join(',')}`);
+check('the three rows add up to the digits in the date',
+  p.losh.rows.reduce((a, b) => a + b, 0) === p.losh.total,
+  `rows add to ${p.losh.rows.reduce((a, b) => a + b, 0)}, the date has ${p.losh.total}`);
+check('the three columns add up to the same figure',
+  p.losh.cols.reduce((a, b) => a + b, 0) === p.losh.total,
+  `cols add to ${p.losh.cols.reduce((a, b) => a + b, 0)}`);
+
+// 14.3.1975 has two ones, so one is the digit that repeats.
+check('a digit that occurs twice is reported as repeating',
+  p.losh.repeated.join(',') === '1', `got ${p.losh.repeated.join(',')}`);
 
 /* ── 4. the grid ──────────────────────────────────────────────────────────── */
 
@@ -317,10 +359,132 @@ const overlaps = [1, 2, 3, 4, 5, 6, 7, 8, 9].filter((n) =>
 check('nothing is both a friend and an enemy', overlaps.length === 0,
   `both for ${overlaps.join(',')}`);
 
+const wrongEnemy = [1, 2, 3, 4, 5, 6, 7, 8, 9].filter(
+  (n) => shatruAnk(n).includes(n) || shatruAnk(n).some((x) => x < 1 || x > 9),
+);
+check('no number is listed as its own enemy, and none is out of range',
+  wrongEnemy.length === 0, `wrong for ${wrongEnemy.join(',')}`);
+
+/*
+ * चंद्र has no enemy in the texts at all. The enemy list used to be *derived*
+ * — everything that was not a friend was called an enemy — which handed चंद्र
+ * four it does not have and put seven in the enemy lists of 1, 2, 3 and 5.
+ */
+check('चंद्र has no enemy at all', shatruAnk(2).length === 0,
+  `got ${shatruAnk(2).join(',')}`);
+
+check('seven is not called an enemy by any number',
+  [1, 2, 3, 4, 5, 6, 7, 8, 9].filter((n) => shatruAnk(n).includes(7)).length === 0,
+  'seven is back in someone\'s enemy list');
+
 check('every number has a remedy entry', ANKA_UPAY.length === 9,
   `got ${ANKA_UPAY.length}`);
 check('every master number is described',
   [11, 22, 33, 44].every((n) => MASTERS[n]?.what.length > 10));
+
+/* ── 11. the nine are the navagraha — the owner's correction ──────────────── */
+
+/*
+ * The owner looked at one number and the whole table came down.
+ *
+ * Seven is केतु. It was printing as शनि — शनि's obstruction and loneliness as
+ * its *nature*, शनि's blue sapphire and Saturday as its *remedy*, and a seat
+ * in the enemy lists of the ones, twos, threes and fives. A visitor with a
+ * seven anywhere in the date was being told, in three separate places, that
+ * the seven was something working against them. It is केतु: the number of the
+ * one who sees what others miss.
+ *
+ * The old table also ran the week's order rather than the navagraha's, and
+ * carried **भृगु** where a graha belongs — भृगु is a rishi and rules no number.
+ *
+ * These checks are the table itself, written out. Arithmetic cannot satisfy
+ * them and no rearrangement passes them by luck: if the nine numbers stop
+ * being the navagraha in their own order, this fails with the name that moved.
+ */
+
+const NAVAGRAHA = ['सूर्य', 'चंद्र', 'बृहस्पति', 'राहु', 'बुध', 'शुक्र', 'केतु', 'शनि', 'मंगल'];
+
+check('the nine numbers are the navagraha, in their own order',
+  DEV_GRAHA.map((g) => g.name).join(',') === NAVAGRAHA.join(','),
+  `got ${DEV_GRAHA.map((g) => g.name).join(',')}`);
+
+check('each of them carries its own number',
+  DEV_GRAHA.every((g, i) => g.number === i + 1),
+  `got ${DEV_GRAHA.map((g) => g.number).join(',')}`);
+
+check('seven is केतु', DEV_GRAHA[6].name === 'केतु', `got ${DEV_GRAHA[6].name}`);
+check('three is गुरु — बृहस्पति, not a rishi',
+  DEV_GRAHA[2].name === 'बृहस्पति', `got ${DEV_GRAHA[2].name}`);
+check('eight is शनि', DEV_GRAHA[7].name === 'शनि', `got ${DEV_GRAHA[7].name}`);
+check('nine is मंगल', DEV_GRAHA[8].name === 'मंगल', `got ${DEV_GRAHA[8].name}`);
+
+// Seven's remedy is केतु's own: the cat's eye, on a Tuesday. It used to be
+// शनि's blue sapphire on a Saturday.
+check('seven\'s remedy is केतु\'s own — लहसुनिया, on a Tuesday',
+  upayFor(7).stone.includes('लहसुनिया') && upayFor(7).day === 'मंगलवार',
+  `got ${upayFor(7).stone} on ${upayFor(7).day}`);
+check('eight\'s remedy is शनि\'s own — नीलम, on a Saturday',
+  upayFor(8).stone.includes('नीलम') && upayFor(8).day === 'शनिवार',
+  `got ${upayFor(8).stone} on ${upayFor(8).day}`);
+check('nine\'s remedy is मंगल\'s own — मूंगा, on a Tuesday',
+  upayFor(9).stone.includes('मूंगा') && upayFor(9).day === 'मंगलवार',
+  `got ${upayFor(9).stone} on ${upayFor(9).day}`);
+
+// Every remedy row names the planet of its own number, so a stone cannot
+// drift onto a number that does not rule it again.
+const wrongMantra = [1, 2, 3, 4, 5, 6, 7, 8, 9].filter(
+  (n) => upayFor(n).mantra !== DEV_GRAHA[n - 1].name,
+);
+check('every remedy names the planet of its own number',
+  wrongMantra.length === 0, `wrong for ${wrongMantra.join(',')}`);
+
+// भृगु stands where a graha belongs, in the nine and in the compounds alike.
+const rishiNumbers = allAnkaMeanings().filter((m) => m.title.includes('भृगु'));
+check('no number is ruled by a rishi',
+  rishiNumbers.length === 0,
+  `still ruled by भृगु: ${rishiNumbers.map((m) => m.number).join(',')}`);
+
+// The compound numbers are named for pairs of grahas. Every half of every
+// name must be a word that appears among the navagraha's own names — a title
+// half that is not a planet is how भृगु got in.
+const GRAHA_WORDS = [...NAVAGRAHA, 'रवि', 'गुरु']; // रवि = सूर्य, गुरु = बृहस्पति
+const compoundHalves = allAnkaMeanings()
+  .filter((m) => m.number >= 10 && m.number <= 30)
+  .flatMap((m) => m.title.split('-'));
+const unknownHalves = compoundHalves.filter((half) => !GRAHA_WORDS.includes(half));
+check('every compound number is named for planets that exist',
+  unknownHalves.length === 0, `not a graha: ${[...new Set(unknownHalves)].join(',')}`);
+
+/* ── 12. the भाग्यांक — the owner's count, on the grid ──────────────────────── */
+
+/*
+ * "losho grid me bhagyank yane date of birth ka total ex.
+ *  1+8+2+1+9+7+2=3 aana chahiye o nhi aya he — ise thik kro."
+ *
+ * The figure was computed all along — it is कुल अंक, in the cards above the
+ * grid — but the Loshu grid section never named it, and that is the section a
+ * reader counts along with. These checks do his arithmetic by hand on his own
+ * date, and then on a few others.
+ */
+const ownerDate = ankaProfile(18, 2, 1972, 'A', 2026);
+check('18.2.1972 reads out digit by digit as 1 8 2 1 9 7 2',
+  dateDigits(18, 2, 1972).join(' ') === '1 8 2 1 9 7 2',
+  `got ${dateDigits(18, 2, 1972).join(' ')}`);
+check('those digits add to 30', ownerDate.kulAnk.compound === 30,
+  `got ${ownerDate.kulAnk.compound}`);
+check('which folds to the भाग्यांक 3', ownerDate.kulAnk.value === 3,
+  `got ${ownerDate.kulAnk.value}`);
+
+// And for any date: the भाग्यांक is the digits written out, added, folded.
+const bhagyankWrong = [[14, 8, 1947], [29, 2, 2000], [31, 12, 1999], [1, 1, 1900], [7, 6, 1980]].filter(
+  ([d, m, y]) => {
+    const sum = dateDigits(d, m, y).reduce((a, b) => a + b, 0);
+    return reduce9(sum) !== ankaProfile(d, m, y, 'A', 2026).kulAnk.value;
+  },
+);
+check('for every date checked, the भाग्यांक is the digits added and folded',
+  bhagyankWrong.length === 0,
+  `wrong for ${bhagyankWrong.map((x) => x.join('.')).join(', ')}`);
 
 console.log('-'.repeat(60));
 console.log();

@@ -142,46 +142,67 @@ export function lekhaAnk(name: string): { letters: number; number: number } {
  * ── Losh ───────────────────────────────────────────────────────────────────
  *
  * The digits of the whole date — day, month and year — counted, and the counts
- * placed on the cross of bone, flesh, marrow and metal.
+ * placed on the nine squares of the Lo Shu grid.
  *
- * A count of zero is left blank rather than printed as a zero. A zero in that
- * grid means "this digit is entirely absent from the date", which is a reading
- * in itself, and it is said by its absence — the way an empty seat in a room
- * says more than a chair marked "nobody".
+ * A count of zero is shown as zero, not hidden. A zero in that grid means
+ * "this digit is entirely absent from the date", which is a reading in itself,
+ * and the rest of the panel — which numbers are missing, which are strong —
+ * is read off these nine counts.
+ *
+ * ── Why all nine squares ───────────────────────────────────────────────────
+ *
+ * This grid was a cross of seven cells: 3, 4 and 9 on top, 1, 5 and 6 across
+ * the middle, 8 below. Two of the nine digits — **2 and 7** — had no cell at
+ * all, so a person born with sevens in the date could not see a single one of
+ * them in the grid that exists to show them, and the line underneath ("these
+ * numbers are missing from your date") was being printed next to a picture
+ * that could not have held them anyway.
+ *
+ * The Lo Shu grid has nine squares. Every digit one to nine has one. That is
+ * the whole of it.
  *
  * ── The arrangement ───────────────────────────────────────────────────────
  *
- * `LOSH_CELLS` is `[digit, arm]` in reading order. Change it and the grid
- * changes; nothing else does.
+ * `LOSH_CELLS` is `[digit, row, col]` in reading order, and it is the magic
+ * square itself — the same one at `loShuSquare()` — so the counts and the
+ * square can never drift apart.
  */
-
-export type LoshArm = 'bone' | 'metal' | 'centre' | 'flesh' | 'marrow';
-
 export interface LoshCell {
   digit: number;
-  arm: LoshArm;
+  row: number;
+  col: number;
 }
 
 /**
- * The cross, in reading order: down the top arm, across the middle row, down
- * the bottom arm.
+ * The nine squares, in reading order — left to right, top to bottom:
+ *
+ *     4  9  2
+ *     3  5  7
+ *     8  1  6
  */
 export const LOSH_CELLS: LoshCell[] = [
-  { digit: 3, arm: 'bone' },
-  { digit: 4, arm: 'bone' },
-  { digit: 9, arm: 'bone' },
-  { digit: 1, arm: 'metal' },
-  { digit: 5, arm: 'centre' },
-  { digit: 6, arm: 'flesh' },
-  { digit: 8, arm: 'marrow' },
+  { digit: 4, row: 0, col: 0 },
+  { digit: 9, row: 0, col: 1 },
+  { digit: 2, row: 0, col: 2 },
+  { digit: 3, row: 1, col: 0 },
+  { digit: 5, row: 1, col: 1 },
+  { digit: 7, row: 1, col: 2 },
+  { digit: 8, row: 2, col: 0 },
+  { digit: 1, row: 2, col: 1 },
+  { digit: 6, row: 2, col: 2 },
 ];
 
-export const LOSH_ARMS: { arm: LoshArm; label: string; what: string }[] = [
-  { arm: 'bone', label: 'हड्डी', what: 'शरीर की बनावट, काम करने की टिकाऊपन' },
-  { arm: 'metal', label: 'लोहा', what: 'कठोरता, कड़ी मेहनत, पर दुख़ का अनुभव' },
-  { arm: 'centre', label: 'केंद्र', what: 'स्वयं का मूल्य, भीतर की शक्ति' },
-  { arm: 'flesh', label: 'मांस', what: 'शारीरिक सुख, मन का कोमल भाग' },
-  { arm: 'marrow', label: 'मज्जा', what: 'आत्मा और अन्तरात्मा, जो नहीं दिखता' },
+/** The three lines across and the three down, as plain arithmetic. */
+export const LOSH_ROWS: { row: number; label: string }[] = [
+  { row: 0, label: 'ऊपर की पंक्ति (4 · 9 · 2)' },
+  { row: 1, label: 'बीच की पंक्ति (3 · 5 · 7)' },
+  { row: 2, label: 'नीचे की पंक्ति (8 · 1 · 6)' },
+];
+
+export const LOSH_COLS: { col: number; label: string }[] = [
+  { col: 0, label: 'बायाँ स्तंभ (4 · 3 · 8)' },
+  { col: 1, label: 'बीच का स्तंभ (9 · 5 · 1)' },
+  { col: 2, label: 'दायाँ स्तंभ (2 · 7 · 6)' },
 ];
 
 /** Every digit of the date, day then month then year, as written. */
@@ -229,11 +250,14 @@ export function absentDigits(day: number, month: number, year: number): number[]
 
 export interface LoshGrid {
   cells: (LoshCell & { count: number })[];
-  /** The arm totals, which is what the reading is about. */
-  arms: Record<LoshArm, number>;
+  /** Totals of the three lines across, and of the three down. */
+  rows: number[];
+  cols: number[];
   total: number;
   /** Digits that never occur in the date. */
   missing: number[];
+  /** Digits that occur more than once — the ones the reading gives weight to. */
+  repeated: number[];
 }
 
 /* ── Lo Shu ────────────────────────────────────────────────────────────────
@@ -378,21 +402,27 @@ export function ankaProfile(
     lekhaAnk: { value: lekha.number, compound: lekha.letters },
     kulAnk: { value: reduce9(kulTotal), compound: reduce52(kulTotal) },
     varshAnk,
-    losh: {
-      cells: LOSH_CELLS.map((cell) => ({ ...cell, count: digitCounts(day, month, year)[cell.digit] })),
-      arms: LOSH_ARMS.reduce(
-        (acc, arm) => {
-          acc[arm.arm] = LOSH_CELLS.reduce((sum, cell) => {
-            if (cell.arm !== arm.arm) return sum;
-            return sum + digitCounts(day, month, year)[cell.digit];
-          }, 0);
-          return acc;
-        },
-        {} as Record<LoshArm, number>,
-      ),
-      total: digits.filter((d) => d >= 1 && d <= 9).length,
-      missing: absentDigits(day, month, year),
-    },
+    losh: (() => {
+      const counts = digitCounts(day, month, year);
+      return {
+        cells: LOSH_CELLS.map((cell) => ({ ...cell, count: counts[cell.digit] })),
+        rows: [0, 1, 2].map((row) =>
+          LOSH_CELLS.filter((cell) => cell.row === row).reduce(
+            (sum, cell) => sum + counts[cell.digit],
+            0,
+          ),
+        ),
+        cols: [0, 1, 2].map((col) =>
+          LOSH_CELLS.filter((cell) => cell.col === col).reduce(
+            (sum, cell) => sum + counts[cell.digit],
+            0,
+          ),
+        ),
+        total: digits.filter((d) => d >= 1 && d <= 9).length,
+        missing: absentDigits(day, month, year),
+        repeated: [1, 2, 3, 4, 5, 6, 7, 8, 9].filter((digit) => counts[digit] > 1),
+      };
+    })(),
     loShu: loShuSquare(),
     loShuCell: loShuCell(reduce9(day)),
     ruling: {
@@ -409,6 +439,24 @@ export function ankaProfile(
  *
  * One to nine: what each rules, the body it is read on, and what it asks for.
  * This is tradition, not arithmetic — see the note at the top of the file.
+ *
+ * ── Which planet each number is ────────────────────────────────────────────
+ *
+ * The navagraha, in their own order. This table used to run the other way —
+ * the week's order, with a rishi in it:
+ *
+ *     old:  सूर्य चंद्र भृगु  बुध  गुरु शुक्र शनि  राहु  केतु
+ *     now:  सूर्य चंद्र गुरु  राहु  बुध  शुक्र केतु  शनि  मंगल
+ *
+ * The owner caught it by looking at one number. Seven, which is केतु, was
+ * coming out as शनि — and so was printed with शनि's obstruction and loneliness,
+ * given शनि's blue sapphire and Saturday, and listed as an enemy of the ones,
+ * twos, threes and fives. A Ketu number is not a bad number; it is the number
+ * of the one who sees what others miss. Calling it harmful was not a matter of
+ * opinion, it was the wrong planet.
+ *
+ * The old table also had **भृगु** standing where a graha belongs. भृगु is a
+ * rishi, not a planet, and does not rule a number. Three is गुरु — बृहस्पति.
  */
 
 export interface DevGraha {
@@ -420,15 +468,15 @@ export interface DevGraha {
 }
 
 export const DEV_GRAHA: DevGraha[] = [
-  { number: 1, name: 'सूर्य', body: 'माथा, हृदय, आँखें', virtue: 'नेतृत्व, आत्मविश्वास', vice: 'अहंकार, अकेलापन' },
-  { number: 2, name: 'चंद्र', body: 'मुख, छाती, पेट', virtue: 'संवेदना, सहयोग', vice: 'देरी, भावुकता' },
-  { number: 3, name: 'भृगु', body: 'गला, हाथ, कमर', virtue: 'साहस, मेहनत', vice: 'झगड़ा, ज़िद' },
-  { number: 4, name: 'बुध', body: 'नाक, कान, फेफड़े', virtue: 'बुद्धि, व्यापार', vice: 'सोच-सोच में डूबना' },
-  { number: 5, name: 'गुरु', body: 'माथा, पीठ, कमर', virtue: 'ज्ञान, उपदेश', vice: 'अति-उपदेश' },
-  { number: 6, name: 'शुक्र', body: 'गला, हृदय, कमर', virtue: 'कला, प्रेम, संतुलन', vice: 'आराम में बर्बादी' },
-  { number: 7, name: 'शनि', body: 'हाथ, पैर, जोड़ें', virtue: 'धैर्य, लगन', vice: 'रुकावट, अकेलापन' },
-  { number: 8, name: 'राहु', body: 'पेट, अंगूठा', virtue: 'साहस, बड़ा सोच', vice: 'उथलापन, ज़रूरत से ज़्यादा' },
-  { number: 9, name: 'केतु', body: 'सिर, आधा शरीर', virtue: 'दूर दृष्टि, साधना', vice: 'अलग होना' },
+  { number: 1, name: 'सूर्य', body: 'सिर, आँखें, हृदय', virtue: 'नेतृत्व, आत्मबल', vice: 'अहंकार, अकेलापन' },
+  { number: 2, name: 'चंद्र', body: 'मन, छाती, जल-संबंधी अंग', virtue: 'संवेदना, सहयोग', vice: 'भावुकता, देरी' },
+  { number: 3, name: 'बृहस्पति', body: 'कान, यकृत, जांघ', virtue: 'ज्ञान, संतुलन, वाणी', vice: 'बिना पूछे सलाह' },
+  { number: 4, name: 'राहु', body: 'त्वचा, फोड़े-फुंसी, अचानक तकलीफ़', virtue: 'अनोखी सोच, बड़ा सपना', vice: 'भ्रम, अचानक उतार-चढ़ाव' },
+  { number: 5, name: 'बुध', body: 'तंत्रिका, मुख, जिह्वा', virtue: 'बुद्धि, व्यापार, लेखन', vice: 'बहुत सोचना, टालना' },
+  { number: 6, name: 'शुक्र', body: 'वक्ष, वृषण, मूत्राशय', virtue: 'कला, प्रेम, संतुलन', vice: 'आराम में समय बीतना' },
+  { number: 7, name: 'केतु', body: 'आँतें, सिर के रोग, त्वचा', virtue: 'साधना, गहरी दृष्टि, रोग-निवारण', vice: 'अलग होना, अधूरा छोड़ना' },
+  { number: 8, name: 'शनि', body: 'हड्डियाँ, दाँत, घुटने, पैर', virtue: 'धैर्य, अनुशासन, मेहनत', vice: 'रुकावट, देर' },
+  { number: 9, name: 'मंगल', body: 'रक्त, मांसपेशियाँ, मज्जा', virtue: 'साहस, ऊर्जा, नेतृत्व', vice: 'क्रोध, जल्दबाज़ी' },
 ];
 
 /* ===========================================================================
@@ -437,29 +485,48 @@ export const DEV_GRAHA: DevGraha[] = [
  *
  * Which other numbers help, which hinder.
  *
- * This is the most book-dependent table in the file: publishers print different
- * sets. The one here is the commonly circulated North-Indian set, and it is
- * held here alone so that a different one can be put in without touching the
- * page.
+ * The friendships are the graha's own — सूर्य's friends are the ones the texts
+ * give सूर्य, and so on down. They are held here rather than computed, because
+ * a number's friend is a question of the tradition and not of arithmetic.
+ *
+ * ── Friends and enemies are separate lists now ─────────────────────────────
+ *
+ * The enemy list used to be *derived*: everything that was not a friend was
+ * called an enemy. That made every neutral number a hostile one, and it put
+ * **7 in the enemy list of 1, 2, 3 and 5** — which is how the page came to
+ * tell a visitor that a seven was something that stops them.
+ *
+ * The texts give three kinds of relationship, not two: friend, enemy, and
+ * neutral. चंद्र has no enemy at all, and it now says so rather than being
+ * handed four.
  */
 
 export const ANUKOOL: Record<number, number[]> = {
-  1: [2, 3, 5, 6, 9],
-  2: [1, 4, 6, 8],
-  3: [1, 5, 6, 9],
-  4: [1, 2, 5, 6, 7],
-  5: [1, 3, 6, 9],
-  6: [1, 2, 3, 5, 9],
-  7: [4, 6, 8, 9],
-  8: [2, 4, 6, 7],
-  9: [1, 3, 5, 6, 7],
+  1: [2, 3, 5],
+  2: [1, 4, 5],
+  3: [1, 2, 9],
+  4: [5, 6, 7, 8],
+  5: [1, 4, 6],
+  6: [4, 5, 7, 8],
+  7: [4, 6, 8],
+  8: [4, 5, 6, 7],
+  9: [1, 2, 3],
+};
+
+export const SHATRU: Record<number, number[]> = {
+  1: [6, 8],
+  2: [],
+  3: [5, 6],
+  4: [1, 2, 9],
+  5: [2],
+  6: [1, 2],
+  7: [1, 2],
+  8: [1, 2, 9],
+  9: [5],
 };
 
 export function shatruAnk(n: number): number[] {
-  const ruling = reduce9(n);
-  return [1, 2, 3, 4, 5, 6, 7, 8, 9].filter(
-    (other) => other !== ruling && !(ANUKOOL[ruling] ?? []).includes(other),
-  );
+  return SHATRU[reduce9(n)] ?? [];
 }
 
 /* ===========================================================================
@@ -468,6 +535,16 @@ export function shatruAnk(n: number): number[] {
  *
  * Stone, colour, day, date and month for each number. Tradition, gathered in one
  * place for the same reason as the rest.
+ *
+ * Every row is the row of the *planet* the number is, and it follows that
+ * planet's own stone and day: 3 is गुरु so it is पुखराज on Thursday, 4 is
+ * राहु so it is गोमेद on Saturday, 7 is केतु so it is लहसुनिया on Tuesday, 8
+ * is शनि so it is नीलम on Saturday, 9 is मंगल so it is मूंगा on Tuesday.
+ *
+ * This table used to follow the old week-order numbers, and so gave seven —
+ * केतु's number — शनि's blue sapphire and Saturday. A wrong planet in a
+ * number's remedy row does not merely mislabel the row: it sends the visitor
+ * after a stone that belongs to a different graha altogether.
  */
 
 export interface AnkaUpay {
@@ -484,13 +561,13 @@ export interface AnkaUpay {
 export const ANKA_UPAY: AnkaUpay[] = [
   { number: 1, stone: 'माणिक (रूबी)', colour: 'लाल, सुनहरा', day: 'रविवार', month: 'जनवरी, अगस्त', dates: [1, 10, 19, 28], mantra: 'सूर्य' },
   { number: 2, stone: 'मोती (पेरल)', colour: 'सफ़ेद, चाँदी जैसा', day: 'सोमवार', month: 'फ़रवरी, सितंबर', dates: [2, 11, 20, 29], mantra: 'चंद्र' },
-  { number: 3, stone: 'पीरा (पेरिडॉट)', colour: 'हरा, नीला', day: 'मंगलवार', month: 'मार्च, अक्टूबर', dates: [3, 12, 21, 30], mantra: 'भृगु' },
-  { number: 4, stone: 'हीरा (डायमंड)', colour: 'सफ़ेद, पीला', day: 'बुधवार', month: 'अप्रैल, नवंबर', dates: [4, 13, 22, 31], mantra: 'बुध' },
-  { number: 5, stone: 'पन्ना (एमरल्ड)', colour: 'हरा, सुनहरा', day: 'गुरुवार', month: 'मई, दिसंबर', dates: [5, 14, 23], mantra: 'गुरु' },
-  { number: 6, stone: 'ओपल (ऑपल)', colour: 'सफ़ेद, गुलाबी', day: 'शुक्रवार', month: 'जून, जनवरी', dates: [6, 15, 24], mantra: 'शुक्र' },
-  { number: 7, stone: 'नीलम (सैफ़ायर)', colour: 'नीला, काला', day: 'शनिवार', month: 'जुलाई', dates: [7, 16, 25], mantra: 'शनि' },
-  { number: 8, stone: 'उज्जैन (गमेट)', colour: 'काला, गहरा नीला', day: 'रविवार, शनिवार', month: 'सितंबर, अप्रैल', dates: [8, 17, 26], mantra: 'राहु' },
-  { number: 9, stone: 'पुखराज (पत्थर)', colour: 'पीला, सुनहरा, हरा', day: 'मंगलवार', month: 'अगस्त, नवंबर', dates: [9, 18, 27], mantra: 'केतु' },
+  { number: 3, stone: 'पुखराज (येलो सैफ़ायर)', colour: 'पीला, सुनहरा', day: 'गुरुवार', month: 'मार्च, नवंबर', dates: [3, 12, 21, 30], mantra: 'बृहस्पति' },
+  { number: 4, stone: 'गोमेद (हैसनेट)', colour: 'भूरा, गहरा नीला', day: 'शनिवार', month: 'अप्रैल, मई', dates: [4, 13, 22], mantra: 'राहु' },
+  { number: 5, stone: 'पन्ना (एमरल्ड)', colour: 'हरा, सुनहरा', day: 'बुधवार', month: 'मई, दिसंबर', dates: [5, 14, 23], mantra: 'बुध' },
+  { number: 6, stone: 'हीरा, ओपल (ऑपल)', colour: 'सफ़ेद, गुलाबी', day: 'शुक्रवार', month: 'जून, जनवरी', dates: [6, 15, 24], mantra: 'शुक्र' },
+  { number: 7, stone: 'लहसुनिया (कैट्स आई)', colour: 'पीला, काला', day: 'मंगलवार', month: 'जुलाई', dates: [7, 16, 25], mantra: 'केतु' },
+  { number: 8, stone: 'नीलम (ब्लू सैफ़ायर)', colour: 'काला, गहरा नीला', day: 'शनिवार', month: 'सितंबर, अप्रैल', dates: [8, 17, 26], mantra: 'शनि' },
+  { number: 9, stone: 'मूंगा (कोरल)', colour: 'लाल, सुनहरा', day: 'मंगलवार', month: 'अगस्त, नवंबर', dates: [9, 18, 27], mantra: 'मंगल' },
 ];
 
 export function upayFor(n: number): AnkaUpay {
