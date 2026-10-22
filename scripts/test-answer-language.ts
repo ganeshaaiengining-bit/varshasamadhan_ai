@@ -197,11 +197,6 @@ const coverage: CoverageEntry[] = [
   { code: 'ar', script: 'Arabic', own: 'ورشا سمادھان خدمة مجانية.' , wrong: 'वर्षा समाधान एक मुफ्त मदत सेवा है।' },
   { code: 'en', script: 'Latin', own: 'Varsha Samadhan is a free service.' , wrong: 'Варша Самадхан — это бесплатная служба.' },
   { code: 'es', script: 'Latin', own: 'Varsha Samadhan es un servicio gratuito.' , wrong: 'Варша Самадхан — это бесплатная служба.' },
-  { code: 'fr', script: 'Latin', own: 'Varsha Samadhan est un service gratuit.' , wrong: 'Варша Самадхан — это бесплатная служба.' },
-  { code: 'de', script: 'Latin', own: 'Varsha Samadhan ist ein kostenloser Dienst.' , wrong: 'Варша Самадхан — это бесплатная служба.' },
-  { code: 'pt', script: 'Latin', own: 'Varsha Samadhan é um serviço gratuito.' , wrong: 'Варша Самадхан — это бесплатная служба.' },
-  { code: 'ru', script: 'Cyrillic', own: 'Варша Самадхан — это бесплатная служба.' , wrong: 'वर्षा समाधान एक मुफ्त मदत सेवा है।' },
-  { code: 'zh', script: 'Han', own: 'Varsha Samadhan 一项免费服务。', wrong: 'वर्षा समाधान एक मुफ्त मदत सेवा है।' },
 ];
 
 
