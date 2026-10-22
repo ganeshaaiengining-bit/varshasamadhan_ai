@@ -230,17 +230,22 @@ console.log('='.repeat(64));
 
 {
   // The Moon's speed, measured rather than assumed, must be a real Moon's.
+  //
+  // A Moon at perigee crosses a sign in a little under two days — 15.9° a day
+  // at the fastest, so 1.89 days for thirty degrees — and one at apogee takes
+  // two and three quarters. The floor here used to be two days, which is
+  // inside the real range, and a correctly computed perigee Moon failed it:
+  // Delhi, 1.99 days. A bound that a right answer cannot stay inside is worse
+  // than no bound, because it teaches everybody to ignore the line.
   let bad = 0;
   let detail = '';
   for (const b of BIRTHS) {
     const travel = moonTravelPerSign(jdOf(b));
-    // A Moon takes about two and a half days to cross one sign of thirty
-    // degrees, and never longer than three.
-    if (!(travel.days > 2 && travel.days < 3.2)) {
+    if (!(travel.days > 1.85 && travel.days < 3.0)) {
       bad += 1;
       detail += `${b.label}: ${travel.days.toFixed(2)} din; `;
     }
-    if (!(travel.degrees > 11 && travel.degrees < 16)) {
+    if (!(travel.degrees > 10 && travel.degrees < 17)) {
       bad += 1;
       detail += `${b.label}: ${travel.degrees.toFixed(2)}°/din; `;
     }

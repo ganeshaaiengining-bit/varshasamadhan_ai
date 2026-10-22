@@ -166,29 +166,61 @@ export function sunLongitude(jd: number): number {
  * The Moon moves fast enough that dropping one is visible: it covers 13.2
  * degrees a day, so a tenth of a degree of error is nearly a whole hour of
  * birth time.
+ *
+ * ── Four terms that were reading the wrong body ────────────────────────────
+ *
+ * `M` is always the mean anomaly of the Sun and `M'` the mean anomaly of the
+ * Moon, and every term below is quoted in those names. The two variables had
+ * been assigned the other way round — `M` was given the Moon's coefficients and
+ * `M'` the Sun's — so the largest term in the series, `6.288774·sin M'`, was
+ * being multiplied by an anomaly that travels one degree a day instead of
+ * thirteen.
+ *
+ * Putting the assignments back fixed the biggest error and left three smaller
+ * ones, all of the same kind: terms the series writes with `M'` had been given
+ * `M`, and one had been duplicated.
+ *
+ *   1.274027·sin(2D − M')  was  sin(2D − M)  — the evection, the largest
+ *                                             perturbation of the Moon, and
+ *                                             the worst of the three.
+ *   0.053322·sin(2D + M')  was  sin(2D + M).
+ *   0.045758·sin(2D − M)   was  a second copy of sin(2D − M − M').
+ *
+ * Between them they put the Moon up to eleven degrees from where it is — a
+ * third of a sign, three whole nakshatras — and with it the nakshatra, the
+ * dasha, the yogas, the KP and every phaladesh on the page. The Sun was right
+ * the whole time, which is why nothing on the screen looked broken: it was a
+ * chart, with real signs, of a sky that never existed.
+ *
+ * The cheap check needs no ephemeris at all: at an eclipse the Sun and Moon are
+ * at the same degree by definition, so casting one and finding them three
+ * degrees apart is the whole finding. The final check is against JPL's own
+ * ephemeris, over births from 1947 to 2032: the Moon now agrees to within 0.07
+ * degrees at worst and 0.02 degrees on average, which is the accuracy of
+ * leaving out the series' smallest terms.
  */
 export function moonLongitude(jd: number): number {
   const n = d(jd);
 
   const Lp = norm360(218.3164477 + 13.17639648 * n);
-  const M = (134.9633964 + 13.06499295 * n) * DEG;
-  const Mp = (357.5291092 + 0.98560028 * n) * DEG;
+  // The Sun's mean anomaly, and the Moon's. In that order, as the series writes them.
+  const M = (357.5291092 + 0.98560028 * n) * DEG;
+  const Mp = (134.9633964 + 13.06499295 * n) * DEG;
   const F = (93.272095 + 13.22935024 * n) * DEG;
   const D = (297.8501921 + 12.19074912 * n) * DEG;
-  const Ms = (357.5291092 + 0.98560028 * n) * DEG;
 
   const longitude =
     Lp +
     6.288774 * Math.sin(Mp) +
-    1.274027 * Math.sin(2 * D - M) +
+    1.274027 * Math.sin(2 * D - Mp) +
     0.658314 * Math.sin(2 * D) +
     0.213618 * Math.sin(2 * Mp) -
     0.185116 * Math.sin(M) -
     0.114332 * Math.sin(2 * F) +
     0.058793 * Math.sin(2 * D - 2 * Mp) +
     0.057066 * Math.sin(2 * D - M - Mp) +
-    0.053322 * Math.sin(2 * D + M) +
-    0.045758 * Math.sin(2 * D - M - Mp) -
+    0.053322 * Math.sin(2 * D + Mp) +
+    0.045758 * Math.sin(2 * D - M) -
     0.040923 * Math.sin(M - Mp) -
     0.034720 * Math.sin(D) -
     0.030383 * Math.sin(M + Mp) +
@@ -211,7 +243,6 @@ export function moonLongitude(jd: number): number {
   void Lp;
   void M;
   void F;
-  void Ms;
 
   return norm360(longitude);
 }
@@ -265,35 +296,36 @@ export function meanNode(jd: number): number {
  * Earth's, and the Earth's own orbit is therefore needed before any other
  * planet can be placed at all. It is the one planet whose elements are not
  * published as a planet's.
+ *
+ * Every rate is in degrees per century, exactly as JPL publishes them in Table 1
+ * of "Approximate Positions of the Planets" (Standish), so that each digit can
+ * be checked against the source.
+ *
+ * ── What was wrong with this table ─────────────────────────────────────────
+ *
+ * Two things, both in `dL`, the rate of the mean longitude — which is the one
+ * number that decides which sign a planet is in.
+ *
+ * Mercury's read 26087.90314157 degrees per century, which is not a rate any
+ * planet has: Mercury goes round in 88 days, so its mean longitude advances
+ * about 149,472.7 degrees a century, which is what the source says. At that
+ * rate Mercury's mean anomaly barely moved, and the planet came out tens of
+ * degrees from where it is — sometimes on the far side of the Sun, in a sign
+ * nobody could argue with, since a wrong Mercury still looks like Mercury.
+ *
+ * Mars, Jupiter and Saturn were carried over from a formatting of the same
+ * table that gave the mean longitude in degrees per *day*, and the conversion
+ * back to centuries was done to slightly the wrong digits (Jupiter's daily rate
+ * times 36525 is 3034.69, not the published 3034.74612775). Over a lifetime
+ * that is a couple of tenths of a degree of drift: small, but it is exactly the
+ * kind of number that decides a sign for somebody born near the edge of one.
+ *
+ * The rest of the table was right, which is why the chart looked right: real
+ * signs, real degrees, planets in plausible houses.
  */
 interface Elements {
   a: number; e: number; i: number; L: number; peri: number; node: number;
   da: number; de: number; di: number; dL: number; dPeri: number; dNode: number;
-  /**
-   * Whether `dL` is in degrees per day rather than per Julian century.
-   *
-   * It is, for three of the six, and it is the single most misleading thing
-   * about this table.
-   *
-   * The rates for the semi-major axis, the eccentricity, the inclination, the
-   * longitude of perihelion and the node are all per century for every planet.
-   * The rate of the mean longitude alone is per century for Mercury, Venus and
-   * the Earth-Moon barycentre, and per *day* for Mars, Jupiter and Saturn — so
-   * that Jupiter's row reads 0.0830853001, which is its daily motion, and
-   * Mercury's reads 26087.90314157, which is its per-century motion.
-   *
-   * Reading all six as per century leaves Mars, Jupiter and Saturn moving at a
-   * thirty-thousandth of their real rate. Jupiter then advances 0.1° between
-   * 1900 and 2050 instead of four thousand, which is a planet frozen outside
-   * the zodiac's worth of anybody's attention: the longitude is a real angle,
-   * the sign is a real sign, and Jupiter is in the same house for every chart on
-   * the site.
-   *
-   * The numbers are left exactly as published so that they can be checked
-   * against the source, and the units are carried in the flag rather than
-   * quietly folded into the digits.
-   */
-  dLPerDay?: boolean;
 }
 
 const J2000 = 2451545.0;
@@ -309,7 +341,7 @@ const ELEMENTS: Record<string, Elements> = {
     a: 0.38709927, e: 0.20563593, i: 7.00497902, L: 252.2503235,
     peri: 77.45779628, node: 48.33076593,
     da: 0.00000037, de: 0.00001906, di: -0.00594749,
-    dL: 26087.90314157, dPeri: 0.16047689, dNode: -0.12534081,
+    dL: 149472.67411175, dPeri: 0.16047689, dNode: -0.12534081,
   },
   venus: {
     a: 0.72333566, e: 0.00677672, i: 3.39467605, L: 181.9790995,
@@ -321,22 +353,19 @@ const ELEMENTS: Record<string, Elements> = {
     a: 1.52371034, e: 0.0933941, i: 1.84969142, L: -4.55343205,
     peri: -23.94362959, node: 49.55953891,
     da: 0.00001847, de: 0.00007882, di: -0.00813131,
-    dL: 0.5240207766, dPeri: 0.44441088, dNode: -0.29257343,
-    dLPerDay: true,
+    dL: 19140.30268499, dPeri: 0.44441088, dNode: -0.29257343,
   },
   jupiter: {
     a: 5.202887, e: 0.04838624, i: 1.30439695, L: 34.39644051,
     peri: 14.72847983, node: 100.47390909,
-    da: -0.00011607, de: -0.00013257, di: -0.00183714,
-    dL: 0.0830853001, dPeri: 0.21252668, dNode: 0.20469106,
-    dLPerDay: true,
+    da: -0.00011607, de: -0.00013253, di: -0.00183714,
+    dL: 3034.74612775, dPeri: 0.21252668, dNode: 0.20469106,
   },
   saturn: {
     a: 9.53667594, e: 0.05386179, i: 2.48599187, L: 49.95424423,
     peri: 92.59887831, node: 113.66242448,
     da: -0.0012506, de: -0.00050991, di: 0.00193609,
-    dL: 0.0334442282, dPeri: -0.41897216, dNode: -0.28867794,
-    dLPerDay: true,
+    dL: 1222.49362201, dPeri: -0.41897216, dNode: -0.28867794,
   },
 };
 
@@ -386,7 +415,7 @@ export function heliocentric(jd: number, key: string) {
   const a = el.a + el.da * centuries;
   const e = el.e + el.de * centuries;
   const i = (el.i + el.di * centuries) * DEG;
-  const L = (el.L + el.dL * (el.dLPerDay ? (jd - J2000) : centuries)) * DEG;
+  const L = (el.L + el.dL * centuries) * DEG;
   const peri = (el.peri + el.dPeri * centuries) * DEG;
   const node = (el.node + el.dNode * centuries) * DEG;
 
@@ -409,10 +438,94 @@ export function heliocentric(jd: number, key: string) {
   const cosI = Math.cos(i);
   const sinI = Math.sin(i);
 
+  const x = (cosArg * cosNode - sinArg * sinNode * cosI) * xp + (-sinArg * cosNode - cosArg * sinNode * cosI) * yp;
+  const y = (cosArg * sinNode + sinArg * cosNode * cosI) * xp + (-sinArg * sinNode + cosArg * cosNode * cosI) * yp;
+  const z = sinArg * sinI * xp + cosArg * sinI * yp;
+
+  return toEclipticOfDate(x, y, z, centuries);
+}
+
+/**
+ * One second of arc, in radians.
+ */
+const ASEC = Math.PI / (180 * 3600);
+
+/**
+ * A position in the mean ecliptic and equinox of J2000, into the mean ecliptic
+ * and equinox of the date.
+ *
+ * ── Why the elements need moving at all ────────────────────────────────────
+ *
+ * The elements above are given with respect to the mean ecliptic and equinox
+ * *of J2000* — that is the frame they are defined in, and that is where they are
+ * correct. Everything else on this page is measured from the equinox of the
+ * date: the Sun's series is, the Moon's is, and the ayanamsa is nothing *but*
+ * the distance between the two.
+ *
+ * Left in its own frame, a planet came out shifted by the amount the equinox has
+ * moved since 2000 — a little over a degree in 1947, a third of one in 2024,
+ * and the right amount in the wrong direction for a birth in 2026. The Sun was
+ * right, so a chart looked measured and wrong by a degree at a time: the common
+ * shift nobody can see, which decides a sign only for whoever was born within a
+ * degree of an edge. That is one birth in thirty, and it was silently deciding
+ * a thirtieth of the site.
+ *
+ * The path is the standard one. Ecliptic to equatorial of J2000 is a turn about
+ * the x-axis by the obliquity; the equator and equinox are then precessed to
+ * the date with the four-angle formulation of Capitaine et al. (2003), the same
+ * one the IAU 2006 model uses; and the result is turned back into the ecliptic
+ * of the date with the obliquity of the date. At J2000 all three steps compose
+ * to the identity, which is the check: a position at the epoch must come back
+ * out where it went in.
+ */
+function toEclipticOfDate(x: number, y: number, z: number, centuries: number) {
+  const eps0 = OBLIQUITY * DEG;
+
+  // Ecliptic of J2000 to equatorial of J2000.
+  const X0 = x;
+  const Y0 = y * Math.cos(eps0) - z * Math.sin(eps0);
+  const Z0 = y * Math.sin(eps0) + z * Math.cos(eps0);
+
+  // Precession of the equator and equinox, in arcseconds, as published.
+  const psia =
+    ((((-0.0000000951 * centuries + 0.000132851) * centuries - 0.00114045) * centuries - 1.0790069) * centuries +
+      5038.481507) *
+    centuries;
+  const obliquityDate =
+    ((((0.0000003337 * centuries - 0.000000467) * centuries - 0.00772503) * centuries + 0.0512623) * centuries -
+      0.025754) *
+      centuries +
+    84381.406;
+  const chia =
+    ((((-0.000000056 * centuries + 0.000170663) * centuries - 0.00121197) * centuries - 2.3814292) * centuries +
+      10.556403) *
+    centuries;
+
+  const sa = Math.sin(eps0);
+  const ca = Math.cos(eps0);
+  const sb = Math.sin(-psia * ASEC);
+  const cb = Math.cos(-psia * ASEC);
+  const sc = Math.sin(-obliquityDate * ASEC);
+  const cc = Math.cos(-obliquityDate * ASEC);
+  const sd = Math.sin(chia * ASEC);
+  const cd = Math.cos(chia * ASEC);
+
+  const X =
+    (cd * cb - sb * sd * cc) * X0 +
+    (cd * sb * ca + sd * cc * cb * ca - sa * sd * sc) * Y0 +
+    (cd * sb * sa + sd * cc * cb * sa + ca * sd * sc) * Z0;
+  const Y =
+    (-sd * cb - sb * cd * cc) * X0 +
+    (-sd * sb * ca + cd * cc * cb * ca - sa * cd * sc) * Y0 +
+    (-sd * sb * sa + cd * cc * cb * sa + ca * cd * sc) * Z0;
+  const Z = sb * sc * X0 + (-sc * cb * ca - sa * cc) * Y0 + (-sc * cb * sa + cc * ca) * Z0;
+
+  // Equatorial of the date to the mean ecliptic of the date.
+  const eps = obliquityDate * ASEC;
   return {
-    x: (cosNode * cosArg - sinNode * sinArg * cosI) * xp + (-sinNode * cosArg - cosNode * sinArg * cosI) * yp,
-    y: (sinNode * cosArg + cosNode * sinArg * cosI) * xp + (cosNode * cosArg - sinNode * sinArg * cosI) * yp,
-    z: sinArg * sinI * xp + cosArg * sinI * yp,
+    x: X,
+    y: Y * Math.cos(eps) + Z * Math.sin(eps),
+    z: -Y * Math.sin(eps) + Z * Math.cos(eps),
   };
 }
 

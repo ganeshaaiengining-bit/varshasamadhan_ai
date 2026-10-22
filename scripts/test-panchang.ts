@@ -58,40 +58,94 @@ check('there are twenty-seven yogas', YOGAS.length >= 27, `got ${YOGAS.length}`)
  *   · the full moon of 25 January 2024 — 17:54 UTC
  *   · the new  moon of 11 January 2024 — 11:57 UTC
  *
- * Both dates are taken from the published lunation series and can be confirmed
- * with a calendar or an almanac.
+ * ── Why the assertions are made at the site's own crossing ─────────────────
  *
- * ── Why the check allows three degrees ─────────────────────────────────────
+ * A published lunation time is the instant the *true* Moon's elongation is
+ * exactly 180°. The site's Moon is a truncated series — five hundredths of a
+ * degree out now, which is five minutes of lunar motion — and five minutes is
+ * enough to land on the wrong side of a tithi boundary. The boundary is the
+ * one place where a hair decides between the thirtieth tithi and the first,
+ * which is exactly what happened here: at the published instant of the new
+ * moon of 11 January the site read 359.99° of elongation and called it
+ * अमावस्या, the last tithi, which is the correct answer for that instant and
+ * not the answer the check was after.
  *
- * Because the site's Moon is a truncated series, and it is a few degrees out —
- * roughly half a day at the new moon. That is the ephemeris's own limit, not
- * the panchang's: the tithi is exactly the division of whatever longitude it is
- * given, and the division itself is checked separately and exactly below.
- *
- * So the assertion here is about the *cycle* — that a full moon reads as the
- * fifteenth and a new moon as the first, and not as the seventh or the
- * twenty-second. Three degrees is about six hours, which is far inside a
- * tithi, so a division that were wrong would still fail this.
+ * So the moment is found by walking forward and bisecting until the site's own
+ * elongation crosses zero — or one hundred and eighty, for the full moon — and
+ * stopping just inside the tithi being asked about. The tithi assertions are
+ * then true by construction, and the assertion that actually tests the
+ * astronomy is the one above them: that the crossing the site computes lands
+ * within a quarter of a day of the published time. A Moon six hours out would
+ * fail it. The one before it was corrected would have failed it by days.
  */
+
 const FULL_MOON = julianDayFromUTC(2024, 1, 25, 17, 54);
 const NEW_MOON = julianDayFromUTC(2024, 1, 11, 11, 57);
 
-const fullAngle = (() => {
-  const m = ((moonLongitude(FULL_MOON) % 360) + 360) % 360;
-  const s = ((sunLongitude(FULL_MOON) % 360) + 360) % 360;
-  return (((m - s) % 360) + 360) % 360;
-})();
+/** How far the Moon is past the Sun, in degrees, 0 to 360. */
+function elongation(jd: number): number {
+  return (((moonLongitude(jd) - sunLongitude(jd)) % 360) + 360) % 360;
+}
 
-check('at the full moon the Moon is within three degrees of opposite the Sun',
-  Math.abs(fullAngle - 180) < 3, `${fullAngle.toFixed(2)}°`);
+/**
+ * The site's own crossing of zero or one hundred and eighty, near a guess.
+ *
+ * A minute at a time until the angle passes the wrap — which the published
+ * time is always within minutes of — then forty rounds of bisection, which
+ * pins the instant to a fraction of a second. The side returned is the side
+ * inside the tithi being tested: after zero for the first, before 180 for the
+ * fifteenth, because both boundaries are exclusive in the other direction.
+ */
+function crossing(near: number, target: 0 | 180): number {
+  const wraps =
+    target === 0
+      ? (before: number, after: number) => before > 300 && after < 60
+      : (before: number, after: number) => before < 100 && after > 260;
 
-const at = panchang(FULL_MOON, 4);
+  let low = near - 0.5;
+  let angleLow = elongation(low);
+
+  for (let step = 0; step < 2 * 1440; step += 1) {
+    const high = low + 1 / 1440;
+    const angleHigh = elongation(high);
+
+    if (wraps(angleLow, angleHigh)) {
+      let left = low;
+      let right = high;
+      for (let i = 0; i < 40; i += 1) {
+        const mid = (left + right) / 2;
+        const angle = elongation(mid);
+        const past = target === 0 ? angle > 180 : angle < 180;
+        if (past) left = mid;
+        else right = mid;
+      }
+      return target === 0 ? right : left;
+    }
+
+    low = high;
+    angleLow = angleHigh;
+  }
+
+  return near;
+}
+
+const fullMoon = crossing(FULL_MOON, 180);
+const newMoon = crossing(NEW_MOON, 0);
+
+check("the site's full moon lands within a quarter of a day of the published one",
+  Math.abs(fullMoon - FULL_MOON) < 0.25,
+  `${((fullMoon - FULL_MOON) * 24).toFixed(2)} ghante`);
+check("the site's new moon lands within a quarter of a day of the published one",
+  Math.abs(newMoon - NEW_MOON) < 0.25,
+  `${((newMoon - NEW_MOON) * 24).toFixed(2)} ghante`);
+
+const at = panchang(fullMoon, 4);
 check('at the full moon the tithi is the fifteenth', at.tithi.index === 15,
   `got ${at.tithi.index} — ${at.tithi.name}`);
 check('and it is पूर्णिमा', at.tithi.name === 'पूर्णिमा', at.tithi.name);
 check('and the moon is fully lit', at.moonPercent >= 99, `${at.moonPercent}%`);
 
-const atNew = panchang(NEW_MOON, 4);
+const atNew = panchang(newMoon, 4);
 check('at the new moon the tithi is the first', atNew.tithi.index === 1,
   `got ${atNew.tithi.index} — ${atNew.tithi.name}`);
 check('and it is प्रतिपदा', atNew.tithi.name === 'प्रतिपदा', atNew.tithi.name);

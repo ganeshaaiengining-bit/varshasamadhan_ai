@@ -80,20 +80,32 @@ interface Result {
   } | null;
 }
 
-/** Rough centre of a named place, for the visitor who knows the city but not the coordinates. */
+/** A place the visitor can be born in. */
+type Town = { name: string; lat: number; lon: number; group: string };
+
 /**
- * Every city a visitor might plausibly name, grouped by state.
+ * The towns worth naming by hand — the big ones, with their Hindi names spelled
+ * the way they are written here.
  *
  * ── Why a list at all, rather than asking for coordinates ───────────────────
  *
  * The ascendant needs a latitude and a longitude, and no visitor knows theirs.
  * So the form asks for the town, which everybody knows, and looks the numbers
- * up here. That is why this file is long: every town that is not in it cannot be
- * answered at all, and the visitor is not in a position to work out what is
- * missing and fix it.
+ * up here.
  *
- * The fourteen that were here first were not chosen — they were the ones that
- * came to mind, which meant that most of India could not be born anywhere.
+ * ── And why this list is not the whole answer ───────────────────────────────
+ *
+ * A hundred and fifty towns chosen by hand are a hundred and fifty answers.
+ * Everyone born outside them got no chart at all — which is most of India — and
+ * the form gave them nothing but a grey line saying the town was not found.
+ * That was the complaint that started this file's second draft: "koi chart
+ * nhi", no chart at all.
+ *
+ * So this is now only the first layer. Beneath it sits every Indian town over
+ * fifteen thousand people, fetched a moment after the page and merged in (see
+ * `src/data/india-towns.ts`). This list stays because its spellings are the
+ * owner's, because it is on screen before the rest arrives, and because a
+ * hundred and fifty of the most-searched towns do not need a download.
  *
  * ── Accuracy, and what it costs ─────────────────────────────────────────────
  *
@@ -106,7 +118,7 @@ interface Result {
  * Districts are included, not only the state capitals, because the town people
  * were born in is usually not the state capital.
  */
-const PLACES: Array<{ name: string; lat: number; lon: number; group: string }> = [
+const PLACES: Town[] = [
   // ── Maharashtra ──────────────────────────────────────────────────────────
   { name: 'Mumbai / मुंबई', lat: 19.076, lon: 72.8777, group: 'Maharashtra / महाराष्ट्र' },
   { name: 'Pune / पुणे', lat: 18.5204, lon: 73.8567, group: 'Maharashtra / महाराष्ट्र' },
@@ -357,8 +369,12 @@ const PLACES: Array<{ name: string; lat: number; lon: number; group: string }> =
   { name: 'Kavar / कावर', lat: 10.5669, lon: 72.642, group: 'Gujarat / गुजरात' },
 ];
 
-/** The unique state names in the order they were written, for grouping. */
-const STATES = Array.from(new Set(PLACES.map((p) => p.group)));
+/*
+ * The full list is `allPlaces` inside the component: these towns plus every
+ * Indian town over fifteen thousand people, which arrives a moment after the
+ * page. Grouping is done there too, in the order the groups are first seen, so
+ * that these come first and the rest follow.
+ */
 
 export function JanamGhathe() {
   const { t } = useLanguage();
@@ -376,6 +392,54 @@ export function JanamGhathe() {
   const [result, setResult] = React.useState<Result | null>(null);
 
   /*
+   * The rest of India, loaded a moment after the page.
+   *
+   * Three and a half thousand more towns, fifty kilobytes, in a chunk of its
+   * own — so the page paints with the hand-written list and the gazetteer
+   * arrives behind it. Until it does, the form behaves exactly as it did.
+   */
+  const [gazetteer, setGazetteer] = React.useState<Town[] | null>(null);
+
+  React.useEffect(() => {
+    let alive = true;
+    import('@/data/india-towns')
+      .then(({ TOWNS, TOWN_STATES }) => {
+        if (!alive) return;
+        setGazetteer(
+          TOWNS.map(([name, lat, lon, state]) => ({
+            name,
+            lat,
+            lon,
+            group: TOWN_STATES[state] ?? '',
+          })),
+        );
+      })
+      .catch(() => {
+        // A town list that fails to arrive is a shorter list, not a broken
+        // form: the hand-written one above it still answers.
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  /** Everything the visitor may choose from, the hand-written list first. */
+  const allPlaces = React.useMemo<Town[]>(() => {
+    if (!gazetteer) return PLACES;
+    const taken = new Set(PLACES.map((p) => p.name.toLowerCase()));
+    return [...PLACES, ...gazetteer.filter((p) => !taken.has(p.name.toLowerCase()))];
+  }, [gazetteer]);
+
+  /** The groups, in the order they are first met — which puts the big states first. */
+  const states = React.useMemo(() => {
+    const order: string[] = [];
+    for (const entry of allPlaces) {
+      if (entry.group && !order.includes(entry.group)) order.push(entry.group);
+    }
+    return order;
+  }, [allPlaces]);
+
+  /*
    * Narrow the list as they type.
    *
    * Matches the Latin name and the native one both, because somebody typing
@@ -388,24 +452,24 @@ export function JanamGhathe() {
 
   const filtered = React.useMemo(() => {
     const matched = needle
-      ? PLACES.filter((p) => p.name.toLowerCase().includes(needle))
-      : PLACES;
+      ? allPlaces.filter((p) => p.name.toLowerCase().includes(needle))
+      : allPlaces;
 
-    const byGroup = new Map<string, typeof PLACES>();
+    const byGroup = new Map<string, Town[]>();
     for (const entry of matched) {
       const bucket = byGroup.get(entry.group);
       if (bucket) bucket.push(entry);
       else byGroup.set(entry.group, [entry]);
     }
 
-    // STATES order, so the groups appear as written rather than in the order
+    // States order, so the groups appear as written rather than in the order
     // somebody happened to type them.
-    return STATES.filter((group) => byGroup.has(group)).map((group) => ({
+    return states.filter((group) => byGroup.has(group)).map((group) => ({
       group,
       place: group,
       items: byGroup.get(group) ?? [],
     }));
-  }, [needle]);
+  }, [needle, allPlaces, states]);
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -419,7 +483,32 @@ export function JanamGhathe() {
     const input: BirthInput = { date, name: name.trim() || undefined };
     if (/^\d{2}:\d{2}$/.test(time)) input.time = time;
 
-    const coords = PLACES.find((p) => p.name === place);
+    /*
+     * The town, and the cost of guessing it.
+     *
+     * A chart without a place has no ascendant, no houses and no divisional
+     * charts — that is the "koi chart nhi" this form used to hand to anyone
+     * born outside its short list. So the place is resolved three ways, in
+     * order: whatever they clicked; the town they typed, if exactly one town
+     * matches it; and if neither, a refusal that names the missing field,
+     * rather than a chart drawn from a sky with no address.
+     *
+     * Leaving the box empty is different and stays allowed: the page says up
+     * front that time and place are optional, and the numerology half of the
+     * answer needs neither. Only a half-typed town is refused.
+     */
+    const clicked = allPlaces.find((p) => p.name === place);
+    const typed = placeQuery.trim().toLowerCase();
+    const matches = typed
+      ? allPlaces.filter((p) => p.name.toLowerCase().includes(typed))
+      : [];
+    const coords = clicked ?? (matches.length === 1 ? matches[0] : undefined);
+
+    if (typed && !clicked && !coords) {
+      setError(t('jgd.errPlace'));
+      return;
+    }
+
     if (coords) {
       input.latitude = coords.lat;
       input.longitude = coords.lon;

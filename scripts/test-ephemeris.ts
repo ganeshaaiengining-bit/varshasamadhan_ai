@@ -336,7 +336,11 @@ check(
    */
   const ORBITS: Array<{ key: string; rate: number; e: number }> = [
     { key: 'earth', rate: 0.985647, e: 0.0167 },
-    { key: 'mercury', rate: 1.383333, e: 0.2056 },
+    // The sidereal mean motion: 360° in Mercury's 87.969 days. It used to read
+    // 1.383333, which is not a rate Mercury has — and the test still passed,
+    // because the old planet code was wrong by less than this table's loose
+    // tolerance. A wrong expectation and a wrong planet cancelled out.
+    { key: 'mercury', rate: 4.092385, e: 0.2056 },
     { key: 'venus', rate: 1.602136, e: 0.0068 },
     { key: 'mars', rate: 0.524021, e: 0.0934 },
     { key: 'jupiter', rate: 0.083085, e: 0.0484 },

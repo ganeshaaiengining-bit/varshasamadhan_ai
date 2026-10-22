@@ -116,7 +116,7 @@ export const LANGUAGES: Language[] = [
 
 const HINDI: Record<string, string> = {
   'jgd.placeSearch': 'शहर का नाम लिखिए',
-  'jgd.placeNoMatch': 'यह शहर नहीं मिला। कोई और नाम लिखिए।',
+  'jgd.placeNoMatch': 'यह शहर सूची में नहीं है। इसके पास का शहर चुनिए।',
 
   'account.name': 'आपका नाम',
   'account.namePlaceholder': 'जैसे: सीता देवी',
@@ -221,6 +221,7 @@ const HINDI: Record<string, string> = {
   'jgd.savePdf': 'PDF बनाएँ',
   'jgd.again': 'नई गणना',
   'jgd.errDate': 'कृपया जन्म की तारीख़ सही लिखिए।',
+  'jgd.errPlace': 'जन्म का शहर सूची से चुनिए, या उसके पास का शहर चुनिए।',
   'jgd.numTitle': 'अंक ज्योतिष',
   'jgd.lifePath': 'जीवन पथ',
   'jgd.nameNumber': 'नाम अंक',
@@ -793,7 +794,7 @@ const HINDI: Record<string, string> = {
 
 const ENGLISH: Record<string, string> = {
   'jgd.placeSearch': 'Type the name of your town',
-  'jgd.placeNoMatch': 'That town is not in the list. Try another name.',
+  'jgd.placeNoMatch': 'This town is not in the list. Pick the nearest one that is.',
 
   'account.name': 'Your name',
   'account.namePlaceholder': 'e.g. Sita Devi',
@@ -897,6 +898,7 @@ const ENGLISH: Record<string, string> = {
   'jgd.savePdf': 'Save as PDF',
   'jgd.again': 'Start again',
   'jgd.errDate': 'Please enter the date of birth correctly.',
+  'jgd.errPlace': 'Choose your town from the list, or the nearest one that is in it.',
   'jgd.numTitle': 'Numerology',
   'jgd.lifePath': 'Life path',
   'jgd.nameNumber': 'Name number',
@@ -1437,7 +1439,7 @@ const ENGLISH: Record<string, string> = {
 
 const BENGALI: Record<string, string> = {
   'jgd.placeSearch': 'আপনার শহরের নাম লিখুন',
-  'jgd.placeNoMatch': 'এই শহরটি তালিকায় নেই। অন্য নাম লিখুন।',
+  'jgd.placeNoMatch': 'এই শহরটি তালিকায় নেই। এর নিকটতম শহরটি বেছে নিন।',
 
   'account.name': 'আপনার নাম',
   'account.namePlaceholder': 'যেমন: সীতা দেবী',
@@ -1537,6 +1539,7 @@ const BENGALI: Record<string, string> = {
   'jgd.savePdf': 'PDF তৈরি করুন',
   'jgd.again': 'নতুন হিসাব',
   'jgd.errDate': 'অনুগ্রহ করে জন্মের তারিখ সঠিকভাবে লিখুন।',
+  'jgd.errPlace': 'তালিকা থেকে আপনার শহর বেছে নিন, অথবা তার নিকটতম শহর বেছে নিন।',
   'jgd.numTitle': 'সংখ্যা জ্যোতিষ',
   'jgd.lifePath': 'জীবন পথ',
   'jgd.nameNumber': 'নাম সংখ্যা',
@@ -2223,7 +2226,7 @@ const BENGALI: Record<string, string> = {
 
 const TAMIL: Record<string, string> = {
   'jgd.placeSearch': 'உங்கள் ஊரின் பெயரைத் தட்டச்சு செய்யுங்கள்',
-  'jgd.placeNoMatch': 'இந்த ஊர் பட்டியலில் இல்லை. வேறு பெயரைத் தட்டச்சு செய்யுங்கள்.',
+  'jgd.placeNoMatch': 'இந்த ஊர் பட்டியலில் இல்லை. அருகில் உள்ள ஊரைத் தேர்வு செய்யுங்கள்.',
 
   'account.name': 'உங்கள் பெயர்',
   'account.namePlaceholder': 'எ.கா. சீதா தேவி',
@@ -2323,6 +2326,7 @@ const TAMIL: Record<string, string> = {
   'jgd.savePdf': 'PDF உருவாக்கு',
   'jgd.again': 'மீண்டும் கணக்கிடு',
   'jgd.errDate': 'பிறந்த தேதியைச் சரியாக உள்ளிடவும்.',
+  'jgd.errPlace': 'பட்டியலில் இருந்து உங்கள் ஊரைத் தேர்வு செய்யுங்கள், அல்லது அருகில் உள்ள ஊரைத் தேர்வு செய்யுங்கள்.',
   'jgd.numTitle': 'எண் ஜோதிடம்',
   'jgd.lifePath': 'உயிர் வழி',
   'jgd.nameNumber': 'பெயர் எண்',
@@ -3009,7 +3013,7 @@ const TAMIL: Record<string, string> = {
 
 const TELUGU: Record<string, string> = {
   'jgd.placeSearch': 'మీ ఊరి పేరు టైప్ చేయండి',
-  'jgd.placeNoMatch': 'ఆ ఊరు జాబితాలో లేదు. వేరే పేరు ఇవ్వండి.',
+  'jgd.placeNoMatch': 'ఆ ఊరు జాబితాలో లేదు. దగ్గరలో ఉన్న ఊరిని ఎంచుకోండి.',
 
   'account.name': 'మీ పేరు',
   'account.namePlaceholder': 'ఉదా. సీతా దేవి',
@@ -3109,6 +3113,7 @@ const TELUGU: Record<string, string> = {
   'jgd.savePdf': 'PDF ఇవ్వండి',
   'jgd.again': 'మళ్ళీ లెక్కించు',
   'jgd.errDate': 'జనన తేదీని సరిగ్గా ఇవ్వండి.',
+  'jgd.errPlace': 'జాబితా నుండి మీ ఊరిని ఎంచుకోండి, లేదా దగ్గరలో ఉన్న ఊరిని ఎంచుకోండి.',
   'jgd.numTitle': 'సంఖ్య జ్యోతిష్యం',
   'jgd.lifePath': 'జీవిత మార్గం',
   'jgd.nameNumber': 'పేరు సంఖ్య',
@@ -3795,7 +3800,7 @@ const TELUGU: Record<string, string> = {
 
 const MARATHI: Record<string, string> = {
   'jgd.placeSearch': 'तुमच्या शहराचे नाव लिहा',
-  'jgd.placeNoMatch': 'हे शहर या यादीत नाही. दुसरे नाव वापरा.',
+  'jgd.placeNoMatch': 'हे शहर या यादीत नाही. जवळचे शहर निवडा.',
 
   'account.name': 'तुमचे नाव',
   'account.namePlaceholder': 'उदा. सीता देवी',
@@ -3895,6 +3900,7 @@ const MARATHI: Record<string, string> = {
   'jgd.savePdf': 'PDF तयार करा',
   'jgd.again': 'पुन्हा गणना करा',
   'jgd.errDate': 'कृपया जन्मतारीख योग्य लिहा.',
+  'jgd.errPlace': 'यादीतून तुमचे शहर निवडा, किंवा जवळचे शहर निवडा.',
   'jgd.numTitle': 'अंक ज्योतिष',
   'jgd.lifePath': 'जीवनमार्ग',
   'jgd.nameNumber': 'नाम अंक',
@@ -4581,7 +4587,7 @@ const MARATHI: Record<string, string> = {
 
 const GUJARATI: Record<string, string> = {
   'jgd.placeSearch': 'તમારા શહેરનું નામ લખો',
-  'jgd.placeNoMatch': 'આ શહેર યાદીમાં નથી. બીજું નામ લખો.',
+  'jgd.placeNoMatch': 'આ શહેર યાદીમાં નથી. નજીકનું શહેર પસંદ કરો.',
 
   'account.name': 'તમારું નામ',
   'account.namePlaceholder': 'દા.ત. સીતા દેવી',
@@ -4681,6 +4687,7 @@ const GUJARATI: Record<string, string> = {
   'jgd.savePdf': 'PDF બનાવો',
   'jgd.again': 'ફરી ગણતરી કરો',
   'jgd.errDate': 'કૃપા કરી જન્મ તારીખ સાચી લખો.',
+  'jgd.errPlace': 'યાદીમાંથી તમારું શહેર પસંદ કરો, અથવા નજીકનું શહેર પસંદ કરો.',
   'jgd.numTitle': 'સંખ્યા જ્યોતિષ',
   'jgd.lifePath': 'જીવન માર્ગ',
   'jgd.nameNumber': 'નામ સંખ્યા',
@@ -5367,7 +5374,7 @@ const GUJARATI: Record<string, string> = {
 
 const KANNADA: Record<string, string> = {
   'jgd.placeSearch': 'ನಿಮ್ಮ ಊರಿನ ಹೆಸರು ಟೈಪ್ ಮಾಡಿ',
-  'jgd.placeNoMatch': 'ಆ ಊರು ಪಟ್ಟಿಯಲ್ಲಿಲ್ಲ. ಬೇರೆ ಹೆಸರು ಟೈಪ್ ಮಾಡಿ.',
+  'jgd.placeNoMatch': 'ಆ ಊರು ಪಟ್ಟಿಯಲ್ಲಿಲ್ಲ. ಹತ್ತಿರದ ಊರನ್ನು ಆಯ್ಕೆಮಾಡಿ.',
 
   'account.name': 'ನಿಮ್ಮ ಹೆಸರು',
   'account.namePlaceholder': 'ಉದಾ. ಸೀತಾ ದೇವಿ',
@@ -5467,6 +5474,7 @@ const KANNADA: Record<string, string> = {
   'jgd.savePdf': 'PDF ಮಾಡಿ',
   'jgd.again': 'ಮತ್ತೆ ಲೆಕ್ಕಿಸಿ',
   'jgd.errDate': 'ಜನನ ದಿನಾಂಕವನ್ನು ಸರಿಯಾಗಿ ನಮೂದಿಸಿ.',
+  'jgd.errPlace': 'ಪಟ್ಟಿಯಿಂದ ನಿಮ್ಮ ಊರನ್ನು ಆಯ್ಕೆಮಾಡಿ, ಅಥವಾ ಹತ್ತಿರದ ಊರನ್ನು ಆಯ್ಕೆಮಾಡಿ.',
   'jgd.numTitle': 'ಸಂಖ್ಯಾ ಜ್ಯೋತಿಷ',
   'jgd.lifePath': 'ಜೀವನ ಮಾರ್ಗ',
   'jgd.nameNumber': 'ಹೆಸರಿನ ಸಂಖ್ಯೆ',
@@ -6166,7 +6174,7 @@ const KANNADA: Record<string, string> = {
 
 const MALAYALAM: Record<string, string> = {
   'jgd.placeSearch': 'നിങ്ങളുടെ ഊരിന്റെ പേര് ടൈപ്പ് ചെയ്യുക',
-  'jgd.placeNoMatch': 'ആ ഊര് പട്ടിയില് ഇല്ല. മറ്റൊരു പേര് ടൈപ്പ് ചെയ്യുക.',
+  'jgd.placeNoMatch': 'ആ ഊര് പട്ടിയില് ഇല്ല. അടുത്തുള്ള ഊര് തിരഞ്ഞെടുക്കുക.',
 
   'account.name': 'നിങ്ങളുടെ പേര്',
   'account.namePlaceholder': 'ഉദാ. സീത ദേവി',
@@ -6266,6 +6274,7 @@ const MALAYALAM: Record<string, string> = {
   'jgd.savePdf': 'PDF ഉണ്ടാക്കുക',
   'jgd.again': 'വീണ്ടും കണക്കാക്കുക',
   'jgd.errDate': 'ജനന തീയതി ശരിയായിട്ട് നൽകുക.',
+  'jgd.errPlace': 'പട്ടിയിൽ നിന്ന് നിങ്ങളുടെ ഊര് തിരഞ്ഞെടുക്കുക, അല്ലെങ്കിൽ അടുത്തുള്ള ഊര് തിരഞ്ഞെടുക്കുക.',
   'jgd.numTitle': 'അക്ക ജ്യോതിഷ',
   'jgd.lifePath': 'ജീവിത വഴി',
   'jgd.nameNumber': 'പേര് അക്കം',
@@ -6969,7 +6978,7 @@ const MALAYALAM: Record<string, string> = {
 
 const PUNJABI: Record<string, string> = {
   'jgd.placeSearch': 'ਆਪਣੇ ਸ਼ਹਿਰ ਦਾ ਨਾਮ ਲਿਖੋ',
-  'jgd.placeNoMatch': 'ਇਹ ਸ਼ਹਿਰ ਸੂਚੀ ਵਿੱਚ ਨਹੀਂ। ਹੋਰ ਨਾਮ ਲਿਖੋ।',
+  'jgd.placeNoMatch': 'ਇਹ ਸ਼ਹਿਰ ਸੂਚੀ ਵਿੱਚ ਨਹੀਂ। ਨੇੜੇ ਦਾ ਸ਼ਹਿਰ ਚੁਣੋ।',
 
   'account.name': 'ਤੁਹਾਡਾ ਨਾਮ',
   'account.namePlaceholder': 'ਉਦਾ. ਸੀਤਾ ਦੇਵੀ',
@@ -7069,6 +7078,7 @@ const PUNJABI: Record<string, string> = {
   'jgd.savePdf': 'PDF ਬਣਾਓ',
   'jgd.again': 'ਨਵੀਂ ਗਿਣਤੀ ਕਰੋ',
   'jgd.errDate': 'ਕਿਰਪਾ ਕਰਕੇ ਜਨਮ ਮਿਤੀ ਸਹੀ ਲਿਖੋ.',
+  'jgd.errPlace': 'ਸੂਚੀ ਵਿੱਚੋਂ ਆਪਣਾ ਸ਼ਹਿਰ ਚੁਣੋ, ਜਾਂ ਨੇੜੇ ਦਾ ਸ਼ਹਿਰ ਚੁਣੋ.',
   'jgd.numTitle': 'ਅੰਕ ਜੋਤਿਸ',
   'jgd.lifePath': 'ਜੀਵਨ ਪੱਥ',
   'jgd.nameNumber': 'ਨਾਮ ਅੰਕ',
@@ -7775,7 +7785,7 @@ const PUNJABI: Record<string, string> = {
 
 const URDU: Record<string, string> = {
   'jgd.placeSearch': 'اپنے شہر کا نام لکھیں',
-  'jgd.placeNoMatch': 'یہ شہر فہرست میں نہیں۔ دوسرا نام لکھیں۔',
+  'jgd.placeNoMatch': 'یہ شہر فہرست میں نہیں۔ قریب ترین شہر چنیں۔',
 
   'account.name': 'آپ کا نام',
   'account.namePlaceholder': 'مثلاً سیتا دیوی',
@@ -7875,6 +7885,7 @@ const URDU: Record<string, string> = {
   'jgd.savePdf': 'PDF بنائیں',
   'jgd.again': 'دوبارہ شروع کریں',
   'jgd.errDate': 'براہ کرم تاریخِ پیدائش درست لکھیں۔',
+  'jgd.errPlace': 'فہرست سے اپنا شہر چنیں، یا قریب ترین شہر چنیں۔',
   'jgd.numTitle': 'اعداد شناسی',
   'jgd.lifePath': 'راہِ زندگی',
   'jgd.nameNumber': 'نام کا عدد',
@@ -8570,7 +8581,7 @@ const URDU: Record<string, string> = {
 
 const ARABIC: Record<string, string> = {
   'jgd.placeSearch': 'اكتب اسم مدينتك',
-  'jgd.placeNoMatch': 'هذه المدينة ليست في القائمة. جرّب اسماً آخر.',
+  'jgd.placeNoMatch': 'هذه المدينة ليست في القائمة. اختر أقرب مدينة إليها.',
 
   'account.name': 'اسمك',
   'account.namePlaceholder': 'مثلاً سيدة ديفى',
@@ -8670,6 +8681,7 @@ const ARABIC: Record<string, string> = {
   'jgd.savePdf': 'أنشئ ملف PDF',
   'jgd.again': 'ابدأ من جديد',
   'jgd.errDate': 'اكتب تاريخ الميلاد بصفة صحيحة.',
+  'jgd.errPlace': 'اختر مدينتك من القائمة، أو أقرب مدينة إليها.',
   'jgd.numTitle': 'علم الأرقام',
   'jgd.lifePath': 'مسار الحياة',
   'jgd.nameNumber': 'رقم الاسم',
@@ -9371,7 +9383,7 @@ const ARABIC: Record<string, string> = {
 
 const SPANISH: Record<string, string> = {
   'jgd.placeSearch': 'Escribe el nombre de tu pueblo',
-  'jgd.placeNoMatch': 'Ese pueblo no está en la lista. Prueba otro nombre.',
+  'jgd.placeNoMatch': 'Ese pueblo no está en la lista. Elige el más cercano.',
 
   'account.name': 'Tu nombre',
   'account.namePlaceholder': 'p. ej. Sita Devi',
@@ -9471,6 +9483,7 @@ const SPANISH: Record<string, string> = {
   'jgd.savePdf': 'Guardar como PDF',
   'jgd.again': 'Empezar de nuevo',
   'jgd.errDate': 'Escribe la fecha correctamente.',
+  'jgd.errPlace': 'Elige tu pueblo de la lista, o el más cercano que esté en ella.',
   'jgd.numTitle': 'Numerología',
   'jgd.lifePath': 'Camino de vida',
   'jgd.nameNumber': 'Número del nombre',
