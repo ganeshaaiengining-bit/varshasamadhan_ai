@@ -150,6 +150,49 @@ check('doosri lipi ka naam match nahi karta',
 check('farsi-Latin ho ya Devanagari, base code par milta hai',
   bestVoiceFor(voices(['mr-IN']), 'mr-IN')?.lang === 'mr-IN');
 
+console.log('\n=== saaf awaaz pehle chuni jaati hai ===');
+/*
+ * The owner's complaint: the voice was not clear. The old picker took the
+ * first matching voice, and on Windows that is the muffled local SAPI one
+ * while the clear voices sit later in the list. These four checks are the
+ * ranking that fixes it.
+ */
+const named = (lang: string, name: string, localService = true): SpeechSynthesisVoice =>
+  ({ lang, name, default: false, localService, voiceURI: name } as SpeechSynthesisVoice);
+
+check('neural/natural voice muffled SAPI se pehle',
+  bestVoiceFor(
+    [
+      named('hi-IN', 'Microsoft Hemant - Hindi (India)'),
+      named('hi-IN', 'Microsoft Swara Online (Natural) - Hindi (India)'),
+    ],
+    'hi-IN',
+  )?.name.includes('Natural') === true);
+
+check('Google ki network voice local SAPI se pehle',
+  bestVoiceFor(
+    [
+      named('hi-IN', 'Microsoft Hemant - Hindi (India)'),
+      named('hi-IN', 'Google हिन्दी'),
+    ],
+    'hi-IN',
+  )?.name.startsWith('Google') === true);
+
+check('bina naam ke — network voice local se pehle',
+  bestVoiceFor(
+    [named('hi-IN', 'Voice A', true), named('hi-IN', 'Voice B', false)],
+    'hi-IN',
+  )?.name === 'Voice B');
+
+check('quality barabar ho to pehli hi rehti hai',
+  bestVoiceFor(voices(['hi-IN', 'hi-IN']), 'hi-IN')?.lang === 'hi-IN');
+
+check('saaf voice bare language ho, tab bhi jeetti hai exact-tag muffled se',
+  bestVoiceFor(
+    [named('hi-IN', 'Microsoft Hemant - Hindi (India)'), named('hi', 'Google हिन्दी')],
+    'hi-IN',
+  )?.name.startsWith('Google') === true);
+
 console.log('\n=== message 13 bhashaon me hai ===');
 /*
  * `voice.noVoice` is the sentence a person sees when their device cannot read

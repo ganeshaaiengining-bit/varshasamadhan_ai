@@ -309,9 +309,11 @@ let stopToken = 0;
 /**
  * The voice to use for a tag, or nothing.
  *
- * Exact tag first (`hi-IN`), then the bare language (`hi`), because Chrome on
- * Android often reports `ta-IN` while some devices only ship `ta`, and a bare
- * match beats the default voice by a wide margin.
+ * Any voice for the language qualifies — exact tag (`hi-IN`) or bare language
+ * (`hi`), because Chrome on Android often reports `ta-IN` while some devices
+ * only ship `ta` — but among those, the CLEAREST one wins, not the first.
+ * See `voiceClarity` below for what "clear" means here and why the first
+ * match was the wrong answer on Windows.
  *
  * Exported because "does this device have a Hindi voice?" is a question worth
  * asking of a plain list rather than of a live browser: the check that stops the
@@ -324,11 +326,62 @@ export function bestVoiceFor(
 ): SpeechSynthesisVoice | null {
   if (voices.length === 0) return null;
 
-  const exact = voices.find((v) => v.lang.toLowerCase() === tag.toLowerCase());
-  if (exact) return exact;
-
+  const tagLower = tag.toLowerCase();
   const base = tag.split('-')[0].split('_')[0].toLowerCase();
-  return voices.find((v) => v.lang.toLowerCase().split(/[-_]/)[0] === base) ?? null;
+
+  let best: SpeechSynthesisVoice | null = null;
+  let bestScore = -Infinity;
+
+  for (const voice of voices) {
+    const lang = voice.lang.toLowerCase();
+    const isExact = lang === tagLower;
+    if (!isExact && lang.split(/[-_]/)[0] !== base) continue;
+
+    let score = voiceClarity(voice);
+    // The exact region tag only breaks ties between equally clear voices —
+    // quality decides first, because a clear bare-language voice beats a
+    // muffled exact-tag one every time a person has to listen to it.
+    if (isExact) score += 5;
+
+    if (score > bestScore) {
+      bestScore = score;
+      best = voice;
+    }
+  }
+
+  return best;
+}
+
+/**
+ * How clearly a voice is likely to sound, when a device offers more than one
+ * for a language.
+ *
+ * ── Why this exists ──────────────────────────────────────────────────────────
+ * The picker used to return the first voice whose language matched, and on
+ * Windows that list usually starts with the muffled local SAPI voices
+ * ("Microsoft Hemant", "Microsoft Swara") while the clear ones sit further
+ * down. The owner heard exactly that and asked for "a good voice, one that can
+ * be heard clearly". The speech API exposes no quality field, so the name and
+ * the local/network flag are the only hints that exist:
+ *
+ *   100 — a neural/natural voice ("… (Natural) …", "… Neural …"). These are
+ *         the clear, human-sounding ones, worth reaching for above everything.
+ *    50 — Chrome's own "Google …" network voice. Not neural, but steady and
+ *         far cleaner than anything installed locally.
+ *    10 — any other network voice (localService false), fetched while speaking
+ *         and usually better than what ships with the machine.
+ *     0 — the local voice that is left.
+ *
+ * A voice with no hint in its name and no network behind it is the robotic
+ * one — it still speaks, which is why it is the floor and not excluded.
+ */
+function voiceClarity(voice: SpeechSynthesisVoice): number {
+  const name = voice.name.toLowerCase();
+  let score = 0;
+  if (name.includes('natural') || name.includes('neural')) score += 100;
+  if (name.startsWith('google')) score += 50;
+  if (!voice.localService) score += 10;
+  return score;
 }
 
 /**
