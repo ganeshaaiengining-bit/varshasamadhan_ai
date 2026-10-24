@@ -307,6 +307,74 @@ export interface SpeakOptions {
 let stopToken = 0;
 
 /**
+ * The chunk of clear audio, if any, that is playing right now.
+ *
+ * The device's own voices are stopped by `synth.cancel()`, which speechSynthesis
+ * handles for itself. Audio fetched from `/api/tts` is an `<audio>` element and
+ * knows nothing about that cancel, so the current element and the way to settle
+ * its waiting promise are held here — one pair, because chunks play strictly one
+ * after another, never two at once.
+ */
+let networkAudio: HTMLAudioElement | null = null;
+let releaseNetworkChunk: (() => void) | null = null;
+
+/** Longest /api/tts may take to answer before the device voice takes over. */
+const NETWORK_TTS_TIMEOUT_MS = 8_000;
+
+/** Stop whatever clear audio is playing. Called by speak() and by stopSpeaking(). */
+function stopNetworkSpeech(): void {
+  const release = releaseNetworkChunk;
+  if (release) {
+    release();
+  } else if (networkAudio) {
+    try {
+      networkAudio.pause();
+    } catch {
+      // A pause on an already-finished element throws nowhere worth catching.
+    }
+    networkAudio = null;
+  }
+}
+
+/**
+ * Plays one fetched chunk to its end, and reports whether it was heard.
+ *
+ * Resolves `true` only on `ended`: a file that errors, a play() the browser
+ * refuses (autoplay policies on a first visit), or a stop arriving mid-sentence
+ * all resolve `false`, which is the caller's signal to fall back rather than
+ * leave the button spinning over silence.
+ */
+function playNetworkChunk(url: string, token: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (token !== stopToken) return resolve(false);
+
+    const audio = new Audio(url);
+    let settled = false;
+
+    const finish = (ok: boolean) => {
+      if (settled) return;
+      settled = true;
+      try {
+        audio.pause();
+      } catch {
+        // Settling twice is the goal here, not the failure.
+      }
+      audio.onended = null;
+      audio.onerror = null;
+      if (networkAudio === audio) networkAudio = null;
+      if (releaseNetworkChunk) releaseNetworkChunk = null;
+      resolve(ok);
+    };
+
+    networkAudio = audio;
+    releaseNetworkChunk = () => finish(false);
+    audio.onended = () => finish(true);
+    audio.onerror = () => finish(false);
+    audio.play().catch(() => finish(false));
+  });
+}
+
+/**
  * The voice to use for a tag, or nothing.
  *
  * Any voice for the language qualifies — exact tag (`hi-IN`) or bare language
@@ -385,6 +453,38 @@ function voiceClarity(voice: SpeechSynthesisVoice): number {
 }
 
 /**
+ * Where the reading should come from on this device: its own voice, or the
+ * clear audio from `/api/tts`.
+ *
+ * ── Why this is not `voiceClarity` ──────────────────────────────────────────
+ * `voiceClarity` ranks voices *against each other*; this asks the blunter
+ * question — is the device's best voice good enough to keep? The rule has to be
+ * conservative, because the network path costs a fetch and can fail, while the
+ * device path is instant:
+ *
+ *   - no voice for the language at all → network. Without this a phone with no
+ *     regional pack reads Devanagari with an English voice, or says nothing;
+ *   - the legacy Windows SAPI family ("Microsoft Hemant", "Microsoft Swara" —
+ *     no "Natural" in the name) → network. These are the muffled ones the
+ *     owner's own machine has, and they cannot be improved from the outside;
+ *   - everything else → device. Apple's Siri voices, Samsung's, Chrome's Google
+ *     voices and every neural voice are already clear, and no heuristic that
+ *     merely fails to recognise a good voice should push a working phone onto
+ *     the network for nothing.
+ *
+ * Exported for the same reason `bestVoiceFor` is: whether a device falls on the
+ * muffled side of this line is exactly the kind of decision that passes by
+ * accident if nothing can test it.
+ */
+export function playbackFor(voice: SpeechSynthesisVoice | null): 'device' | 'network' {
+  if (!voice) return 'network';
+  const name = voice.name.toLowerCase();
+  const legacySapi =
+    name.startsWith('microsoft') && !name.includes('natural') && !name.includes('neural');
+  return legacySapi ? 'network' : 'device';
+}
+
+/**
  * Speaks text aloud, slowly, in the visitor's chosen language.
  *
  * `rate` defaults to 0.85 rather than 1. The browser default is pitched at a
@@ -420,6 +520,7 @@ export function speak(
 
   // Anything queued from a previous click would keep talking over the new answer.
   synth.cancel();
+  stopNetworkSpeech();
   stopToken += 1;
   const token = stopToken;
 
@@ -499,65 +600,138 @@ export function speak(
   };
 
   /*
-   * Speak at once, rather than waiting for `voiceschanged`.
+   * The clear-audio path — for devices whose own voice is the muffled one.
    *
-   * The old version waited for the voice list before calling speak(), and only
-   * called speak() inside that callback. On iOS the callback runs outside the
-   * click's user gesture, and Safari refuses speech that was not started by a
-   * gesture — so the button did nothing at all on the devices whose voice list
-   * loads a moment late. Speaking now, with a null voice and the right `lang`,
-   * lets the browser choose; a later chunk picks up the better voice once the
-   * list arrives.
+   * `/api/tts` speaks one chunk as real audio, so the visitor hears a clear
+   * voice whatever their machine has installed. This is the owner's "other
+   * users must hear a clear voice too" requirement, met without asking anyone
+   * to change a setting: no voice pack, no OS dialog, no key — the site itself
+   * brings the voice. Chunks play one at a time, the same sentence-by-sentence
+   * walk the device queue takes, so a long article reads continuously.
+   *
+   * Every failure (offline, upstream refused, autoplay blocked, a stop button)
+   * hands the remaining chunks to the device's own voice from the point of
+   * failure, because muffled beats silent — and the honest "no voice for this
+   * language" message is reserved for the case where there is no device voice
+   * to fall back to either.
    */
-  /*
-   * The last thing, and the reason for the whole file's note about silence.
-   *
-   * ── The bug this catches ─────────────────────────────────────────────────
-   * Measured on the owner's own machine: three English voices, no Hindi voice at
-   * all. `pickVoice()` found nothing, left `utterance.voice` null, and the
-   * browser read Devanagari with a default English voice. `speaking` was true, no
-   * error fired, the button said "Stop" — and what came out was unintelligible.
-   * That is the "bahut jagah audio aata hi nahi" report exactly: the button
-   * works, the sound is wrong, and nothing on screen explains why.
-   *
-   * ── Why not simply refuse before speaking ────────────────────────────────
-   * Two reasons. The voice list often arrives a moment after the page does
-   * (`voiceschanged`), so an empty list at click time is not a verdict, and
-   * speaking anyway keeps iOS's requirement that audio start inside the user's
-   * gesture. So it speaks first and is stopped a moment later if the list turns
-   * up empty of anything usable. The blip is far shorter than a whole article of
-   * nonsense.
-   *
-   * ── Why the language matters to *this* check ─────────────────────────────
-   * A Hindi article read by a Tamil voice is the same failure in a new place,
-   * and the voice list has no way to say "I can sort of do that". Matching on the
-   * base language is the only honest test available.
-   */
-  const refuseIfNoVoice = (): boolean => {
+  const fallbackToDevice = () => {
+    if (token !== stopToken) return;
     const voices = synth.getVoices();
-    if (voices.length === 0) return false; // not loaded yet — still no verdict
-
-    if (bestVoiceFor(voices, tag)) return true;
-
-    // Bumping the token kills the queue, the silence timer and any late `onend`.
+    if (voices.length === 0 || bestVoiceFor(voices, tag)) {
+      speakNext(); // whatever the device has, even the muffled voice
+      return;
+    }
+    // The list had loaded when the network path was chosen and held nothing for
+    // this language; re-read it before refusing, because the list can change.
     stopToken += 1;
     synth.cancel();
     options.onError?.('voice.noVoice', { name: languageMeta(languageCode).native });
-    return true;
   };
 
-  if (!refuseIfNoVoice()) {
-    const onVoices = () => {
-      if (refuseIfNoVoice()) synth.removeEventListener('voiceschanged', onVoices);
+  const speakNetwork = async (): Promise<void> => {
+    while (index < chunks.length) {
+      if (token !== stopToken) return;
+
+      let url: string | null = null;
+      let ok = false;
+      try {
+        const response = await fetch(
+          `/api/tts?lang=${encodeURIComponent(languageCode)}&text=${encodeURIComponent(chunks[index])}`,
+          { signal: AbortSignal.timeout(NETWORK_TTS_TIMEOUT_MS) },
+        );
+        if (!response.ok) throw new Error(`tts ${response.status}`);
+        const blob = await response.blob();
+        if (blob.size === 0) throw new Error('tts returned no audio');
+        if (token !== stopToken) return;
+        url = URL.createObjectURL(blob);
+        ok = await playNetworkChunk(url, token);
+      } catch {
+        ok = false;
+      } finally {
+        if (url) URL.revokeObjectURL(url);
+      }
+
+      if (token !== stopToken) return;
+      if (!ok) {
+        console.warn(
+          `[voice] clear-audio failed at chunk ${index + 1}/${chunks.length} — ` +
+            'continuing with the device voice',
+        );
+        fallbackToDevice();
+        return;
+      }
+      index += 1;
+    }
+    done();
+  };
+
+  /*
+   * Who reads, and from where — decided once, at the click.
+   *
+   * ── The bug this replaced ─────────────────────────────────────────────────
+   * Commit 12d36b7 meant to add "there is no voice for this language" and, in
+   * doing so, removed the very first `speakNext()` — the check that replaced it
+   * only ever reported and never started the queue. On every device WITH a
+   * voice the button therefore played nothing and showed no error: the chunks
+   * were ready and nobody ever called the queue. The comments above used to
+   * describe speaking first and verifying afterwards; the speaking itself had
+   * gone missing. Both branches below start speaking inside this function,
+   * which is also what iOS needs — audio that begins inside the user's gesture.
+   *
+   * The three cases:
+   *
+   *   - list not loaded yet → speak immediately anyway (waiting for
+   *     `voiceschanged` would land speech outside the click's gesture and
+   *     Safari would refuse it), then verify the moment the list arrives;
+   *   - a clear device voice → speak with it. Phones, iPhone, Edge and Chrome's
+   *     own Google voices are already clear, and the device path is instant:
+   *     no fetch, no latency;
+   *   - only the legacy muffled Windows voice, or none at all → read the clear
+   *     audio from `/api/tts`, falling back per chunk if it fails.
+   */
+  const loaded = synth.getVoices();
+
+  if (loaded.length === 0) {
+    speakNext();
+
+    const verify = () => {
+      const arrived = synth.getVoices();
+      if (arrived.length === 0) return; // still no verdict
+      synth.removeEventListener('voiceschanged', verify);
+      if (!bestVoiceFor(arrived, tag)) {
+        // Bumping the token kills the queue, the silence timer and any late `onend`.
+        stopToken += 1;
+        synth.cancel();
+        options.onError?.('voice.noVoice', { name: languageMeta(languageCode).native });
+      }
     };
-    synth.addEventListener('voiceschanged', onVoices);
+    synth.addEventListener('voiceschanged', verify);
     window.setTimeout(() => {
-      // Still nothing after this long: play best-effort rather than show a
-      // message that might be wrong about a slow device.
-      synth.removeEventListener('voiceschanged', onVoices);
-      refuseIfNoVoice();
+      // Still nothing after this long: let it play best-effort rather than show
+      // a message that might be wrong about a slow device.
+      synth.removeEventListener('voiceschanged', verify);
     }, 1600);
+    return;
   }
+
+  const deviceVoice = bestVoiceFor(loaded, tag);
+
+  if (playbackFor(deviceVoice) === 'network') {
+    void speakNetwork();
+    return;
+  }
+
+  if (!deviceVoice) {
+    // Unreachable in practice — `playbackFor(null)` is 'network' — kept so a
+    // future change to that rule cannot silently skip the honest message.
+    stopToken += 1;
+    synth.cancel();
+    options.onError?.('voice.noVoice', { name: languageMeta(languageCode).native });
+    return;
+  }
+
+  speakNext();
 }
 
 /**
@@ -637,8 +811,11 @@ export function chunksForSpeech(text: string, limit = 120): string[] {
 }
 
 export function stopSpeaking() {
+  // Unconditional: the network path settles on the token too, and a page that
+  // somehow lacks speechSynthesis can still have an `<audio>` element talking.
+  stopToken += 1;
+  stopNetworkSpeech();
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    stopToken += 1;
     window.speechSynthesis.cancel();
   }
 }

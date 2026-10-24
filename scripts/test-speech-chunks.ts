@@ -17,7 +17,7 @@
  * boundary. An audio reader that loses the last line of every aarti is the same
  * bug in a new place.
  */
-import { chunksForSpeech, bestVoiceFor } from '../src/components/voice/use-voice';
+import { chunksForSpeech, bestVoiceFor, playbackFor } from '../src/components/voice/use-voice';
 import { LANGUAGES, translate } from '../src/content/i18n';
 
 let ok = 0;
@@ -192,6 +192,33 @@ check('saaf voice bare language ho, tab bhi jeetti hai exact-tag muffled se',
     [named('hi-IN', 'Microsoft Hemant - Hindi (India)'), named('hi', 'Google हिन्दी')],
     'hi-IN',
   )?.name.startsWith('Google') === true);
+
+console.log('\n=== kahan se padha jaayega: device ya saaf aawaaz ===');
+/*
+ * The owner's real requirement: "other users must hear a clear voice too" —
+ * without anyone installing anything. `playbackFor` is the line: the device's
+ * own voice when it is good (phones, iPhone, Edge, Chrome's Google voices),
+ * the clear `/api/tts` audio when it is the muffled Windows SAPI family or
+ * there is no voice at all. Too eager, and every working phone pays a fetch it
+ * did not need; too shy, and the owner's own machine keeps hearing mush.
+ */
+check('muffled Microsoft SAPI → /api/tts se saaf aawaaz',
+  playbackFor(named('hi-IN', 'Microsoft Hemant - Hindi (India)')) === 'network');
+
+check('Microsoft ki Online (Natural) awaaz → device par hi rehti hai',
+  playbackFor(named('hi-IN', 'Microsoft Swara Online (Natural) - Hindi (India)')) === 'device');
+
+check('Google की network voice → device par hi',
+  playbackFor(named('hi-IN', 'Google हिन्दी')) === 'device');
+
+check('Apple jaisi bina naam wali voice → device par hi (galti se network nahi)',
+  playbackFor(named('hi-IN', 'Veena')) === 'device');
+
+check('koi awaaz hi na ho → network path (phir bhi saaf aawaaz)',
+  playbackFor(null) === 'network');
+
+check('English ki legacy SAPI bhi network par jaati hai',
+  playbackFor(named('en-IN', 'Microsoft David - English (United States)')) === 'network');
 
 console.log('\n=== message 13 bhashaon me hai ===');
 /*
