@@ -510,13 +510,38 @@ function AnswerCard({
         </button>
       </div>
 
-      {/* Long answers are hard to read on a phone, so paragraphs stay generous. */}
+      {/* Long answers need shape, not just length: a heading that ends in a
+          colon stands on its own line and is printed bold, so the visitor can
+          find the section they need without reading the whole answer again.
+          Model output is plain text — the prompt forbids markdown — so this
+          reads the structure the prompt actually produces. */}
       <div className="mt-4 space-y-3 text-[1.05em] leading-relaxed">
-        {text.split(/\n{2,}/).map((para, i) => (
-          <p key={i} className="whitespace-pre-line">
-            {para}
-          </p>
-        ))}
+        {text.split(/\n{2,}/).map((block, i) => {
+          const lines = block.split('\n').map((line) => line.trim()).filter(Boolean);
+
+          if (lines.length === 0) return null;
+
+          return (
+            <div key={i} className="space-y-1.5">
+              {lines.map((line, j) => {
+                const heading = /[:：]\s*$/.test(line) && line.length <= 80;
+
+                return (
+                  <p
+                    key={j}
+                    className={
+                      heading
+                        ? 'whitespace-pre-line font-bold text-ink'
+                        : 'whitespace-pre-line'
+                    }
+                  >
+                    {line}
+                  </p>
+                );
+              })}
+            </div>
+          );
+        })}
       </div>
 
       <p className="mt-5 border-t border-line pt-3 text-sm text-ink-subtle">

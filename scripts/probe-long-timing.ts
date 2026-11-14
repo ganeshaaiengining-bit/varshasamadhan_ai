@@ -58,7 +58,7 @@ async function probe(model: string): Promise<void> {
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: SYSTEM }] },
           contents: [{ role: 'user', parts: [{ text: QUESTION }] }],
-          generationConfig: { temperature: 0.4, maxOutputTokens: 4096 },
+          generationConfig: { temperature: 0.3, maxOutputTokens: 8192 },
         }),
         signal: controller.signal,
       },

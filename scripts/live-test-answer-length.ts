@@ -18,6 +18,16 @@
  * would: a full Hanuman Chalisa, and then an ordinary question to make sure
  * "give the whole text" did not turn every answer into an essay.
  *
+ * ── The owner then asked for the opposite of the old rule ──────────────────
+ *
+ * His next instruction was that the remaining answers must be more accurate and
+ * far more detailed — the more of the information that bears on the question,
+ * the better, so the visitor can judge what is good for them. The prompt now
+ * asks for that, and section 2 checks that an ordinary health question comes
+ * back with real detail (what to do, what to avoid, when to see a doctor) rather
+ * than three lines. "Essay" no longer means "too long"; it means padded, and the
+ * prompt forbids padding.
+ *
  * ── How it signs in without anybody's password ────────────────────────────
  *
  * The ask route needs a signed-in visitor. Rather than borrow the owner's
@@ -134,13 +144,19 @@ async function main(): Promise<void> {
     console.log('\n  --- aakhri 120 akshar ---');
     console.log('  ' + answer.slice(-120).replace(/\n/g, ' / '));
 
-    console.log('\n=== 2. aam sawal abhi bhi chhota hai? ===');
+    console.log('\n=== 2. aam sawal me poori detail hai? ===');
     const ordinary = await ask('मुझे दो दिन से हल्की सर्दी और खांसी है, क्या करूँ?', 'hi');
     const ordinaryAnswer = typeof ordinary.body.answer === 'string' ? ordinary.body.answer : '';
     console.log(`  ... lambai: ${ordinaryAnswer.length} akshar`);
 
     check('aam sawal ka jawab mila', ordinary.body.ok === true, String(ordinary.body.reasonKey ?? ''));
-    check('aam jawab chhota hi raha (< 2000 akshar)', ordinaryAnswer.length < 2000, `${ordinaryAnswer.length}`);
+    // Detail is the owner's requirement now: what to do, what to avoid, and
+    // when it needs a doctor. A three-line answer is the failure this catches.
+    check('aam jawab me detail hai (600+ akshar)', ordinaryAnswer.length > 600, `${ordinaryAnswer.length}`);
+    check(
+      'aam jawab me hisse hain (heading jo colon par khatam hoti hai)',
+      /:\s*$/m.test(ordinaryAnswer),
+    );
     check('aam jawab bhi adhura nahi', ordinaryAnswer.trim().length > 40);
 
     console.log('\n=== 3. doosri bhasha me bhi pura (Tamil) ===');

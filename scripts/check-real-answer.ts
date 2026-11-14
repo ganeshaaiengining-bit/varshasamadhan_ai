@@ -50,7 +50,7 @@ async function main(): Promise<void> {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: systemInstruction('hi') }] },
         contents: [{ role: 'user', parts: [{ text: QUESTION }] }],
-        generationConfig: { temperature: 0.4, maxOutputTokens: 4096 },
+        generationConfig: { temperature: 0.3, maxOutputTokens: 8192 },
       }),
     },
   );

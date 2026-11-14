@@ -337,22 +337,22 @@ export async function askGemini(
             systemInstruction: { parts: [{ text: system }] },
             contents: [{ role: 'user', parts: [{ text: question }] }],
             /*
-             * Four thousand, not seven hundred.
+             * Eight thousand, not four.
              *
-             * Seven hundred was enough for "what should I do about a cough" and
-             * nowhere near enough for what people actually ask at a temple-going
-             * site: a full aarti, a bhajan, a challisa, a recipe with fifteen
-             * steps. Those came back cut off mid-verse, and a cut-off aarti is
-             * not a short answer — it is the wrong answer, because the visitor
-             * cannot tell what is missing.
+             * Four was chosen for whole aartis and long texts, and it is still
+             * the right kind of number — but the prompt now asks for a complete
+             * answer to an ordinary question as well, and a health or legal
+             * question answered properly runs to two or three thousand tokens.
+             * A ceiling that cuts a useful section off is the same fault as a
+             * cut-off aarti: the visitor cannot tell what is missing.
              *
-             * The prompt also told the model to stay under five paragraphs,
-             * which is the real reason the text was short; this is the ceiling
-             * that would have stopped it even after the prompt was fixed.
-             * Ordinary answers are still short, because the prompt asks for
-             * short and nothing here forces length.
+             * Zero-point-three temperature rather than four-tenths: the owner's
+             * complaint is that the answers are not accurate enough, and a
+             * lower temperature spends less of the model's freedom on wording
+             * that sounds good and more on saying the same thing every time.
+             * The prompt still does the work of deciding what to include.
              */
-            generationConfig: { temperature: 0.4, maxOutputTokens: 4096 },
+            generationConfig: { temperature: 0.3, maxOutputTokens: 8192 },
           }),
         },
         Math.min(GEMINI_TIMEOUT_MS, timeLeft),
@@ -554,7 +554,10 @@ export async function askOllama(
         // Low, because this runs on a CPU with no graphics card. The default is
         // closer to a minute per answer here. Twelve hundred rather than five
         // hundred: an aarti cut off mid-verse is worse than a slower answer.
-        options: { temperature: 0.4, num_predict: 1200 },
+        // Not raised along with the keyed provider's ceiling — on this laptop a
+        // longer allowance turns a detailed answer into a timeout, and no answer
+        // at all is worse than a compact one.
+        options: { temperature: 0.3, num_predict: 1200 },
       }),
     }, OLLAMA_TIMEOUT_MS);
 
