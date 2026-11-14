@@ -5,6 +5,7 @@ import { safeRead } from '@/server/db-guard';
 import { askQuestion, isConfigured } from '@/server/ai/gemini';
 import { getLanguage } from '@/server/i18n';
 import { currentUser } from '@/server/auth/session';
+import { asksForRecitedText } from '@/content/recitation';
 
 /**
  * POST /api/ask
@@ -97,6 +98,16 @@ export async function POST(request: Request) {
   }
 
   const { question, category } = parsed.data;
+
+  /*
+   * Did they ask for an aarti, a bhajan, a song, a katha?
+   *
+   * The answer is still written in full — the words are what the visitor came
+   * for — but the answer card does not offer to read it aloud. An aarti read in
+   * a computer voice, without its chaal, is not the thing the visitor asked for;
+   * the owner would rather have the words alone. See `content/recitation.ts`.
+   */
+  const recited = asksForRecitedText(question);
 
   // The cookie wins over the body. See the note at the top of this file.
   const language = await getLanguage();
@@ -218,6 +229,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     ...result,
+    ...(recited ? { recited: true } : {}),
     ...(topics.length > 0 ? { topics } : {}),
   });
 }

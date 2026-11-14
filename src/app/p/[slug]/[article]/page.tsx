@@ -5,6 +5,8 @@ import { prisma } from '@/server/db';
 import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { getT } from '@/server/i18n';
 import { categoryLabel, articleLabel } from '@/content/labels';
+import { isRecitedArticle } from '@/content/recitation';
+import { recordingFor } from '@/content/recordings';
 import { Icon } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs';
@@ -108,6 +110,14 @@ export default async function ArticlePage({
   // disagree about what this page is called. See `content/labels.ts`.
   const heading = articleLabel(lang, article, 'title', row.title);
   const summary = articleLabel(lang, article, 'summary', row.summary);
+
+  /*
+   * A recited text is not read aloud in a made-up voice. See `content/recitation.ts`
+   * for why, and `content/recordings.ts` for the real recording that replaces it
+   * when the family has one.
+   */
+  const recited = isRecitedArticle({ categorySlug: row.category.slug, body: row.body });
+  const recording = recited ? recordingFor(article) : null;
   const inCategory = categoryLabel(lang, row.category.slug, 'title', row.category.title);
 
   return (
@@ -148,24 +158,53 @@ export default async function ArticlePage({
           ) : null}
 
           <div className="mt-6 flex flex-wrap gap-2">
-            <ReadAloud
-              /*
-               * The whole article, not its summary.
-               *
-               * This used to read `voiceSummary || title + summary`, so on every
-               * page the "listen" button read a paragraph and stopped. For an
-               * aarti or a bhajan that is the feature not working: the visitor
-               * presses listen to hear the text they cannot read, and gets the
-               * first two lines of it.
-               *
-               * The short line still comes first when one exists — it is a
-               * useful introduction — and the body follows it in full.
-               */
-              text={[row.title, row.voiceSummary || row.summary, row.body]
-                .filter((part) => part && part.trim().length > 0)
-                .join('\n\n')}
-              label={t('article.readAloud')}
-            />
+            {/*
+              A recited text gets a real recording or no voice at all — never a
+              computer reading an aarti.
+
+              The owner's rule, in his words: an aarti or a song has to be in one
+              chaal, the way it is actually sung, and in the voice of a singer or
+              a kathakar — never an AI voice. A read-aloud button was here on
+              every page, including the sacred ones, so pressing "listen" on an
+              aarti played it flat in a synthetic voice. That is the prayer with
+              the devotion taken out, so the button is gone from these pages.
+
+              When the family gives a recording it is played here instead; see
+              `content/recordings.ts`. Until then the words stay on the page, in
+              full, for the visitor to read and sing.
+
+              The button stays on every ordinary article, where a clear synthetic
+              voice is a service and not a substitute for a singer.
+            */}
+            {recited ? null : (
+              <ReadAloud
+                /*
+                 * The whole article, not its summary.
+                 *
+                 * This used to read `voiceSummary || title + summary`, so on every
+                 * page the "listen" button read a paragraph and stopped. For an
+                 * aarti or a bhajan that is the feature not working: the visitor
+                 * presses listen to hear the text they cannot read, and gets the
+                 * first two lines of it.
+                 *
+                 * The short line still comes first when one exists — it is a
+                 * useful introduction — and the body follows it in full.
+                 */
+                text={[row.title, row.voiceSummary || row.summary, row.body]
+                  .filter((part) => part && part.trim().length > 0)
+                  .join('\n\n')}
+                label={t('article.readAloud')}
+              />
+            )}
+
+            {recording ? (
+              <audio
+                controls
+                preload="metadata"
+                src={recording}
+                className="w-full rounded-md border border-line bg-surface p-2"
+              />
+            ) : null}
 
             {/*
               Save, next to listen.

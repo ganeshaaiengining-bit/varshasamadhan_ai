@@ -70,6 +70,12 @@ export function AskBox({
   const [question, setQuestion] = React.useState('');
   const [asking, setAsking] = React.useState(false);
   const [answer, setAnswer] = React.useState<string | null>(null);
+  /*
+   * The answer is an aarti, bhajan, song or katha: it is meant to be heard in a
+   * real voice, so this card offers no read-aloud button. Set from the server's
+   * `recited` flag, which comes from the question the visitor typed.
+   */
+  const [recited, setRecited] = React.useState(false);
   const [topics, setTopics] = React.useState<{ title: string; slug: string }[]>([]);
   const [notice, setNotice] = React.useState<string | null>(null);
   const [speakError, setSpeakError] = React.useState<string | null>(null);
@@ -130,6 +136,9 @@ export function AskBox({
     setNotice(null);
     setSpeakError(null);
     setTopics([]);
+    // Cleared with the old answer, so a recited answer's missing voice cannot
+    // carry over to the next, ordinary one.
+    setRecited(false);
 
     try {
       const response = await fetch('/api/ask', {
@@ -171,11 +180,13 @@ export function AskBox({
         reasonKey?: string;
         reason?: string;
         fallback: boolean;
+        recited?: boolean;
         topics?: { title: string; slug: string }[] | null;
       };
 
       if (data.ok && data.answer) {
         setAnswer(data.answer);
+        setRecited(data.recited === true);
         onAnswered?.();
         return;
       }
@@ -354,6 +365,7 @@ export function AskBox({
         <AnswerCard
           text={answer}
           language={language.code}
+          recited={recited}
           onSpeakError={setSpeakError}
         />
       ) : null}
@@ -470,10 +482,13 @@ export function AskBox({
 function AnswerCard({
   text,
   language,
+  recited,
   onSpeakError,
 }: {
   text: string;
   language: string;
+  /** An aarti, bhajan, song or katha: no synthetic voice on this card. */
+  recited: boolean;
   onSpeakError: (message: string) => void;
 }) {
   const { t, tf } = useLanguage();
@@ -506,17 +521,26 @@ function AnswerCard({
           {t('ask.answerTitle')}
         </h2>
 
+        {/*
+          No voice on a recited answer.
 
-
-        <button
-          type="button"
-          onClick={play}
-          disabled={speaking}
-          className="btn-outline !min-h-[2.75rem] !px-4 text-sm"
-        >
-          <Icon name="speaker" size={20} />
-          {speaking ? t('ask.stopSpeak') : t('ask.listen')}
-        </button>
+          An aarti, bhajan, song or katha is heard in a singer's or kathakar's
+          voice, in its own chaal; a computer voice reading it flat is not the
+          thing the visitor asked for. The words above are complete, so they can
+          read and sing them — only the synthetic voice is withheld. The owner's
+          rule; see `content/recitation.ts`.
+        */}
+        {recited ? null : (
+          <button
+            type="button"
+            onClick={play}
+            disabled={speaking}
+            className="btn-outline !min-h-[2.75rem] !px-4 text-sm"
+          >
+            <Icon name="speaker" size={20} />
+            {speaking ? t('ask.stopSpeak') : t('ask.listen')}
+          </button>
+        )}
       </div>
 
       {/* Long answers need shape, not just length: a heading that ends in a
