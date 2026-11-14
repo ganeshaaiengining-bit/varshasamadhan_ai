@@ -42,6 +42,7 @@ interface NavItem {
 const NAV: NavItem[] = [
   { href: '/', labelKey: 'nav.home', icon: 'home' },
   { href: '/gharguti', labelKey: 'nav.remedies', icon: 'lotus' },
+  { href: '/aarti', labelKey: 'nav.aarti', icon: 'om' },
   { href: '/smriti', labelKey: 'nav.tribute', icon: 'sun' },
   { href: '/sahayata', labelKey: 'nav.help', icon: 'mic' },
   { href: '/reviews', labelKey: 'nav.reviews', icon: 'star' },

@@ -805,6 +805,15 @@ const HINDI: Record<string, string> = {
   'remedy.back': 'पीठ दर्द',
   'remedy.walking': 'चलने में तकलीफ़',
   'home.remedyNote': 'काढ़ा, मालिश, खानपान और आयुर्वेदिक उपाय — हर तकलीफ़ के लिए, आपकी भाषा में।',
+  'nav.aarti': 'आरती व भजन',
+  'aarti.title': 'आरती व भजन — असली आवाज़ में',
+  'aarti.intro': 'यहाँ आरती, कीर्तन और भजन सुनिए — असली गायकों और मंदिरों की आवाज़ में। कोई AI आवाज़ नहीं।',
+  'aarti.note': 'आरती या भजन कंप्यूटर की आवाज़ में सुनाना उसकी चाल और भक्ति छीन लेता है। इसलिए यहाँ सिर्फ़ असली रिकॉर्डिंग हैं।',
+  'aarti.kindAarti': 'आरती',
+  'aarti.kindKirtan': 'कीर्तन',
+  'aarti.kindBhajan': 'भजन',
+  'aarti.credit': 'रिकॉर्डिंग:',
+  'aarti.licence': 'लाइसेंस:',
 
 };
 
@@ -1462,6 +1471,15 @@ const ENGLISH: Record<string, string> = {
   'remedy.back': 'Back pain',
   'remedy.walking': 'Difficulty walking',
   'home.remedyNote': 'Kadha, massage, diet and Ayurvedic measures — for every trouble, in your language.',
+  'nav.aarti': 'Aarti and bhajan',
+  'aarti.title': 'Aarti and bhajan — in a real voice',
+  'aarti.intro': 'Listen to aarti, kirtan and bhajan here — in the voices of real singers and real temples. No AI voice.',
+  'aarti.note': 'An aarti or a bhajan played in a computer voice loses its chaal and its devotion. So everything here is a real recording.',
+  'aarti.kindAarti': 'Aarti',
+  'aarti.kindKirtan': 'Kirtan',
+  'aarti.kindBhajan': 'Bhajan',
+  'aarti.credit': 'Recording:',
+  'aarti.licence': 'Licence:',
 
 };
 
@@ -2281,6 +2299,15 @@ const BENGALI: Record<string, string> = {
   'remedy.back': 'পিঠে ব্যথা',
   'remedy.walking': 'হাঁটতে অসুবিধা',
   'home.remedyNote': 'কাড়া, মালিশ, খাদ্য ও আয়ুর্বেদিক ব্যবস্থা — প্রতিটি সমস্যার জন্য, আপনার ভাষায়।',
+  'nav.aarti': 'আরতি ও ভজন',
+  'aarti.title': 'আরতি ও ভজন — সত্যিকারের কণ্ঠে',
+  'aarti.intro': 'এখানে আরতি, কীর্তন ও ভজন শুনুন — সত্যিকারের গায়ক ও মন্দিরের কণ্ঠে। কোনো AI কণ্ঠ নেই।',
+  'aarti.note': 'আরতি বা ভজন কম্পিউটারের কণ্ঠে বাজানো মানে তার চাল ও ভক্তি হারিয়ে যাওয়া। তাই এখানে সবই সত্যিকারের রেকর্ডিং।',
+  'aarti.kindAarti': 'আরতি',
+  'aarti.kindKirtan': 'কীর্তন',
+  'aarti.kindBhajan': 'ভজন',
+  'aarti.credit': 'রেকর্ডিং:',
+  'aarti.licence': 'লাইসেন্স:',
 
 };
 
@@ -3088,6 +3115,15 @@ const TAMIL: Record<string, string> = {
   'remedy.back': 'முதுகுவலி',
   'remedy.walking': 'நடக்க சிரமம்',
   'home.remedyNote': 'கஷாயம், மசாஜ், உணவு, ஆயுர்வேத முறைகள் — ஒவ்வொரு தொல்லைக்கும், உங்கள் மொழியில்.',
+  'nav.aarti': 'ஆரத்தி மற்றும் பஜன்',
+  'aarti.title': 'ஆரத்தியும் பஜனும் — உண்மையான குரலில்',
+  'aarti.intro': 'இங்கே ஆரத்தி, கீர்த்தனை, பஜன் ஆகியவற்றை உண்மையான பாடகர்கள், கோயில்களின் குரலில் கேளுங்கள். AI குரல் இல்லை.',
+  'aarti.note': 'ஆரத்தியையோ பஜனையையோ கணினிக் குரலில் ஒலிப்பது அதன் தாளத்தையும் பக்தியையும் கெடுக்கும். எனவே இங்கே எல்லாம் உண்மையான ஒலிப்பதிவுகள்.',
+  'aarti.kindAarti': 'ஆரத்தி',
+  'aarti.kindKirtan': 'கீர்த்தனை',
+  'aarti.kindBhajan': 'பஜன்',
+  'aarti.credit': 'ஒலிப்பதிவு:',
+  'aarti.licence': 'உரிமம்:',
 
 };
 
@@ -3895,6 +3931,15 @@ const TELUGU: Record<string, string> = {
   'remedy.back': 'వెన్నునొప్పి',
   'remedy.walking': 'నడవడంలో ఇబ్బంది',
   'home.remedyNote': 'కషాయం, మసాజ్, ఆహారం, ఆయుర్వేద చికిత్సలు — ప్రతి బాధకు, మీ భాషలో.',
+  'nav.aarti': 'హారతి మరియు భజన',
+  'aarti.title': 'హారతి, భజన — నిజమైన గొంతుకలో',
+  'aarti.intro': 'ఇక్కడ హారతి, కీర్తన, భజన వినండి — నిజమైన గాయకులు, ఆలయాల గొంతుకలో. AI గొంతు లేదు.',
+  'aarti.note': 'హారతిని లేదా భజనను కంప్యూటర్ గొంతుతో వినిపిస్తే దాని లయ, భక్తి పోతాయి. అందుకే ఇక్కడ అన్నీ నిజమైన రికార్డింగ్‌లు.',
+  'aarti.kindAarti': 'హారతి',
+  'aarti.kindKirtan': 'కీర్తన',
+  'aarti.kindBhajan': 'భజన',
+  'aarti.credit': 'రికార్డింగ్:',
+  'aarti.licence': 'లైసెన్స్:',
 
 };
 
@@ -4702,6 +4747,15 @@ const MARATHI: Record<string, string> = {
   'remedy.back': 'पाठदुखी',
   'remedy.walking': 'चालताना त्रास',
   'home.remedyNote': 'काढा, मालिश, आहार आणि आयुर्वेदिक उपाय — प्रत्येक त्रासासाठी, तुमच्या भाषेत.',
+  'nav.aarti': 'आरती व भजन',
+  'aarti.title': 'आरती व भजन — खऱ्या आवाजात',
+  'aarti.intro': 'इथे आरती, कीर्तन आणि भजन ऐका — खऱ्या गायकांच्या आणि मंदिरांच्या आवाजात. AI आवाज नाही.',
+  'aarti.note': 'आरती किंवा भजन संगणकाच्या आवाजात लावणे म्हणजे त्याची चाल आणि भक्ती हरवणे. म्हणून इथे फक्त खऱ्या रेकॉर्डिंग आहेत.',
+  'aarti.kindAarti': 'आरती',
+  'aarti.kindKirtan': 'कीर्तन',
+  'aarti.kindBhajan': 'भजन',
+  'aarti.credit': 'रेकॉर्डिंग:',
+  'aarti.licence': 'परवाना:',
 
 };
 
@@ -5509,6 +5563,15 @@ const GUJARATI: Record<string, string> = {
   'remedy.back': 'પીઠનો દુખાવો',
   'remedy.walking': 'ચાલવામાં તકલીફ',
   'home.remedyNote': 'કાઢો, મસાજ, આહાર અને આયુર્વેદિક ઉપાય — દરેક તકલીફ માટે, તમારી ભાષામાં.',
+  'nav.aarti': 'આરતી અને ભજન',
+  'aarti.title': 'આરતી અને ભજન — સાચા અવાજમાં',
+  'aarti.intro': 'અહીં આરતી, કીર્તન અને ભજન સાંભળો — સાચા ગાયકો અને મંદિરોના અવાજમાં. કોઈ AI અવાજ નહીં.',
+  'aarti.note': 'આરતી કે ભજન કમ્પ્યુટરના અવાજમાં વગાડવું એ તેની ચાલ અને ભક્તિ ગુમાવવા જેવું છે. તેથી અહીં ફક્ત સાચી રેકોર્ડિંગ છે.',
+  'aarti.kindAarti': 'આરતી',
+  'aarti.kindKirtan': 'કીર્તન',
+  'aarti.kindBhajan': 'ભજન',
+  'aarti.credit': 'રેકોર્ડિંગ:',
+  'aarti.licence': 'લાઇસન્સ:',
 
 };
 
@@ -6329,6 +6392,15 @@ const KANNADA: Record<string, string> = {
   'remedy.back': 'ಬೆನ್ನು ನೋವು',
   'remedy.walking': 'ನಡೆಯಲು ತೊಂದರೆ',
   'home.remedyNote': 'ಕಷಾಯ, ಮಸಾಜ್, ಆಹಾರ ಮತ್ತು ಆಯುರ್ವೇದ ಕ್ರಮಗಳು — ಪ್ರತಿ ತೊಂದರೆಗೂ, ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ.',
+  'nav.aarti': 'ಆರತಿ ಮತ್ತು ಭಜನೆ',
+  'aarti.title': 'ಆರತಿ ಮತ್ತು ಭಜನೆ — ನಿಜವಾದ ಧ್ವನಿಯಲ್ಲಿ',
+  'aarti.intro': 'ಇಲ್ಲಿ ಆರತಿ, ಕೀರ್ತನೆ ಮತ್ತು ಭಜನೆ ಕೇಳಿ — ನಿಜವಾದ ಗಾಯಕರು ಮತ್ತು ದೇವಾಲಯಗಳ ಧ್ವನಿಯಲ್ಲಿ. AI ಧ್ವನಿ ಇಲ್ಲ.',
+  'aarti.note': 'ಆರತಿ ಅಥವಾ ಭಜನೆಯನ್ನು ಗಣಕದ ಧ್ವನಿಯಲ್ಲಿ ಹಾಕುವುದು ಅದರ ಲಯ ಮತ್ತು ಭಕ್ತಿಯನ್ನು ಕಳೆದುಕೊಳ್ಳುವುದು. ಆದ್ದರಿಂದ ಇಲ್ಲಿ ಎಲ್ಲವೂ ನಿಜವಾದ ಧ್ವನಿಮುದ್ರಿಕೆಗಳು.',
+  'aarti.kindAarti': 'ಆರತಿ',
+  'aarti.kindKirtan': 'ಕೀರ್ತನೆ',
+  'aarti.kindBhajan': 'ಭಜನೆ',
+  'aarti.credit': 'ಧ್ವನಿಮುದ್ರಿಕೆ:',
+  'aarti.licence': 'ಪರವಾನಗಿ:',
 
 };
 
@@ -7153,6 +7225,15 @@ const MALAYALAM: Record<string, string> = {
   'remedy.back': 'നടുവേദന',
   'remedy.walking': 'നടക്കാൻ ബുദ്ധിമുട്ട്',
   'home.remedyNote': 'കഷായം, തിരുമ്മൽ, ഭക്ഷണം, ആയുർവേദ മാർഗങ്ങൾ — ഓരോ ബുദ്ധിമുട്ടിനും, നിങ്ങളുടെ ഭാഷയിൽ.',
+  'nav.aarti': 'ആരതിയും ഭജനവും',
+  'aarti.title': 'ആരതിയും ഭജനവും — യഥാർത്ഥ ശബ്ദത്തിൽ',
+  'aarti.intro': 'ഇവിടെ ആരതി, കീർത്തനം, ഭജനം കേൾക്കൂ — യഥാർത്ഥ ഗായകരുടെയും ക്ഷേത്രങ്ങളുടെയും ശബ്ദത്തിൽ. AI ശബ്ദം ഇല്ല.',
+  'aarti.note': 'ആരതിയോ ഭജനമോ കമ്പ്യൂട്ടർ ശബ്ദത്തിൽ കേൾപ്പിക്കുന്നത് അതിന്റെ ചാലും ഭക്തിയും നഷ്ടപ്പെടുത്തും. അതിനാൽ ഇവിടെ എല്ലാം യഥാർത്ഥ റെക്കോർഡിംഗുകളാണ്.',
+  'aarti.kindAarti': 'ആരതി',
+  'aarti.kindKirtan': 'കീർത്തനം',
+  'aarti.kindBhajan': 'ഭജനം',
+  'aarti.credit': 'റെക്കോർഡിംഗ്:',
+  'aarti.licence': 'ലൈസൻസ്:',
 
 };
 
@@ -7980,6 +8061,15 @@ const PUNJABI: Record<string, string> = {
   'remedy.back': 'ਪਿੱਠ ਦਰਦ',
   'remedy.walking': 'ਤੁਰਨ ਵਿੱਚ ਤਕਲੀਫ਼',
   'home.remedyNote': 'ਕਾੜ੍ਹਾ, ਮਾਲਿਸ਼, ਖੁਰਾਕ ਅਤੇ ਆਯੁਰਵੇਦਿਕ ਉਪਾਅ — ਹਰ ਤਕਲੀਫ਼ ਲਈ, ਤੁਹਾਡੀ ਭਾਸ਼ਾ ਵਿੱਚ।',
+  'nav.aarti': 'ਆਰਤੀ ਤੇ ਭਜਨ',
+  'aarti.title': 'ਆਰਤੀ ਤੇ ਭਜਨ — ਅਸਲੀ ਆਵਾਜ਼ ਵਿੱਚ',
+  'aarti.intro': 'ਇੱਥੇ ਆਰਤੀ, ਕੀਰਤਨ ਤੇ ਭਜਨ ਸੁਣੋ — ਅਸਲੀ ਗਾਇਕਾਂ ਤੇ ਮੰਦਰਾਂ ਦੀ ਆਵਾਜ਼ ਵਿੱਚ। ਕੋਈ AI ਆਵਾਜ਼ ਨਹੀਂ।',
+  'aarti.note': 'ਆਰਤੀ ਜਾਂ ਭਜਨ ਨੂੰ ਕੰਪਿਊਟਰ ਦੀ ਆਵਾਜ਼ ਵਿੱਚ ਚਲਾਉਣਾ ਉਸ ਦੀ ਚਾਲ ਤੇ ਭਗਤੀ ਗੁਆਉਣਾ ਹੈ। ਇਸ ਲਈ ਇੱਥੇ ਸਿਰਫ਼ ਅਸਲੀ ਰਿਕਾਰਡਿੰਗਾਂ ਹਨ।',
+  'aarti.kindAarti': 'ਆਰਤੀ',
+  'aarti.kindKirtan': 'ਕੀਰਤਨ',
+  'aarti.kindBhajan': 'ਭਜਨ',
+  'aarti.credit': 'ਰਿਕਾਰਡਿੰਗ:',
+  'aarti.licence': 'ਲਾਇਸੈਂਸ:',
 
 };
 
@@ -8796,6 +8886,15 @@ const URDU: Record<string, string> = {
   'remedy.back': 'کمر درد',
   'remedy.walking': 'چلنے میں تکلیف',
   'home.remedyNote': 'کاڑھا، مالش، خوراک اور آیورویدک طریقے — ہر تکلیف کے لیے، آپ کی زبان میں۔',
+  'nav.aarti': 'آرتی اور بھجن',
+  'aarti.title': 'آرتی اور بھجن — اصل آواز میں',
+  'aarti.intro': 'یہاں آرتی، کیرتن اور بھجن سنیں — اصل گلوکاروں اور مندروں کی آواز میں۔ کوئی AI آواز نہیں۔',
+  'aarti.note': 'آرتی یا بھجن کو کمپیوٹر کی آواز میں چلانا اس کی چال اور عقیدت ختم کر دیتا ہے۔ اسی لیے یہاں صرف اصلی ریکارڈنگ ہیں۔',
+  'aarti.kindAarti': 'آرتی',
+  'aarti.kindKirtan': 'کیرتن',
+  'aarti.kindBhajan': 'بھجن',
+  'aarti.credit': 'ریکارڈنگ:',
+  'aarti.licence': 'لائسنس:',
 
 };
 
@@ -9618,6 +9717,15 @@ const ARABIC: Record<string, string> = {
   'remedy.back': 'ألم الظهر',
   'remedy.walking': 'صعوبة المشي',
   'home.remedyNote': 'كشاية وتدليك وغذاء وطرق أيورفيدية — لكل ألم، بلغتك.',
+  'nav.aarti': 'آرتي وبجان',
+  'aarti.title': 'آرتي وبجان — بصوت حقيقي',
+  'aarti.intro': 'استمع هنا إلى الآرتي والكيرتان والبجان بأصوات مغنين حقيقيين ومعابد حقيقية. لا صوت ذكاء اصطناعي.',
+  'aarti.note': 'تشغيل الآرتي أو البجان بصوت حاسوب يفقدها إيقاعها وروحانيتها، لذلك كل ما هنا تسجيلات حقيقية.',
+  'aarti.kindAarti': 'آرتي',
+  'aarti.kindKirtan': 'كيرتان',
+  'aarti.kindBhajan': 'بجان',
+  'aarti.credit': 'التسجيل:',
+  'aarti.licence': 'الترخيص:',
 
 };
 
@@ -10434,6 +10542,15 @@ const SPANISH: Record<string, string> = {
   'remedy.back': 'Dolor de espalda',
   'remedy.walking': 'Dificultad para caminar',
   'home.remedyNote': 'Kadha, masaje, dieta y medidas ayurvédicas — para cada molestia, en tu idioma.',
+  'nav.aarti': 'Arati y bhajan',
+  'aarti.title': 'Arati y bhajan — con voz real',
+  'aarti.intro': 'Escuche aquí arati, kirtan y bhajan con la voz de cantantes y templos reales. Ninguna voz de IA.',
+  'aarti.note': 'Reproducir un arati o un bhajan con voz de computadora le quita su ritmo y su devoción. Por eso aquí solo hay grabaciones reales.',
+  'aarti.kindAarti': 'Arati',
+  'aarti.kindKirtan': 'Kirtan',
+  'aarti.kindBhajan': 'Bhajan',
+  'aarti.credit': 'Grabación:',
+  'aarti.licence': 'Licencia:',
 
 };
 

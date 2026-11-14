@@ -169,6 +169,30 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         </div>
 
         {/* ------------------------------------------------------- articles */}
+        {/*
+          The sacred category is nearly empty — it has a subtitle promising
+          "read and listen", and, in production, no articles at all. The
+          listening page is where that promise is kept: real recordings of
+          aartis and bhajans, in real voices. It is offered before the empty
+          notice, so the visitor is not sent away from a category that does
+          have something to give them.
+        */}
+        {slug === 'pavan-grah-aur-aarti' ? (
+          <Link
+            href="/aarti"
+            className="card mt-8 flex items-center gap-4 border-saffron bg-saffron-soft/40 p-5 transition-all hover:-translate-y-0.5 hover:shadow-lift sm:p-6"
+          >
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-surface text-saffron-deep">
+              <Icon name="om" size={24} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-lg font-bold text-ink">{t('aarti.title')}</span>
+              <span className="mt-1 block text-ink-muted">{t('aarti.intro')}</span>
+            </span>
+            <Icon name="arrow" size={22} className="shrink-0 text-ink-subtle" />
+          </Link>
+        ) : null}
+
         {articles.length === 0 ? (
           <p className="card mt-8 p-8 text-center text-ink-muted">{t('cat.empty')}</p>
         ) : (

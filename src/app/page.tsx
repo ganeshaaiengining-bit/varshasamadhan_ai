@@ -361,6 +361,32 @@ export default async function HomePage() {
       </section>
       )}
 
+      {/*
+        Aarti and bhajan — the listening page.
+
+        It sits under the subject grid rather than inside it, because it is not
+        a subject with a question to ask: it is a set of recordings, and the
+        owner's rule is that they are heard in a real voice or not at all. The
+        card is here so that a visitor who never opens the menu still finds it.
+      */}
+      <section className="pb-10">
+        <div className="wrap">
+          <Link
+            href="/aarti"
+            className="card flex items-center gap-4 border-saffron bg-saffron-soft/40 p-5 transition-all hover:-translate-y-0.5 hover:shadow-lift sm:p-6"
+          >
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-surface text-saffron-deep">
+              <Icon name="om" size={24} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-lg font-bold text-ink">{t('aarti.title')}</span>
+              <span className="mt-1 block text-ink-muted">{t('aarti.intro')}</span>
+            </span>
+            <Icon name="arrow" size={22} className="shrink-0 text-ink-subtle" />
+          </Link>
+        </div>
+      </section>
+
       {/* ================================================== sound pad */}
       <section aria-labelledby="sound-heading" className="border-y border-line bg-surface py-14">
         <div className="wrap-narrow text-center">
