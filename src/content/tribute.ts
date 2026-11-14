@@ -61,14 +61,20 @@ export const VARSHA: Tribute = {
   photo: '/art/varsha.jpg',
   photoAlt: 'कै. सौ. VARSHA जी — कार्यालयात बसलेल्या आपल्या फोटोत',
   /*
-   * The plate under her photograph, as the family dictated it: the name in
-   * Hindi letters' order but the name itself in capitals, the post and
-   * department beneath, and the same plate in English below that. `VARSHA`
-   * stays in English capitals even here — that is the owner's rule for the
-   * name in every language, and it is checked by `scripts/check-name.py`.
+   * The plate under her photograph, as the family dictated it: the Hindi line
+   * in Devanagari, the same plate in English beneath it.
+   *
+   * ── The one exception to the capitals rule ─────────────────────────────
+   * Everywhere else the name is VARSHA, in English capitals, in every
+   * language — the owner's rule, checked by `scripts/check-name.py`. This
+   * line is the single place he asked for it in Devanagari, because the
+   * English line directly under it spells the full name: a reader who does
+   * not know English sees the plate as the family wrote it, and a reader who
+   * does is given "V. G. Haramkar" two lines later, so nothing is ambiguous.
+   * The check script carries the same one-line exception.
    */
   plate: {
-    name: 'कै. सौ. VARSHA',
+    name: 'कै. सौ. वर्षा',
     detail: 'उपसचिव, शालेय शिक्षण व क्रीडा विभाग, मंत्रालय, मुंबई',
     nameEn: 'Late Sau. V. G. Haramkar',
     detailEn:

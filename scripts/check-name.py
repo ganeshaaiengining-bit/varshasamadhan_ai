@@ -28,6 +28,12 @@ It reads comments too, on purpose. A comment explaining the rule is allowed to
 contain the wrong spelling — it is the rule being discussed — so those lines are
 excluded by looking for the word "means" or "never" nearby. In practice there are
 two such comments and they are both in memorial-strip.tsx.
+
+── The one line the family asked for in Devanagari ─────────────────────────
+The plate under her photograph is bilingual: "कै. सौ. वर्षा" above, and the
+full English name with her post and department below. The owner asked for the
+Hindi line in Devanagari there, and the English line makes the person
+unmistakable, so that single line is allowed — nothing else is.
 """
 
 import io
@@ -59,6 +65,11 @@ LATIN_WRONG = re.compile(r"(?<![A-Za-z\"'`])Varsha(?![A-Za-z])")
 
 # Lines that talk about the rule rather than obeying it.
 EXEMPT = ("means", "never", "not written", "forbidden", "उल्लंघन")
+
+# The one line allowed to carry the name in Devanagari: the memorial plate,
+# which the family dictated as a bilingual plate (the English line under it
+# names her in full). See the note in the docstring.
+PLATE = "कै. सौ. वर्षा"
 
 # Words that merely *start* with the wrong spelling.
 #
@@ -119,6 +130,10 @@ def main() -> int:
                 lowered = line.lower()
 
                 if any(word in lowered for word in EXEMPT):
+                    continue
+
+                # The bilingual memorial plate, and only it.
+                if PLATE in line:
                     continue
 
                 for script, wrong in WRONG.items():
