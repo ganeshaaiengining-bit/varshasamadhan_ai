@@ -61,6 +61,7 @@ export function SiteChrome({
    */
   const links = [
     { href: '/', labelKey: 'nav.home', icon: 'home' },
+    { href: '/gharguti', labelKey: 'nav.remedies', icon: 'lotus' },
     { href: '/smriti', labelKey: 'nav.tribute', icon: 'sun' },
     { href: '/sahayata', labelKey: 'nav.help', icon: 'search' },
     { href: '/samaroh', labelKey: 'nav.reference', icon: 'scroll' },
