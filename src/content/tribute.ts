@@ -21,6 +21,16 @@
  * which is harder to do and worth more.
  */
 
+export interface NamePlate {
+  /** The name as the heading of the plate — always VARSHA, English capitals. */
+  name: string;
+  /** What she was: post, department, place. */
+  detail: string;
+  /** The English plate, as the family wrote it. */
+  nameEn: string;
+  detailEn: string;
+}
+
 export interface Tribute {
   /** Appears on the memorial page. */
   name: string;
@@ -35,7 +45,7 @@ export interface Tribute {
    */
   photo: string;
   photoAlt: string;
-  nameplate: string;
+  plate: NamePlate;
   /** One line for the footer. */
   shortLine: string;
   /** The memorial page, in order. */
@@ -50,7 +60,20 @@ export const VARSHA: Tribute = {
 
   photo: '/art/varsha.jpg',
   photoAlt: 'कै. सौ. VARSHA जी — कार्यालयात बसलेल्या आपल्या फोटोत',
-  nameplate: 'कै. सौ. VARSHA · उपसचिव',
+  /*
+   * The plate under her photograph, as the family dictated it: the name in
+   * Hindi letters' order but the name itself in capitals, the post and
+   * department beneath, and the same plate in English below that. `VARSHA`
+   * stays in English capitals even here — that is the owner's rule for the
+   * name in every language, and it is checked by `scripts/check-name.py`.
+   */
+  plate: {
+    name: 'कै. सौ. VARSHA',
+    detail: 'उपसचिव, शालेय शिक्षण व क्रीडा विभाग, मंत्रालय, मुंबई',
+    nameEn: 'Late Sau. V. G. Haramkar',
+    detailEn:
+      'Deputy Secretary, School Education and Sports Department, Mantralaya, Mumbai',
+  },
 
   shortLine:
     'जिन्होंने समाज के लिए ज़िंदगी भर लड़ाई लड़ी, और जिन्हें आख़िर में अपने हिस्से का हिसाब नहीं मिला।',

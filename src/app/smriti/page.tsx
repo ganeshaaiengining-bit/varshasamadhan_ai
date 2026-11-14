@@ -104,7 +104,7 @@ export default async function SmritiPage() {
             <MemoryFrame
               src={photo}
               alt={photoAlt}
-              nameplate={VARSHA.nameplate}
+              plate={VARSHA.plate}
             />
           </div>
 

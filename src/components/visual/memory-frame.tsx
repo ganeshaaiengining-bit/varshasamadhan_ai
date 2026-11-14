@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import type { NamePlate } from '@/content/tribute';
 
 /**
  * ===========================================================================
@@ -43,12 +44,12 @@ export function MemoryFrame({
   src,
   alt,
   /** The plate under the portrait. Omit for no plate. */
-  nameplate,
+  plate,
   className = '',
 }: {
   src: string;
   alt: string;
-  nameplate?: string;
+  plate?: NamePlate;
   className?: string;
 }) {
   const [missing, setMissing] = React.useState(false);
@@ -107,7 +108,7 @@ export function MemoryFrame({
       </div>
 
       {/* --------------------------------------------------- the nameplate */}
-      {nameplate ? (
+      {plate ? (
         <figcaption className="mt-5 text-center">
           {/* Two short gilt rules, with the nameplate between them. */}
           <div
@@ -115,7 +116,20 @@ export function MemoryFrame({
             className="mx-auto h-px w-16"
             style={{ background: 'linear-gradient(90deg, transparent, #b8860b, transparent)' }}
           />
-          <p className="mt-3 font-bold tracking-[0.12em] text-saffron-deep">{nameplate}</p>
+          {/*
+            The name is the one line on this plate that has to be read from
+            across a room: it is what the frame is for. The post, department and
+            place follow it small, and the English plate sits below — the family
+            asked for both, the way a real memorial card carries both.
+          */}
+          <p className="mt-3 text-xl font-extrabold tracking-[0.08em] text-saffron-deep sm:text-2xl">
+            {plate.name}
+          </p>
+          <p className="mt-1 text-sm leading-snug text-ink-soft">{plate.detail}</p>
+          <p className="mt-3 text-base font-bold tracking-[0.05em] text-saffron-deep">
+            {plate.nameEn}
+          </p>
+          <p className="mt-0.5 text-xs leading-snug text-ink-soft">{plate.detailEn}</p>
           <div
             aria-hidden="true"
             className="mx-auto mt-3 h-px w-16"

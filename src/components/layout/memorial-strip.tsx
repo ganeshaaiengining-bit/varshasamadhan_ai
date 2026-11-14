@@ -102,7 +102,7 @@ export async function MemorialStrip() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={photoUrl(meta.key)}
-              alt={meta.alt || VARSHA.nameplate}
+              alt={meta.alt || `${VARSHA.plate.name} — ${VARSHA.plate.detail}`}
               className="max-h-[26rem] w-full object-contain"
               // The owner replaces this and expects to see it. Caching it for a
               // month is the one behaviour that would make the panel look
@@ -121,7 +121,8 @@ export async function MemorialStrip() {
               VARSHA SAMADHAN
             </h2>
 
-            <p className="mt-1 text-lg text-ink-muted">{VARSHA.nameplate}</p>
+            <p className="mt-1 text-lg font-bold text-ink-muted">{VARSHA.plate.name}</p>
+            <p className="mt-0.5 text-sm text-ink-subtle">{VARSHA.plate.detail}</p>
 
             <p className="mx-auto mt-4 max-w-xl text-ink-subtle lg:mx-0">
               {t('home.memorialLine')}
