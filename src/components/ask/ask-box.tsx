@@ -54,10 +54,17 @@ import {
 export function AskBox({
   category = '',
   suggested = [],
+  suggestedLabel,
   onAnswered,
 }: {
   category?: string;
   suggested?: { question: string; label: string }[];
+  /**
+   * The line above the suggested questions. Defaults to "common questions";
+   * the home-remedies page passes its own ("choose your trouble") because the
+   * chips there are conditions, not questions.
+   */
+  suggestedLabel?: string;
   onAnswered?: () => void;
 }) {
   const [question, setQuestion] = React.useState('');
@@ -417,7 +424,9 @@ export function AskBox({
 
       {suggested.length > 0 ? (
         <div className="mt-6">
-          <p className="text-sm font-bold text-ink-soft">{t('ask.suggested')}</p>
+          <p className="text-sm font-bold text-ink-soft">
+            {suggestedLabel ?? t('ask.suggested')}
+          </p>
           <ul className="mt-2 flex flex-wrap gap-2">
             {suggested.map((item) => (
               <li key={item.question}>

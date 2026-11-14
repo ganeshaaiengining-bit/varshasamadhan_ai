@@ -49,12 +49,41 @@ function readTable(name: string, from: number, to: number): Table {
   return { name, line: from, values };
 }
 
-const BLOCKS: [string, number, number][] = [
-  ['hi', 117, 794], ['en', 795, 1439], ['bn', 1440, 2226], ['ta', 2227, 3013],
-  ['te', 3014, 3800], ['mr', 3801, 4587], ['gu', 4588, 5374], ['kn', 5375, 6174],
-  ['ml', 6175, 6978], ['pa', 6979, 7785], ['ur', 7786, 8581], ['ar', 8582, 9383],
-  ['es', 9384, 10181],
+/*
+ * ── The table boundaries are found, not hardcoded ───────────────────────────
+ *
+ * These used to be thirteen line-number pairs, and every insertion into the
+ * tables moved every pair after it — so adding eighteen keys meant editing
+ * thirteen numbers by arithmetic, and one mistake made the check read a table
+ * that was half one language and half the next. A check that silently reads the
+ * wrong rows is worse than no check, because it reports success.
+ *
+ * Now the block starts are found from the `const NAME: Record<string, string>
+ * = {` lines and each block runs to the line before the next one. Inserting
+ * keys anywhere is safe.
+ */
+const ORDER: [code: string, variable: string][] = [
+  ['hi', 'HINDI'], ['en', 'ENGLISH'], ['bn', 'BENGALI'], ['ta', 'TAMIL'],
+  ['te', 'TELUGU'], ['mr', 'MARATHI'], ['gu', 'GUJARATI'], ['kn', 'KANNADA'],
+  ['ml', 'MALAYALAM'], ['pa', 'PUNJABI'], ['ur', 'URDU'], ['ar', 'ARABIC'],
+  ['es', 'SPANISH'],
 ];
+
+const sourceLines = source.split('\n');
+
+function lineOf(variable: string): number {
+  const index = sourceLines.findIndex((line) =>
+    line.startsWith(`const ${variable}: Record<string, string> = {`),
+  );
+  if (index < 0) throw new Error(`i18n.ts: no table called ${variable}`);
+  return index + 1;
+}
+
+const BLOCKS: [string, number, number][] = ORDER.map(([code, variable], index) => [
+  code,
+  lineOf(variable),
+  index + 1 < ORDER.length ? lineOf(ORDER[index + 1][1]) - 1 : lineOf('LOCALE_TAGS') - 1,
+]);
 
 const tables = BLOCKS.map(([name, from, to]) => readTable(name, from, to));
 const hindi = tables[0].values;

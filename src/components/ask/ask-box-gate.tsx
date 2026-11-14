@@ -27,10 +27,12 @@ import { SignInWall } from '@/components/ask/sign-in-wall';
 export async function AskBoxGate({
   category = '',
   suggested = [],
+  suggestedLabel,
   onAnswered,
 }: {
   category?: string;
   suggested?: { question: string; label: string }[];
+  suggestedLabel?: string;
   onAnswered?: () => void;
 }) {
   const user = await currentUser();
@@ -41,6 +43,11 @@ export async function AskBoxGate({
 
   const { AskBox } = await import('@/components/ask/ask-box');
   return (
-    <AskBox category={category} suggested={suggested} onAnswered={onAnswered} />
+    <AskBox
+      category={category}
+      suggested={suggested}
+      suggestedLabel={suggestedLabel}
+      onAnswered={onAnswered}
+    />
   );
 }

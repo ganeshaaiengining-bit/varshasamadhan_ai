@@ -24,13 +24,24 @@
  *
  *   - an empty answer
  *   - an answer containing none of the language's own script
- *   - an answer containing any OTHER offered script
+ *   - an answer that drifts into another offered script
  *
  * The third rule is the one that earns its keep. A Bengali question answered in
  * Hindi fails the second rule already. But a model that half follows an
  * instruction writes the opening in the right script and then drifts — "প্রথমে
  * মূল সুইচ দেখুন। फिर मुख्य स्विच ऑफ करें।" — and that passes the second rule
  * and would have been shown to a visitor as a Bengali answer.
+ *
+ * ── Why drift is a proportion and not a single character ──────────────────
+ *
+ * It was "any character at all" of another script, and that threw away whole
+ * answers for one slipped glyph. Measured: a complete, correct 1,474-character
+ * Tamil answer about back pain — headings, kadha, massage, when to see a doctor
+ * — was refused because one character somewhere in it belonged to another Indic
+ * block. The site then discarded it and asked the flaky free providers instead,
+ * or returned nothing. A stray glyph the reader can skip is a far smaller harm
+ * than a missing answer; a real drift is hundreds of characters and is still
+ * refused.
  *
  * ── What it allows ─────────────────────────────────────────────────────────
  *
@@ -194,5 +205,18 @@ export function answersInLanguage(text: string, languageCode?: string): boolean 
     }
   }
 
-  return ownCount > 0 && foreignCount === 0 && latinCount <= ownCount;
+  /*
+   * A few stray characters from another script are tolerated; a drift is not.
+   *
+   * One per cent of the answer, and never fewer than three characters. A real
+   * drift — a model that switches language halfway — is written in tens or
+   * hundreds of characters and is refused exactly as before. A single glyph
+   * from a neighbouring block is a typo in the model's output, and throwing
+   * away a complete, readable answer over it costs the visitor the answer.
+   * Measured: a correct 1,474-character Tamil answer was discarded over one
+   * such character.
+   */
+  const foreignLimit = Math.max(3, Math.floor(ownCount / 100));
+
+  return ownCount > 0 && foreignCount <= foreignLimit && latinCount <= ownCount;
 }

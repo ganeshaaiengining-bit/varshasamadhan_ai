@@ -283,6 +283,36 @@ export default async function HomePage() {
           <p className="mx-auto mt-3 max-w-2xl text-center text-ink-muted">{t('home.chooseTopicNote')}</p>
 
           <ul className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {/*
+              The owner's option one, and it is not one of the database
+              subjects. It sits first because he asked for it in the first
+              position: the illnesses people actually arrive with — cough,
+              headache, arthritis, diabetes — answered with the household and
+              Ayurvedic measures for each.
+            */}
+            <li>
+              <Link
+                href="/gharguti"
+                className={`card group flex h-full flex-col ${ACCENT.leaf.bg} p-6 transition-all hover:-translate-y-1 hover:shadow-lift focus-visible:-translate-y-1`}
+              >
+                <span
+                  className={`grid h-14 w-14 place-items-center rounded-2xl bg-surface ${ACCENT.leaf.text}`}
+                >
+                  <Icon name="lotus" size={28} />
+                </span>
+
+                <h3 className="mt-4 text-xl text-ink">{t('remedy.title')}</h3>
+                <p className="mt-1.5 flex-1 text-ink-muted">{t('home.remedyNote')}</p>
+
+                <span className={`mt-4 flex items-center gap-1.5 text-sm font-bold ${ACCENT.leaf.text}`}>
+                  <span className="rounded-full bg-surface px-2 py-0.5">{t('remedy.cough')}</span>
+                  <span className="rounded-full bg-surface px-2 py-0.5">{t('remedy.headache')}</span>
+                  <span className="rounded-full bg-surface px-2 py-0.5">{t('remedy.joints')}</span>
+                  <Icon name="arrow" size={16} className="transition-transform group-hover:translate-x-1" />
+                </span>
+              </Link>
+            </li>
+
             {categories.map((category) => {
               const accent = ACCENT[category.accent] ?? ACCENT.saffron;
               return (

@@ -24,7 +24,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 BASE = sys.argv[1] if len(sys.argv) > 1 else "https://varsha-samadhan.vercel.app"
 
 PAGES = [
-    "/", "/janam-ghathe", "/smriti", "/madad", "/sahayata", "/pustakalay",
+    "/", "/gharguti", "/smriti", "/madad", "/sahayata", "/pustakalay",
     "/reviews", "/samaroh", "/login", "/account",
     "/admin", "/admin/articles",
 ]

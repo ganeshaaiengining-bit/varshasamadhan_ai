@@ -786,6 +786,26 @@ const HINDI: Record<string, string> = {
 
   'support.faq5A': 'नहीं। यह सिर्फ़ ब्राउज़र में खुलती है। कोई ऐप इंस्टॉल नहीं, कोई अनुमति नहीं, कोई अपडेट नहीं।',
 
+  /* Ayurvedic home remedies — the owner's option one. */
+  'nav.remedies': 'घरेलू उपचार',
+  'remedy.title': 'आयुर्वेदिक घरेलू उपचार',
+  'remedy.intro': 'जो भी तकलीफ़ हो — खांसी, सिरदर्द, गठिया, खाज-खुजली, मधुमेह, पीठ दर्द — नीचे अपनी तकलीफ़ चुनिए या अपने शब्दों में पूछिए। घरेलू काढ़ा, मालिश, खानपान और आयुर्वेदिक उपाय बताए जाएँगे।',
+  'remedy.choose': 'अपनी तकलीफ़ चुनिए',
+  'remedy.emergencyStrong': 'ये आपातकाल हैं:',
+  'remedy.emergency': 'सांप का काटना, बिच्छू का डंक और कुत्ते का काटना — तुरंत अस्पताल जाइए, पहले 112 पर फोन कीजिए। घरेलू उपाय सिर्फ़ रास्ते में करने के लिए हैं, अस्पताल की जगह नहीं।',
+  'remedy.note': 'घरेलू और आयुर्वेदिक उपाय तकलीफ़ कम करने में मदद करते हैं; ये डॉक्टर की जाँच और इलाज की जगह नहीं हैं। कोई दवा अपने आप बंद या शुरू न करें।',
+  'remedy.cough': 'खांसी',
+  'remedy.headache': 'सिरदर्द',
+  'remedy.joints': 'गठिया',
+  'remedy.itching': 'खाज-खुजली',
+  'remedy.snake': 'सांप का काटना',
+  'remedy.scorpion': 'बिच्छू का डंक',
+  'remedy.dog': 'कुत्ते का काटना',
+  'remedy.diabetes': 'मधुमेह',
+  'remedy.back': 'पीठ दर्द',
+  'remedy.walking': 'चलने में तकलीफ़',
+  'home.remedyNote': 'काढ़ा, मालिश, खानपान और आयुर्वेदिक उपाय — हर तकलीफ़ के लिए, आपकी भाषा में।',
+
 };
 
 /* -------------------------------------------------------------------------- */
@@ -1422,6 +1442,26 @@ const ENGLISH: Record<string, string> = {
   'lib.warn': 'Some books are still under copyright and cannot legally be given away free. They are deliberately not listed. If you need one of those, ask below — whatever can be answered will be.',
   'lib.askInstead': 'Ask instead',
   'nav.library': 'Library',
+
+  /* Ayurvedic home remedies — the owner's option one. */
+  'nav.remedies': 'Home remedies',
+  'remedy.title': 'Ayurvedic home remedies',
+  'remedy.intro': 'Whatever the trouble — cough, headache, arthritis, itching, diabetes, back pain — choose it below or ask in your own words. You will get the household kadha, massage, diet and Ayurvedic measures for it.',
+  'remedy.choose': 'Choose your trouble',
+  'remedy.emergencyStrong': 'These are emergencies:',
+  'remedy.emergency': 'A snake bite, a scorpion sting or a dog bite means a hospital at once — call 112 first. Home measures are only for the journey, never instead of the hospital.',
+  'remedy.note': 'Home and Ayurvedic measures help ease the trouble; they do not replace examination and treatment by a doctor. Do not start or stop any medicine on your own.',
+  'remedy.cough': 'Cough',
+  'remedy.headache': 'Headache',
+  'remedy.joints': 'Arthritis',
+  'remedy.itching': 'Itching',
+  'remedy.snake': 'Snake bite',
+  'remedy.scorpion': 'Scorpion sting',
+  'remedy.dog': 'Dog bite',
+  'remedy.diabetes': 'Diabetes',
+  'remedy.back': 'Back pain',
+  'remedy.walking': 'Difficulty walking',
+  'home.remedyNote': 'Kadha, massage, diet and Ayurvedic measures — for every trouble, in your language.',
 
 };
 
@@ -2222,6 +2262,26 @@ const BENGALI: Record<string, string> = {
 
   'support.faq5A': 'না। এটি শুধু ব্রাউজারে খোলে। কোনো অ্যাপ ইনস্টল নয়, কোনো অনুমতি নয়, কোনো আপডেট নয়।',
 
+  /* Ayurvedic home remedies — the owner's option one. */
+  'nav.remedies': 'ঘরোয়া প্রতিকার',
+  'remedy.title': 'আয়ুর্বেদিক ঘরোয়া প্রতিকার',
+  'remedy.intro': 'যে-ই সমস্যা হোক — কাশি, মাথাব্যথা, বাতের ব্যথা, চুলকানি, ডায়াবেটিস, পিঠে ব্যথা — নিচে আপনার সমস্যা বেছে নিন বা নিজের ভাষায় জিজ্ঞাসা করুন। ঘরোয়া কাড়া, মালিশ, খাদ্য ও আয়ুর্বেদিক ব্যবস্থা বলা হবে।',
+  'remedy.choose': 'আপনার সমস্যা বেছে নিন',
+  'remedy.emergencyStrong': 'এগুলি জরুরি অবস্থা:',
+  'remedy.emergency': 'সাপে কাটা, বিছের কামড় ও কুকুরে কামড় — সঙ্গে সঙ্গে হাসপাতালে যান, আগে 112-এ ফোন করুন। ঘরোয়া ব্যবস্থা শুধু পথের জন্য, হাসপাতালের বদলে নয়।',
+  'remedy.note': 'ঘরোয়া ও আয়ুর্বেদিক ব্যবস্থা সমস্যা কমাতে সাহায্য করে; ডাক্তারের পরীক্ষা ও চিকিৎসার বিকল্প নয়। নিজে থেকে কোনো ঔষধ শুরু বা বন্ধ করবেন না।',
+  'remedy.cough': 'কাশি',
+  'remedy.headache': 'মাথাব্যথা',
+  'remedy.joints': 'বাতের ব্যথা',
+  'remedy.itching': 'চুলকানি',
+  'remedy.snake': 'সাপে কাটা',
+  'remedy.scorpion': 'বিছের কামড়',
+  'remedy.dog': 'কুকুরে কামড়',
+  'remedy.diabetes': 'ডায়াবেটিস',
+  'remedy.back': 'পিঠে ব্যথা',
+  'remedy.walking': 'হাঁটতে অসুবিধা',
+  'home.remedyNote': 'কাড়া, মালিশ, খাদ্য ও আয়ুর্বেদিক ব্যবস্থা — প্রতিটি সমস্যার জন্য, আপনার ভাষায়।',
+
 };
 
 const TAMIL: Record<string, string> = {
@@ -3008,6 +3068,26 @@ const TAMIL: Record<string, string> = {
   'support.faq5Q': 'ஏதாவது செயலியைப் பதிவிற்கிட வேண்டுமா?',
 
   'support.faq5A': 'இல்லை. இது உலவாளரில் தான் திறக்கிறது. செயலி நிறுவல் இல்லை, அனுமதி இல்லை, புதுப்பிப்பு இல்லை.',
+
+  /* Ayurvedic home remedies — the owner's option one. */
+  'nav.remedies': 'வீட்டு மருத்துவம்',
+  'remedy.title': 'ஆயுர்வேத வீட்டு மருத்துவம்',
+  'remedy.intro': 'எந்தத் தொல்லையாக இருந்தாலும் — இருமல், தலைவலி, மூட்டுவலி, அரிப்பு, நீரிழிவு, முதுகுவலி — கீழே தேர்ந்தெடுக்கவும் அல்லது உங்கள் வார்த்தைகளில் கேளுங்கள். வீட்டுக் கஷாயம், மசாஜ், உணவு முறை மற்றும் ஆயுர்வேத முறைகள் சொல்லப்படும்.',
+  'remedy.choose': 'உங்கள் தொல்லையைத் தேர்ந்தெடுங்கள்',
+  'remedy.emergencyStrong': 'இவை அவசர நிலைகள்:',
+  'remedy.emergency': 'பாம்பு கடி, தேள் கொட்டு, நாய் கடி — உடனே மருத்துவமனைக்குச் செல்லுங்கள், முதலில் 112-ஐ அழையுங்கள். வீட்டு முறைகள் வழியில் செய்ய மட்டுமே, மருத்துவமனைக்குப் பதிலாக அல்ல.',
+  'remedy.note': 'வீட்டு மற்றும் ஆயுர்வேத முறைகள் தொல்லையைக் குறைக்க உதவும்; மருத்துவர் பரிசோதனைக்கும் சிகிச்சைக்கும் மாற்றல்ல. எந்த மருந்தையும் தாங்களாகவே தொடங்கவோ நிறுத்தவோ வேண்டாம்.',
+  'remedy.cough': 'இருமல்',
+  'remedy.headache': 'தலைவலி',
+  'remedy.joints': 'மூட்டுவலி',
+  'remedy.itching': 'அரிப்பு',
+  'remedy.snake': 'பாம்பு கடி',
+  'remedy.scorpion': 'தேள் கொட்டு',
+  'remedy.dog': 'நாய் கடி',
+  'remedy.diabetes': 'நீரிழிவு',
+  'remedy.back': 'முதுகுவலி',
+  'remedy.walking': 'நடக்க சிரமம்',
+  'home.remedyNote': 'கஷாயம், மசாஜ், உணவு, ஆயுர்வேத முறைகள் — ஒவ்வொரு தொல்லைக்கும், உங்கள் மொழியில்.',
 
 };
 
@@ -3796,6 +3876,26 @@ const TELUGU: Record<string, string> = {
 
   'support.faq5A': 'కాదు. ఇది బ్రౌజర్‌లోనే తెరుచుకుంటుంది. యాప్ ఇన్‌స్టాల్ లేదు, అనుమతి లేదు, అప్‌డేట్ లేదు.',
 
+  /* Ayurvedic home remedies — the owner's option one. */
+  'nav.remedies': 'ఇంటి చికిత్సలు',
+  'remedy.title': 'ఆయుర్వేద ఇంటి చికిత్సలు',
+  'remedy.intro': 'ఏ బాధ అయినా — దగ్గు, తలనొప్పి, కీళ్ల నొప్పులు, దురద, మధుమేహం, వెన్నునొప్పి — కింద మీ బాధను ఎంచుకోండి లేదా మీ మాటల్లో అడగండి. ఇంటి కషాయం, మసాజ్, ఆహారం, ఆయుర్వేద చికిత్సలు చెబుతారు.',
+  'remedy.choose': 'మీ బాధను ఎంచుకోండి',
+  'remedy.emergencyStrong': 'ఇవి అత్యవసర పరిస్థితులు:',
+  'remedy.emergency': 'పాము కాటు, తేలు కుట్టు, కుక్క కాటు — వెంటనే ఆసుపత్రికి వెళ్లండి, ముందు 112కు కాల్ చేయండి. ఇంటి చికిత్సలు దారిలో మాత్రమే, ఆసుపత్రికి బదులు కాదు.',
+  'remedy.note': 'ఇంటి మరియు ఆయుర్వేద చికిత్సలు బాధ తగ్గించడానికి సహాయపడతాయి; వైద్యుని పరీక్షకు, చికిత్సకు ప్రత్యామ్నాయం కావు. ఏ మందునూ మీరే మొదలుపెట్టకండి లేదా ఆపకండి.',
+  'remedy.cough': 'దగ్గు',
+  'remedy.headache': 'తలనొప్పి',
+  'remedy.joints': 'కీళ్ల నొప్పులు',
+  'remedy.itching': 'దురద',
+  'remedy.snake': 'పాము కాటు',
+  'remedy.scorpion': 'తేలు కుట్టు',
+  'remedy.dog': 'కుక్క కాటు',
+  'remedy.diabetes': 'మధుమేహం',
+  'remedy.back': 'వెన్నునొప్పి',
+  'remedy.walking': 'నడవడంలో ఇబ్బంది',
+  'home.remedyNote': 'కషాయం, మసాజ్, ఆహారం, ఆయుర్వేద చికిత్సలు — ప్రతి బాధకు, మీ భాషలో.',
+
 };
 
 const MARATHI: Record<string, string> = {
@@ -4583,6 +4683,26 @@ const MARATHI: Record<string, string> = {
 
   'support.faq5A': 'नाही. हे फक्त ब्राउझरमध्ये उघडते. कोणतेही ऐप इन्स्टॉल नाही, कोणतीही परवानगी नाही, कोणतेही अपडेट नाही.',
 
+  /* Ayurvedic home remedies — the owner's option one. */
+  'nav.remedies': 'घरगुती उपचार',
+  'remedy.title': 'आयुर्वेदिक घरगुती उपचार',
+  'remedy.intro': 'कसलाही त्रास असो — खोकला, डोकेदुखी, संधिवात, खाज-खाजण, मधुमेह, पाठदुखी — खाली तुमचा त्रास निवडा किंवा तुमच्या शब्दांत विचारा. घरगुती काढा, मालिश, आहार आणि आयुर्वेदिक उपाय सांगितले जातील.',
+  'remedy.choose': 'तुमचा त्रास निवडा',
+  'remedy.emergencyStrong': 'हे आपत्कालीन आहेत:',
+  'remedy.emergency': 'साप चावणे, विंचू दंश आणि कुत्रा चावणे — लगेच रुग्णालयात जा, आधी 112 वर फोन करा. घरगुती उपाय फक्त वाटेत करण्यासाठी आहेत, रुग्णालयाच्या जागी नाही.',
+  'remedy.note': 'घरगुती आणि आयुर्वेदिक उपाय त्रास कमी करण्यास मदत करतात; डॉक्टरांची तपासणी आणि उपचार यांची जागा घेत नाहीत. कोणतेही औषध स्वतः बंद किंवा सुरू करू नका.',
+  'remedy.cough': 'खोकला',
+  'remedy.headache': 'डोकेदुखी',
+  'remedy.joints': 'संधिवात',
+  'remedy.itching': 'खाज-खाजण',
+  'remedy.snake': 'साप चावणे',
+  'remedy.scorpion': 'विंचू दंश',
+  'remedy.dog': 'कुत्रा चावणे',
+  'remedy.diabetes': 'मधुमेह',
+  'remedy.back': 'पाठदुखी',
+  'remedy.walking': 'चालताना त्रास',
+  'home.remedyNote': 'काढा, मालिश, आहार आणि आयुर्वेदिक उपाय — प्रत्येक त्रासासाठी, तुमच्या भाषेत.',
+
 };
 
 const GUJARATI: Record<string, string> = {
@@ -5369,6 +5489,26 @@ const GUJARATI: Record<string, string> = {
   'support.faq5Q': 'મારે કોઈ એપ ડાઉનલોડ કરવી પડશે?',
 
   'support.faq5A': 'ના. આ ફક્ત બ્રાઉઝરમાં ખૂલે છે. કોઈ એપ ઇન્સ્ટોલ નહીં, કોઈ પરવાનગી નહીં, કોઈ અપડેટ નહીં.',
+
+  /* Ayurvedic home remedies — the owner's option one. */
+  'nav.remedies': 'ઘરેલું ઉપચાર',
+  'remedy.title': 'આયુર્વેદિક ઘરેલું ઉપચાર',
+  'remedy.intro': 'કોઈ પણ તકલીફ હોય — ઉધરસ, માથું દુખવું, સાંધાનો દુખાવો, ખંજવાળ, ડાયાબિટીસ, પીઠનો દુખાવો — નીચે તમારી તકલીફ પસંદ કરો અથવા તમારા શબ્દોમાં પૂછો. ઘરેલું કાઢો, મસાજ, આહાર અને આયુર્વેદિક ઉપાય જણાવવામાં આવશે.',
+  'remedy.choose': 'તમારી તકલીફ પસંદ કરો',
+  'remedy.emergencyStrong': 'આ કટોકટી છે:',
+  'remedy.emergency': 'સાપ કરડવો, વીંછીનો ડંખ અને કૂતરો કરડવો — તરત હોસ્પિટલ જાઓ, પહેલા 112 પર ફોન કરો. ઘરેલા ઉપાય ફક્ત રસ્તામાં કરવા માટે, હોસ્પિટલની જગ્યાએ નહીં.',
+  'remedy.note': 'ઘરેલા અને આયુર્વેદિક ઉપાય તકલીફ ઓછી કરવામાં મદદ કરે છે; ડૉક્ટરની તપાસ અને સારવારની જગ્યા લેતા નથી. કોઈ દવા જાતે શરૂ કે બંધ ન કરો.',
+  'remedy.cough': 'ઉધરસ',
+  'remedy.headache': 'માથું દુખવું',
+  'remedy.joints': 'સાંધાનો દુખાવો',
+  'remedy.itching': 'ખંજવાળ',
+  'remedy.snake': 'સાપ કરડવો',
+  'remedy.scorpion': 'વીંછીનો ડંખ',
+  'remedy.dog': 'કૂતરો કરડવો',
+  'remedy.diabetes': 'ડાયાબિટીસ',
+  'remedy.back': 'પીઠનો દુખાવો',
+  'remedy.walking': 'ચાલવામાં તકલીફ',
+  'home.remedyNote': 'કાઢો, મસાજ, આહાર અને આયુર્વેદિક ઉપાય — દરેક તકલીફ માટે, તમારી ભાષામાં.',
 
 };
 
@@ -6169,6 +6309,26 @@ const KANNADA: Record<string, string> = {
   'support.faq5Q': 'ನನಗೆ ಯಾವುದೇ ಆ್ಯಪ್ ಡೌನ್‌ಲೋಡ್ ಮಾಡಬೇಕೇ?',
 
   'support.faq5A': 'ಇಲ್ಲ. ಇದು ಬ್ರೌಸರ್‌ನಲ್ಲೇ ತೆರೆಯುತ್ತದೆ. ಯಾವುದೇ ಆ್ಯಪ್ ಇನ್‌ಸ್ಟಾಲ್ ಇಲ್ಲ, ಯಾವುದೇ ಅನುಮತಿ ಇಲ್ಲ, ಯಾವುದೇ ಅಪ್‌ಡೇಟ್ ಇಲ್ಲ.',
+
+  /* Ayurvedic home remedies — the owner's option one. */
+  'nav.remedies': 'ಮನೆಮದ್ದು',
+  'remedy.title': 'ಆಯುರ್ವೇದ ಮನೆಮದ್ದು',
+  'remedy.intro': 'ಯಾವ ತೊಂದರೆಯಾದರೂ — ಕೆಮ್ಮು, ತಲೆನೋವು, ಕೀಲು ನೋವು, ತುರಿಕೆ, ಮಧುಮೇಹ, ಬೆನ್ನು ನೋವು — ಕೆಳಗೆ ನಿಮ್ಮ ತೊಂದರೆ ಆರಿಸಿ ಅಥವಾ ನಿಮ್ಮ ಮಾತಿನಲ್ಲಿ ಕೇಳಿ. ಮನೆಯ ಕಷಾಯ, ಮಸಾಜ್, ಆಹಾರ ಮತ್ತು ಆಯುರ್ವೇದ ಕ್ರಮಗಳನ್ನು ಹೇಳಲಾಗುತ್ತದೆ.',
+  'remedy.choose': 'ನಿಮ್ಮ ತೊಂದರೆ ಆರಿಸಿ',
+  'remedy.emergencyStrong': 'ಇವು ತುರ್ತು ಸ್ಥಿತಿಗಳು:',
+  'remedy.emergency': 'ಹಾವು ಕಡಿತ, ಚೇಳು ಕುಟುಕು ಮತ್ತು ನಾಯಿ ಕಡಿತ — ತಕ್ಷಣ ಆಸ್ಪತ್ರೆಗೆ ಹೋಗಿ, ಮೊದಲು 112 ಗೆ ಕರೆ ಮಾಡಿ. ಮನೆಮದ್ದು ದಾರಿಯಲ್ಲಿ ಮಾತ್ರ, ಆಸ್ಪತ್ರೆಗೆ ಬದಲಾಗಿ ಅಲ್ಲ.',
+  'remedy.note': 'ಮನೆ ಮತ್ತು ಆಯುರ್ವೇದ ಕ್ರಮಗಳು ತೊಂದರೆ ಕಡಿಮೆ ಮಾಡಲು ಸಹಾಯ ಮಾಡುತ್ತವೆ; ವೈದ್ಯರ ಪರೀಕ್ಷೆ ಮತ್ತು ಚಿಕಿತ್ಸೆಗೆ ಪರ್ಯಾಯವಲ್ಲ. ಯಾವ ಔಷಧಿಯನ್ನೂ ನೀವೇ ಪ್ರಾರಂಭಿಸಬೇಡಿ ಅಥವಾ ನಿಲ್ಲಿಸಬೇಡಿ.',
+  'remedy.cough': 'ಕೆಮ್ಮು',
+  'remedy.headache': 'ತಲೆನೋವು',
+  'remedy.joints': 'ಕೀಲು ನೋವು',
+  'remedy.itching': 'ತುರಿಕೆ',
+  'remedy.snake': 'ಹಾವು ಕಡಿತ',
+  'remedy.scorpion': 'ಚೇಳು ಕುಟುಕು',
+  'remedy.dog': 'ನಾಯಿ ಕಡಿತ',
+  'remedy.diabetes': 'ಮಧುಮೇಹ',
+  'remedy.back': 'ಬೆನ್ನು ನೋವು',
+  'remedy.walking': 'ನಡೆಯಲು ತೊಂದರೆ',
+  'home.remedyNote': 'ಕಷಾಯ, ಮಸಾಜ್, ಆಹಾರ ಮತ್ತು ಆಯುರ್ವೇದ ಕ್ರಮಗಳು — ಪ್ರತಿ ತೊಂದರೆಗೂ, ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ.',
 
 };
 
@@ -6973,6 +7133,26 @@ const MALAYALAM: Record<string, string> = {
   'support.faq5Q': 'എനിക്ക് ഏതെങ്കിലും ആപ്പ് ഡൗൺലോഡ് ചെയ്യണോ?',
 
   'support.faq5A': 'ഇല്ല. ഇത് ബ്രൗസറിൽ തന്നെ തുറക്കും. ആപ്പ് ഇൻസ്റ്റാൾ ഇല്ല, അനുമതി ഇല്ല, അപ്ഡേറ്റ് ഇല്ല.',
+
+  /* Ayurvedic home remedies — the owner's option one. */
+  'nav.remedies': 'വീട്ടുചികിത്സ',
+  'remedy.title': 'ആയുർവേദ വീട്ടുചികിത്സ',
+  'remedy.intro': 'ഏതു ബുദ്ധിമുട്ടായാലും — ചുമ, തലവേദന, സന്ധിവാതം, ചൊറിച്ചിൽ, പ്രമേഹം, നടുവേദന — താഴെ നിങ്ങളുടെ ബുദ്ധിമുട്ട് തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ നിങ്ങളുടെ വാക്കുകളിൽ ചോദിക്കുക. വീട്ടിലെ കഷായം, തിരുമ്മൽ, ഭക്ഷണം, ആയുർവേദ മാർഗങ്ങൾ പറയും.',
+  'remedy.choose': 'നിങ്ങളുടെ ബുദ്ധിമുട്ട് തിരഞ്ഞെടുക്കുക',
+  'remedy.emergencyStrong': 'ഇവ അടിയന്തരാവസ്ഥകളാണ്:',
+  'remedy.emergency': 'പാമ്പുകടി, തേൾ കുത്ത്, നായയുടെ കടി — ഉടൻ ആശുപത്രിയിൽ പോകുക, ആദ്യം 112-ൽ വിളിക്കുക. വീട്ടുചികിത്സ വഴിയിൽ മാത്രം, ആശുപത്രിക്ക് പകരമല്ല.',
+  'remedy.note': 'വീട്ടുചികിത്സയും ആയുർവേദ മാർഗങ്ങളും ബുദ്ധിമുട്ട് കുറയ്ക്കാൻ സഹായിക്കും; ഡോക്ടറുടെ പരിശോധനയ്ക്കും ചികിത്സയ്ക്കും പകരമല്ല. ഏതെങ്കിലും മരുന്ന് സ്വയം തുടങ്ങരുത്, നിർത്തരുത്.',
+  'remedy.cough': 'ചുമ',
+  'remedy.headache': 'തലവേദന',
+  'remedy.joints': 'സന്ധിവാതം',
+  'remedy.itching': 'ചൊറിച്ചിൽ',
+  'remedy.snake': 'പാമ്പുകടി',
+  'remedy.scorpion': 'തേൾ കുത്ത്',
+  'remedy.dog': 'നായയുടെ കടി',
+  'remedy.diabetes': 'പ്രമേഹം',
+  'remedy.back': 'നടുവേദന',
+  'remedy.walking': 'നടക്കാൻ ബുദ്ധിമുട്ട്',
+  'home.remedyNote': 'കഷായം, തിരുമ്മൽ, ഭക്ഷണം, ആയുർവേദ മാർഗങ്ങൾ — ഓരോ ബുദ്ധിമുട്ടിനും, നിങ്ങളുടെ ഭാഷയിൽ.',
 
 };
 
@@ -7781,6 +7961,26 @@ const PUNJABI: Record<string, string> = {
 
   'support.faq5A': 'ਨਹੀਂ। ਇਹ ਸਿਰਫ਼ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਖੁੱਲਦੀ ਹੈ। ਕੋਈ ਐਪ ਇੰਸਟਾਲ ਨਹੀਂ, ਕੋਈ ਇਜਾਜ਼ਤ ਨਹੀਂ, ਕੋਈ ਅੱਪਡੇਟ ਨਹੀਂ।',
 
+  /* Ayurvedic home remedies — the owner's option one. */
+  'nav.remedies': 'ਘਰੇਲੂ ਇਲਾਜ',
+  'remedy.title': 'ਆਯੁਰਵੇਦਿਕ ਘਰੇਲੂ ਇਲਾਜ',
+  'remedy.intro': 'ਕੋਈ ਵੀ ਤਕਲੀਫ਼ ਹੋਵੇ — ਖੰਘ, ਸਿਰ ਦਰਦ, ਜੋੜਾਂ ਦਾ ਦਰਦ, ਖੁਰਕ, ਸ਼ੂਗਰ, ਪਿੱਠ ਦਰਦ — ਹੇਠਾਂ ਆਪਣੀ ਤਕਲੀਫ਼ ਚੁਣੋ ਜਾਂ ਆਪਣੇ ਸ਼ਬਦਾਂ ਵਿੱਚ ਪੁੱਛੋ। ਘਰੇਲੂ ਕਾੜ੍ਹਾ, ਮਾਲਿਸ਼, ਖੁਰਾਕ ਅਤੇ ਆਯੁਰਵੇਦਿਕ ਉਪਾਅ ਦੱਸੇ ਜਾਣਗੇ।',
+  'remedy.choose': 'ਆਪਣੀ ਤਕਲੀਫ਼ ਚੁਣੋ',
+  'remedy.emergencyStrong': 'ਇਹ ਐਮਰਜੈਂਸੀ ਹਨ:',
+  'remedy.emergency': 'ਸੱਪ ਦਾ ਡੰਗ, ਬਿੱਛੂ ਦਾ ਡੰਗ ਅਤੇ ਕੁੱਤੇ ਦਾ ਕੱਟਣਾ — ਤੁਰੰਤ ਹਸਪਤਾਲ ਜਾਓ, ਪਹਿਲਾਂ 112 ’ਤੇ ਫੋਨ ਕਰੋ। ਘਰੇਲੂ ਉਪਾਅ ਸਿਰਫ਼ ਰਾਹ ਵਿੱਚ ਕਰਨ ਲਈ ਹਨ, ਹਸਪਤਾਲ ਦੀ ਥਾਂ ਨਹੀਂ।',
+  'remedy.note': 'ਘਰੇਲੂ ਅਤੇ ਆਯੁਰਵੇਦਿਕ ਉਪਾਅ ਤਕਲੀਫ਼ ਘਟਾਉਣ ਵਿੱਚ ਮਦਦ ਕਰਦੇ ਹਨ; ਡਾਕਟਰ ਦੀ ਜਾਂਚ ਅਤੇ ਇਲਾਜ ਦੀ ਥਾਂ ਨਹੀਂ ਲੈਂਦੇ। ਕੋਈ ਦਵਾਈ ਆਪਣੇ ਆਪ ਬੰਦ ਜਾਂ ਸ਼ੁਰੂ ਨਾ ਕਰੋ।',
+  'remedy.cough': 'ਖੰਘ',
+  'remedy.headache': 'ਸਿਰ ਦਰਦ',
+  'remedy.joints': 'ਜੋੜਾਂ ਦਾ ਦਰਦ',
+  'remedy.itching': 'ਖੁਰਕ',
+  'remedy.snake': 'ਸੱਪ ਦਾ ਡੰਗ',
+  'remedy.scorpion': 'ਬਿੱਛੂ ਦਾ ਡੰਗ',
+  'remedy.dog': 'ਕੁੱਤੇ ਦਾ ਕੱਟਣਾ',
+  'remedy.diabetes': 'ਸ਼ੂਗਰ',
+  'remedy.back': 'ਪਿੱਠ ਦਰਦ',
+  'remedy.walking': 'ਤੁਰਨ ਵਿੱਚ ਤਕਲੀਫ਼',
+  'home.remedyNote': 'ਕਾੜ੍ਹਾ, ਮਾਲਿਸ਼, ਖੁਰਾਕ ਅਤੇ ਆਯੁਰਵੇਦਿਕ ਉਪਾਅ — ਹਰ ਤਕਲੀਫ਼ ਲਈ, ਤੁਹਾਡੀ ਭਾਸ਼ਾ ਵਿੱਚ।',
+
 };
 
 const URDU: Record<string, string> = {
@@ -8576,6 +8776,26 @@ const URDU: Record<string, string> = {
   'support.faq5Q': 'کیا مجھے کوئی ایپ ڈاؤن لوڈ کرنی پڑے گی؟',
 
   'support.faq5A': 'نہیں۔ یہ صرف براؤزر میں کھلتی ہے۔ کوئی ایپ انسٹال نہیں، کوئی اجازت نہیں، کوئی اپ ڈیٹ نہیں۔',
+
+  /* Ayurvedic home remedies — the owner's option one. */
+  'nav.remedies': 'گھریلو علاج',
+  'remedy.title': 'آیورویدک گھریلو علاج',
+  'remedy.intro': 'کوئی بھی تکلیف ہو — کھانسی، سر درد، جوڑوں کا درد، خارش، ذیابیطس، کمر درد — نیچے اپنی تکلیف چنیں یا اپنے الفاظ میں پوچھیں۔ گھریلو کاڑھا، مالش، خوراک اور آیورویدک طریقے بتائے جائیں گے۔',
+  'remedy.choose': 'اپنی تکلیف چنیں',
+  'remedy.emergencyStrong': 'یہ ہنگامی حالتیں ہیں:',
+  'remedy.emergency': 'سانپ کا کاٹنا، بچھو کا ڈنک اور کتے کا کاٹنا — فوراً ہسپتال جائیں، پہلے 112 پر فون کریں۔ گھریلو طریقے صرف راستے کے لیے ہیں، ہسپتال کی جگہ نہیں۔',
+  'remedy.note': 'گھریلو اور آیورویدک طریقے تکلیف کم کرنے میں مدد دیتے ہیں؛ ڈاکٹر کے معائنے اور علاج کا نعم البدل نہیں۔ کوئی دوا خود شروع یا بند نہ کریں۔',
+  'remedy.cough': 'کھانسی',
+  'remedy.headache': 'سر درد',
+  'remedy.joints': 'جوڑوں کا درد',
+  'remedy.itching': 'خارش',
+  'remedy.snake': 'سانپ کا کاٹنا',
+  'remedy.scorpion': 'بچھو کا ڈنک',
+  'remedy.dog': 'کتے کا کاٹنا',
+  'remedy.diabetes': 'ذیابیطس',
+  'remedy.back': 'کمر درد',
+  'remedy.walking': 'چلنے میں تکلیف',
+  'home.remedyNote': 'کاڑھا، مالش، خوراک اور آیورویدک طریقے — ہر تکلیف کے لیے، آپ کی زبان میں۔',
 
 };
 
@@ -9379,6 +9599,26 @@ const ARABIC: Record<string, string> = {
 
   'support.faq5A': 'لا. تُفتح في المتصفح فقط. لا تثبيت تطبيق، ولا أذونات، ولا تحديثات.',
 
+  /* Ayurvedic home remedies — the owner's option one. */
+  'nav.remedies': 'علاج منزلي',
+  'remedy.title': 'علاج أيورفيدي منزلي',
+  'remedy.intro': 'أيًا كان ما يؤلمك — السعال، الصداع، التهاب المفاصل، الحكة، السكري، ألم الظهر — اختره أدناه أو اسأل بكلماتك. ستُذكر لك الكشاية المنزلية والتدليك والغذاء والطرق الأيورفيدية.',
+  'remedy.choose': 'اختر ما يؤلمك',
+  'remedy.emergencyStrong': 'هذه حالات طارئة:',
+  'remedy.emergency': 'لدغة الأفعى ولسعة العقرب وعضّة الكلب — اذهب إلى المستشفى فورًا، واتصل أولًا بالرقم 112. الوسائل المنزلية للطريق فقط، وليست بديلًا عن المستشفى.',
+  'remedy.note': 'الوسائل المنزلية والأيورفيدية تساعد على تخفيف الألم؛ وهي لا تغني عن فحص الطبيب وعلاجه. لا تبدأ أي دواء أو توقفه من تلقاء نفسك.',
+  'remedy.cough': 'السعال',
+  'remedy.headache': 'الصداع',
+  'remedy.joints': 'التهاب المفاصل',
+  'remedy.itching': 'الحكة',
+  'remedy.snake': 'لدغة أفعى',
+  'remedy.scorpion': 'لسعة عقرب',
+  'remedy.dog': 'عضّة كلب',
+  'remedy.diabetes': 'السكري',
+  'remedy.back': 'ألم الظهر',
+  'remedy.walking': 'صعوبة المشي',
+  'home.remedyNote': 'كشاية وتدليك وغذاء وطرق أيورفيدية — لكل ألم، بلغتك.',
+
 };
 
 const SPANISH: Record<string, string> = {
@@ -10174,6 +10414,26 @@ const SPANISH: Record<string, string> = {
   'support.faq5Q': '¿Tengo que instalar alguna aplicación?',
 
   'support.faq5A': 'No. Se abre en el navegador. Sin instalar aplicaciones, sin permisos, sin actualizaciones.',
+
+  /* Ayurvedic home remedies — the owner's option one. */
+  'nav.remedies': 'Remedios caseros',
+  'remedy.title': 'Remedios caseros ayurvédicos',
+  'remedy.intro': 'Sea cual sea la molestia — tos, dolor de cabeza, artritis, picazón, diabetes, dolor de espalda — elígela abajo o pregúntala con tus palabras. Se te dirán el kadha casero, el masaje, la dieta y las medidas ayurvédicas.',
+  'remedy.choose': 'Elige tu molestia',
+  'remedy.emergencyStrong': 'Estas son emergencias:',
+  'remedy.emergency': 'Mordedura de serpiente, picadura de escorpión o mordedura de perro: al hospital de inmediato — llama primero al 112. Los remedios caseros son solo para el camino, nunca en lugar del hospital.',
+  'remedy.note': 'Los remedios caseros y ayurvédicos ayudan a aliviar la molestia; no sustituyen el examen ni el tratamiento del médico. No empieces ni dejes ningún medicamento por tu cuenta.',
+  'remedy.cough': 'Tos',
+  'remedy.headache': 'Dolor de cabeza',
+  'remedy.joints': 'Artritis',
+  'remedy.itching': 'Picazón',
+  'remedy.snake': 'Mordedura de serpiente',
+  'remedy.scorpion': 'Picadura de escorpión',
+  'remedy.dog': 'Mordedura de perro',
+  'remedy.diabetes': 'Diabetes',
+  'remedy.back': 'Dolor de espalda',
+  'remedy.walking': 'Dificultad para caminar',
+  'home.remedyNote': 'Kadha, masaje, dieta y medidas ayurvédicas — para cada molestia, en tu idioma.',
 
 };
 

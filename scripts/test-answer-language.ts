@@ -24,13 +24,20 @@
  *
  *     - the answer is empty
  *     - the answer contains none of the language's own script
- *     - the answer contains any OTHER offered script
+ *     - the answer drifts into enough of another offered script to matter
  *
  * The third rule is the one that catches the bug. A Bengali question answered
  * in Hindi fails the second rule already. But an answer that opens in Bengali
  * and then continues in Hindi — which is what a model does when it
  * half-follows an instruction — passes the second rule and would be shown to
  * the visitor. The third rule refuses it.
+ *
+ * "Enough to matter" is one per cent of the answer with a floor of three
+ * characters. It used to be any character at all, and that threw away a whole
+ * correct Tamil answer because one glyph in it belonged to another Indic block.
+ * A stray character the reader can skip is a smaller harm than no answer; a
+ * real drift is hundreds of characters and is still refused, and both cases
+ * are tested below.
  *
  * Latin letters are counted separately and never count against an answer,
  * because models write "OK" and "SMS" inside Bengali sentences and that is
@@ -76,6 +83,25 @@ const cases: Array<{
       'the rule that makes this more than a script range: a model that half ' +
       'follows the instruction writes the opening in the right script and ' +
       'then drifts, and that used to be shown to the visitor as an answer',
+  },
+  {
+    name: 'a Tamil answer with one stray Devanagari character',
+    text: 'முதலில் மின்சார வரும் லீட் ஒடுங்கி இருப்பதைப் பாருங்கள். स',
+    language: 'ta',
+    expect: true,
+    why:
+      'one slipped glyph from a neighbouring block is a typo, not a language ' +
+      'change. Refusing the whole answer over it is what discarded a complete ' +
+      '1,474-character Tamil answer in testing',
+  },
+  {
+    name: 'a Tamil answer that drifts into a Devanagari sentence',
+    text: 'முதலில் மின்சார வரும் லீட் ஒடுங்கி இருப்பதைப் பாருங்கள். सबसे पहले मुख्य स्विच बंद करें और फिर जाँचें।',
+    language: 'ta',
+    expect: false,
+    why:
+      'the drift this check exists for is still refused: tens of characters in ' +
+      'the wrong script, not one',
   },
   {
     name: 'a Bengali sentence containing only Latin product words',
