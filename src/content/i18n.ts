@@ -814,6 +814,7 @@ const HINDI: Record<string, string> = {
   'aarti.kindBhajan': 'भजन',
   'aarti.credit': 'रिकॉर्डिंग:',
   'aarti.licence': 'लाइसेंस:',
+  'aarti.listenLink': 'असली आवाज़ में सुनिए',
 
 };
 
@@ -1480,6 +1481,7 @@ const ENGLISH: Record<string, string> = {
   'aarti.kindBhajan': 'Bhajan',
   'aarti.credit': 'Recording:',
   'aarti.licence': 'Licence:',
+  'aarti.listenLink': 'Listen in a real voice',
 
 };
 
@@ -2308,6 +2310,7 @@ const BENGALI: Record<string, string> = {
   'aarti.kindBhajan': 'ভজন',
   'aarti.credit': 'রেকর্ডিং:',
   'aarti.licence': 'লাইসেন্স:',
+  'aarti.listenLink': 'সত্যিকারের কণ্ঠে শুনুন',
 
 };
 
@@ -3124,6 +3127,7 @@ const TAMIL: Record<string, string> = {
   'aarti.kindBhajan': 'பஜன்',
   'aarti.credit': 'ஒலிப்பதிவு:',
   'aarti.licence': 'உரிமம்:',
+  'aarti.listenLink': 'உண்மையான குரலில் கேளுங்கள்',
 
 };
 
@@ -3940,6 +3944,7 @@ const TELUGU: Record<string, string> = {
   'aarti.kindBhajan': 'భజన',
   'aarti.credit': 'రికార్డింగ్:',
   'aarti.licence': 'లైసెన్స్:',
+  'aarti.listenLink': 'నిజమైన గొంతుకలో వినండి',
 
 };
 
@@ -4756,6 +4761,7 @@ const MARATHI: Record<string, string> = {
   'aarti.kindBhajan': 'भजन',
   'aarti.credit': 'रेकॉर्डिंग:',
   'aarti.licence': 'परवाना:',
+  'aarti.listenLink': 'खऱ्या आवाजात ऐका',
 
 };
 
@@ -5572,6 +5578,7 @@ const GUJARATI: Record<string, string> = {
   'aarti.kindBhajan': 'ભજન',
   'aarti.credit': 'રેકોર્ડિંગ:',
   'aarti.licence': 'લાઇસન્સ:',
+  'aarti.listenLink': 'સાચા અવાજમાં સાંભળો',
 
 };
 
@@ -6401,6 +6408,7 @@ const KANNADA: Record<string, string> = {
   'aarti.kindBhajan': 'ಭಜನೆ',
   'aarti.credit': 'ಧ್ವನಿಮುದ್ರಿಕೆ:',
   'aarti.licence': 'ಪರವಾನಗಿ:',
+  'aarti.listenLink': 'ನಿಜವಾದ ಧ್ವನಿಯಲ್ಲಿ ಕೇಳಿ',
 
 };
 
@@ -7234,6 +7242,7 @@ const MALAYALAM: Record<string, string> = {
   'aarti.kindBhajan': 'ഭജനം',
   'aarti.credit': 'റെക്കോർഡിംഗ്:',
   'aarti.licence': 'ലൈസൻസ്:',
+  'aarti.listenLink': 'യഥാർത്ഥ ശബ്ദത്തിൽ കേൾക്കൂ',
 
 };
 
@@ -8070,6 +8079,7 @@ const PUNJABI: Record<string, string> = {
   'aarti.kindBhajan': 'ਭਜਨ',
   'aarti.credit': 'ਰਿਕਾਰਡਿੰਗ:',
   'aarti.licence': 'ਲਾਇਸੈਂਸ:',
+  'aarti.listenLink': 'ਅਸਲੀ ਆਵਾਜ਼ ਵਿੱਚ ਸੁਣੋ',
 
 };
 
@@ -8895,6 +8905,7 @@ const URDU: Record<string, string> = {
   'aarti.kindBhajan': 'بھجن',
   'aarti.credit': 'ریکارڈنگ:',
   'aarti.licence': 'لائسنس:',
+  'aarti.listenLink': 'اصل آواز میں سنیں',
 
 };
 
@@ -9726,6 +9737,7 @@ const ARABIC: Record<string, string> = {
   'aarti.kindBhajan': 'بجان',
   'aarti.credit': 'التسجيل:',
   'aarti.licence': 'الترخيص:',
+  'aarti.listenLink': 'استمع بصوت حقيقي',
 
 };
 
@@ -10551,6 +10563,7 @@ const SPANISH: Record<string, string> = {
   'aarti.kindBhajan': 'Bhajan',
   'aarti.credit': 'Grabación:',
   'aarti.licence': 'Licencia:',
+  'aarti.listenLink': 'Escuche con voz real',
 
 };
 

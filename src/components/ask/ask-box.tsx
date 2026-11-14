@@ -522,15 +522,23 @@ function AnswerCard({
         </h2>
 
         {/*
-          No voice on a recited answer.
+          No synthetic voice on a recited answer.
 
           An aarti, bhajan, song or katha is heard in a singer's or kathakar's
           voice, in its own chaal; a computer voice reading it flat is not the
           thing the visitor asked for. The words above are complete, so they can
-          read and sing them — only the synthetic voice is withheld. The owner's
-          rule; see `content/recitation.ts`.
+          read and sing them — only the synthetic voice is withheld.
+
+          What replaces the button is the way to the real thing: the listening
+          page, where the recordings are real and credited. The owner's rule;
+          see `content/recitation.ts` and `content/recordings.ts`.
         */}
-        {recited ? null : (
+        {recited ? (
+          <Link href="/aarti" className="btn-outline !min-h-[2.75rem] !px-4 text-sm">
+            <Icon name="om" size={20} />
+            {t('aarti.listenLink')}
+          </Link>
+        ) : (
           <button
             type="button"
             onClick={play}
