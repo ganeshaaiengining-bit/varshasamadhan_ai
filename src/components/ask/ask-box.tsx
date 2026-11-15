@@ -76,6 +76,20 @@ export function AskBox({
    * `recited` flag, which comes from the question the visitor typed.
    */
   const [recited, setRecited] = React.useState(false);
+  /*
+   * The real recording, when the aarti asked for is one the site has.
+   *
+   * A player appears under the words, playing the publisher's own MP3 with the
+   * singer and licence beside it. A visitor who asked to hear the aarti should
+   * not have to leave the answer to find it, and the answer should never fall
+   * back on a synthetic voice. See `content/recordings.ts`.
+   */
+  const [audio, setAudio] = React.useState<{
+    src: string;
+    title: string;
+    credit: string;
+    licence: string;
+  } | null>(null);
   const [topics, setTopics] = React.useState<{ title: string; slug: string }[]>([]);
   const [notice, setNotice] = React.useState<string | null>(null);
   const [speakError, setSpeakError] = React.useState<string | null>(null);
@@ -137,8 +151,10 @@ export function AskBox({
     setSpeakError(null);
     setTopics([]);
     // Cleared with the old answer, so a recited answer's missing voice cannot
-    // carry over to the next, ordinary one.
+    // carry over to the next, ordinary one — and so the previous aarti's player
+    // does not sit under a new answer.
     setRecited(false);
+    setAudio(null);
 
     try {
       const response = await fetch('/api/ask', {
@@ -181,12 +197,14 @@ export function AskBox({
         reason?: string;
         fallback: boolean;
         recited?: boolean;
+        audio?: { src: string; title: string; credit: string; licence: string };
         topics?: { title: string; slug: string }[] | null;
       };
 
       if (data.ok && data.answer) {
         setAnswer(data.answer);
         setRecited(data.recited === true);
+        setAudio(data.audio ?? null);
         onAnswered?.();
         return;
       }
@@ -366,6 +384,7 @@ export function AskBox({
           text={answer}
           language={language.code}
           recited={recited}
+          audio={audio}
           onSpeakError={setSpeakError}
         />
       ) : null}
@@ -483,12 +502,15 @@ function AnswerCard({
   text,
   language,
   recited,
+  audio,
   onSpeakError,
 }: {
   text: string;
   language: string;
   /** An aarti, bhajan, song or katha: no synthetic voice on this card. */
   recited: boolean;
+  /** The real recording of this aarti, when the site has one. */
+  audio: { src: string; title: string; credit: string; licence: string } | null;
   onSpeakError: (message: string) => void;
 }) {
   const { t, tf } = useLanguage();
@@ -584,6 +606,27 @@ function AnswerCard({
           );
         })}
       </div>
+
+      {/*
+        A real singer, in the answer, where the visitor asked for it.
+
+        The file is the publisher's own, unchanged; the credit and the licence
+        sit right under it, exactly as on `/aarti`. No synthetic voice anywhere
+        near a recitation.
+      */}
+      {audio ? (
+        <div className="mt-5 rounded-xl border border-line bg-white/80 p-4">
+          <p className="font-bold text-ink">{audio.title}</p>
+          <audio controls preload="none" src={audio.src} className="mt-2 w-full">
+            {audio.title}
+          </audio>
+          <p className="mt-2 text-sm text-ink-subtle">
+            {t('aarti.credit')} {audio.credit}
+            <br />
+            {t('aarti.licence')} {audio.licence}
+          </p>
+        </div>
+      ) : null}
 
       <p className="mt-5 border-t border-line pt-3 text-sm text-ink-subtle">
         {t('ask.aiNote')}

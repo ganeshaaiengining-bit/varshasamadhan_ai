@@ -700,11 +700,18 @@ export function aartiAnswer(question: string, lang: string): { answer: string; s
       '',
       /*
        * Say how the words were checked, and only promise a recording when there
-       * really is one. Claiming a recording we do not have is the kind of small
-       * lie that makes every other answer doubtful.
+       * really is one.
+       *
+       * The owner asked for the Marathi Shankar aarti "गाण्याच्या स्वरूपात" and
+       * got the words with no word about the singing. Silence there reads as a
+       * fault. So when there is no recording, the answer says so in one sentence
+       * and says why — this site never sings an aarti in a machine voice — and
+       * still points at the recordings that do exist.
        */
       stored.withRecording ? t('aarti.textChecked') : t('aarti.textPrinted'),
-      ...(stored.withRecording ? [`${t('aarti.listenLink')}: ${LISTEN_URL}`] : []),
+      ...(stored.withRecording
+        ? [`${t('aarti.listenLink')}: ${LISTEN_URL}`]
+        : [t('aarti.noRecording'), `${t('aarti.listenLink')}: ${LISTEN_URL}`]),
     ]
       .join('\n')
       .trim();

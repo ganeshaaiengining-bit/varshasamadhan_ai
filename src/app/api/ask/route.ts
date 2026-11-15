@@ -7,6 +7,7 @@ import { getLanguage } from '@/server/i18n';
 import { currentUser } from '@/server/auth/session';
 import { asksForRecitedText } from '@/content/recitation';
 import { aartiAnswer } from '@/content/aartis';
+import { COLLECTION } from '@/content/recordings';
 
 /**
  * POST /api/ask
@@ -129,6 +130,19 @@ export async function POST(request: Request) {
    */
   const stored = aartiAnswer(question, languageCode);
 
+  /*
+   * ── When the aarti being asked for is one of the recordings ───────────────
+   *
+   * The words are answered from the library, but the visitor who asked to
+   * *hear* it then had to leave the page and find it on `/aarti`. The owner's
+   * report was "गाकर सुनावो" — sing it — and a link is not singing.
+   *
+   * So the recording's own file goes back with the answer, and the card plays
+   * it. It is the publisher's MP3, unaltered, with the singer and licence shown
+   * beside it: the same rules as the listening page, since it is the same file.
+   */
+  const recording = stored?.slug ? COLLECTION.find((r) => r.slug === stored.slug) : undefined;
+
   // A greeting is not a question. Answering one wastes a metered call and tells
   // the visitor something is broken.
   //
@@ -248,6 +262,16 @@ export async function POST(request: Request) {
   return NextResponse.json({
     ...result,
     ...(recited || stored ? { recited: true } : {}),
+    ...(recording
+      ? {
+          audio: {
+            src: recording.src,
+            title: recording.titleDeva,
+            credit: recording.credit,
+            licence: recording.licence,
+          },
+        }
+      : {}),
     ...(topics.length > 0 ? { topics } : {}),
   });
 }
