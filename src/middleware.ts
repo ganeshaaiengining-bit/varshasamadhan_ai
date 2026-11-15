@@ -87,6 +87,34 @@ export function middleware(request: NextRequest) {
    */
   const wanted = fromParam ?? fromPath;
 
+  /*
+   * Send the visitor to the address that matches their choice.
+   *
+   * The picker reloads with `?vs-lang=`, which is what a browser that refuses
+   * cookies needs. Left as it is, a visitor who arrives on `/ta/aarti` from a
+   * Tamil search result and then chooses English would get English text under a
+   * Tamil URL — and the moment the client strips the parameter, a refresh would
+   * silently put Tamil back. One redirect leaves the address bar saying what the
+   * page actually is, and it is the same URL the canonical tag names.
+   *
+   * The parameter is dropped from the redirect target for the same reason the
+   * client removes it: a language is not part of the address a visitor copies.
+   */
+  if (fromParam) {
+    const rest = url.pathname.replace(PREFIX, '') || '/';
+    const target = new URL(url);
+    target.pathname = fromParam === 'hi' ? rest : `/${fromParam}${rest === '/' ? '' : rest}`;
+    target.searchParams.delete(PARAM);
+
+    const redirect = NextResponse.redirect(target, 307);
+    redirect.cookies.set(COOKIE, fromParam, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: 'lax',
+    });
+    return redirect;
+  }
+
   let rewritten: URL | null = null;
   if (fromPath) {
     rewritten = new URL(url);
