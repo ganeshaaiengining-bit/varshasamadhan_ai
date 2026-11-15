@@ -116,7 +116,15 @@ export function Sunrise({
         {/* eslint-disable-next-line @next/next/no-img-element — the sun is the
             brand mark; next/image would add a layout shift and an optimisation
             step for a file that is already a traced, hand-tuned PNG. */}
-        <img src="/art/sun.png" alt="" width={size} height={size} className="h-full w-full" />
+        <img
+          src="/art/sun-128.png"
+          srcSet="/art/sun-128.png 1x, /art/sun-256.png 2x"
+          alt=""
+          width={size}
+          height={size}
+          decoding="async"
+          className="h-full w-full"
+        />
       </span>
 
       <style>{`
@@ -163,9 +171,25 @@ export function SunriseBanner({ src }: { src: string }) {
           filter: visible ? 'saturate(1.06) brightness(1.02)' : 'saturate(0.6) brightness(0.86)',
         }}
       >
+        {/*
+          Three sizes, because the same picture is the background of a phone
+          and of a 27-inch monitor. The file at 3840 wide is 629 KB and the one
+          at 1280 is 152 KB; a phone that downloads the first for a 390-pixel
+          screen spends four times the data for pixels it cannot show. The
+          browser picks from the list using `sizes`, and the original stays as
+          the last entry so nothing is lost on a large display.
+        */}
         {/* eslint-disable-next-line @next/next/no-img-element -- a rendered
             background, and next/image would add a layout shift for nothing. */}
-        <img src={src} alt="" className="h-full w-full object-cover" />
+        <img
+          src={src}
+          srcSet="/art/sunrise-wide-1280.png 1280w, /art/sunrise-wide-1920.png 1920w, /art/sunrise-wide.png 3840w"
+          sizes="100vw"
+          alt=""
+          fetchPriority="high"
+          decoding="async"
+          className="h-full w-full object-cover"
+        />
       </div>
 
       {/*

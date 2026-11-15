@@ -121,6 +121,27 @@ export async function generateMetadata(): Promise<Metadata> {
 
     manifest: '/manifest.webmanifest',
 
+    /*
+     * Search Console and Bing verification, from environment variables.
+     *
+     * The token is public by design — it is printed in the HTML of every page —
+     * so it is a setting rather than a code change: paste the value in Vercel,
+     * redeploy, and the tag is there. No key, password or account access passes
+     * through this file.
+     */
+    verification: {
+      ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim()
+        ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION.trim() }
+        : {}),
+      ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION?.trim()
+        ? {
+            other: {
+              'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION.trim(),
+            },
+          }
+        : {}),
+    },
+
     // Search engines should index the help content but not the owner panel.
     robots: {
       index: true,
