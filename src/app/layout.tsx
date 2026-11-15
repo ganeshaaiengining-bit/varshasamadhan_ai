@@ -103,7 +103,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           target, so it went nowhere.
         */}
         <a href="#main" className="sr-only focus:not-sr-only">
-          <span className="fixed left-4 top-4 z-50 rounded-md bg-saffron px-5 py-3 font-bold text-white">
+          <span className="fixed start-4 top-4 z-50 rounded-md bg-saffron px-5 py-3 font-bold text-white">
             {t('nav.skip')}
           </span>
         </a>

@@ -52,7 +52,8 @@ const NAV: NavItem[] = [
 ];
 
 export function AppBar({ siteName }: { siteName: string }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const rtl = language.direction === 'rtl';
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
   const [rail, setRail] = React.useState(true);
@@ -125,11 +126,16 @@ export function AppBar({ siteName }: { siteName: string }) {
       {/*
         `position: fixed` and full height, so it stays put while the page
         scrolls. On a small screen it is a narrow edge target; from `lg` it gains
-        labels and the site content shifts right to clear it.
+        labels and the site content shifts over to clear it.
+
+        `start-0`, not `left-0`: in Urdu and Arabic the page is right-to-left, and
+        a rail pinned to the physical left sat *on top of* the first column of
+        every page while the spacer reserved the space on the right. The drawer
+        below had the same fault.
       */}
       <div
         className={[
-          'fixed inset-y-0 left-0 z-40 hidden shrink-0 border-e border-line bg-surface/95 backdrop-blur',
+          'fixed inset-y-0 start-0 z-40 hidden shrink-0 border-e border-line bg-surface/95 backdrop-blur',
           'transition-[width] duration-300',
           'flex flex-col items-center gap-2 py-3',
           rail ? 'w-[4.5rem] lg:w-[13rem] lg:items-stretch lg:px-3' : 'w-[4.5rem] lg:w-[4.5rem]',
@@ -183,7 +189,7 @@ export function AppBar({ siteName }: { siteName: string }) {
           aria-expanded={rail}
           className="btn-ghost hidden !min-h-[2.75rem] !w-full !px-0 lg:flex"
         >
-          <Icon name={rail ? 'chevron-left' : 'chevron-right'} size={18} />
+          <Icon name={rail === rtl ? 'chevron-right' : 'chevron-left'} size={18} />
         </button>
       </div>
 
@@ -222,7 +228,7 @@ export function AppBar({ siteName }: { siteName: string }) {
             role="dialog"
             aria-modal="true"
             aria-label={label}
-            className="absolute inset-y-0 left-0 flex w-[min(20rem,86vw)] flex-col overflow-y-auto bg-surface shadow-lift"
+            className="absolute inset-y-0 start-0 flex w-[min(20rem,86vw)] flex-col overflow-y-auto bg-surface shadow-lift"
           >
             {/* header */}
             <div className="flex items-center gap-3 border-b border-line p-4">
