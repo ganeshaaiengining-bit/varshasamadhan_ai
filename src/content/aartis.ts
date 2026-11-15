@@ -617,9 +617,58 @@ function storedText(id: string): AartiText | null {
   return slug ? (AARTIS.find((a) => a.slug === slug) ?? null) : null;
 }
 
+/**
+ * The language the visitor named inside the question itself.
+ *
+ * "भगवान शंकराची मराठी आरती" means the Marathi one, whatever language the site
+ * happens to be set to. The owner hit exactly this: he typed मराठी in the
+ * question, the site's chosen language was not Marathi, and he was handed the
+ * Hindi ॐ जय शिव ओंकारा — the right deity and the wrong aarti, which is the
+ * thing he keeps having to say.
+ *
+ * Only languages this site stores an aarti in are listed. Anything else falls
+ * back to the site's own language rather than guessing.
+ */
+function namedLanguage(q: string): string | null {
+  if (/मराठी|मराठीत|marathi/.test(q)) return 'mr';
+  if (/हिंदी|हिंदीत|hindi/.test(q)) return 'hi';
+  if (/गुजराती|ગુજરાતી|gujarati/.test(q)) return 'gu';
+  if (/तमिळ|தமிழ்|tamil/.test(q)) return 'ta';
+  if (/तेलुगु|తెలుగు|telugu/.test(q)) return 'te';
+  if (/कन्नड|ಕನ್ನಡ|kannada/.test(q)) return 'kn';
+  if (/बंगाली|বাংলা|bengali/.test(q)) return 'bn';
+  if (/पंजाबी|ਪੰਜਾਬੀ|punjabi/.test(q)) return 'pa';
+
+  /*
+   * Marathi words the visitor did not have to think about.
+   *
+   * "शंकर जी ची आरती" says मराठी without saying the word: ची, आहे and सांगा are
+   * Marathi grammar, and a Hindi speaker would not use them. Those questions get
+   * the Marathi aarti even when the site's own language is Hindi or English —
+   * the visitor wrote Marathi, so that is what they want to hear.
+   */
+  if (/(^|[\s,.?!।])(ची|चा|चे|आहे|हवी|हवा|मला|आणि|सांगा|ऐकवा|दाखवा|द्या|कृपया|गणपती|विठ्ठल)([\s,.?!।]|$)/.test(q)) {
+    return 'mr';
+  }
+  /*
+   * The same thing without a space: शंकरा+ची, गणपती+ची. Marathi hangs its
+   * grammar on the end of the word, so "शंकराची आरती" is Marathi and "शंकर जी
+   * की आरती" is Hindi, and only the ending tells them apart.
+   */
+  if (/(ाची|ाचा|ाचे|ीची|ीचे)(?=[\s,.?!।]|$)/.test(q)) return 'mr';
+
+  return null;
+}
+
 /** The deity named in the question, or null. */
 function deityIn(question: string, lang: string): string | null {
   const q = question.toLowerCase();
+
+  /*
+   * A language named in the question wins over the site's setting. "मराठी
+   * आरती" asked on a Hindi page still means the Marathi aarti.
+   */
+  const wanted = namedLanguage(q) ?? lang;
 
   /*
    * Ganpati first, and separately, because the language changes which aarti is
@@ -630,7 +679,7 @@ function deityIn(question: string, lang: string): string | null {
   if (/सुखकर्ता|sukhkarta|दुःखहर्ता|dukhharta/.test(q)) return 'ganesh-mr';
   if (/जय\s*गणेश|jai\s*ganesh/.test(q)) return 'ganesh-hi';
   if (/गणेश|गणपती|गणपति|ganesh|ganpati|ganapati/.test(q)) {
-    return lang === 'mr' ? 'ganesh-mr' : 'ganesh-hi';
+    return wanted === 'mr' ? 'ganesh-mr' : 'ganesh-hi';
   }
 
   /*
@@ -642,7 +691,7 @@ function deityIn(question: string, lang: string): string | null {
   if (/लवथवती|lavthavati|lavthavti/.test(q)) return 'shiv-mr';
   if (/ॐ\s*जय\s*शिव|om\s*jai\s*shiv|शिव\s*ओंकारा/.test(q)) return 'shiv-hi';
   if (/शिव|shiv|शंकर|shankar|महादेव|mahadev|भोलेनाथ|bholenath/.test(q)) {
-    return lang === 'mr' ? 'shiv-mr' : 'shiv-hi';
+    return wanted === 'mr' ? 'shiv-mr' : 'shiv-hi';
   }
   /*
    * "जय अम्बे गौरी" is named in full — that is the Hindi aarti, whatever
