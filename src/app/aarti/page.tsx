@@ -4,6 +4,7 @@ import { SITE_NAME, SITE_URL, clampDescription, pageMetadata } from '@/server/se
 import { JsonLd } from '@/components/seo/json-ld';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { COLLECTION } from '@/content/recordings';
+import { AARTIS } from '@/content/aartis';
 import { Icon } from '@/components/ui/icon';
 
 /**
@@ -70,7 +71,9 @@ export default async function AartiPage() {
       position: index + 1,
       item: {
         '@type': 'MusicRecording',
-        name: `${t(recording.kindKey)} — ${recording.label}`,
+        name: recording.titleDeva
+          ? `${t(recording.kindKey)} — ${recording.titleDeva}`
+          : `${t(recording.kindKey)} — ${recording.label}`,
         description: `${recording.credit}. ${recording.licence}. ${recording.sungIn}.`,
         contentUrl: `${SITE_URL}${recording.src}`,
         encodingFormat: 'audio/mpeg',
@@ -102,16 +105,35 @@ export default async function AartiPage() {
         </div>
 
         <ul className="mt-8 space-y-5">
-          {COLLECTION.map((recording) => (
+          {COLLECTION.map((recording) => {
+            /*
+              The words, where they have been checked against this recording.
+              A visitor who wants to sing along has the text under the player
+              instead of having to ask the AI for it — and the AI no longer
+              guesses at aarti words, so this is the only place they come from.
+            */
+            const words = AARTIS.find((a) => a.slug === recording.slug);
+
+            return (
             <li key={recording.slug} className="card p-5 sm:p-6">
               <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
                 <h2 className="text-lg text-ink">
-                  {t(recording.kindKey)} — {recording.label}
+                  {t(recording.kindKey)} — {recording.titleDeva ?? recording.label}
                 </h2>
                 <span className="text-sm text-ink-subtle">
-                  {recording.sungIn} · {recording.length}
+                  {recording.sungInNative ?? recording.sungIn} · {recording.length}
                 </span>
               </div>
+
+              {/*
+                The name in Latin letters, under the name in its own script.
+                The aarti is known by the Devanagari words; the Latin line is
+                there for the visitor who reads Latin letters and for the search
+                engine, not as a replacement for the real name.
+              */}
+              {recording.titleDeva ? (
+                <p className="mt-1 text-sm text-ink-subtle">{recording.label}</p>
+              ) : null}
 
               {/*
                 A plain <audio controls>: every phone and browser on the site
@@ -124,9 +146,27 @@ export default async function AartiPage() {
                 controls
                 preload="none"
                 src={recording.src}
-                aria-label={`${t(recording.kindKey)} — ${recording.label}`}
+                aria-label={`${t(recording.kindKey)} — ${recording.titleDeva ?? recording.label}`}
                 className="mt-3 w-full"
               />
+
+              {words ? (
+                <details className="mt-4">
+                  <summary className="cursor-pointer text-sm text-saffron-deep">
+                    {t('aarti.fullText')}
+                  </summary>
+                  <div className="mt-3 space-y-1 text-[0.95rem] leading-relaxed text-ink-soft">
+                    {words.lines.map((line, index) =>
+                      line ? (
+                        <p key={index}>{line}</p>
+                      ) : (
+                        <div key={index} className="h-2" aria-hidden="true" />
+                      ),
+                    )}
+                  </div>
+                  <p className="mt-3 text-xs text-ink-subtle">{t('aarti.textChecked')}</p>
+                </details>
+              ) : null}
 
               <p className="mt-3 text-sm text-ink-subtle">
                 {t('aarti.credit')} {recording.credit} · {t('aarti.licence')}{' '}
@@ -149,7 +189,8 @@ export default async function AartiPage() {
                 </a>
               </p>
             </li>
-          ))}
+            );
+          })}
         </ul>
       </div>
     </SiteChrome>

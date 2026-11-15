@@ -815,6 +815,10 @@ const HINDI: Record<string, string> = {
   'aarti.credit': 'रिकॉर्डिंग:',
   'aarti.licence': 'लाइसेंस:',
   'aarti.listenLink': 'असली आवाज़ में सुनिए',
+  'aarti.textChecked': 'यह पारंपरिक पाठ है, जैसा असली रिकॉर्डिंग में गाया गया है।',
+  'aarti.fullText': 'पूरा पाठ',
+  'aarti.notChecked': 'इस आरती का सत्यापित पाठ अभी साइट पर नहीं है। बिना जाँचा पाठ देना ठीक नहीं, इसलिए वह नहीं दिया जा रहा।',
+  'aarti.verifiedList': 'साइट पर इन आरतियों का सत्यापित पाठ है:',
 
 };
 
@@ -1482,6 +1486,10 @@ const ENGLISH: Record<string, string> = {
   'aarti.credit': 'Recording:',
   'aarti.licence': 'Licence:',
   'aarti.listenLink': 'Listen in a real voice',
+  'aarti.textChecked': 'This is the traditional text, as it is sung in the real recording.',
+  'aarti.fullText': 'Full text',
+  'aarti.notChecked': 'The verified text of this aarti is not on the site yet. An unchecked text is not given, because a wrong word in a prayer is worse than no words.',
+  'aarti.verifiedList': 'The site has verified texts for these aartis:',
 
 };
 
@@ -2311,6 +2319,10 @@ const BENGALI: Record<string, string> = {
   'aarti.credit': 'রেকর্ডিং:',
   'aarti.licence': 'লাইসেন্স:',
   'aarti.listenLink': 'সত্যিকারের কণ্ঠে শুনুন',
+  'aarti.textChecked': 'এটি প্রচলিত পাঠ, যেমনটি আসল রেকর্ডিংয়ে গাওয়া হয়েছে।',
+  'aarti.fullText': 'পুরো পাঠ',
+  'aarti.notChecked': 'এই আরতির যাচাই করা পাঠ এখনও সাইটে নেই। না-যাচাই করা পাঠ দেওয়া হয় না, কারণ প্রার্থনায় ভুল শব্দ না-শব্দের চেয়েও খারাপ।',
+  'aarti.verifiedList': 'সাইটে এই আরতিগুলির যাচাই করা পাঠ আছে:',
 
 };
 
@@ -3128,6 +3140,10 @@ const TAMIL: Record<string, string> = {
   'aarti.credit': 'ஒலிப்பதிவு:',
   'aarti.licence': 'உரிமம்:',
   'aarti.listenLink': 'உண்மையான குரலில் கேளுங்கள்',
+  'aarti.textChecked': 'இது பாரம்பரியப் பாடம், உண்மையான பதிவில் பாடப்பட்டபடி.',
+  'aarti.fullText': 'முழுப் பாடம்',
+  'aarti.notChecked': 'இந்த ஆரத்தியின் சரிபார்க்கப்பட்ட பாடம் இன்னும் தளத்தில் இல்லை. சரிபார்க்காத பாடம் தரப்படுவதில்லை, ஏனெனில் பிரார்த்தனையில் தவறான சொல் சொற்கள் இல்லாததை விட மோசம்.',
+  'aarti.verifiedList': 'தளத்தில் இந்த ஆரத்திகளுக்குச் சரிபார்க்கப்பட்ட பாடங்கள் உள்ளன:',
 
 };
 
@@ -3945,6 +3961,10 @@ const TELUGU: Record<string, string> = {
   'aarti.credit': 'రికార్డింగ్:',
   'aarti.licence': 'లైసెన్స్:',
   'aarti.listenLink': 'నిజమైన గొంతుకలో వినండి',
+  'aarti.textChecked': 'ఇది సాంప్రదాయ పాఠం, నిజమైన రికార్డింగ్‌లో పాడినట్లుగా.',
+  'aarti.fullText': 'పూర్తి పాఠం',
+  'aarti.notChecked': 'ఈ హారతి ధృవీకరించిన పాఠం ఇంకా సైట్‌లో లేదు. ధృవీకరించని పాఠం ఇవ్వబడదు, ఎందుకంటే ప్రార్థనలో తప్పు మాట మాటలు లేకపోవడం కంటే చెడ్డది.',
+  'aarti.verifiedList': 'సైట్‌లో ఈ హారతులకు ధృవీకరించిన పాఠాలు ఉన్నాయి:',
 
 };
 
@@ -4762,6 +4782,10 @@ const MARATHI: Record<string, string> = {
   'aarti.credit': 'रेकॉर्डिंग:',
   'aarti.licence': 'परवाना:',
   'aarti.listenLink': 'खऱ्या आवाजात ऐका',
+  'aarti.textChecked': 'हा पारंपरिक पाठ आहे, जसा खऱ्या रेकॉर्डिंगमध्ये गायला गेला आहे.',
+  'aarti.fullText': 'पूर्ण पाठ',
+  'aarti.notChecked': 'या आरतीचा तपासलेला पाठ अजून साइटवर नाही. न तपासलेला पाठ दिला जात नाही, कारण प्रार्थनेत चुकीचा शब्द नसण्यापेक्षा वाईट आहे.',
+  'aarti.verifiedList': 'साइटवर या आरत्यांचे तपासलेले पाठ आहेत:',
 
 };
 
@@ -5579,6 +5603,10 @@ const GUJARATI: Record<string, string> = {
   'aarti.credit': 'રેકોર્ડિંગ:',
   'aarti.licence': 'લાઇસન્સ:',
   'aarti.listenLink': 'સાચા અવાજમાં સાંભળો',
+  'aarti.textChecked': 'આ પરંપરાગત પાઠ છે, જેમ સાચી રેકોર્ડિંગમાં ગવાયો છે.',
+  'aarti.fullText': 'પૂરો પાઠ',
+  'aarti.notChecked': 'આ આરતીનો ચકાસાયેલો પાઠ હજી સાઇટ પર નથી. ચકાસ્યા વિનાનો પાઠ આપવામાં આવતો નથી, કારણ કે પ્રાર્થનામાં ખોટો શબ્દ શબ્દો ન હોવા કરતાં ખરાબ છે.',
+  'aarti.verifiedList': 'સાઇટ પર આ આરતીઓના ચકાસાયેલા પાઠ છે:',
 
 };
 
@@ -6409,6 +6437,10 @@ const KANNADA: Record<string, string> = {
   'aarti.credit': 'ಧ್ವನಿಮುದ್ರಿಕೆ:',
   'aarti.licence': 'ಪರವಾನಗಿ:',
   'aarti.listenLink': 'ನಿಜವಾದ ಧ್ವನಿಯಲ್ಲಿ ಕೇಳಿ',
+  'aarti.textChecked': 'ಇದು ಸಾಂಪ್ರದಾಯಿಕ ಪಾಠ, ನಿಜವಾದ ಧ್ವನಿಮುದ್ರಣದಲ್ಲಿ ಹಾಡಿದಂತೆ.',
+  'aarti.fullText': 'ಪೂರ್ಣ ಪಾಠ',
+  'aarti.notChecked': 'ಈ ಆರತಿಯ ಪರಿಶೀಲಿಸಿದ ಪಾಠ ಇನ್ನೂ ಸೈಟ್‌ನಲ್ಲಿಲ್ಲ. ಪರಿಶೀಲಿಸದ ಪಾಠ ನೀಡಲಾಗುವುದಿಲ್ಲ, ಏಕೆಂದರೆ ಪ್ರಾರ್ಥನೆಯಲ್ಲಿ ತಪ್ಪು ಪದ ಪದಗಳಿಲ್ಲದಿರುವುದಕ್ಕಿಂತ ಕೆಟ್ಟದು.',
+  'aarti.verifiedList': 'ಸೈಟ್‌ನಲ್ಲಿ ಈ ಆರತಿಗಳ ಪರಿಶೀಲಿಸಿದ ಪಾಠಗಳಿವೆ:',
 
 };
 
@@ -7243,6 +7275,10 @@ const MALAYALAM: Record<string, string> = {
   'aarti.credit': 'റെക്കോർഡിംഗ്:',
   'aarti.licence': 'ലൈസൻസ്:',
   'aarti.listenLink': 'യഥാർത്ഥ ശബ്ദത്തിൽ കേൾക്കൂ',
+  'aarti.textChecked': 'ഇത് പരമ്പരാഗത പാഠമാണ്, യഥാർത്ഥ റെക്കോർഡിംഗിൽ പാടിയതുപോലെ.',
+  'aarti.fullText': 'പൂർണ്ണ പാഠം',
+  'aarti.notChecked': 'ഈ ആരതിയുടെ പരിശോധിച്ച പാഠം ഇപ്പോൾ സൈറ്റിൽ ഇല്ല. പരിശോധിക്കാത്ത പാഠം നൽകുന്നില്ല, കാരണം പ്രാർത്ഥനയിൽ തെറ്റായ വാക്ക് വാക്കുകൾ ഇല്ലാതിരിക്കുന്നതിനേക്കാൾ മോശമാണ്.',
+  'aarti.verifiedList': 'സൈറ്റിൽ ഈ ആരതികളുടെ പരിശോധിച്ച പാഠങ്ങളുണ്ട്:',
 
 };
 
@@ -8080,6 +8116,10 @@ const PUNJABI: Record<string, string> = {
   'aarti.credit': 'ਰਿਕਾਰਡਿੰਗ:',
   'aarti.licence': 'ਲਾਇਸੈਂਸ:',
   'aarti.listenLink': 'ਅਸਲੀ ਆਵਾਜ਼ ਵਿੱਚ ਸੁਣੋ',
+  'aarti.textChecked': 'ਇਹ ਰਵਾਇਤੀ ਪਾਠ ਹੈ, ਜਿਵੇਂ ਅਸਲ ਰਿਕਾਰਡਿੰਗ ਵਿੱਚ ਗਾਇਆ ਗਿਆ ਹੈ।',
+  'aarti.fullText': 'ਪੂਰਾ ਪਾਠ',
+  'aarti.notChecked': 'ਇਸ ਆਰਤੀ ਦਾ ਜਾਂਚਿਆ ਪਾਠ ਹਾਲੇ ਸਾਈਟ ’ਤੇ ਨਹੀਂ। ਬਿਨਾਂ ਜਾਂਚਿਆ ਪਾਠ ਨਹੀਂ ਦਿੱਤਾ ਜਾਂਦਾ, ਕਿਉਂਕਿ ਅਰਦਾਸ ਵਿੱਚ ਗ਼ਲਤ ਸ਼ਬਦ ਸ਼ਬਦ ਨਾ ਹੋਣ ਨਾਲੋਂ ਵੀ ਮਾੜਾ ਹੈ।',
+  'aarti.verifiedList': 'ਸਾਈਟ ’ਤੇ ਇਹਨਾਂ ਆਰਤੀਆਂ ਦੇ ਜਾਂਚੇ ਪਾਠ ਹਨ:',
 
 };
 
@@ -8906,6 +8946,10 @@ const URDU: Record<string, string> = {
   'aarti.credit': 'ریکارڈنگ:',
   'aarti.licence': 'لائسنس:',
   'aarti.listenLink': 'اصل آواز میں سنیں',
+  'aarti.textChecked': 'یہ روایتی متن ہے، جیسا اصل ریکارڈنگ میں گایا گیا ہے۔',
+  'aarti.fullText': 'پورا متن',
+  'aarti.notChecked': 'اس آرتی کا جانچا ہوا متن ابھی سائٹ پر نہیں۔ بغیر جانچے متن نہیں دیا جاتا، کیونکہ دعا میں غلط لفظ الفاظ نہ ہونے سے بھی بدتر ہے۔',
+  'aarti.verifiedList': 'سائٹ پر ان آرتیوں کے جانچے ہوئے متن ہیں:',
 
 };
 
@@ -9738,6 +9782,10 @@ const ARABIC: Record<string, string> = {
   'aarti.credit': 'التسجيل:',
   'aarti.licence': 'الترخيص:',
   'aarti.listenLink': 'استمع بصوت حقيقي',
+  'aarti.textChecked': 'هذا هو النص التقليدي كما يُنشد في التسجيل الأصلي.',
+  'aarti.fullText': 'النص الكامل',
+  'aarti.notChecked': 'نص هذه الآرتي المُحقَّق ليس على الموقع بعد. لا يُعطى نص غير محقَّق، لأن كلمة خاطئة في دعاء أسوأ من لا كلمات.',
+  'aarti.verifiedList': 'الموقع فيه نصوص محقَّقة لهذه الآرتيات:',
 
 };
 
@@ -10564,6 +10612,10 @@ const SPANISH: Record<string, string> = {
   'aarti.credit': 'Grabación:',
   'aarti.licence': 'Licencia:',
   'aarti.listenLink': 'Escuche con voz real',
+  'aarti.textChecked': 'Este es el texto tradicional, tal como se canta en la grabación real.',
+  'aarti.fullText': 'Texto completo',
+  'aarti.notChecked': 'El texto verificado de este arati aún no está en el sitio. No se da un texto sin comprobar, porque una palabra equivocada en una oración es peor que ninguna.',
+  'aarti.verifiedList': 'El sitio tiene textos verificados de estos aratis:',
 
 };
 

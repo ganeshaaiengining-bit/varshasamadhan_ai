@@ -73,6 +73,20 @@ export interface Recording {
    * kind (aarti, kirtan, bhajan) *is* translated, on the line above.
    */
   label: string;
+  /**
+   * The aarti's own name, in Devanagari, exactly as it is written in the
+   * tradition.
+   *
+   * The Latin `label` above is a name for a reader of Latin letters. But this
+   * page is read by people who say "सुखकर्ता दुःखहर्ता", not "Sukhkarta
+   * Dukhharta", and showing them a Latin transliteration of their own aarti on
+   * a Marathi page is how a page stops looking like it belongs to them. The
+   * original name is shown first; the Latin label stays underneath as a second
+   * line, and is still what search engines index.
+   */
+  titleDeva?: string;
+  /** The language it is sung in, in that language's own script. */
+  sungInNative?: string;
   /** The language it is sung in, in Latin letters. */
   sungIn: string;
   /** Minutes:seconds, measured from the file itself. */
@@ -103,6 +117,8 @@ export const COLLECTION: Recording[] = [
     slug: 'aarti-sukhkarta-dukhharta',
     kindKey: 'aarti.kindAarti',
     label: 'Sukhkarta Dukhharta — Ganpati aarti',
+    titleDeva: 'सुखकर्ता दुःखहर्ता',
+    sungInNative: 'मराठी',
     sungIn: 'Marathi',
     length: '5:58',
     src: '/audio/aarti-ganpati-marathi.mp3',
@@ -116,6 +132,8 @@ export const COLLECTION: Recording[] = [
     slug: 'aarti-jai-ganesh-deva',
     kindKey: 'aarti.kindAarti',
     label: 'Jai Ganesh Deva — Ganpati aarti',
+    titleDeva: 'जय गणेश जय गणेश जय गणेश देवा',
+    sungInNative: 'हिंदी',
     sungIn: 'Hindi',
     length: '4:38',
     src: '/audio/aarti-jai-ganesh-deva.mp3',
@@ -129,6 +147,8 @@ export const COLLECTION: Recording[] = [
     slug: 'aarti-om-jai-jagdish-hare',
     kindKey: 'aarti.kindAarti',
     label: 'Om Jai Jagdish Hare — Vishnu aarti',
+    titleDeva: 'ॐ जय जगदीश हरे',
+    sungInNative: 'हिंदी',
     sungIn: 'Hindi',
     length: '4:38',
     src: '/audio/aarti-om-jai-jagdish.mp3',
@@ -143,6 +163,8 @@ export const COLLECTION: Recording[] = [
     slug: 'aarti-jai-ambe-gauri',
     kindKey: 'aarti.kindAarti',
     label: 'Jai Ambe Gauri — Durga aarti',
+    titleDeva: 'जय अम्बे गौरी',
+    sungInNative: 'हिंदी',
     sungIn: 'Hindi',
     length: '6:30',
     src: '/audio/aarti-jai-ambe-gauri.mp3',
@@ -156,6 +178,8 @@ export const COLLECTION: Recording[] = [
     slug: 'aarti-jai-saraswati-mata',
     kindKey: 'aarti.kindAarti',
     label: 'Jai Saraswati Mata — Saraswati aarti',
+    titleDeva: 'जय सरस्वती माता',
+    sungInNative: 'हिंदी',
     sungIn: 'Hindi',
     length: '6:27',
     src: '/audio/aarti-saraswati.mp3',
@@ -169,6 +193,8 @@ export const COLLECTION: Recording[] = [
     slug: 'aarti-hanuman-lala-ki',
     kindKey: 'aarti.kindAarti',
     label: 'Aarti Keejei Hanuman Lala Ki — Hanuman aarti',
+    titleDeva: 'आरती कीजै हनुमान लला की',
+    sungInNative: 'हिंदी',
     sungIn: 'Hindi',
     length: '4:51',
     src: '/audio/aarti-hanuman.mp3',

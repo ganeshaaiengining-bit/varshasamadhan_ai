@@ -6,6 +6,7 @@ import { askQuestion, isConfigured } from '@/server/ai/gemini';
 import { getLanguage } from '@/server/i18n';
 import { currentUser } from '@/server/auth/session';
 import { asksForRecitedText } from '@/content/recitation';
+import { aartiAnswer } from '@/content/aartis';
 
 /**
  * POST /api/ask
@@ -113,6 +114,21 @@ export async function POST(request: Request) {
   const language = await getLanguage();
   const languageCode = language.code;
 
+  /*
+   * ── An aarti's words are stored, not generated ────────────────────────────
+   *
+   * The model used to be asked to recite. It cannot: it invented lines that are
+   * in no aarti, and once wrote the site's own name into the verse. The owner's
+   * words were "कौनसी भाषा है ये भी नहीं पता", and he was right.
+   *
+   * So a question that names a deity and asks for its aarti is answered from
+   * `content/aartis.ts` — words checked against the recording on `/aarti` — and
+   * never from the model. A deity whose text is not verified there gets an
+   * honest "not yet, and here is what is", not an invention. Everything else,
+   * including "आरती कैसे करें", still goes to the model.
+   */
+  const stored = aartiAnswer(question, languageCode);
+
   // A greeting is not a question. Answering one wastes a metered call and tells
   // the visitor something is broken.
   //
@@ -130,7 +146,9 @@ export async function POST(request: Request) {
     });
   }
 
-  const result = await askQuestion(languageCode, question, category);
+  const result = stored
+    ? { ok: true, answer: stored.answer, fallback: false }
+    : await askQuestion(languageCode, question, category);
 
   /*
    * No database lookup, deliberately.
@@ -229,7 +247,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     ...result,
-    ...(recited ? { recited: true } : {}),
+    ...(recited || stored ? { recited: true } : {}),
     ...(topics.length > 0 ? { topics } : {}),
   });
 }
