@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { prisma } from '@/server/db';
 import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { getT } from '@/server/i18n';
+import { clampDescription, pageMetadata } from '@/server/seo';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { ReviewsSection } from '@/components/reviews/reviews-section';
 import { getRatingSummary } from '@/server/reviews/actions';
@@ -9,11 +10,13 @@ import { getRatingSummary } from '@/server/reviews/actions';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getT();
-  return {
+  const { t, lang } = await getT();
+  return pageMetadata({
+    path: '/reviews',
+    lang,
     title: t('reviews.pageTitle'),
-    description: t('reviews.pageIntro'),
-  };
+    description: clampDescription(t('reviews.pageIntro')),
+  });
 }
 
 export default async function ReviewsPage() {

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getT } from '@/server/i18n';
+import { clampDescription, pageMetadata } from '@/server/seo';
 import { currentUser } from '@/server/auth/session';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { AccountForm } from '@/components/account/account-form';
@@ -33,8 +34,14 @@ import { Icon } from '@/components/ui/icon';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getT();
-  return { title: t('account.title') };
+  const { t, lang } = await getT();
+  return pageMetadata({
+    path: '/login',
+    lang,
+    title: t('account.title'),
+    description: clampDescription(t('account.intro')),
+    noindex: true,
+  });
 }
 
 export default async function LoginPage() {

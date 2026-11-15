@@ -22,6 +22,13 @@ import { NextResponse, type NextRequest } from 'next/server';
  * so every existing `cookies()` read in the app sees a normal request and none
  * of the pages, components or server modules has to know the parameter exists.
  *
+ * It does the same for `/<code>/…`, and that form is the one search engines
+ * are given: `/ta/aarti` is the Tamil article page, rendered from the same
+ * route as `/aarti`, with the prefix removed before the router sees it. See
+ * `server/seo.ts` for why the prefix is used instead of the query — Next's
+ * metadata resolver drops the query on a root URL, which would have left the
+ * home page's twelve translations uncrawlable.
+ *
  * The response sets the cookie too. That covers the browser which allows
  * response cookies but not writes from script, which is a smaller group but a
  * real one.
@@ -30,30 +37,66 @@ import { NextResponse, type NextRequest } from 'next/server';
  * It does not translate on its own, and it does not decide which languages are
  * real. A parameter is a request, not an instruction: this file only moves it,
  * `content/i18n.ts` says what it means, and a code that is not one of the
- * thirteen never reaches `<html lang>` or the voice's speech tag.
+ * thirteen never reaches `<html lang>` or the voice's speech tag. The prefix
+ * list below is a copy of the codes for that reason — a shape check alone would
+ * turn `/ab` into the home page instead of a 404.
  */
 
 const COOKIE = 'vs-lang';
 const PARAM = 'vs-lang';
 
+/**
+ * The thirteen codes a prefix may name.
+ *
+ * Kept as a literal rather than imported from `content/i18n.ts`: that module
+ * carries every translation table, and this file runs on every request in a
+ * separate runtime. A code missing here is a language with no prefix URL; it is
+ * listed in the same order as the picker so the two are easy to compare.
+ */
+const CODES = new Set([
+  'hi',
+  'en',
+  'bn',
+  'ta',
+  'te',
+  'mr',
+  'gu',
+  'kn',
+  'ml',
+  'pa',
+  'ur',
+  'ar',
+  'es',
+]);
+
+const PREFIX = /^\/([a-z]{2})(?=\/|$)/;
+
 export function middleware(request: NextRequest) {
-  const wanted = request.nextUrl.searchParams.get(PARAM);
+  const url = request.nextUrl;
+
+  const prefix = url.pathname.match(PREFIX)?.[1];
+  const fromPath = prefix && CODES.has(prefix) ? prefix : null;
+
+  const param = url.searchParams.get(PARAM);
+  const fromParam = param && /^[a-z]{2}$/.test(param) ? param : null;
 
   /*
-   * Shape here, meaning further down.
-   *
-   * The list of real languages lives in `content/i18n.ts`, and importing it here
-   * would put every one of the thirteen translation tables into a piece of code
-   * that runs on every request in a separate runtime. A two-letter shape check
-   * is enough for what this file is actually deciding — whether to move a
-   * parameter into a cookie — because `getLanguage()` still runs
-   * `isKnownLanguage()` before any of it is rendered. An unknown code here can
-   * therefore only be ignored later, never shown.
+   * An explicit parameter wins over the prefix: it is what the picker writes,
+   * and a visitor who has just chosen a language should get that language even
+   * if they are standing on an old prefixed link.
    */
-  if (!wanted || !/^[a-z]{2}$/.test(wanted)) {
+  const wanted = fromParam ?? fromPath;
+
+  let rewritten: URL | null = null;
+  if (fromPath) {
+    rewritten = new URL(url);
+    rewritten.pathname = url.pathname.replace(PREFIX, '') || '/';
+  }
+
+  if (!wanted) {
     return NextResponse.next();
   }
-  if (request.cookies.get(COOKIE)?.value === wanted) {
+  if (!rewritten && request.cookies.get(COOKIE)?.value === wanted) {
     return NextResponse.next(); // already there, nothing to add
   }
 
@@ -72,7 +115,9 @@ export function middleware(request: NextRequest) {
   others.push(`${COOKIE}=${wanted}`);
   headers.set('cookie', others.join('; '));
 
-  const response = NextResponse.next({ request: { headers } });
+  const response = rewritten
+    ? NextResponse.rewrite(rewritten, { request: { headers } })
+    : NextResponse.next({ request: { headers } });
   response.cookies.set(COOKIE, wanted, {
     path: '/',
     maxAge: 60 * 60 * 24 * 365,

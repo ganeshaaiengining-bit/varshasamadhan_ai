@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { prisma } from '@/server/db';
 import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { getT } from '@/server/i18n';
+import { clampDescription, pageMetadata } from '@/server/seo';
 import { currentUser } from '@/server/auth/session';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { AskBoxGate } from '@/components/ask/ask-box-gate';
@@ -11,8 +12,13 @@ import { HealthBox } from '@/components/health/health-box';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getT();
-  return { title: t('help.title') };
+  const { t, lang } = await getT();
+  return pageMetadata({
+    path: '/sahayata',
+    lang,
+    title: t('help.title'),
+    description: clampDescription(t('help.intro')),
+  });
 }
 
 /**

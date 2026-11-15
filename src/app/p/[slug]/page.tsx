@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import { prisma } from '@/server/db';
 import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { getT } from '@/server/i18n';
+import { SITE_URL, absolutePath, clampDescription, pageMetadata } from '@/server/seo';
+import { JsonLd } from '@/components/seo/json-ld';
 import { categoryLabel, articleLabel } from '@/content/labels';
 import { Icon, type IconName } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
@@ -33,8 +35,10 @@ export async function generateMetadata({
     undefined,
   );
 
-  if (category === undefined) return { title: t('cat.notFound') };
-  if (!category) return { title: t('cat.notFound') };
+  if (category === undefined) {
+    return { title: t('cat.notFound'), robots: { index: false, follow: false } };
+  }
+  if (!category) return { title: t('cat.notFound'), robots: { index: false, follow: false } };
 
   /*
    * The tab title follows the visitor's language, the same as the heading on
@@ -46,9 +50,14 @@ export async function generateMetadata({
   const title = categoryLabel(lang, slug, 'title', category.title);
   const description = category.subtitle
     ? categoryLabel(lang, slug, 'subtitle', category.subtitle)
-    : title;
+    : `${title} — ${t('home.metaTitle')}`;
 
-  return { title, description };
+  return pageMetadata({
+    path: `/p/${slug}`,
+    lang,
+    title,
+    description: clampDescription(description),
+  });
 }
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -127,8 +136,49 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     [],
   );
 
+  /*
+   * The machine-readable version of this page: a collection, the articles in
+   * it, and the trail that led here. Google uses the breadcrumb to show the
+   * category path under the result instead of the raw URL, which is the
+   * difference between "varsha-samadhan.vercel.app › p › ..." and a name a
+   * person recognises.
+   */
+  const pageUrl = absolutePath(`/p/${slug}`, lang);
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'CollectionPage',
+        '@id': `${pageUrl}#page`,
+        url: pageUrl,
+        name: heading,
+        ...(subheading ? { description: subheading } : {}),
+        inLanguage: lang,
+        isPartOf: { '@id': `${SITE_URL}/#website` },
+        mainEntity: {
+          '@type': 'ItemList',
+          numberOfItems: articles.length,
+          itemListElement: articles.map((item, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            name: articleLabel(lang, item.slug, 'title', item.title),
+            url: absolutePath(`/p/${slug}/${item.slug}`, lang),
+          })),
+        },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: t('nav.home'), item: absolutePath('/', lang) },
+          { '@type': 'ListItem', position: 2, name: heading, item: pageUrl },
+        ],
+      },
+    ],
+  };
+
   return (
     <SiteChrome siteName={siteName}>
+      <JsonLd data={structuredData} />
       <div className="wrap-narrow py-8 sm:py-12">
         <Breadcrumbs
           ariaLabel={t('nav.path')}

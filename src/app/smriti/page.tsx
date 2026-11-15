@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Sunrise } from '@/components/visual/sunrise';
 import { MemoryFrame } from '@/components/visual/memory-frame';
 import { getT } from '@/server/i18n';
+import { clampDescription, pageMetadata } from '@/server/seo';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { VARSHA } from '@/content/tribute';
 import { readImageMeta, photoUrl } from '@/server/images';
@@ -11,10 +12,13 @@ import { safeRead } from '@/server/db-guard';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: `${VARSHA.honorific} ${VARSHA.name} जी — स्मृति`,
-    description: VARSHA.shortLine,
-  };
+  const { t, lang } = await getT();
+  return pageMetadata({
+    path: '/smriti',
+    lang,
+    title: `${VARSHA.honorific} ${VARSHA.name} — ${t('nav.tribute')}`,
+    description: clampDescription(t('home.memorialLine')),
+  });
 }
 
 /**

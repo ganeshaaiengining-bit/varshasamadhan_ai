@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getT } from '@/server/i18n';
+import { clampDescription, pageMetadata } from '@/server/seo';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { AskBoxGate } from '@/components/ask/ask-box-gate';
 import { Icon } from '@/components/ui/icon';
@@ -37,8 +38,13 @@ import { Icon } from '@/components/ui/icon';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getT();
-  return { title: t('remedy.title') };
+  const { t, lang } = await getT();
+  return pageMetadata({
+    path: '/gharguti',
+    lang,
+    title: t('remedy.title'),
+    description: clampDescription(t('remedy.intro')),
+  });
 }
 
 /** The owner's ten troubles, in the order he named them. */

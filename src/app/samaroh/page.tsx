@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { prisma } from '@/server/db';
 import { safeRead } from '@/server/db-guard';
 import { getT } from '@/server/i18n';
+import { clampDescription, pageMetadata } from '@/server/seo';
 import { Icon } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
 
@@ -16,8 +17,13 @@ import { SiteChrome } from '@/components/layout/site-chrome';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getT();
-  return { title: t('ref.title') };
+  const { t, lang } = await getT();
+  return pageMetadata({
+    path: '/samaroh',
+    lang,
+    title: t('ref.title'),
+    description: clampDescription(t('ref.intro')),
+  });
 }
 
 export default async function SamarohPage() {

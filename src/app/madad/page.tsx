@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getT } from '@/server/i18n';
+import { clampDescription, pageMetadata } from '@/server/seo';
+import { JsonLd } from '@/components/seo/json-ld';
 import { Icon } from '@/components/ui/icon';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { ContactForm, SupportFaq } from '@/components/contact/contact-section';
@@ -8,8 +10,13 @@ import { ContactForm, SupportFaq } from '@/components/contact/contact-section';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getT();
-  return { title: t('support.howTitle') };
+  const { t, lang } = await getT();
+  return pageMetadata({
+    path: '/madad',
+    lang,
+    title: t('support.howTitle'),
+    description: clampDescription(t('support.intro')),
+  });
 }
 
 /**
@@ -33,7 +40,27 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function MadadPage() {
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'VARSHA SAMADHAN AI';
-  const { t } = await getT();
+  const { t, lang } = await getT();
+
+  /*
+   * The five questions and answers the page actually shows, as a `FAQPage`.
+   *
+   * This is the one page where the visible content is already question-and-
+   * answer, so the markup is not an embellishment — it is a description of the
+   * page. Google may show one of these under the result, which answers the
+   * visitor before they have clicked anything.
+   */
+  const faq = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    inLanguage: lang,
+    mainEntity: [1, 2, 3, 4, 5].map((number) => ({
+      '@type': 'Question',
+      name: t(`support.faq${number}Q`),
+      acceptedAnswer: { '@type': 'Answer', text: t(`support.faq${number}A`) },
+    })),
+  };
+
 
   const ways = [
     { icon: 'book' as const, title: t('support.way1Title'), body: t('support.way1Body') },
@@ -44,6 +71,7 @@ export default async function MadadPage() {
 
   return (
     <SiteChrome siteName={siteName}>
+      <JsonLd data={faq} />
       <div className="wrap-narrow py-10 sm:py-14">
         <div className="text-center">
           <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-rose-soft text-rose">

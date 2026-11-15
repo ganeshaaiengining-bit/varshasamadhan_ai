@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { getT } from '@/server/i18n';
+import { SITE_NAME, SITE_URL, clampDescription, pageMetadata } from '@/server/seo';
+import { JsonLd } from '@/components/seo/json-ld';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { COLLECTION } from '@/content/recordings';
 import { Icon } from '@/components/ui/icon';
@@ -31,16 +33,58 @@ import { Icon } from '@/components/ui/icon';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getT();
-  return { title: t('aarti.title') };
+  const { t, lang } = await getT();
+  return pageMetadata({
+    path: '/aarti',
+    lang,
+    title: t('aarti.title'),
+    description: clampDescription(t('aarti.intro')),
+  });
+}
+
+/** `1:03` → `PT1M3S`, the duration format schema.org expects. */
+function isoDuration(length: string): string {
+  const [minutes, seconds] = length.split(':').map((part) => Number(part) || 0);
+  return `PT${minutes}M${seconds}S`;
 }
 
 export default async function AartiPage() {
-  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || 'VARSHA SAMADHAN AI';
-  const { t } = await getT();
+  const { t, lang } = await getT();
+
+  /*
+   * Each recording as a `MusicRecording`.
+   *
+   * This is the one page where the content is genuinely audio, and marking it
+   * up as audio is what lets a search engine offer it as something to listen to
+   * rather than as a page of text that happens to mention a file. The licence
+   * and the source URL are part of the node because they are part of the truth
+   * about the recording.
+   */
+  const recordings = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: t('aarti.title'),
+    itemListElement: COLLECTION.map((recording, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'MusicRecording',
+        name: `${t(recording.kindKey)} — ${recording.label}`,
+        description: `${recording.credit}. ${recording.licence}. ${recording.sungIn}.`,
+        contentUrl: `${SITE_URL}${recording.src}`,
+        encodingFormat: 'audio/mpeg',
+        duration: isoDuration(recording.length),
+        inLanguage: recording.sungIn,
+        license: recording.licenceUrl,
+        isBasedOn: recording.sourceUrl,
+        publisher: { '@id': `${SITE_URL}/#organization` },
+      },
+    })),
+  };
 
   return (
-    <SiteChrome siteName={siteName}>
+    <SiteChrome siteName={SITE_NAME}>
+      <JsonLd data={recordings} />
       <div className="wrap-narrow py-10 sm:py-14">
         <div className="text-center">
           <h1>{t('aarti.title')}</h1>

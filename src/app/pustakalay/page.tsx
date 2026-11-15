@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getT } from '@/server/i18n';
+import { clampDescription, pageMetadata } from '@/server/seo';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { Icon } from '@/components/ui/icon';
 import { ENTRIES, GROUPS, isOpen } from '@/content/free-library';
@@ -8,8 +9,13 @@ import { ENTRIES, GROUPS, isOpen } from '@/content/free-library';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getT();
-  return { title: t('lib.title') };
+  const { t, lang } = await getT();
+  return pageMetadata({
+    path: '/pustakalay',
+    lang,
+    title: t('lib.title'),
+    description: clampDescription(t('lib.intro')),
+  });
 }
 
 /**

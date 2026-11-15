@@ -5,6 +5,16 @@ import { getT } from '@/server/i18n';
 import { LanguageProvider } from '@/components/language/language';
 import { AppBar } from '@/components/layout/app-bar';
 import { WelcomeDhun } from '@/components/audio/welcome-dhun';
+import { JsonLd } from '@/components/seo/json-ld';
+import {
+  SITE_NAME,
+  SITE_URL,
+  absolutePath,
+  clampDescription,
+  languageAlternates,
+  organizationNode,
+  websiteNode,
+} from '@/server/seo';
 
 
 /**
@@ -46,17 +56,37 @@ function siteName(): string {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const name = await siteName();
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001';
-  const description =
-    'श्रीमती VARSHA जी की स्मृति में — निःशुल्क समाधान सेवा। बोलकर या लिखकर अपनी समस्या पूछें।';
+  const { t, lang } = await getT();
+
+  /*
+   * The description is built from strings the site already carries in all
+   * thirteen languages, not written here in Hindi. Before this, a Tamil visitor
+   * shared a link and the preview card under it was in Hindi — the same fault
+   * the page titles had, in the one place a visitor cannot fix by changing the
+   * language afterwards.
+   */
+  const description = clampDescription(`${t('home.metaTitle')} — ${t('home.step3Body')}`);
+  const title = `${SITE_NAME} — ${t('home.metaTitle')}`;
+  const canonical = absolutePath('/', lang);
 
   return {
+    metadataBase: new URL(SITE_URL),
     title: {
-      default: name,
-      template: `%s · ${name}`,
+      default: SITE_NAME,
+      template: `%s · ${SITE_NAME}`,
     },
     description,
+
+    /*
+     * The site has thirteen languages on one set of paths. The canonical and
+     * the hreflang block are what tell a search engine that `/ta/aarti` is the
+     * Tamil version of the same page rather than a separate document, and that
+     * Hindi is the one at the clean URL.
+     */
+    alternates: {
+      canonical,
+      languages: languageAlternates('/'),
+    },
 
     /**
      * Without these, a link shared on WhatsApp — the single most likely way this
@@ -65,19 +95,44 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: 'website',
       locale: 'hi_IN',
-      siteName: name,
-      title: name,
+      siteName: SITE_NAME,
+      title,
       description,
-      url: base,
+      url: canonical,
     },
     twitter: {
       card: 'summary_large_image',
-      title: name,
+      title,
       description,
     },
 
+    /*
+     * Phone numbers on this site are helplines and government numbers. Safari's
+     * automatic number detection turns them into call links, which on a tablet
+     * with no SIM is a dead end; the visitor should copy the number and decide.
+     */
+    formatDetection: { telephone: false },
+
+    appleWebApp: {
+      capable: true,
+      title: SITE_NAME,
+      statusBarStyle: 'default',
+    },
+
+    manifest: '/manifest.webmanifest',
+
     // Search engines should index the help content but not the owner panel.
-    robots: { index: true, follow: true },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+        'max-video-preview': -1,
+      },
+    },
   };
 }
 
@@ -98,6 +153,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className="min-h-screen">
+        {/*
+          The site's machine-readable identity: who publishes it, where it is,
+          and which languages it is actually written in. One graph on every
+          page — the article and category pages add their own nodes below it.
+        */}
+        <JsonLd
+          data={{
+            '@context': 'https://schema.org',
+            '@graph': [organizationNode(), websiteNode(lang)],
+          }}
+        />
         {/*
           Keyboard users land here first. The prototype had a skip link with no
           target, so it went nowhere.

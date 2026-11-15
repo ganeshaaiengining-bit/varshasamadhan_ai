@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import { prisma } from '@/server/db';
 import { safeRead, DatabaseUnavailable } from '@/server/db-guard';
 import { getT } from '@/server/i18n';
+import { SITE_URL, absolutePath, clampDescription, pageMetadata } from '@/server/seo';
+import { JsonLd } from '@/components/seo/json-ld';
 import { categoryLabel, articleLabel } from '@/content/labels';
 import { isRecitedArticle } from '@/content/recitation';
 import { recordingFor } from '@/content/recordings';
@@ -33,20 +35,39 @@ export async function generateMetadata({
     () =>
       prisma.article.findUnique({
         where: { slug: article },
-        select: { title: true, summary: true },
+        select: {
+          title: true,
+          summary: true,
+          createdAt: true,
+          updatedAt: true,
+          category: { select: { slug: true } },
+        },
       }),
     undefined,
   );
 
-  if (row === undefined) return { title: t('cat.notFound') };
-  if (!row) return { title: t('cat.notFound') };
+  if (row === undefined) {
+    return { title: t('cat.notFound'), robots: { index: false, follow: false } };
+  }
+  if (!row) return { title: t('cat.notFound'), robots: { index: false, follow: false } };
 
   // The tab title speaks the visitor's language, the same as the heading below
   // it — see the note in `labels.ts` for why only the heading moves and not the
   // article itself.
   const title = articleLabel(lang, article, 'title', row.title);
   const description = row.summary ? articleLabel(lang, article, 'summary', row.summary) : title;
-  return { title, description };
+
+  return pageMetadata({
+    // The article's own category, not the one in the URL: an article reached by
+    // an old link should still declare one canonical address.
+    path: `/p/${row.category.slug}/${article}`,
+    lang,
+    title,
+    description: clampDescription(description || `${title} — ${t('home.metaTitle')}`),
+    type: 'article',
+    published: row.createdAt,
+    modified: row.updatedAt,
+  });
 }
 
 export default async function ArticlePage({
@@ -73,6 +94,8 @@ export default async function ArticlePage({
           isEmergency: true,
           isMedical: true,
           helpline: true,
+          createdAt: true,
+          updatedAt: true,
           category: { select: { slug: true, title: true } },
         },
       }),
@@ -120,8 +143,51 @@ export default async function ArticlePage({
   const recording = recited ? recordingFor(article) : null;
   const inCategory = categoryLabel(lang, row.category.slug, 'title', row.category.title);
 
+  /*
+   * The article as structured data.
+   *
+   * `dateModified` is the real `updatedAt` from the row, so a page the owner
+   * fixed this morning says so, and a search engine can prefer it over a copy
+   * it crawled last month. The breadcrumb is the same trail the visitor sees
+   * above the heading — a marked-up trail that disagrees with the visible one is
+   * a penalty, not a shortcut.
+   */
+  const pageUrl = absolutePath(`/p/${row.category.slug}/${article}`, lang);
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Article',
+        '@id': `${pageUrl}#article`,
+        headline: heading,
+        ...(summary ? { description: summary } : {}),
+        inLanguage: lang,
+        mainEntityOfPage: pageUrl,
+        datePublished: row.createdAt.toISOString(),
+        dateModified: row.updatedAt.toISOString(),
+        author: { '@id': `${SITE_URL}/#organization` },
+        publisher: { '@id': `${SITE_URL}/#organization` },
+        isPartOf: { '@id': `${SITE_URL}/#website` },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: t('nav.home'), item: absolutePath('/', lang) },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: inCategory,
+            item: absolutePath(`/p/${row.category.slug}`, lang),
+          },
+          { '@type': 'ListItem', position: 3, name: heading, item: pageUrl },
+        ],
+      },
+    ],
+  };
+
   return (
     <SiteChrome siteName={siteName}>
+      <JsonLd data={structuredData} />
       <div className="wrap-narrow py-8 sm:py-12">
         <Breadcrumbs
           ariaLabel={t('nav.path')}

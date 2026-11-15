@@ -15,6 +15,7 @@ import { getT } from '@/server/i18n';
 import { categoryLabel, articleLabel } from '@/content/labels';
 import { currentUser } from '@/server/auth/session';
 import { VARSHA } from '@/content/tribute';
+import { clampDescription, pageMetadata } from '@/server/seo';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,8 +29,14 @@ export const dynamic = 'force-dynamic';
  * and one that shows up in search results and in every copied link.
  */
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getT();
-  return { title: t('home.metaTitle') };
+  const { t, lang } = await getT();
+
+  return pageMetadata({
+    path: '/',
+    lang,
+    title: t('home.metaTitle'),
+    description: clampDescription(`${t('home.metaTitle')} — ${t('home.step3Body')}`),
+  });
 }
 
 /** Accent → Tailwind classes. Written out, never assembled at runtime. */
