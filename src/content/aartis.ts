@@ -23,11 +23,12 @@
  * "सदा सहाई"), the text follows the recording, because that is what a visitor
  * will hear when they press play.
  *
- * ── The five with no recording yet ─────────────────────────────────────────
+ * ── The six with no recording yet ──────────────────────────────────────────
  *
- * लवथवती विक्राळा, ॐ जय शिव ओंकारा, ॐ जय लक्ष्मी माता, युगे अठ्ठावीस and दुर्गे
- * दुर्घट भारी have no free recording on the site, so their words were taken
- * from published texts and checked against a second source:
+ * लवथवती विक्राळा, ॐ जय शिव ओंकारा, ॐ जय लक्ष्मी माता, युगे अठ्ठावीस, दुर्गे
+ * दुर्घट भारी and आरती श्री साईं गुरुवर की have no free recording on the site, so
+ * their words were taken from published texts and checked against a second
+ * source:
  *
  *   • लवथवती विक्राळा — Drik Panchang (Marathi) and the Marathi Wikipedia page
  *     "मराठी आरत्या", which agree line for line.
@@ -36,6 +37,7 @@
  *   • ॐ जय लक्ष्मी माता — Drik Panchang (Hindi).
  *   • युगे अठ्ठावीस, दुर्गे दुर्घट भारी — the Marathi Wikipedia page
  *     "मराठी आरत्या", with its typos corrected against the metre.
+ *   • आरती श्री साईं गुरुवर की — Drik Panchang (Hindi).
  *
  * They are here because the owner asked for Shankar's Marathi aarti and got a
  * list of names instead of the aarti. A missing text is now the exception, not
@@ -477,6 +479,61 @@ export const AARTIS: AartiText[] = [
       'नरहरि तल्लिन झाला पदपंकजलेशा ॥ ३ ॥',
     ],
   },
+  {
+    slug: 'aarti-shri-sai-guruvara-ki',
+    name: 'आरती श्री साईं गुरुवर की',
+    sungIn: 'हिंदी',
+    dedication: 'श्री साईं बाबा की आरती',
+    lines: [
+      'आरती श्री साईं गुरुवर की,',
+      'परमानंद सदा सुरवर की ।',
+      'जा की कृपा विपुल सुखकारी,',
+      'दुःख शोक संकट भयहारी ॥ १ ॥',
+      '',
+      'आरती श्री साईं गुरुवर की,',
+      'परमानंद सदा सुरवर की ।',
+      '',
+      'शिरडी में अवतार रचाया,',
+      'चमत्कार से तत्व दिखाया ।',
+      'कितने भक्त चरण पर आये,',
+      'वे सुख शान्ति चिरंतन पाये ॥ २ ॥',
+      '',
+      'आरती श्री साईं गुरुवर की,',
+      'परमानंद सदा सुरवर की ।',
+      '',
+      'भाव धरै जो मन में जैसा,',
+      'पावत अनुभव वो ही वैसा ।',
+      'गुरु की उदी लगावे तन को,',
+      'समाधान लाभत उस मन को ॥ ३ ॥',
+      '',
+      'आरती श्री साईं गुरुवर की,',
+      'परमानंद सदा सुरवर की ।',
+      '',
+      'साईं नाम सदा जो गावे,',
+      'सो फल जग में शाश्वत पावे ।',
+      'गुरुवासर करि पूजा-सेवा,',
+      'उस पर कृपा करत गुरुदेवा ॥ ४ ॥',
+      '',
+      'आरती श्री साईं गुरुवर की,',
+      'परमानंद सदा सुरवर की ।',
+      '',
+      'राम, कृष्ण, हनुमान रूप में,',
+      'दे दर्शन, जानत जो मन में ।',
+      'विविध धर्म के सेवक आते,',
+      'दर्शन कर इच्छित फल पाते ॥ ५ ॥',
+      '',
+      'आरती श्री साईं गुरुवर की,',
+      'परमानंद सदा सुरवर की ।',
+      '',
+      'जै बोलो साईं बाबा की,',
+      'जै बोलो अवधूत गुरु की ।',
+      '\'साईंदास\' आरती को गावै,',
+      'घर में बसि सुख, मंगल पावै ॥ ६ ॥',
+      '',
+      'आरती श्री साईं गुरुवर की,',
+      'परमानंद सदा सुरवर की ।',
+    ],
+  },
 ];
 
 /**
@@ -554,6 +611,7 @@ function storedText(id: string): AartiText | null {
     lakshmi: 'aarti-om-jai-lakshmi-mata',
     viththal: 'aarti-yuge-atthavis',
     'durga-mr': 'aarti-durge-durghat-bhari',
+    sai: 'aarti-shri-sai-guruvara-ki',
   };
   const slug = slugById[id];
   return slug ? (AARTIS.find((a) => a.slug === slug) ?? null) : null;
