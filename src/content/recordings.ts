@@ -35,6 +35,28 @@
  * entry links to the page it came from. The licence is the one that page
  * states — not one this file assumes. If a licence ever changes at the source,
  * the entry has to go.
+ *
+ * ── Why the standard aartis are here now, and why not the famous albums ────
+ *
+ * The well-known commercial recordings of Om Jai Jagdish Hare, Jai Ambe Gauri
+ * and Sukhkarta Dukhharta cannot be used: they belong to the labels that paid
+ * for them, and every "free" copy of those albums found online was uploaded
+ * under a licence the uploader had no right to give.
+ *
+ * What can be used is a recording the publisher itself released under a free
+ * licence, with the singer named. Three such publishers exist and all three are
+ * used below: SUVRATSUT (Marathi devotional albums, CC BY-ND), Santoshi
+ * Prachaar Records with singer Shankar Singh Thakur (CC BY-ND), and the
+ * Swami Lakshman Joo Archives (CC0). The words and the chaal are the
+ * traditional ones; the voice is a person singing, not a machine.
+ *
+ * NO-DERIVATIVES IS RESPECTED BY LEAVING THE FILES ALONE. CC BY-ND allows the
+ * recording to be copied and passed on unchanged, with credit — not trimmed,
+ * re-mixed or re-encoded. The files here are the publisher's own MP3s, byte
+ * for byte.
+ *
+ * The owner or the family can add the family's own recordings at any time —
+ * those need no licence at all.
  */
 
 /** One recording on the listening page. */
@@ -46,15 +68,14 @@ export interface Recording {
   /**
    * What it is and where, in Latin letters.
    *
-   * A proper name is not translated — `Shri Vyadeshwar Mandir` is the temple's
-   * name in every language, and putting it in Devanagari inside a Tamil page
-   * would give that reader a word they cannot read. The kind (aarti, kirtan,
-   * bhajan) *is* translated, on the line above.
+   * A proper name is not translated — `Sukhkarta Dukhharta` is the name of the
+   * aarti in every language, and a temple's name stays its own name too. The
+   * kind (aarti, kirtan, bhajan) *is* translated, on the line above.
    */
   label: string;
   /** The language it is sung in, in Latin letters. */
   sungIn: string;
-  /** Minutes:seconds, taken from the source file's own metadata. */
+  /** Minutes:seconds, measured from the file itself. */
   length: string;
   /** Path under `public/`. */
   src: string;
@@ -65,40 +86,97 @@ export interface Recording {
   licenceUrl: string;
   /** The page this came from, so the credit can be checked. */
   sourceUrl: string;
+  /** The site that page belongs to, shown as the link text. */
+  sourceName: string;
 }
 
 /**
  * The listening page.
  *
- * ── Why these four ─────────────────────────────────────────────────────────
- *
- * Because they are the ones whose licence is actually documented. The famous
- * aartis — Om Jai Jagdish Hare, Jai Ambe Gauri, Sukhkarta Dukhharta — exist as
- * commercial recordings, and every free copy of them found was a commercial
- * album re-uploaded under a licence the uploader had no right to give. Putting
- * one of those here would be exactly the "downloaded from a site whose licence
- * is unclear" the note above forbids.
- *
- * What is left is the real thing at a smaller scale: an aarti recorded inside
- * a Maharashtra temple by the person who was standing there, two live temple
- * or street recordings, and a bhajan released by the woman who sang it. Each
- * is credited, and each links to its source page.
- *
- * The owner or the family can add the family's own recordings at any time —
- * those need no licence at all.
+ * The six aartis first, because that is what a visitor comes for and because
+ * they are the ones every household knows. The temple and festival recordings
+ * follow: they are real, they are free, and they carry the regional voices the
+ * aartis above cannot.
  */
 export const COLLECTION: Recording[] = [
   {
-    slug: 'vyadeshwar-aarti',
+    slug: 'aarti-sukhkarta-dukhharta',
     kindKey: 'aarti.kindAarti',
-    label: 'Shri Vyadeshwar Mandir, Guhagar (Maharashtra)',
+    label: 'Sukhkarta Dukhharta — Ganpati aarti',
     sungIn: 'Marathi',
-    length: '1:03',
-    src: '/audio/aarti-vyadeshwar.mp3',
-    credit: 'Gsmodak — self-recorded inside the temple',
-    licence: 'CC BY-SA 3.0',
-    licenceUrl: 'https://creativecommons.org/licenses/by-sa/3.0/',
-    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Shri_Vyadshwar_Aarti_Audio_file.ogg',
+    length: '5:58',
+    src: '/audio/aarti-ganpati-marathi.mp3',
+    credit: 'SUVRATSUT — Ashtavinayaka, a Marathi devotional album',
+    licence: 'CC BY-ND 3.0',
+    licenceUrl: 'https://creativecommons.org/licenses/by-nd/3.0/',
+    sourceUrl: 'https://archive.org/details/Ashtavinayaka',
+    sourceName: 'Internet Archive',
+  },
+  {
+    slug: 'aarti-jai-ganesh-deva',
+    kindKey: 'aarti.kindAarti',
+    label: 'Jai Ganesh Deva — Ganpati aarti',
+    sungIn: 'Hindi',
+    length: '4:38',
+    src: '/audio/aarti-jai-ganesh-deva.mp3',
+    credit: 'Shankar Singh Thakur — Chalisa Aarti Sangrah, Santoshi Prachaar Records',
+    licence: 'CC BY-ND 4.0',
+    licenceUrl: 'https://creativecommons.org/licenses/by-nd/4.0/',
+    sourceUrl: 'https://archive.org/details/jai-ganesha-jai-ganesha-aarti',
+    sourceName: 'Internet Archive',
+  },
+  {
+    slug: 'aarti-om-jai-jagdish-hare',
+    kindKey: 'aarti.kindAarti',
+    label: 'Om Jai Jagdish Hare — Vishnu aarti',
+    sungIn: 'Hindi',
+    length: '4:38',
+    src: '/audio/aarti-om-jai-jagdish.mp3',
+    credit: 'Swami Lakshman Joo Archives — bhajan 7, sung with Pyarelal',
+    licence: 'CC0 1.0',
+    licenceUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',
+    sourceUrl:
+      'https://archive.org/details/swami-lakshman-joo-pyarelal-bhajans-7.-om-jai-jagdish.._833_j',
+    sourceName: 'Internet Archive',
+  },
+  {
+    slug: 'aarti-jai-ambe-gauri',
+    kindKey: 'aarti.kindAarti',
+    label: 'Jai Ambe Gauri — Durga aarti',
+    sungIn: 'Hindi',
+    length: '6:30',
+    src: '/audio/aarti-jai-ambe-gauri.mp3',
+    credit: 'Shankar Singh Thakur — Chalisa Aarti Sangrah, Santoshi Prachaar Records',
+    licence: 'CC BY-ND 4.0',
+    licenceUrl: 'https://creativecommons.org/licenses/by-nd/4.0/',
+    sourceUrl: 'https://archive.org/details/jai-ganesha-jai-ganesha-aarti',
+    sourceName: 'Internet Archive',
+  },
+  {
+    slug: 'aarti-jai-saraswati-mata',
+    kindKey: 'aarti.kindAarti',
+    label: 'Jai Saraswati Mata — Saraswati aarti',
+    sungIn: 'Hindi',
+    length: '6:27',
+    src: '/audio/aarti-saraswati.mp3',
+    credit: 'Shankar Singh Thakur — Chalisa Aarti Sangrah, Santoshi Prachaar Records',
+    licence: 'CC BY-ND 4.0',
+    licenceUrl: 'https://creativecommons.org/licenses/by-nd/4.0/',
+    sourceUrl: 'https://archive.org/details/jai-ganesha-jai-ganesha-aarti',
+    sourceName: 'Internet Archive',
+  },
+  {
+    slug: 'aarti-hanuman-lala-ki',
+    kindKey: 'aarti.kindAarti',
+    label: 'Aarti Keejei Hanuman Lala Ki — Hanuman aarti',
+    sungIn: 'Hindi',
+    length: '4:51',
+    src: '/audio/aarti-hanuman.mp3',
+    credit: 'Granth-Nidhi — Bhakti songs collection',
+    licence: 'CC0 1.0',
+    licenceUrl: 'https://creativecommons.org/publicdomain/zero/1.0/',
+    sourceUrl: 'https://archive.org/details/fptu_aarti-keejei-hanuman-lala-ki',
+    sourceName: 'Internet Archive',
   },
   {
     slug: 'kamakhya-bhajan',
@@ -112,6 +190,7 @@ export const COLLECTION: Recording[] = [
     licenceUrl: 'https://creativecommons.org/licenses/by-sa/3.0/',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/File:Local_musicians_singing_bhajan_at_Kamakhya_temple,_Guwahati,_Assam,_India.ogg',
+    sourceName: 'Wikimedia Commons',
   },
   {
     slug: 'kirtan-delhi',
@@ -124,6 +203,7 @@ export const COLLECTION: Recording[] = [
     licence: 'CC BY-SA 3.0',
     licenceUrl: 'https://creativecommons.org/licenses/by-sa/3.0/',
     sourceUrl: 'https://commons.wikimedia.org/wiki/File:Kirtana_in_Hindi.ogg',
+    sourceName: 'Wikimedia Commons',
   },
   {
     slug: 'guru-tum-na-mile',
@@ -136,6 +216,7 @@ export const COLLECTION: Recording[] = [
     licence: 'CC BY-SA 4.0',
     licenceUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
     sourceUrl: 'https://commons.wikimedia.org/wiki/File:Guru_tum_na_mile.ogg',
+    sourceName: 'Wikimedia Commons',
   },
 ];
 

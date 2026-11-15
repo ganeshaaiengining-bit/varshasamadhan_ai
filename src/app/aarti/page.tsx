@@ -16,7 +16,7 @@ import { Icon } from '@/components/ui/icon';
  * an AI voice.
  *
  * That rule cannot be met by generation, so it is met by playing real
- * recordings. This page is the listening side of it: the four recordings whose
+ * recordings. This page is the listening side of it: the recordings whose
  * licence is documented, each with the person who made it and the licence it
  * is used under. There is no read-aloud button here, and there cannot be one.
  *
@@ -26,9 +26,10 @@ import { Icon } from '@/components/ui/icon';
  * a small data pack.
  *
  * ── Why the credit is not small print ──────────────────────────────────────
- * Three of these are CC BY-SA: the licence runs on attribution, and a site
- * that hides the name would be breaking it. The credit line is under every
- * player, with a link to the page it came from, so anybody can check it.
+ * The licences here are a mix: CC BY-SA, CC BY-ND and CC0. The first two run
+ * on attribution, and a site that hides the name would be breaking them. The
+ * credit line is under every player, with a link to the page it came from, so
+ * anybody can check it.
  */
 export const dynamic = 'force-dynamic';
 
@@ -144,7 +145,7 @@ export default async function AartiPage() {
                   target="_blank"
                   className="underline hover:text-saffron-deep"
                 >
-                  Wikimedia Commons
+                  {recording.sourceName}
                 </a>
               </p>
             </li>
