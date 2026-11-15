@@ -6,6 +6,7 @@ import { SiteChrome } from '@/components/layout/site-chrome';
 import { COLLECTION } from '@/content/recordings';
 import { AARTIS } from '@/content/aartis';
 import { Icon } from '@/components/ui/icon';
+import { YouTubePlayer } from '@/components/aarti/youtube-player';
 
 /**
  * ===========================================================================
@@ -197,20 +198,21 @@ export default async function AartiPage() {
         </ul>
 
         {/*
-          ── The aartis whose words are here but whose recording is not ───────
+          ── The aartis whose words are here and whose recording is elsewhere ──
 
           The owner asked for Shankar's Marathi aarti, clicked "खऱ्या आवाजात
           ऐका" and arrived at a page that did not contain it at all — the page
           only listed recordings, so the aarti he asked for was invisible and
           the one that played belonged to another deity.
 
-          Every aarti whose text this site has is on this page now, in two
-          groups: the ones you can hear, and the ones you can only read. A
-          visitor who comes here for one aarti always finds it.
+          Then he said the other half, and he was right about that too: an aarti
+          the visitor asked for should not merely be readable, it should be sung
+          to them. So every one of these now has a real singer's recording, the
+          one the label published, played from the label's own video. Nothing is
+          downloaded or copied, and the channel is credited under the button.
 
-          Nothing here pretends to be a recording. The line under each name says
-          in the visitor's own language that there is no recording yet, and why
-          this site will not read it aloud in a machine voice.
+          Every aarti whose text this site has is on this page now: the ones
+          with a file of their own above, the ones played from YouTube here.
         */}
         {textOnly.length > 0 ? (
           <>
@@ -223,7 +225,18 @@ export default async function AartiPage() {
                     <span className="text-sm text-ink-subtle">{aarti.sungIn}</span>
                   </div>
                   <p className="mt-1 text-sm text-ink-subtle">{aarti.dedication}</p>
-                  <p className="mt-3 text-sm text-ink-soft">{t('aarti.noRecording')}</p>
+
+                  {aarti.video ? (
+                    <YouTubePlayer
+                      videoId={aarti.video.id}
+                      title={aarti.name}
+                      channel={aarti.video.channel}
+                      listenLabel={t('aarti.listenLink')}
+                      creditLabel={t('aarti.credit')}
+                    />
+                  ) : (
+                    <p className="mt-3 text-sm text-ink-soft">{t('aarti.noRecording')}</p>
+                  )}
 
                   <details className="mt-4" open>
                     <summary className="cursor-pointer text-sm text-saffron-deep">

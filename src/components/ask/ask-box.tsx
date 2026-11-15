@@ -3,6 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { Icon } from '@/components/ui/icon';
+import { YouTubePlayer } from '@/components/aarti/youtube-player';
 import { useVoiceInput, speak, speechTag } from '@/components/voice/use-voice';
 import { useLanguage } from '@/components/language/language';
 import { restoreDraft } from '@/components/language/draft';
@@ -90,6 +91,20 @@ export function AskBox({
     credit: string;
     licence: string;
   } | null>(null);
+  /*
+   * The same aarti, when the site has no file of its own.
+   *
+   * The publisher never released a copy under a licence this site can keep, so
+   * the recording is played from the channel that owns it, embedded, credited —
+   * but it is still the recording of the aarti that was asked for, which is the
+   * whole point. The owner was explicit: not a different aarti that happens to
+   * be free, *this* aarti.
+   */
+  const [video, setVideo] = React.useState<{
+    id: string;
+    title: string;
+    credit: string;
+  } | null>(null);
   const [topics, setTopics] = React.useState<{ title: string; slug: string }[]>([]);
   const [notice, setNotice] = React.useState<string | null>(null);
   const [speakError, setSpeakError] = React.useState<string | null>(null);
@@ -155,6 +170,7 @@ export function AskBox({
     // does not sit under a new answer.
     setRecited(false);
     setAudio(null);
+    setVideo(null);
 
     try {
       const response = await fetch('/api/ask', {
@@ -198,6 +214,7 @@ export function AskBox({
         fallback: boolean;
         recited?: boolean;
         audio?: { src: string; title: string; credit: string; licence: string };
+        video?: { id: string; title: string; credit: string };
         topics?: { title: string; slug: string }[] | null;
       };
 
@@ -205,6 +222,7 @@ export function AskBox({
         setAnswer(data.answer);
         setRecited(data.recited === true);
         setAudio(data.audio ?? null);
+        setVideo(data.video ?? null);
         onAnswered?.();
         return;
       }
@@ -385,6 +403,7 @@ export function AskBox({
           language={language.code}
           recited={recited}
           audio={audio}
+          video={video}
           onSpeakError={setSpeakError}
         />
       ) : null}
@@ -503,6 +522,7 @@ function AnswerCard({
   language,
   recited,
   audio,
+  video,
   onSpeakError,
 }: {
   text: string;
@@ -511,6 +531,8 @@ function AnswerCard({
   recited: boolean;
   /** The real recording of this aarti, when the site has one. */
   audio: { src: string; title: string; credit: string; licence: string } | null;
+  /** The same aarti, played from the channel that published it. */
+  video: { id: string; title: string; credit: string } | null;
   onSpeakError: (message: string) => void;
 }) {
   const { t, tf } = useLanguage();
@@ -556,9 +578,9 @@ function AnswerCard({
           clicked it after asking for Shankar's Marathi aarti: the page opened
           and played a different deity's aarti, because that aarti has no
           recording at all. A button that lands on the wrong prayer is worse
-          than no button. Where a recording exists it already plays inline
-          above; where it does not, the answer says so in one line and offers
-          nothing to click.
+          than no button. The player now sits inside the answer and always
+          belongs to the aarti above it — the site's own file where there is
+          one, otherwise the singer's own recording, embedded and credited.
         */}
         {recited ? null : (
           <button
@@ -625,6 +647,23 @@ function AnswerCard({
             <br />
             {t('aarti.licence')} {audio.licence}
           </p>
+        </div>
+      ) : video ? (
+        /*
+          No file of our own, so the singer's own recording is played from the
+          channel that published it. This is the aarti that was asked for — the
+          id comes from that aarti's own entry, never from a shared pool — and it
+          is embedded, so the label keeps the video, the views and the credit.
+        */
+        <div className="mt-5 rounded-xl border border-line bg-white/80 p-4">
+          <p className="font-bold text-ink">{video.title}</p>
+          <YouTubePlayer
+            videoId={video.id}
+            title={video.title}
+            channel={video.credit}
+            listenLabel={t('aarti.listenLink')}
+            creditLabel={t('aarti.credit')}
+          />
         </div>
       ) : null}
 

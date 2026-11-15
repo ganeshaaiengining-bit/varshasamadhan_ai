@@ -6,7 +6,7 @@ import { askQuestion, isConfigured } from '@/server/ai/gemini';
 import { getLanguage } from '@/server/i18n';
 import { currentUser } from '@/server/auth/session';
 import { asksForRecitedText } from '@/content/recitation';
-import { aartiAnswer } from '@/content/aartis';
+import { AARTIS, aartiAnswer } from '@/content/aartis';
 import { COLLECTION } from '@/content/recordings';
 
 /**
@@ -143,6 +143,24 @@ export async function POST(request: Request) {
    */
   const recording = stored?.slug ? COLLECTION.find((r) => r.slug === stored.slug) : undefined;
 
+  /*
+   * ── And when the site has no file of its own ─────────────────────────────
+   *
+   * The owner's complaint after the first attempt was that the listen button
+   * had disappeared altogether. He was right: a visitor who asked for an aarti
+   * should be able to hear *that* aarti, and if this site cannot supply the
+   * file, the answer is to play the singer's own recording from where it is
+   * published — not to fall silent, and never to substitute another aarti.
+   *
+   * So the aarti's own entry carries the video of that aarti, on the channel
+   * that owns it. It is sent back here and played embedded in the card.
+   */
+  const aartiText = stored?.slug ? AARTIS.find((a) => a.slug === stored.slug) : undefined;
+  const video =
+    !recording && aartiText?.video
+      ? { id: aartiText.video.id, title: aartiText.name, credit: aartiText.video.channel }
+      : undefined;
+
   // A greeting is not a question. Answering one wastes a metered call and tells
   // the visitor something is broken.
   //
@@ -271,7 +289,9 @@ export async function POST(request: Request) {
             licence: recording.licence,
           },
         }
-      : {}),
+      : video
+        ? { video }
+        : {}),
     ...(topics.length > 0 ? { topics } : {}),
   });
 }

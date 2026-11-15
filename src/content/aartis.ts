@@ -72,10 +72,21 @@ export interface AartiText {
   dedication: string;
   /**
    * True when these words were checked against the recording that plays on
-   * `/aarti`. False (absent) means there is no free recording yet and the text
-   * was checked against published collections instead.
+   * `/aarti`. False (absent) means the site has no recording file of its own.
    */
   withRecording?: boolean;
+  /**
+   * The recording played when the site has no file of its own.
+   *
+   * The owner's rule is simple and it is right: whichever aarti the visitor
+   * asked for is the one that must be shown, and the one that must be sung to
+   * them — never a different aarti just because that one happens to be easy to
+   * play. So an aarti with no free file points at a real singer's recording on
+   * the channel that owns it, and it is played from there, embedded.
+   *
+   * `channel` is not decoration. It is the credit, and it is always shown.
+   */
+  video?: { id: string; channel: string };
   /** The words, in order, with an empty string where a verse breaks. */
   lines: string[];
 }
@@ -299,6 +310,7 @@ export const AARTIS: AartiText[] = [
     name: 'लवथवती विक्राळा',
     sungIn: 'मराठी',
     dedication: 'श्री शंकराची आरती',
+    video: { id: '1XtXAMqnR2M', channel: 'Sagarika Devotional' },
     lines: [
       'लवथवती विक्राळा ब्रह्मांडी माळा ।',
       'विषे कंठ काळा त्रिनेत्री ज्वाळा ।',
@@ -338,6 +350,7 @@ export const AARTIS: AartiText[] = [
     name: 'ॐ जय शिव ओंकारा',
     sungIn: 'हिंदी',
     dedication: 'श्री शिव जी की आरती',
+    video: { id: 'FbwwJo2ldac', channel: 'BN Bhakti Sagar Forever' },
     lines: [
       'ॐ जय शिव ओंकारा, स्वामी जय शिव ओंकारा ।',
       'ब्रह्मा विष्णु सदाशिव, अर्द्धांगी धारा ॥',
@@ -393,6 +406,7 @@ export const AARTIS: AartiText[] = [
     name: 'ॐ जय लक्ष्मी माता',
     sungIn: 'हिंदी',
     dedication: 'श्री लक्ष्मी जी की आरती',
+    video: { id: 'u8b7TnmZ8J4', channel: 'T-Series Bhakti Sagar' },
     lines: [
       'ॐ जय लक्ष्मी माता, मैया जय लक्ष्मी माता ।',
       'तुमको निशिदिन सेवत, हरि विष्णु विधाता ॥',
@@ -424,6 +438,7 @@ export const AARTIS: AartiText[] = [
     name: 'युगे अठ्ठावीस विटेवरी',
     sungIn: 'मराठी',
     dedication: 'श्री विठ्ठलाची आरती',
+    video: { id: 'tgvr9u6mvs0', channel: 'T-Series Bhakti Marathi' },
     lines: [
       'युगे अठ्ठावीस विटेवरी उभा ।',
       'वामांगी रखुमाई दिसे दिव्य शोभा ॥',
@@ -459,6 +474,7 @@ export const AARTIS: AartiText[] = [
     name: 'दुर्गे दुर्घट भारी',
     sungIn: 'मराठी',
     dedication: 'श्री देवीची आरती',
+    video: { id: '2lvROxViLK0', channel: 'Nakoda Music Company' },
     lines: [
       'दुर्गे दुर्घट भारी तुजविण संसारी ।',
       'अनाथनाथे अंबे करुणा विस्तारी ।',
@@ -484,6 +500,7 @@ export const AARTIS: AartiText[] = [
     name: 'आरती श्री साईं गुरुवर की',
     sungIn: 'हिंदी',
     dedication: 'श्री साईं बाबा की आरती',
+    video: { id: 'qFfCclypbFg', channel: 'Strumm Spiritual' },
     lines: [
       'आरती श्री साईं गुरुवर की,',
       'परमानंद सदा सुरवर की ।',
@@ -727,7 +744,10 @@ const LISTEN_URL = `${(process.env.NEXT_PUBLIC_SITE_URL || 'https://varsha-samad
  * in Devanagari in every language: they are the prayer itself, and a copy of the
  * prayer is not a translation of it.
  */
-export function aartiAnswer(question: string, lang: string): { answer: string; slug: string } | null {
+export function aartiAnswer(
+  question: string,
+  lang: string,
+): { answer: string; slug: string; video?: { id: string; channel: string } } | null {
   if (!AARTI_QUESTION.test(question)) return null;
 
   /*
@@ -748,24 +768,28 @@ export function aartiAnswer(question: string, lang: string): { answer: string; s
       ...stored.lines,
       '',
       /*
-       * Say how the words were checked, and only promise a recording when there
-       * really is one.
+       * Say how the words were checked, and say where this exact aarti can be
+       * heard. The owner was clear about both halves: the aarti that is asked
+       * for is the one that must be shown, and it is the one that must be sung
+       * back — never a different aarti that happens to be easier to play.
        *
-       * The owner asked for the Marathi Shankar aarti "गाण्याच्या स्वरूपात" and
-       * got the words with no word about the singing. Silence there reads as a
-       * fault. So when there is no recording, the answer says so in one sentence
-       * and says why — this site never sings an aarti in a machine voice — and
-       * still points at the recordings that do exist.
+       * So there are three cases, and the answer states which one it is in:
+       *   · the site has its own licensed file — play it, from the page;
+       *   · it has no file, but a real singer's recording is on YouTube — that
+       *     recording is embedded right under this answer, credited;
+       *   · neither exists — say so plainly, and never fake a voice.
        */
       stored.withRecording ? t('aarti.textChecked') : t('aarti.textPrinted'),
       ...(stored.withRecording
         ? [`${t('aarti.listenLink')}: ${LISTEN_URL}#${stored.slug}`]
-        : [t('aarti.noRecording')]),
+        : stored.video
+          ? [`${t('aarti.credit')} ${stored.video.channel} · YouTube`]
+          : [t('aarti.noRecording')]),
     ]
       .join('\n')
       .trim();
 
-    return { answer, slug: stored.slug };
+    return { answer, slug: stored.slug, video: stored.video };
   }
 
   // No deity named and nothing to default to: the model may answer freely.
