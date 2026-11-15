@@ -7,6 +7,7 @@ import { getLanguage } from '@/server/i18n';
 import { currentUser } from '@/server/auth/session';
 import { asksForRecitedText } from '@/content/recitation';
 import { AARTIS, aartiAnswer } from '@/content/aartis';
+import { granthAnswer } from '@/content/granths';
 import { COLLECTION } from '@/content/recordings';
 
 /**
@@ -131,6 +132,19 @@ export async function POST(request: Request) {
   const stored = aartiAnswer(question, languageCode);
 
   /*
+   * ── And the granths: chalisa, sahasranama, haripath, Gita ─────────────────
+   *
+   * The owner asked for the same treatment here, in the same words: whichever
+   * text the visitor names is the one that must appear, and it must be heard in
+   * a real voice. So a named chalisa, stotra, mantra or paath is answered from
+   * `content/granths.ts`, with the recording of that same text played inline.
+   *
+   * Aarti first: "हनुमान आरती" and "हनुमान चालीसा" are different texts and both
+   * are stored, and the deity word alone must not decide between them.
+   */
+  const granth = stored ? null : granthAnswer(question, languageCode);
+
+  /*
    * ── When the aarti being asked for is one of the recordings ───────────────
    *
    * The words are answered from the library, but the visitor who asked to
@@ -156,10 +170,13 @@ export async function POST(request: Request) {
    * that owns it. It is sent back here and played embedded in the card.
    */
   const aartiText = stored?.slug ? AARTIS.find((a) => a.slug === stored.slug) : undefined;
-  const video =
-    !recording && aartiText?.video
+  const video = recording
+    ? undefined
+    : aartiText?.video
       ? { id: aartiText.video.id, title: aartiText.name, credit: aartiText.video.channel }
-      : undefined;
+      : granth
+        ? { id: granth.video.id, title: granth.name, credit: granth.video.channel }
+        : undefined;
 
   // A greeting is not a question. Answering one wastes a metered call and tells
   // the visitor something is broken.
@@ -178,8 +195,9 @@ export async function POST(request: Request) {
     });
   }
 
-  const result = stored
-    ? { ok: true, answer: stored.answer, fallback: false }
+  const found = stored ?? granth;
+  const result = found
+    ? { ok: true, answer: found.answer, fallback: false }
     : await askQuestion(languageCode, question, category);
 
   /*
@@ -279,7 +297,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     ...result,
-    ...(recited || stored ? { recited: true } : {}),
+    ...(recited || found ? { recited: true } : {}),
     ...(recording
       ? {
           audio: {

@@ -5,6 +5,7 @@ import { JsonLd } from '@/components/seo/json-ld';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { COLLECTION } from '@/content/recordings';
 import { AARTIS } from '@/content/aartis';
+import { GRANTHS } from '@/content/granths';
 import { Icon } from '@/components/ui/icon';
 import { YouTubePlayer } from '@/components/aarti/youtube-player';
 
@@ -258,6 +259,58 @@ export default async function AartiPage() {
             </ul>
           </>
         ) : null}
+
+        {/*
+          ── Granths, chalisas and stotras ─────────────────────────────────────
+
+          The owner extended his rule to these: an aarti *or a granth* the
+          visitor asks for must be hearable, in a real voice. A chalisa is not a
+          song and a sahasranama is not a hymn, but they are all recited aloud,
+          and a computer reading forty chaupais flat is the same insult.
+
+          Each of these plays the recording of that same text, by a named singer,
+          from the channel that published it. The words are stored only for the
+          two short mantras; the rest say so honestly and point at the recording,
+          rather than printing forty verses with one word wrong.
+        */}
+        <h2 className="mt-12 text-lg text-ink">{t('aarti.granthTitle')}</h2>
+        <ul className="mt-4 space-y-5">
+          {GRANTHS.map((granth) => (
+            <li key={granth.slug} id={granth.slug} className="card scroll-mt-24 p-5 sm:p-6">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                <h3 className="text-lg text-ink">{granth.name}</h3>
+                <span className="text-sm text-ink-subtle">
+                  {granth.kind} · {granth.recitedIn}
+                </span>
+              </div>
+              <p className="mt-1 text-sm text-ink-subtle">{granth.about}</p>
+
+              <YouTubePlayer
+                videoId={granth.video.id}
+                title={granth.name}
+                channel={granth.video.channel}
+                listenLabel={t('aarti.listenLink')}
+                creditLabel={t('aarti.credit')}
+              />
+
+              {granth.lines ? (
+                <details className="mt-4">
+                  <summary className="cursor-pointer text-sm text-saffron-deep">
+                    {t('aarti.fullText')}
+                  </summary>
+                  <div className="mt-3 space-y-1 text-[0.95rem] leading-relaxed text-ink-soft">
+                    {granth.lines.map((line, index) => (
+                      <p key={index}>{line}</p>
+                    ))}
+                  </div>
+                  <p className="mt-3 text-xs text-ink-subtle">{t('aarti.textPrinted')}</p>
+                </details>
+              ) : (
+                <p className="mt-3 text-sm text-ink-soft">{t('aarti.textNotStored')}</p>
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
     </SiteChrome>
   );
