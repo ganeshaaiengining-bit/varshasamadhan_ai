@@ -586,6 +586,11 @@ function deityIn(question: string, lang: string): string | null {
   if (/शिव|shiv|शंकर|shankar|महादेव|mahadev|भोलेनाथ|bholenath/.test(q)) {
     return lang === 'mr' ? 'shiv-mr' : 'shiv-hi';
   }
+  /*
+   * "जय अम्बे गौरी" is named in full — that is the Hindi aarti, whatever
+   * language the visitor reads the site in.
+   */
+  if (/जय\s*अ(?:म्)?बे|जय\s*अंबे|jai\s*ambe/.test(q)) return 'ambe';
   if (/दुर्घट|durghat/.test(q)) return 'durga-mr';
   if (lang === 'mr' && /दुर्गा|devī|देवी|अंबे|अम्बे/.test(q)) return 'durga-mr';
 
