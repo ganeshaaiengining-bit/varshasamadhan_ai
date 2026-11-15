@@ -53,6 +53,9 @@ function isoDuration(length: string): string {
 export default async function AartiPage() {
   const { t, lang } = await getT();
 
+  /** The aartis whose words are checked but which have no free recording yet. */
+  const textOnly = AARTIS.filter((aarti) => !aarti.withRecording);
+
   /*
    * Each recording as a `MusicRecording`.
    *
@@ -115,7 +118,7 @@ export default async function AartiPage() {
             const words = AARTIS.find((a) => a.slug === recording.slug);
 
             return (
-            <li key={recording.slug} className="card p-5 sm:p-6">
+            <li key={recording.slug} id={recording.slug} className="card scroll-mt-24 p-5 sm:p-6">
               <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
                 <h2 className="text-lg text-ink">
                   {t(recording.kindKey)} — {recording.titleDeva ?? recording.label}
@@ -192,6 +195,56 @@ export default async function AartiPage() {
             );
           })}
         </ul>
+
+        {/*
+          ── The aartis whose words are here but whose recording is not ───────
+
+          The owner asked for Shankar's Marathi aarti, clicked "खऱ्या आवाजात
+          ऐका" and arrived at a page that did not contain it at all — the page
+          only listed recordings, so the aarti he asked for was invisible and
+          the one that played belonged to another deity.
+
+          Every aarti whose text this site has is on this page now, in two
+          groups: the ones you can hear, and the ones you can only read. A
+          visitor who comes here for one aarti always finds it.
+
+          Nothing here pretends to be a recording. The line under each name says
+          in the visitor's own language that there is no recording yet, and why
+          this site will not read it aloud in a machine voice.
+        */}
+        {textOnly.length > 0 ? (
+          <>
+            <h2 className="mt-12 text-lg text-ink">{t('aarti.textOnlyTitle')}</h2>
+            <ul className="mt-4 space-y-5">
+              {textOnly.map((aarti) => (
+                <li key={aarti.slug} id={aarti.slug} className="card scroll-mt-24 p-5 sm:p-6">
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                    <h3 className="text-lg text-ink">{aarti.name}</h3>
+                    <span className="text-sm text-ink-subtle">{aarti.sungIn}</span>
+                  </div>
+                  <p className="mt-1 text-sm text-ink-subtle">{aarti.dedication}</p>
+                  <p className="mt-3 text-sm text-ink-soft">{t('aarti.noRecording')}</p>
+
+                  <details className="mt-4" open>
+                    <summary className="cursor-pointer text-sm text-saffron-deep">
+                      {t('aarti.fullText')}
+                    </summary>
+                    <div className="mt-3 space-y-1 text-[0.95rem] leading-relaxed text-ink-soft">
+                      {aarti.lines.map((line, index) =>
+                        line ? (
+                          <p key={index}>{line}</p>
+                        ) : (
+                          <div key={index} className="h-2" aria-hidden="true" />
+                        ),
+                      )}
+                    </div>
+                    <p className="mt-3 text-xs text-ink-subtle">{t('aarti.textPrinted')}</p>
+                  </details>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
       </div>
     </SiteChrome>
   );

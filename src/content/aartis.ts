@@ -710,8 +710,8 @@ export function aartiAnswer(question: string, lang: string): { answer: string; s
        */
       stored.withRecording ? t('aarti.textChecked') : t('aarti.textPrinted'),
       ...(stored.withRecording
-        ? [`${t('aarti.listenLink')}: ${LISTEN_URL}`]
-        : [t('aarti.noRecording'), `${t('aarti.listenLink')}: ${LISTEN_URL}`]),
+        ? [`${t('aarti.listenLink')}: ${LISTEN_URL}#${stored.slug}`]
+        : [t('aarti.noRecording')]),
     ]
       .join('\n')
       .trim();
@@ -727,8 +727,6 @@ export function aartiAnswer(question: string, lang: string): { answer: string; s
     '',
     t('aarti.verifiedList'),
     ...AARTIS.map((a) => `• ${a.name} — ${a.dedication} (${a.sungIn})`),
-    '',
-    `${t('aarti.listenLink')}: ${LISTEN_URL}`,
   ]
     .join('\n')
     .trim();
