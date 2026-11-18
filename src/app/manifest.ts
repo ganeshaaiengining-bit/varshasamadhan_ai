@@ -24,7 +24,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: `${SITE_NAME} — मुफ़्त समाधान`,
     short_name: 'VARSHA',
     description:
-      'Free answers in your own words, in thirteen languages, in memory of Smt. VARSHA.',
+      'Free answers in your own words, in every Indian language, in memory of Smt. VARSHA.',
     start_url: '/',
     scope: '/',
     display: 'standalone',

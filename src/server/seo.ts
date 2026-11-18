@@ -73,6 +73,18 @@ const OG_LOCALE: Record<string, string> = {
   ml: 'ml_IN',
   pa: 'pa_IN',
   ur: 'ur_PK',
+  as: 'as_IN',
+  or: 'or_IN',
+  ne: 'ne_IN',
+  sa: 'sa_IN',
+  ks: 'ks_IN',
+  sd: 'sd_IN',
+  kok: 'kok_IN',
+  mai: 'mai_IN',
+  doi: 'doi_IN',
+  brx: 'brx_IN',
+  mni: 'mni_IN',
+  sat: 'sat_IN',
   ar: 'ar_SA',
   es: 'es_ES',
 };
@@ -219,7 +231,7 @@ export function organizationNode() {
       url: `${SITE_URL}/icon.svg`,
     },
     description:
-      'A free help service in thirteen languages, in memory of Smt. VARSHA: health, money, family, work, government offices and rituals, answered in the visitor\'s own language.',
+      'A free help service in every Indian language, in memory of Smt. VARSHA: health, money, family, work, government offices and rituals, answered in the visitor\'s own language.',
   };
 }
 
@@ -238,7 +250,7 @@ export function websiteNode(lang: string) {
     url: SITE_URL,
     name: SITE_NAME,
     description:
-      'Free answers in your own words, in thirteen languages, in memory of Smt. VARSHA.',
+      'Free answers in your own words, in every Indian language, in memory of Smt. VARSHA.',
     publisher: { '@id': `${SITE_URL}/#organization` },
     inLanguage: LANGUAGES.map((language) => language.code),
     mainEntityOfPage: absolutePath('/', lang),

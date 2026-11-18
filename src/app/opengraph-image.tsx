@@ -76,7 +76,7 @@ export default function OpengraphImage() {
             textAlign: 'center',
           }}
         >
-          Free answers in your own words — 13 languages
+          Free answers in your own words — every Indian language
         </div>
 
         <div style={{ display: 'flex', marginTop: 46, fontSize: 28, color: '#8A5A20' }}>

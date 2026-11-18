@@ -46,12 +46,13 @@ const COOKIE = 'vs-lang';
 const PARAM = 'vs-lang';
 
 /**
- * The thirteen codes a prefix may name.
+ * Every code a prefix may name.
  *
  * Kept as a literal rather than imported from `content/i18n.ts`: that module
  * carries every translation table, and this file runs on every request in a
- * separate runtime. A code missing here is a language with no prefix URL; it is
- * listed in the same order as the picker so the two are easy to compare.
+ * separate runtime. A code missing here is a language with no prefix URL — the
+ * visitor's choice would be lost on the next page — so this list is kept in the
+ * same order as the picker, and scripts/check-language-list.py compares the two.
  */
 const CODES = new Set([
   'hi',
@@ -65,11 +66,30 @@ const CODES = new Set([
   'ml',
   'pa',
   'ur',
+  'as',
+  'or',
+  'ne',
+  'sa',
+  'ks',
+  'sd',
+  'kok',
+  'mai',
+  'doi',
+  'brx',
+  'mni',
+  'sat',
   'ar',
   'es',
 ]);
 
-const PREFIX = /^\/([a-z]{2})(?=\/|$)/;
+/*
+ * Two or three letters: `hi`, `ta` — and `kok`, `mai`, `doi`, `brx`, `mni`,
+ * `sat`, which are the codes the twelve Indian languages added later actually
+ * use. A two-letter pattern would have sent every Konkani visitor to a URL the
+ * middleware did not recognise, and their language would have reverted to Hindi
+ * on the next page.
+ */
+const PREFIX = /^\/([a-z]{2,3})(?=\/|$)/;
 
 export function middleware(request: NextRequest) {
   const url = request.nextUrl;
@@ -78,7 +98,7 @@ export function middleware(request: NextRequest) {
   const fromPath = prefix && CODES.has(prefix) ? prefix : null;
 
   const param = url.searchParams.get(PARAM);
-  const fromParam = param && /^[a-z]{2}$/.test(param) ? param : null;
+  const fromParam = param && /^[a-z]{2,3}$/.test(param) ? param : null;
 
   /*
    * An explicit parameter wins over the prefix: it is what the picker writes,

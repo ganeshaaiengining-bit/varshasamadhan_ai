@@ -41,6 +41,8 @@ SCRIPT_RANGES = {
     "kannada": (0x0C80, 0x0CFF),
     "malayalam": (0x0D00, 0x0D7F),
     "gurmukhi": (0x0A00, 0x0A7F),
+    "odia": (0x0B00, 0x0B7F),
+    "olchiki": (0x1C50, 0x1C7F),
     "arabic": (0x0600, 0x06FF),
 }
 
@@ -56,6 +58,18 @@ TABLE_SCRIPTS = {
     "PUNJABI": "gurmukhi",
     "URDU": "arabic",
     "ARABIC": "arabic",
+    "ASSAMESE": "bengali",
+    "MANIPURI": "bengali",
+    "ODIA": "odia",
+    "SANTALI": "olchiki",
+    "KASHMIRI": "arabic",
+    "SINDHI": "arabic",
+    "NEPALI": "devanagari",
+    "SANSKRIT": "devanagari",
+    "KONKANI": "devanagari",
+    "MAITHILI": "devanagari",
+    "DOGRI": "devanagari",
+    "BODO": "devanagari",
 }
 
 # Some lines hold several entries at once, so the whole line is scanned rather

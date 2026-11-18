@@ -39,10 +39,16 @@ TABLES = {
     "en": "ENGLISH", "bn": "BENGALI", "ta": "TAMIL", "te": "TELUGU",
     "mr": "MARATHI", "gu": "GUJARATI", "kn": "KANNADA", "ml": "MALAYALAM",
     "pa": "PUNJABI", "ur": "URDU", "ar": "ARABIC", "es": "SPANISH",
+    "as": "ASSAMESE", "or": "ODIA", "ne": "NEPALI", "sa": "SANSKRIT",
+    "ks": "KASHMIRI", "sd": "SINDHI", "kok": "KONKANI", "mai": "MAITHILI",
+    "doi": "DOGRI", "brx": "BODO", "mni": "MANIPURI", "sat": "SANTALI",
 }
 
 # Languages written in a non-Latin script, so a Latin value is a real finding.
-SCRIPT_LANGUAGES = {"bn", "ta", "te", "mr", "gu", "kn", "ml", "pa", "ur", "ar"}
+SCRIPT_LANGUAGES = {
+    "bn", "ta", "te", "mr", "gu", "kn", "ml", "pa", "ur", "ar",
+    "as", "or", "ne", "sa", "ks", "sd", "kok", "mai", "doi", "brx", "mni", "sat",
+}
 
 # The Unicode blocks each of those languages is written in.
 BLOCKS = {
@@ -56,6 +62,18 @@ BLOCKS = {
     "pa": (0x0A00, 0x0A7F),   # Gurmukhi
     "ur": (0x0600, 0x06FF),   # Arabic (Urdu shares it)
     "ar": (0x0600, 0x06FF),   # Arabic
+    "as": (0x0980, 0x09FF),   # Assamese uses Bengali script
+    "mni": (0x0980, 0x09FF),  # Meitei in Bengali script
+    "or": (0x0B00, 0x0B7F),   # Odia
+    "sat": (0x1C50, 0x1C7F),  # Santali in Ol Chiki
+    "ks": (0x0600, 0x06FF),   # Kashmiri in Perso-Arabic
+    "sd": (0x0600, 0x06FF),   # Sindhi in Perso-Arabic
+    "ne": (0x0900, 0x097F),
+    "sa": (0x0900, 0x097F),
+    "kok": (0x0900, 0x097F),
+    "mai": (0x0900, 0x097F),
+    "doi": (0x0900, 0x097F),
+    "brx": (0x0900, 0x097F),
 }
 
 # Values where Latin is expected even in a non-Latin language: an emergency

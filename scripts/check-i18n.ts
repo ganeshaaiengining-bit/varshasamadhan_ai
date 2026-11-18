@@ -67,6 +67,12 @@ const ORDER: [code: string, variable: string][] = [
   ['te', 'TELUGU'], ['mr', 'MARATHI'], ['gu', 'GUJARATI'], ['kn', 'KANNADA'],
   ['ml', 'MALAYALAM'], ['pa', 'PUNJABI'], ['ur', 'URDU'], ['ar', 'ARABIC'],
   ['es', 'SPANISH'],
+  /* In the same order as the tables in i18n.ts, which is where the boundaries
+   * are read from. Arabic and Spanish stay above the twelve added later because
+   * that is where their tables sit in the file. */
+  ['as', 'ASSAMESE'], ['or', 'ODIA'], ['ne', 'NEPALI'], ['sa', 'SANSKRIT'],
+  ['ks', 'KASHMIRI'], ['sd', 'SINDHI'], ['kok', 'KONKANI'], ['mai', 'MAITHILI'],
+  ['doi', 'DOGRI'], ['brx', 'BODO'], ['mni', 'MANIPURI'], ['sat', 'SANTALI'],
 ];
 
 const sourceLines = source.split('\n');
@@ -95,12 +101,17 @@ const SCRIPTS: Record<string, RegExp> = {
   ta: /[\u0B80-\u0BFF]/, te: /[\u0C00-\u0C7F]/, gu: /[\u0A80-\u0AFF]/,
   kn: /[\u0C80-\u0CFF]/, ml: /[\u0D00-\u0D7F]/, pa: /[\u0A00-\u0A7F]/,
   ur: /[\u0600-\u06FF]/, ar: /[\u0600-\u06FF]/, en: /./, es: /./,
+  as: /[\u0980-\u09FF]/, mni: /[\u0980-\u09FF]/, or: /[\u0B00-\u0B7F]/,
+  ne: /[\u0900-\u097F]/, sa: /[\u0900-\u097F]/, kok: /[\u0900-\u097F]/,
+  mai: /[\u0900-\u097F]/, doi: /[\u0900-\u097F]/, brx: /[\u0900-\u097F]/,
+  ks: /[\u0600-\u06FF]/, sd: /[\u0600-\u06FF]/, sat: /[\u1C50-\u1C7F]/,
 };
 const ALL_SCRIPTS = [
   ['deva', /[\u0900-\u097F]/], ['beng', /[\u0980-\u09FF]/],
   ['tamil', /[\u0B80-\u0BFF]/], ['telu', /[\u0C00-\u0C7F]/],
   ['gujr', /[\u0A80-\u0AFF]/], ['knda', /[\u0C80-\u0CFF]/],
   ['mlym', /[\u0D00-\u0D7F]/], ['guru', /[\u0A00-\u0A7F]/],
+  ['odia', /[\u0B00-\u0B7F]/], ['olck', /[\u1C50-\u1C7F]/],
   ['arab', /[\u0600-\u06FF]/],
 ] as const;
 
